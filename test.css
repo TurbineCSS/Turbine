@@ -1,0 +1,112 @@
+/* CSSP */
+
+@constants {
+	bgColor: #FFF;
+	darkGreen: #87C41A;
+	brightGreen: #CCE360;
+	darkText: #1F0A5E;
+	naviText: #1F0A5E;
+	fontArial: Arial, Helvetica, sans-serif;
+	fontVerdana: Verdana, Arial, Helvetica, sans-serif;
+	headlineMargin:1.25em 8px 8px 8px;
+}
+
+@media screen {
+
+
+	/**
+	 * Basics
+	 */
+	body {
+		font-family:$fontArial;
+		font-size:10px;
+		background:$bgColor url(body.png) top left;
+		color: $darkGreen;
+		padding:32px 0;
+	}
+	p, ul, ol { font-size:1.2em; line-height:1.6; margin:8px; }
+	h2 { font-size:1.8em; color:$darkGreen; font-family:$fontVerdana; margin:$headlineMargin; }
+	h3 { font-size:1.5em; color:$darkGreen; font-family:$fontVerdana; margin:$headlineMargin; }
+	h4 { font-size:1.2em; color:$darkGreen; font-weight:bold; margin:$headlineMargin; }
+	h5 { font-size:1.2em; color:$darkGreen; margin:$headlineMargin; }
+	h6 { font-size:1.2em; color:$darkGreen; margin:$headlineMargin; }
+
+
+	/**
+	 * Layout
+	 */
+	#wrapper {
+		width: 960px;
+		margin:0 auto;
+	}
+	#content {
+		text-align:left;
+	}
+
+
+	/**
+	 * Header
+	 */
+	#header {
+		children: {
+			#logo {
+				height:140px;
+				background:$darkGreen;
+			}
+		};
+	}
+
+
+	/**
+	 * Navigation
+	 */
+	#nav {
+		height:140px;
+		background:#EDF4F7;
+		position:relative;
+		children: {
+			ul {
+				position:absolute;
+				bottom:0;
+				left:0;
+				margin:0;
+				children: {
+					a {
+						float:left;
+						display:block;
+						padding:4px 12px;
+						rounded-top:2px;
+						margin:0 0 0 2px;
+					}
+					li {
+						display:inline;
+						font-size:1.2em;
+						children: {
+							a:link, a:visited { color:$naviText; background:$darkGreen; }
+							a:active, a:hover { color:$naviText; background:$brightGreen; }
+						};
+					}
+					li.active {
+						children: {
+							a:link, a:visited { color:$naviText; background:$bgColor; }
+							a:active, a:hover { color:$naviText; background:$bgColor; }
+						};
+					}
+				};
+			}
+		};
+	}
+
+
+	/**
+	 * Content
+	 */
+	#content div.section {
+		color:$darkText;
+		background: $bgColor;
+		margin-bottom:8px;
+		padding:2px 8px 8px 8px;
+	}
+
+
+}
