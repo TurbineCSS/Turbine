@@ -32,7 +32,7 @@ class Cssp extends CssParser {
 
 	public $ignore_on_merge = array('flags');
 
-
+	
 	/**
 	 * Constructor
 	 * @param string $query String of Files to load, sepperated by ;
@@ -40,13 +40,39 @@ class Cssp extends CssParser {
 	 */
 	public function __construct($query = NULL){
 		if($query){
-			$this->load_file($query);
-			$this->parse();
-			$this->apply_children();
-			$this->apply_inheritance();
-			$this->apply_constants();
-			$this->apply_flags();
-			$this->cleanup();
+			#$start = microtime(true);
+			// Cache: Has file already been parsed?
+			$incache = false;
+			// Cache: Where to store parsed files
+			$cachedir = str_replace('\\','/',dirname(__FILE__)).'/cssp_cache';
+			// Cache: Check if cache-directory has been created
+			if(!is_dir($cachedir)) mkdir($cachedir,0777);
+			$cachefile = preg_replace('/[^0-9A-Za-z\-\._]/','',str_replace(array('\\','/'),'.',$query));
+			// Cache: Check if a cached version of the file already exists
+			if(file_exists($cachedir.'/'.$cachefile) && filemtime($cachedir.'/'.$cachefile) >= filemtime($file)) $incache = true;
+			
+			if(!$incache)
+			{
+				#echo "/* nocache */\r\n";
+				$this->load_file($query);
+				$this->parse();
+				$this->apply_children();
+				$this->apply_inheritance();
+				$this->apply_constants();
+				$this->apply_flags();
+				$this->cleanup();
+				
+				// Cache: Write parsed content to file
+				file_put_contents($cachedir.'/'.$cachefile,serialize($this->parsed));
+			}
+			else 
+			{
+				#echo "/* cache */\r\n";
+				$this->parsed = unserialize(file_get_contents($cachedir.'/'.$cachefile));
+			}
+				
+			#$end = microtime(true);
+			#echo $end - $start;
 		}
 	}
 
