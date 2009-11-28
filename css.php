@@ -15,6 +15,7 @@
 		}
 
 		// Load libraries
+		include('lib/browser_class_inc.php');
 		include('lib/parser.php');
 		include('lib/cssp.php');
 
@@ -36,6 +37,10 @@
 			die('Error: Plugin directory "'.$plugin_dir.'" not found!');
 		}
 
+		// Fetch and store Browser Properties
+		$b = new browser();
+        $browserproperties = $b->whatbrowser();
+		
 		// Parse files
 		$css = '';
 		$files = explode(';', $_GET['files']);
