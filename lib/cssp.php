@@ -5,7 +5,7 @@
  * CSSP - CSS Preprocessor
  * Constants and inheritance for CSS
  * 
- * Copyright (C) 2009 Peter Kröner
+ * Copyright (C) 2009 Peter Kröner, Christian Schaefer
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -31,7 +31,8 @@ class Cssp extends CssParser {
 
 
 	public $ignore_on_merge = array('flags');
-	
+
+
 	/**
 	 * Constructor
 	 * @param string $query String of Files to load, sepperated by ;
@@ -150,6 +151,7 @@ class Cssp extends CssParser {
 	 * Overloads the parsers native merge_rules method to make exclusion of certain properties possible
 	 * @param mixed $old The OLD rules (overridden by the new rules)
 	 * @param mixed $new The NEW rules (override the old rules)
+	 * @param array $exclude A list of properties NOT to merge
 	 * @return mixed $rule The new, merged rule
 	 */
 	public function merge_rules($old, $new, $exclude = array()){
@@ -172,57 +174,6 @@ class Cssp extends CssParser {
 
 
 	/**
-	 * mask_unsafe_chars
-	 * Overloads the parsers native mask_unsafe_chars method to allow child notation
-	 * @param string $str css with unmasked chars
-	 * @return string css with masked chars
-	 */
-	public function mask_unsafe_chars($str){
-		foreach($this->unsafe_chars as $mask => $unsafe_char){
-			$masked_unsafe_char = str_replace(array('*', '/'), array('\*', '\/'), $unsafe_char);
-			$patterns[] = '/content(.*:.*(\'|").*)('.$masked_unsafe_char.')(.*(\'|"))/';
-			$replacements[] = 'content$1'.$mask.'$4';
-		}
-		$str = preg_replace($patterns, $replacements, $str);
-		// A regex pattern for fining children, defined in such a way that it always matches the currently lowest one
-		$pattern = '/(.*)(children\s*?:\s*?\{)(.*?)(\};)(.*)/ms';
-		// Using a loop to path our way from the lowest level to the highest until no child is left
-		while(preg_match($pattern,$str,$matches) == 1) 
-		{
-			$originalstring = $matches[1].$matches[2].$matches[3].$matches[4].$matches[5];
-			$replacementstring = $matches[1].$this->parse_children($matches[3]).$matches[5];
-			$str = str_replace($originalstring,$replacementstring,$str);
-		}
-		return $str;
-	}
-
-	/**
-	 * parse_children
-	 * Parses children, stores them serialized in the "children" property
-	 * @return string $child_css A property-value-pair
-	 */
-	public static function parse_children($str){
-		// print_r($matches);
-		$childParser = new Cssp();
-		$childParser->load_string($str);
-		$childParser->parse();
-		$childParser->apply_children();
-		$childParser->apply_inheritance();
-		$childParser->apply_constants();
-		$childParser->apply_flags();
-		$childParser->cleanup();
-		// Return serialized children
-		// FIXME: base64 encoding is a temporary workaround to prevent the curly braces in the serialization from confusing the parser
-		$child_css = base64_encode(serialize($childParser->parsed['css']));
-		$child_css = 'children: '.$child_css;
-		//Debugging output added by Schepp on 25.11.2009
-		#print_r($childParser->parsed['css']);
-		#echo "\r\n-------------------------------------\r\n";
-		return $child_css;
-	}
-
-
-	/**
 	 * apply_children
 	 * Applies children
 	 * @return void
@@ -230,9 +181,20 @@ class Cssp extends CssParser {
 	public function apply_children(){
 		foreach($this->parsed as $block => $css){
 			foreach($this->parsed[$block] as $selector => $styles){
-				if(isset($styles['children']) && !empty($styles['children']) && trim($styles['children']) != ''){
-					// Unserialize children
-					$children = unserialize(base64_decode($styles['children']));
+				if(isset($styles['children'])){
+					// Remove curly braces around child css
+					$styles['children'] = preg_replace('/\{(.*)\}/ms', '$1', $styles['children']);
+					$styles['children'] = trim($styles['children']);
+					// Parse child css
+					$childParser = new Cssp();
+					$childParser->load_string($styles['children']);
+					$childParser->parse();
+					$childParser->apply_children();
+					$childParser->apply_inheritance();
+					$childParser->apply_constants();
+					$childParser->apply_flags();
+					$childParser->cleanup();
+					$children = $childParser->parsed['css'];
 					// Add children to blocks or merge with existing properties
 					foreach($children as $child_selector => $child_properties){
 						// Build new selector
@@ -267,7 +229,6 @@ class Cssp extends CssParser {
 					}
 					unset($this->parsed[$block][$selector]['children']);
 				}
-				#elseif(isset($styles['children']) && (empty($styles['children']) || trim($styles['children']) != '')) unset($this->parsed[$block][$selector]['children']);
 			}
 		}
 	}

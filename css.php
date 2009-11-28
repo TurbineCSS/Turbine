@@ -39,8 +39,8 @@
 
 		// Fetch and store Browser Properties
 		$b = new browser();
-        $browserproperties = $b->whatbrowser();
-		
+		$browserproperties = $b->whatbrowser();
+
 		// Parse files
 		$css = '';
 		$files = explode(';', $_GET['files']);
