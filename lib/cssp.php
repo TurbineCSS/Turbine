@@ -31,7 +31,6 @@ class Cssp extends CssParser {
 
 
 	public $ignore_on_merge = array('flags');
-
 	
 	/**
 	 * Constructor
@@ -39,6 +38,7 @@ class Cssp extends CssParser {
 	 * @return void
 	 */
 	public function __construct($query = NULL){
+		global $browserproperties;
 		if($query){
 			#$start = microtime(true);
 			// Cache: Has file already been parsed?
@@ -47,7 +47,7 @@ class Cssp extends CssParser {
 			$cachedir = str_replace('\\','/',dirname(__FILE__)).'/cssp_cache';
 			// Cache: Check if cache-directory has been created
 			if(!is_dir($cachedir)) mkdir($cachedir,0777);
-			$cachefile = preg_replace('/[^0-9A-Za-z\-\._]/','',str_replace(array('\\','/'),'.',$query));
+			$cachefile = implode('.',$browserproperties).preg_replace('/[^0-9A-Za-z\-\._]/','',str_replace(array('\\','/'),'.',$query));
 			// Cache: Check if a cached version of the file already exists
 			if(file_exists($cachedir.'/'.$cachefile) && filemtime($cachedir.'/'.$cachefile) >= filemtime($query)) $incache = true;
 			
