@@ -44,15 +44,15 @@ class Cssp extends CssParser {
 			// Cache: Has file already been parsed?
 			$incache = false;
 			// Cache: Where to store parsed files
-			$cachedir = str_replace('\\','/',dirname(__FILE__)).'/cssp_cache';
+			$cachedir = str_replace('\\', '/', dirname(__FILE__)) . '/cssp_cache';
 			// Cache: Check if cache-directory has been created
-			if(!is_dir($cachedir)) mkdir($cachedir,0777);
+			if(!is_dir($cachedir)){
+				@mkdir($cachedir, 0777);
+			}
 			$cachefile = implode('.',$browserproperties).preg_replace('/[^0-9A-Za-z\-\._]/','',str_replace(array('\\','/'),'.',$query));
 			// Cache: Check if a cached version of the file already exists
 			if(file_exists($cachedir.'/'.$cachefile) && filemtime($cachedir.'/'.$cachefile) >= filemtime($query)) $incache = true;
-			
-			if(!$incache)
-			{
+			if(!$incache){
 				#echo "/* nocache */\r\n";
 				$this->load_file($query);
 				$this->parse();
@@ -63,10 +63,11 @@ class Cssp extends CssParser {
 				$this->cleanup();
 				
 				// Cache: Write parsed content to file
-				file_put_contents($cachedir.'/'.$cachefile,serialize($this->parsed));
+				if(is_dir($cachedir)){
+					file_put_contents($cachedir.'/'.$cachefile,serialize($this->parsed));
+				}
 			}
-			else 
-			{
+			else{
 				#echo "/* cache */\r\n";
 				$this->parsed = unserialize(file_get_contents($cachedir.'/'.$cachefile));
 			}
