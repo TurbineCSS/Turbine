@@ -49,7 +49,7 @@ class Cssp extends CssParser {
 			if(!is_dir($cachedir)) mkdir($cachedir,0777);
 			$cachefile = preg_replace('/[^0-9A-Za-z\-\._]/','',str_replace(array('\\','/'),'.',$query));
 			// Cache: Check if a cached version of the file already exists
-			if(file_exists($cachedir.'/'.$cachefile) && filemtime($cachedir.'/'.$cachefile) >= filemtime($file)) $incache = true;
+			if(file_exists($cachedir.'/'.$cachefile) && filemtime($cachedir.'/'.$cachefile) >= filemtime($query)) $incache = true;
 			
 			if(!$incache)
 			{
