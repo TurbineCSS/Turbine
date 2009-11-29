@@ -2,6 +2,8 @@
 
 	/**
 	 * Cross-browser transparent backgrounds
+	 * Usage: transparent-background:rgba(red [0-255], green [0-255], blue [0-255], alpha [0-1]);
+	 * Example: transparent-background:rgba(0, 255, 20, 0.25);
 	 * 
 	 * @param mixed $parsed
 	 * @return void
