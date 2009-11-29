@@ -3,9 +3,9 @@
 
 	/**
 	 * Automatic quotes for the language of your choice
-	 * Usage: div.foo q { quote-style:language[-country][-alt]-level; }
-	 * Example: div.foo[lang=de-de] q { quote-style:german-alt-1; }
-	 * Example: div.foo[lang=en-us] q q { quote-style:english-us-2; }
+	 * Usage: div.foo q { quote-style:language[-country][-alt]; }
+	 * Example: div.foo[lang=de-de] q { quote-style:german-alt; }
+	 * Example: div.foo[lang=en-us] q q { quote-style:english-us; }
 	 * 
 	 * @param mixed $parsed
 	 * @return void
