@@ -2,11 +2,11 @@
 
 	/**
 	 * Ronded corner shorthand
+	 * Implements the "rounded" property, serving as a shortcut for all the browser-specific border-radius properties
+	 * Usage: rounded[-top/-bottom/-left/-right/-top-left/...]: value;
+	 * Example: rounded-top:4px;
+	 * Example: rounded-bottom-left:2em;
 	 * 
-	 * Implements the "rounded" property, serving as a shortcut for all the browser-specific
-	 * border-radius properties
-	 * 
-	 * @todo Implement top-left etc
 	 * @param mixed $parsed
 	 * @return void
 	 */
@@ -32,8 +32,71 @@
 					$parsed[$block][$selector]['border-top-right-radius'] = $value;
 					unset($parsed[$block][$selector]['rounded-top']);
 				}
-				// TODO: Left only
-				// TODO: Right only
+				// Bottom only
+				if($parsed[$block][$selector]['rounded-bottom']){
+					$value = $parsed[$block][$selector]['rounded-bottom'];
+					$parsed[$block][$selector]['-moz-border-radius-bottomleft'] = $value;
+					$parsed[$block][$selector]['-moz-border-radius-bottomright'] = $value;
+					$parsed[$block][$selector]['-webkit-border-bottom-left-radius'] = $value;
+					$parsed[$block][$selector]['-webkit-border-bottom-right-radius'] = $value;
+					$parsed[$block][$selector]['border-bottom-left-radius'] = $value;
+					$parsed[$block][$selector]['border-bottom-right-radius'] = $value;
+					unset($parsed[$block][$selector]['rounded-bottom']);
+				}
+				// Left only
+				if($parsed[$block][$selector]['rounded-left']){
+					$value = $parsed[$block][$selector]['rounded-left'];
+					$parsed[$block][$selector]['-moz-border-radius-topleft'] = $value;
+					$parsed[$block][$selector]['-moz-border-radius-bottomleft'] = $value;
+					$parsed[$block][$selector]['-webkit-border-top-left-radius'] = $value;
+					$parsed[$block][$selector]['-webkit-border-bottom-left-radius'] = $value;
+					$parsed[$block][$selector]['border-top-left-radius'] = $value;
+					$parsed[$block][$selector]['border-bottom-left-radius'] = $value;
+					unset($parsed[$block][$selector]['rounded-left']);
+				}
+				// Right only
+				if($parsed[$block][$selector]['rounded-right']){
+					$value = $parsed[$block][$selector]['rounded-right'];
+					$parsed[$block][$selector]['-moz-border-radius-topright'] = $value;
+					$parsed[$block][$selector]['-moz-border-radius-bottomright'] = $value;
+					$parsed[$block][$selector]['-webkit-border-top-right-radius'] = $value;
+					$parsed[$block][$selector]['-webkit-border-bottom-right-radius'] = $value;
+					$parsed[$block][$selector]['border-top-left-radius'] = $value;
+					$parsed[$block][$selector]['border-bottom-left-radius'] = $value;
+					unset($parsed[$block][$selector]['rounded-right']);
+				}
+				// Top left only
+				if($parsed[$block][$selector]['rounded-top-left']){
+					$value = $parsed[$block][$selector]['rounded-top-left'];
+					$parsed[$block][$selector]['-moz-border-radius-topleft'] = $value;
+					$parsed[$block][$selector]['-webkit-border-top-left-radius'] = $value;
+					$parsed[$block][$selector]['border-top-left-radius'] = $value;
+					unset($parsed[$block][$selector]['rounded-top-left']);
+				}
+				// Top right only
+				if($parsed[$block][$selector]['rounded-top-right']){
+					$value = $parsed[$block][$selector]['rounded-top-right'];
+					$parsed[$block][$selector]['-moz-border-radius-topright'] = $value;
+					$parsed[$block][$selector]['-webkit-border-top-right-radius'] = $value;
+					$parsed[$block][$selector]['border-top-right-radius'] = $value;
+					unset($parsed[$block][$selector]['rounded-top-right']);
+				}
+				// Bottom left only
+				if($parsed[$block][$selector]['rounded-bottom-left']){
+					$value = $parsed[$block][$selector]['rounded-bottom-left'];
+					$parsed[$block][$selector]['-moz-border-radius-bottomleft'] = $value;
+					$parsed[$block][$selector]['-webkit-border-bottom-left-radius'] = $value;
+					$parsed[$block][$selector]['border-bottom-left-radius'] = $value;
+					unset($parsed[$block][$selector]['rounded-bottom-left']);
+				}
+				// Bottom right only
+				if($parsed[$block][$selector]['rounded-bottom-right']){
+					$value = $parsed[$block][$selector]['rounded-bottom-right'];
+					$parsed[$block][$selector]['-moz-border-radius-bottomright'] = $value;
+					$parsed[$block][$selector]['-webkit-border-bottom-right-radius'] = $value;
+					$parsed[$block][$selector]['border-bottom-right-radius'] = $value;
+					unset($parsed[$block][$selector]['rounded-bottom-right']);
+				}
 			}
 		}
 	}
