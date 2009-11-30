@@ -5,6 +5,7 @@
 	 * css.php
 	 * Loads CSSP
 	 * @var string $_GET['files'] A list of css files, seperated by ;
+	 * @var string $_GET['config'] Path to the plugin configuration file
 	 */
 	if($_GET['files']){
 
@@ -20,21 +21,20 @@
 		include('lib/cssp.php');
 
 		// Load plugins
-		$plugin_dir = 'plugins';
-		$plugins = array();
-		if($handle = opendir($plugin_dir)) {
-			while(false !== ($file = readdir($handle))){
-				if($file != "." && $file != ".."){
-					if(substr($file, -4, 4) == '.php'){
-						include('plugins/'.$file);
-						$plugins[] = substr($file, 0, -4);
-					}
-				}
-			}
-			closedir($handle);
+		if($_GET['config'] && file_exists($_GET['config'])){
+			$plugins = file($_GET['config']);
 		}
-		else {
-			die('Error: Plugin directory "'.$plugin_dir.'" not found!');
+		else{
+			$plugins = file('plugins.conf');
+		}
+		$plugin_functions = array();
+		$plugin_dir = 'plugins';
+		foreach($plugins as $plugin){
+			$plugin = trim($plugin);
+			$pluginfile = $plugin_dir.'/'.$plugin.'.php';
+			if($plugin{0} != '#' && file_exists($pluginfile)){
+				include($pluginfile);
+			}
 		}
 
 		// Fetch and store Browser Properties
@@ -48,7 +48,10 @@
 			$cssp = new Cssp($file);
 			// Apply plugins
 			foreach($plugins as $plugin){
-				call_user_func($plugin, &$cssp->parsed);
+				$plugin = trim($plugin);
+				if($plugin{0} != '#' && function_exists($plugin)){
+					call_user_func($plugin, &$cssp->parsed);
+				}
 			}
 			$css .= $cssp->glue();
 		}
