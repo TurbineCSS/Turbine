@@ -20,7 +20,7 @@
 	body {
 		font-family:$fontArial;
 		font-size:10px;
-		background:$bgColor url(body.png) top left;
+		background:$bgColor url(example/body.png) top left;
 		color: $darkGreen;
 		padding:32px 0;
 	}
