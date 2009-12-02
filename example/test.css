@@ -37,10 +37,10 @@
 	}
 	p, ul, ol { font-size:1.2em; line-height:1.6; margin:8px; }
 	h2 { font-size:1.8em; color:$darkGreen; font-family:$fontVerdana; margin:$headlineMargin; }
-	h3 { font-size:1.5em; color:$darkGreen; font-family:$fontVerdana; margin:$headlineMargin; }
-	h4 { font-size:1.2em; color:$darkGreen; font-weight:bold; margin:$headlineMargin; }
-	h5 { font-size:1.2em; color:$darkGreen; margin:$headlineMargin; }
-	h6 { font-size:1.2em; color:$darkGreen; margin:$headlineMargin; }
+	h3 { font-size:1.5em; color:$darkGreen; font-family:$fontVerdana; margin:inherit(h2 margin); }
+	h4 { font-size:1.2em; color:$darkGreen; font-weight:bold; margin:inherit(h2 margin); }
+	h5 { font-size:1.2em; color:$darkGreen; margin:inherit(h2 margin); }
+	h6 { font-size:1.2em; color:$darkGreen; margin:inherit(h2 margin); }
 	q { quote-style:german; }
 
 

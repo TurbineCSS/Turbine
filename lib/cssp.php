@@ -125,6 +125,7 @@ class Cssp extends CssParser {
 	public function apply_inheritance(){
 		foreach($this->parsed as $block => $css){
 			foreach($this->parsed[$block] as $selector => $styles){
+				// Full inheritance
 				if(isset($this->parsed[$block][$selector]['extends'])){
 					// Extract parents
 					$parents = array();
@@ -139,6 +140,16 @@ class Cssp extends CssParser {
 						}
 					}
 					unset($this->parsed[$block][$selector]['extends']);
+				}
+				// Selective inheritance
+				$inheritance_pattern = "/inherit\((.*)[\s]+(.*)\)/";
+				foreach($styles as $property => $value){
+					if(preg_match($inheritance_pattern, $value)){
+						preg_match_all($inheritance_pattern, $value, $matches);
+						if(isset($this->parsed[$block][$matches[1][0]][$matches[2][0]])){
+							$this->parsed[$block][$selector][$property] = $this->parsed[$block][$matches[1][0]][$matches[2][0]];
+						}
+					}
 				}
 			}
 		}
