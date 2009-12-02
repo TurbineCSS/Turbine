@@ -1,5 +1,16 @@
-/* CSSP */
+/*
+ * CSSP Configuration
+ * @property int compress Compress the output for this file (1) or pretty-print it (0)
+ * @property tokens plugins List of plugins to apply to this file
+ */
+@cssp {
+	compress:0;
+	plugins:/*ie_bugfixes inline_block*/ quote_style reset_stylesheet rounded_corner_shorthand transparent_backgrounds;
+}
 
+/*
+ * CSSP Constants
+ */
 @constants {
 	bgColor: #FFF;
 	darkGreen: #87C41A;

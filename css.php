@@ -21,24 +21,7 @@
 		include('lib/parser.php');
 		include('lib/cssp.php');
 
-		// Load plugins
-		if($_GET['config'] && file_exists($_GET['config'])){
-			$plugins = file($_GET['config']);
-		}
-		else{
-			$plugins = file('plugins.conf');
-		}
-		$plugin_functions = array();
-		$plugin_dir = 'plugins';
-		foreach($plugins as $plugin){
-			$plugin = trim($plugin);
-			$pluginfile = $plugin_dir.'/'.$plugin.'.php';
-			if($plugin{0} != '#' && file_exists($pluginfile)){
-				include($pluginfile);
-			}
-		}
-
-		// Fetch and store Browser Properties
+		// Get and store browser properties
 		$b = new browser();
 		$browserproperties = $b->whatbrowser();
 
@@ -48,18 +31,29 @@
 		foreach($files as $file){
 			$cssp = new Cssp($file);
 			// Apply plugins
-			foreach($plugins as $plugin){
-				$plugin = trim($plugin);
-				if($plugin{0} != '#' && function_exists($plugin)){
-					call_user_func($plugin, &$cssp->parsed);
+			if(isset($cssp->parsed['css']['@cssp']['plugins'])){ // TODO; What if the configuration element is not in the global block?
+				$plugin_dir = 'plugins';
+				$plugins = preg_split("/\s+/", $cssp->parsed['css']['@cssp']['plugins']);
+				foreach($plugins as $plugin){
+					$pluginfile = $plugin_dir.'/'.$plugin.'.php';
+					if(file_exists($pluginfile)){
+						@include($pluginfile);
+						if(function_exists($plugin)){
+							call_user_func($plugin, &$cssp->parsed);
+						}
+					}
 				}
 			}
-			if(isset($_GET['compress'])){
-				$compress = (bool) $_GET['compress'];
+			// Set compression mode
+			if(isset($cssp->parsed['css']['@cssp']['compress'])){
+				$compress = (bool) $cssp->parsed['css']['@cssp']['compress'];
 			}
 			else{
 				$compress = false;
 			}
+			// Remove configuration @-rule
+			unset($cssp->parsed['css']['@cssp']);
+			// Add to css output
 			$css .= $cssp->glue($compress);
 		}
 
@@ -72,10 +66,8 @@
 			header('Content-Type: text/css');
 		}
 
-
 		// Output css
 		echo $css;
-
 
 	}
 
