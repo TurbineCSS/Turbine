@@ -6,6 +6,7 @@
 	 * Loads CSSP
 	 * @var string $_GET['files'] A list of css files, seperated by ;
 	 * @var string $_GET['config'] Path to the plugin configuration file
+	 * @var int $_GET['compress'] Minimize output?
 	 */
 	if($_GET['files']){
 
@@ -53,7 +54,13 @@
 					call_user_func($plugin, &$cssp->parsed);
 				}
 			}
-			$css .= $cssp->glue();
+			if(isset($_GET['compress'])){
+				$compress = (bool) $_GET['compress'];
+			}
+			else{
+				$compress = false;
+			}
+			$css .= $cssp->glue($compress);
 		}
 
 		// Send headers

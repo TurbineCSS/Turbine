@@ -477,22 +477,19 @@ class CssParser {
 			foreach($rules as $property => $value){
 				// If array, output multiple properties in a loop
 				if(is_array($value)){
+					$lastval = reset($value);
 					foreach($value as $val){
 						$output .= $prefix.$t;
 						$output .= $property.':'.$s;
 						$output .= trim($val);
-						if(!$compressed || $val != end($value)){
-							$output .= ';'.$n;
-						}
+						$output .= ';'.$n; // TODO: Remove this for the last rule
 					}
 				}
 				else{
 					$output .= $prefix.$t;
 					$output .= $property.':'.$s;
 					$output .= trim($value);
-					if(!$compressed || $value != end($rules)){
-						$output .= ';'.$n;
-					}
+					$output .= ';'.$n; // TODO: Remove this for the last rule
 				}
 			}
 			$output .= $prefix.'}'.$n;
