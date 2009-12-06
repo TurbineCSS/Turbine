@@ -200,6 +200,7 @@ class Cssp extends CssParser {
 					$childParser = new Cssp();
 					$childParser->load_string($styles['children']);
 					$childParser->parse();
+					$childParser->apply_combinators();
 					$childParser->apply_children();
 					$childParser->cleanup();
 					$children = $childParser->parsed['css'];
@@ -236,6 +237,26 @@ class Cssp extends CssParser {
 						}
 					}
 					unset($this->parsed[$block][$selector]['children']);
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * apply_combinators
+	 * 
+	 * @return void
+	 */
+	public function apply_combinators(){
+		foreach($this->parsed as $block => $css){
+			foreach($this->parsed[$block] as $selector => $styles){
+				if(isset($this->parsed[$block][$selector]['combinator'])){
+					$combinator = $this->parsed[$block][$selector]['combinator'];
+					$newkey = trim($combinator).' '.$selector;
+					$this->parsed[$block][$newkey] = $this->parsed[$block][$selector];
+					unset($this->parsed[$block][$selector]);
+					unset($this->parsed[$block][$newkey]['combinator']);
 				}
 			}
 		}
