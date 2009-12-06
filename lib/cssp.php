@@ -58,6 +58,7 @@ class Cssp extends CssParser {
 				$this->load_file($query);
 				$this->parse();
 				$this->apply_children();
+				$this->apply_aliases();
 				$this->apply_inheritance();
 				$this->apply_constants();
 				$this->apply_flags();
@@ -88,29 +89,72 @@ class Cssp extends CssParser {
 		// Apply global constants, if present, to all blocks
 		if(isset($this->parsed['css']['@constants'])){
 			foreach($this->parsed as $block => $css){
-				$this->apply_block_constant($this->parsed['css']['@constants'], $block);
+				$this->apply_block_constants($this->parsed['css']['@constants'], $block);
 			}
 		}
 		// Apply constants for @media blocks
 		foreach($this->parsed as $block => $css){
 			if(isset($this->parsed[$block]['@constants'])){
-				$this->apply_block_constant($this->parsed[$block]['@constants'], $block);
+				$this->apply_block_constants($this->parsed[$block]['@constants'], $block);
 			}
 		}
 	}
 
 
 	/**
+	 * apply_block_constants
 	 * Applies a set of constants to a specific block of css
 	 * @param array $constants Array of constants
 	 * @param string $block Block key to apply the constants to
 	 * @return void
 	 */
-	protected function apply_block_constant($constants, $block){
+	protected function apply_block_constants($constants, $block){
 		foreach($constants as $constant => $value){
 			foreach($this->parsed[$block] as $selector => $styles){
 				foreach($styles as $css_property => $css_value){
 					$this->parsed[$block][$selector][$css_property] = str_replace('$'.$constant, $value, $css_value);
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * apply_aliases
+	 * Applies selector aliases
+	 * @return void
+	 */
+	public function apply_aliases(){
+		// Apply global aliases, if present, to all blocks
+		if(isset($this->parsed['css']['@aliases'])){
+			foreach($this->parsed as $block => $css){
+				$this->apply_block_aliases($this->parsed['css']['@aliases'], $block);
+			}
+		}
+		// Apply aliases for @media blocks
+		foreach($this->parsed as $block => $css){
+			if(isset($this->parsed[$block]['@aliases'])){
+				$this->apply_block_aliases($this->parsed[$block]['@aliases'], $block);
+			}
+		}
+	}
+
+
+	/**
+	 * apply_block_aliases
+	 * Applies a set of aliases to a specific block of css
+	 * @param array $aliases Array of aliases
+	 * @param string $block Block key to apply the aliases to
+	 * @return void
+	 */
+	protected function apply_block_aliases($aliases, $block){
+		foreach($aliases as $alias => $value){
+			foreach($this->parsed[$block] as $selector => $styles){
+				// Add a new element with the full selector and delete the old one
+				$newselector = str_replace('$'.$alias, $value, $selector);
+				if($newselector != $selector){
+					$this->parsed[$block][$newselector] = $styles; // TODO: This should really be inserted somewhere near the original position
+					unset($this->parsed[$block][$selector]);
 				}
 			}
 		}
@@ -245,7 +289,7 @@ class Cssp extends CssParser {
 
 	/**
 	 * apply_combinators
-	 * 
+	 * Applies combinator property
 	 * @return void
 	 */
 	public function apply_combinators(){
@@ -294,11 +338,14 @@ class Cssp extends CssParser {
 	 * @return void
 	 */
 	public function cleanup(){
-		// Remove @constants blocks
+		// Remove @constants and @aliases blocks
 		foreach($this->parsed as $block => $css){
 			if(isset($this->parsed[$block]['@constants'])){
 				unset($this->parsed[$block]['@constants']);
 			}
+			/*if(isset($this->parsed[$block]['@aliases'])){
+				unset($this->parsed[$block]['@aliases']);
+			}*/
 			// Remove empty elements
 			foreach($this->parsed[$block] as $selector => $styles){
 				if(empty($styles)){
