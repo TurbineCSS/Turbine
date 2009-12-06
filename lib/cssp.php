@@ -201,9 +201,6 @@ class Cssp extends CssParser {
 					$childParser->load_string($styles['children']);
 					$childParser->parse();
 					$childParser->apply_children();
-					$childParser->apply_inheritance();
-					$childParser->apply_constants();
-					$childParser->apply_flags();
 					$childParser->cleanup();
 					$children = $childParser->parsed['css'];
 					// Add children to blocks or merge with existing properties
