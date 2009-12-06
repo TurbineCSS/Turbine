@@ -343,9 +343,9 @@ class Cssp extends CssParser {
 			if(isset($this->parsed[$block]['@constants'])){
 				unset($this->parsed[$block]['@constants']);
 			}
-			/*if(isset($this->parsed[$block]['@aliases'])){
+			if(isset($this->parsed[$block]['@aliases'])){
 				unset($this->parsed[$block]['@aliases']);
-			}*/
+			}
 			// Remove empty elements
 			foreach($this->parsed[$block] as $selector => $styles){
 				if(empty($styles)){
