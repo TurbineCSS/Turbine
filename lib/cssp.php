@@ -236,6 +236,7 @@ class Cssp extends CssParser {
 	public function apply_children(){
 		foreach($this->parsed as $block => $css){
 			foreach($this->parsed[$block] as $selector => $styles){
+				$current_element = $selector;
 				if(isset($styles['children'])){
 					// Remove curly braces around child css
 					$styles['children'] = preg_replace('/\{(.*)\}/ms', '$1', $styles['children']);
@@ -276,8 +277,10 @@ class Cssp extends CssParser {
 								$this->ignore_on_merge
 							);
 						}
+						// Else insert after the last element
 						else{
-							$this->parsed[$block][$new_selector] = $child_properties;
+							$this->insert(array($new_selector => $child_properties), $block, $current_element);
+							$current_element = $new_selector;
 						}
 					}
 					unset($this->parsed[$block][$selector]['children']);
@@ -353,6 +356,28 @@ class Cssp extends CssParser {
 				}
 			}
 		}
+	}
+
+
+	/**
+	 * insert
+	 * Inserts an element at a specific position in the block
+	 * @param mixed $element The element to insert
+	 * @param string $block The block to insert into
+	 * @param string $before The element after which the new element is inserted
+	 * @return void
+	 */
+	protected function insert($elements, $block, $before){
+		$newblock = array();
+		foreach($this->parsed[$block] as $selector => $styles){
+			$newblock[$selector] = $styles;
+			if($selector == $before){
+				foreach($elements as $element_selector => $element_styles){
+					$newblock[$element_selector] = $element_styles;
+				}
+			}
+		}
+		$this->parsed[$block] = $newblock;
 	}
 
 
