@@ -171,21 +171,18 @@ class Cssp extends CssParser {
 			foreach($this->parsed[$block] as $selector => $styles){
 				// Full inheritance
 				if(isset($this->parsed[$block][$selector]['extends'])){
-					// Extract parents
-					$parents = array();
-					preg_match_all('/["\'](.*?)["\']/', $this->parsed[$block][$selector]['extends'], $parents);
-					foreach($parents[1] as $parent){
-						if($this->parsed[$block][$parent]){
-							$this->parsed[$block][$selector] = $this->merge_rules(
-								$this->parsed[$block][$selector],
-								$this->parsed[$block][$parent],
-								$this->ignore_on_merge
-							);
-						}
+					// Extract ancestor
+					$ancestor = $this->parsed[$block][$selector]['extends'];
+					if($this->parsed[$block][$ancestor]){
+						$this->parsed[$block][$selector] = $this->merge_rules(
+							$this->parsed[$block][$selector],
+							$this->parsed[$block][$ancestor],
+							$this->ignore_on_merge
+						);
 					}
 					unset($this->parsed[$block][$selector]['extends']);
 				}
-				// Selective inheritance
+				// Selective inheritance via inherit(selector property)
 				$inheritance_pattern = "/inherit\((.*)[\s]+(.*)\)/";
 				foreach($styles as $property => $value){
 					if(preg_match($inheritance_pattern, $value)){
