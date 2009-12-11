@@ -77,10 +77,11 @@ class Booster {
 			$this->booster_cachedir = str_replace('\\','/',dirname(__FILE__)).'/'.$this->booster_cachedir;
 			$this->booster_cachedir_transformed = TRUE;
 		}
-		if(!is_dir($this->booster_cachedir) && !mkdir($this->booster_cachedir,0777)) 
+		if(!is_dir($this->booster_cachedir) && !@mkdir($this->booster_cachedir,0777)) 
 		{
-			echo "/* You need to create a directory \"".$this->booster_cachedir."\" with CHMOD 0777 rights!!! */\r\n\r\n";
-			echo "body *:before {content: \"You need to create a directory ".$this->booster_cachedir." with CHMOD 0777 rights!!!\";}\r\n\r\n";
+			header('Content-Type: text/css');
+			echo "/* You need to create a directory \"".$this->booster_cachedir."\" with CHMOD 0777 rights! */\r\n\r\n";
+			echo "body:before { content: \"You need to create a directory ".$this->booster_cachedir." with CHMOD 0777 rights!\"; display:block; text-align:center; font-weight:bold; color:red; border:0.25em solid red; padding:1em;}\r\n\r\n";
 			exit;
 		}
 	}
