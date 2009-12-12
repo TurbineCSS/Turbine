@@ -55,6 +55,7 @@ class CssParser {
 	 * co = in comment
 	 * at = in @-block
 	 * im = in @import
+	 * ff = in @font-face
 	 */
 	public $state = null;
 
@@ -68,6 +69,7 @@ class CssParser {
 	 * co = in comment
 	 * at = in @media
 	 * im = in @import
+	 * ff = in @font-face
 	 */
 	public $prev_state = null;
 
@@ -231,6 +233,22 @@ class CssParser {
 				break;
 
 
+				// @font-face
+				case 'ff';
+					if($this->css{$i} == '}'){
+						$this->state = null;
+						$this->parsed[$this->current['at']]['@font-face'][] = trim($this->token);
+						$this->token = '';
+					}
+					else {
+						// TODO: Do not treat @font-face contents as a whole but split it up too
+						if($this->css{$i} != '{'){
+							$this->token .= $this->css{$i};
+						}
+					}
+				break;
+
+
 				// At-rule state
 				case 'at';
 					// Begin selector, end at-rule
@@ -357,6 +375,12 @@ class CssParser {
 								$this->current['se'] = '@import';
 								$i = $i + 7;
 							}
+							// @font-face
+							elseif(substr($this->css, $i, $start + 10) == '@font-face'){
+								$this->state = 'ff';
+								$this->current['se'] = '@font-face';
+								$i = $i + 10;
+							}
 						}
 						// Begin selector
 						else{
@@ -468,6 +492,12 @@ class CssParser {
 		if($selector == '@import'){
 			foreach($rules as $value){
 				$output .= $prefix . $selector . ' ' . $value.';' . $n;
+			}
+		}
+		// Special treatment for @font-face
+		elseif($selector == '@font-face'){
+			foreach($rules as $value){
+				$output .= $prefix . $selector . $s .'{' . $n . $t . $value.';' . $n. '}' .$n;
 			}
 		}
 		else{
