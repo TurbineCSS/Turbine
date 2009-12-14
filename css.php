@@ -39,7 +39,7 @@
 					if(file_exists($pluginfile)){
 						@include($pluginfile);
 						if(function_exists($plugin)){
-							call_user_func($plugin, $cssp->parsed);
+							call_user_func_array($plugin, array(&$cssp->parsed));
 						}
 					}
 				}
