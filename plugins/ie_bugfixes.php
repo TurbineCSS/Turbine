@@ -2,13 +2,16 @@
 
 	/**
 	 * A bunch of general IE Bugfixes
-	 * 
 	 * Implements the "display: inline-block" property for all current browsers
 	 * 
-	 * @param mixed $parsed
+	 * Usage: TODO
+	 * Example: TODO
+	 * Status: Beta
+	 * 
+	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function ie_bugfixes($parsed){
+	function ie_bugfixes(&$parsed){
 		global $browserproperties;
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){

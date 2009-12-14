@@ -3,13 +3,16 @@
 
 	/**
 	 * Automatic bulletproof @font-face syntax
-	 * Usage:
-	 * Example:
+	 * Source: http://paulirish.com/2009/bulletproof-font-face-implementation-syntax/
 	 * 
-	 * @param mixed $parsed
+	 * Usage: TODO
+	 * Example: TODO
+	 * Status: Work in progress
+	 * 
+	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function bp_fontface($parsed){
+	function bp_fontface(&$parsed){
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				// Find @font-Declarations

@@ -3,12 +3,15 @@
 
 	/**
 	 * Automatic position für image matrix
-	 * Usage: TBD
 	 * 
-	 * @param mixed $parsed
+	 * Usage: TODO
+	 * Example: TODO
+	 * Status: Work in progress
+	 * 
+	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function matrix_position($parsed){
+	function matrix_position(&$parsed){
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				if(isset($parsed[$block][$selector]['matrix']) && isset($parsed[$block][$selector]['matrix-position'])){

@@ -2,13 +2,16 @@
 
 	/**
 	 * Inline Block
-	 * 
 	 * Implements the "display: inline-block" property for all current browsers
 	 * 
-	 * @param mixed $parsed
+	 * Usage: TODO
+	 * Example: TODO
+	 * Status: Beta
+	 * 
+	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function inline_block($parsed){
+	function inline_block(&$parsed){
 		global $browserproperties;
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){

@@ -3,14 +3,16 @@
 
 	/**
 	 * Automatic quotes for the language of your choice
+	 * 
 	 * Usage: div.foo q { quote-style:language[-country][-alt]; }
 	 * Example: div.foo[lang=de-de] q { quote-style:german-alt; }
 	 * Example: div.foo[lang=en-us] q q { quote-style:english-us; }
+	 * Status: Stable
 	 * 
-	 * @param mixed $parsed
+	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function quote_style($parsed){
+	function quote_style(&$parsed){
 		// List of quotes (Source: http://de.wikipedia.org/wiki/Anf%C3%BChrungszeichen#Kodierung)
 		$quotes = array(
 			'german' => array('201E', '201C', '201A', '2018'),

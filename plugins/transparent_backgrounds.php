@@ -2,15 +2,16 @@
 
 	/**
 	 * Cross-browser transparent backgrounds
+	 * 
 	 * Usage: transparent-background:rgba(red [0-255], green [0-255], blue [0-255], alpha [0-1]);
 	 * Example: transparent-background:rgba(0, 255, 20, 0.25);
+	 * Status: Beta
 	 * 
 	 * @todo Add gradient filter for IE6
-	 * 
-	 * @param mixed $parsed
+	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function transparent_backgrounds($parsed){
+	function transparent_backgrounds(&$parsed){
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				if($parsed[$block][$selector]['transparent-background']){

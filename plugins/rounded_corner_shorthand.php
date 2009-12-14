@@ -3,14 +3,16 @@
 	/**
 	 * Ronded corner shorthand
 	 * Implements the "rounded" property, serving as a shortcut for all the browser-specific border-radius properties
+	 * 
 	 * Usage: rounded[-top/-bottom/-left/-right/-top-left/...]: value;
 	 * Example: rounded-top:4px;
 	 * Example: rounded-bottom-left:2em;
+	 * Status: Beta
 	 * 
-	 * @param mixed $parsed
+	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function rounded_corner_shorthand($parsed){
+	function rounded_corner_shorthand(&$parsed){
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				// Everywhere
