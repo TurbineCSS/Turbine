@@ -20,7 +20,6 @@
 		include('lib/browser_class_inc.php');
 		include('lib/parser.php');
 		include('lib/cssp.php');
-		include('lib/booster_inc.php'); // CSS-JS-Booster inclusion by Schepp
 
 		// Get and store browser properties
 		$b = new browser();
@@ -40,7 +39,7 @@
 					if(file_exists($pluginfile)){
 						@include($pluginfile);
 						if(function_exists($plugin)){
-							call_user_func($plugin, $cssp->parsed);
+							call_user_func($plugin, &$cssp->parsed);
 						}
 					}
 				}
@@ -54,16 +53,8 @@
 			}
 			// Remove configuration @-rule
 			unset($cssp->parsed['css']['@cssp']);
-
-			// CSS-JS-Booster inclusion by Schepp
-			$booster = new Booster();
-			$booster->booster_cachedir = 'cssp_cache';
-			$booster->css_stringmode = TRUE;
-			$booster->css_stringbase = dirname($file);
-			$booster->css_source = $cssp->glue($compress);
-	
 			// Add to css output
-			$css .= $booster->css();
+			$css .= $cssp->glue($compress);
 		}
 
 		// Send headers

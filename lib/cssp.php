@@ -66,7 +66,7 @@ class Cssp extends CssParser {
 				
 				// Cache: Write parsed content to file
 				if(is_dir($cachedir)){
-					file_put_contents($cachedir.'/'.$cachefile,serialize($this->parsed));
+					@file_put_contents($cachedir.'/'.$cachefile,serialize($this->parsed));
 				}
 			}
 			else{
@@ -185,10 +185,12 @@ class Cssp extends CssParser {
 				// Selective inheritance via inherit(selector property)
 				$inheritance_pattern = "/inherit\((.*)[\s]+(.*)\)/";
 				foreach($styles as $property => $value){
-					if(preg_match($inheritance_pattern, $value)){
-						preg_match_all($inheritance_pattern, $value, $matches);
-						if(isset($this->parsed[$block][$matches[1][0]][$matches[2][0]])){
-							$this->parsed[$block][$selector][$property] = $this->parsed[$block][$matches[1][0]][$matches[2][0]];
+					if(!is_array($value)){ // TODO: Make inheritance work for array objects too
+						if(preg_match($inheritance_pattern, $value)){
+							preg_match_all($inheritance_pattern, $value, $matches);
+							if(isset($this->parsed[$block][$matches[1][0]][$matches[2][0]])){
+								$this->parsed[$block][$selector][$property] = $this->parsed[$block][$matches[1][0]][$matches[2][0]];
+							}
 						}
 					}
 				}

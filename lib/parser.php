@@ -94,12 +94,18 @@ class CssParser {
 
 	/**
 	 * @var array $current Holds the current values
+	 * se = Selector
+	 * pr = Property
+	 * va = Value
+	 * at = @-Rule
+	 * fi = @font-face index
 	 */
 	public $current = array(
 		'se' => null,
 		'pr' => null,
 		'va' => null,
-		'at' => 'css'
+		'at' => 'css',
+		'fi' => null
 	);
 
 
@@ -235,16 +241,16 @@ class CssParser {
 
 				// @font-face
 				case 'ff';
+					// End @font-face
 					if($this->css{$i} == '}'){
+						$this->parsed[$this->current['at']]['@font-face'][$this->current['fi']] = trim($this->token);
 						$this->state = null;
-						$this->parsed[$this->current['at']]['@font-face'][] = trim($this->token);
-						$this->token = '';
+						$this->current['fi'] = null;
 					}
-					else {
-						// TODO: Do not treat @font-face contents as a whole but split it up too
-						if($this->css{$i} != '{'){
-							$this->token .= $this->css{$i};
-						}
+					// Begin property
+					elseif($this->css{$i} == '{'){
+						$this->state = 'pr';
+						$this->token = '';
 					}
 				break;
 
@@ -379,6 +385,7 @@ class CssParser {
 							elseif(substr($this->css, $i, $start + 10) == '@font-face'){
 								$this->state = 'ff';
 								$this->current['se'] = '@font-face';
+								$this->current['fi'] = count($this->parsed[$this->current['at']]['@font-face']);
 								$i = $i + 10;
 							}
 						}
@@ -427,10 +434,18 @@ class CssParser {
 		$se = trim($this->current['se']);
 		$pr = trim($this->current['pr']);
 		$va = trim($this->current['va']);
-		// Take care of !important
+		$fi = $this->current['fi'];
+		// Special treatment for @font-face
+		if($se == '@font-face'){
+			$dest =& $this->parsed[$at][$se][$fi][$pr];
+		}
+		else{
+			$dest =& $this->parsed[$at][$se][$pr];
+		}
+		// Take care of !important on merge
 		// FIXME: This should NOT be done this way for obvious reasons
 		if(!@stripos($this->parsed[$at][$se][$pr], '!important')){
-			$this->parsed[$at][$se][$pr] = $va;
+			$dest = $va;
 		}
 	}
 
@@ -488,16 +503,23 @@ class CssParser {
 	 */
 	public function glue_rule($selector, $rules, $prefix, $s, $t, $n, $compressed){
 		$output = '';
-		// Special treatment für @import
+		// Special treatment für @import - simply append to literal value
 		if($selector == '@import'){
 			foreach($rules as $value){
 				$output .= $prefix . $selector . ' ' . $value.';' . $n;
 			}
 		}
-		// Special treatment for @font-face
+		// Special treatment for @font-face - build from sub-arrays
 		elseif($selector == '@font-face'){
-			foreach($rules as $value){
-				$output .= $prefix . $selector . $s .'{' . $n . $t . $value.';' . $n. '}' .$n;
+			foreach($rules as $values){
+				$output .= $prefix . $selector . $s .'{' . $n;
+				foreach($values as $property => $value){
+					$output .= $prefix.$t;
+					$output .= $property.':'.$s;
+					$output .= trim($value);
+					$output .= ';'.$n; // TODO: Remove this for the last rule
+				}
+				$output .= $n . '}' .$n;
 			}
 		}
 		else{
@@ -512,14 +534,14 @@ class CssParser {
 						$output .= $prefix.$t;
 						$output .= $property.':'.$s;
 						$output .= trim($val);
-						$output .= ';'.$n; // TODO: Remove this for the last rule
+						$output .= ';'.$n; // TODO: Remove this for the last value when compressing
 					}
 				}
 				else{
 					$output .= $prefix.$t;
 					$output .= $property.':'.$s;
 					$output .= trim($value);
-					$output .= ';'.$n; // TODO: Remove this for the last rule
+					$output .= ';'.$n; // TODO: Remove this for the last value when compressing
 				}
 			}
 			$output .= $prefix.'}'.$n;
