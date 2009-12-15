@@ -13,15 +13,15 @@ class browser
 	 * @var string $name
 	 */
 	public $useragent = NULL;
-	public $name = "";
-	public $version = 0;
-	public $family = "";
-	public $familyversion = "";
-	public $engine = "";
-	public $engineversion = "";
-	public $platform = "";
-	public $platformversion = 0;
-	public $platformtype = "desktop";
+	public $name = ""; // Specific browser name, e.g. "Mozilla", "Firefox", "Netscape", "Flock", "Avant Browser", "Safari", "Chrome", etc.
+	public $version = 0; // This browser's version
+	public $family = ""; // Family group browser belongs to, e.g. "Firefox", "MSIE", "WebKit", etc.
+	public $familyversion = ""; // Family group version, if applicable
+	public $engine = ""; // Engine the browser uses, if applicable, e.g. "Gecko"
+	public $engineversion = ""; // Engine version
+	public $platform = ""; // Which OS-platform the client is running, e.g. "Windows", "Macintosh", "Linux", "Unix", "Windows CE", etc.
+	public $platformversion = 0; // Which OS-version if detectable (mostly the Windows-versions) "4.0" (NT), "5.0" (W2K), "5.1" (XP), "6.0" (Vista), "6.1" (Win7), etc.
+	public $platformtype = "desktop"; // "desktop"-browser or "mobile"
 	
 	/**
 	 * Class constructor
