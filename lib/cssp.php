@@ -185,7 +185,7 @@ class Cssp extends CssParser {
 		$rule = $old;
 		foreach($new as $property => $value){
 			if(!in_array($property, $exclude)){
-				if($rule[$property]){
+				if(isset($rule[$property])){
 					// TODO: This should be protected against the unlikly case that "!important" gets used inside strings
 					if(!strpos($rule[$property], ' !important')){
 						$rule[$property] = $value;

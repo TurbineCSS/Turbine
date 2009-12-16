@@ -385,7 +385,7 @@ class CssParser {
 							elseif(substr($this->css, $i, 10) == '@font-face'){
 								$this->state = 'ff';
 								$this->current['se'] = '@font-face';
-								$this->current['fi'] = count($this->parsed[$this->current['at']]['@font-face']);
+								$this->current['fi'] = count(@$this->parsed[$this->current['at']]['@font-face']);
 								$i = $i + 10;
 							}
 						}
