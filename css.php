@@ -13,12 +13,16 @@
 	@ini_set('zlib.output_compression',2048);
 	@ini_set('zlib.output_compression_level',4);
 	if (
-	isset($_SERVER['HTTP_ACCEPT_ENCODING']) 
-	&& substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') 
-	&& function_exists('ob_gzhandler') 
-	&& !ini_get('zlib.output_compression')
-	) @ob_start('ob_gzhandler');
-	else @ob_start();
+		isset($_SERVER['HTTP_ACCEPT_ENCODING'])
+		&& substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')
+		&& function_exists('ob_gzhandler')
+		&& !ini_get('zlib.output_compression')
+	){
+		@ob_start('ob_gzhandler');
+	}
+	else{
+		@ob_start();
+	}
 
 	// Begin parsing
 	if($_GET['files']){
@@ -69,7 +73,9 @@
 				}
 				$cachefile = $browser->family.$browser->familyversion.preg_replace('/[^0-9A-Za-z\-\._]/','',str_replace(array('\\','/'),'.',$file));
 				// Server-side cache: Check if a cached version of the file already exists
-				if(file_exists($cachedir.'/'.$cachefile) && filemtime($cachedir.'/'.$cachefile) >= filemtime($file)) $incache = true;
+				if(file_exists($cachedir.'/'.$cachefile) && filemtime($cachedir.'/'.$cachefile) >= filemtime($file)){
+					$incache = true;
+				}
 				// Server-side cache: Cached version of the file does not yet exist
 				if(!$incache){
 					$cssp = new Cssp($file);
@@ -96,11 +102,17 @@
 					}
 					// Remove configuration @-rule
 					unset($cssp->parsed['css']['@cssp']);
+					// Glue css output
+					$output = $cssp->glue($compress);
 					// Add to css output
-					@file_put_contents($cachedir.'/'.$cachefile,$cssp->glue($compress));
+					@file_put_contents($cachedir.'/'.$cachefile, $output);
 				}
-				// Server-side cache: read the cached version of the file
-				$css .= @file_get_contents($cachedir.'/'.$cachefile);
+				else{
+					// Server-side cache: read the cached version of the file
+					$output .= @file_get_contents($cachedir.'/'.$cachefile);
+				}
+				// Add to final css
+				$css .= $output;
 			}
 		}
 
@@ -116,7 +128,7 @@
 			header('Content-Type: text/css');
 			header("Cache-Control: no-cache, must-revalidate");
 			header("Expires: ".gmdate('D, d M Y H:i:s')." GMT");
-			header("Content-type: text/plain"); 
+			header("Content-type: text/css"); 
 			header("ETag: ".$etag);
 		}
 
