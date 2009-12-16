@@ -272,7 +272,7 @@ class CssParser {
 				// Selector state
 				case 'se';
 					// @import
-					if($this->css{$i} == '@' && substr($this->css, $i, $start + 7) == '@import'){
+					if($this->css{$i} == '@' && substr($this->css, $i, 7) == '@import'){
 						$this->state = 'im';
 						$this->current['se'] = '@import';
 						$i = $i + 7;
@@ -371,18 +371,18 @@ class CssParser {
 						// Begin @-block
 						if($this->css{$i} == '@'){
 							// @media
-							if(substr($this->css, $i, $start + 6) == '@media'){
+							if(substr($this->css, $i, 6) == '@media'){
 								$this->state = 'at';
 								$this->current['at'] = '';
 							}
 							// @import
-							elseif(substr($this->css, $i, $start + 7) == '@import'){
+							elseif(substr($this->css, $i, 7) == '@import'){
 								$this->state = 'im';
 								$this->current['se'] = '@import';
 								$i = $i + 7;
 							}
 							// @font-face
-							elseif(substr($this->css, $i, $start + 10) == '@font-face'){
+							elseif(substr($this->css, $i, 10) == '@font-face'){
 								$this->state = 'ff';
 								$this->current['se'] = '@font-face';
 								$this->current['fi'] = count($this->parsed[$this->current['at']]['@font-face']);
