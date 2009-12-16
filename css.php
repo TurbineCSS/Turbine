@@ -8,6 +8,19 @@
 	 * @var string $_GET['config'] Path to the plugin configuration file
 	 * @var int $_GET['compress'] Minimize output?
 	 */
+
+	// Gzipping Output for faster transfer to client
+	@ini_set('zlib.output_compression',2048);
+	@ini_set('zlib.output_compression_level',4);
+	if (
+	isset($_SERVER['HTTP_ACCEPT_ENCODING']) 
+	&& substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') 
+	&& function_exists('ob_gzhandler') 
+	&& !ini_get('zlib.output_compression')
+	) @ob_start('ob_gzhandler');
+	else @ob_start();
+
+	// Begin parsing
 	if($_GET['files']){
 		// Starttime
 		$start = microtime(true);

@@ -1,0 +1,83 @@
+/* CSSP */
+
+@constants {
+	imgpath: img;
+	darkGreen: #87C41A;
+	brightGreen: #CCE360;
+	darkText: #1F0A5E;
+}
+
+@cssp {
+	plugins: datauri;
+}
+
+@media screen {
+
+
+	body {
+		font-family:Arial, Helvetica, sans-serif;
+		font-size:10px;
+		background:url($imgpath/body.png) top left;
+		color: $darkGreen;
+		padding:32px 0;
+	}
+
+
+	/**
+	 * Layout
+	 */
+	#wrapper {
+		display: inline-block;
+		width: 960px;
+		margin:0 auto;
+		border: #F00 1px solid;
+	}
+
+
+	/**
+	 * Header
+	 */
+	#header {
+		children: {
+			#logo {
+				height:140px;
+				background:$darkGreen;
+			}
+			#nav {
+				height:140px;
+				background:$brightGreen;
+				position:relative;
+				children: {
+					ul {
+						position:absolute;
+						bottom:0;
+						left:0;
+						children: {
+							a {
+								float:left;
+								display:block;
+								padding:4px 12px;
+							}
+							li {
+								display:inline;
+								font-size:1.2em;
+								children: {
+									a:link, a:visited { background:red; }
+									a:active, a:hover { background:red; }
+								};
+							}
+							li.active {
+								children: {
+									a:link, a:visited { background:red; }
+									a:active, a:hover { background:red; }
+								};
+							}
+						};
+					}
+				};
+			}
+		};
+	}
+
+
+}
