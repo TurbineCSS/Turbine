@@ -35,7 +35,7 @@
 							{
 								$imagefile = dirname($file).'/'.$matches[2];
 								echo "/* ".$imagefile." */\r\n";
-								if(file_exists($imagefile))
+								if(file_exists($imagefile) && filesize($imagefile) <= 24000)
 								{
 									$pathinfo = pathinfo($imagefile);
 									$imagetype = strtolower($pathinfo['extension']);
@@ -51,7 +51,7 @@
 							{
 								$imagefile = dirname($file).'/'.$matches[2];
 								echo "/* ".$imagefile." */\r\n";
-								if(file_exists($imagefile))
+								if(file_exists($imagefile) && filesize($imagefile) <= 24000)
 								{
 									$pathinfo = pathinfo($imagefile);
 									$imagetype = strtolower($pathinfo['extension']);
