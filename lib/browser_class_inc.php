@@ -9,23 +9,69 @@
 
 class browser 
 {
+
 	/**
-	 * @var string $name
+	 * @var string $useragent
 	 */
 	public $useragent = NULL;
-	public $name = ""; // Specific browser name, e.g. "Mozilla", "Firefox", "Netscape", "Flock", "Avant Browser", "Safari", "Chrome", etc.
-	public $version = 0; // This browser's version
-	public $family = ""; // Family group browser belongs to, e.g. "Firefox", "MSIE", "WebKit", etc.
-	public $familyversion = ""; // Family group version, if applicable
-	public $engine = ""; // Engine the browser uses, if applicable, e.g. "Gecko"
-	public $engineversion = ""; // Engine version
-	public $platform = ""; // Which OS-platform the client is running, e.g. "Windows", "Macintosh", "Linux", "Unix", "Windows CE", etc.
-	public $platformversion = 0; // Which OS-version if detectable (mostly the Windows-versions) "4.0" (NT), "5.0" (W2K), "5.1" (XP), "6.0" (Vista), "6.1" (Win7), etc.
-	public $platformtype = "desktop"; // "desktop"-browser or "mobile"
-	
+
+
+	/**
+	 * @var string $name Specific browser name, e.g. "Mozilla", "Firefox", "Netscape", "Flock", "Avant Browser", "Safari", "Chrome", etc.
+	 */
+	public $name = "";
+
+
+	/**
+	 * @var float $version This browser's version
+	 */
+	public $version = 0;
+
+
+	/**
+	 * @var string $family Family group browser belongs to, e.g. "Firefox", "MSIE", "WebKit", etc.
+	 */
+	public $family = "";
+
+
+	/**
+	 * @var float $familyversion Family group version, if applicable
+	 */
+	public $familyversion = "";
+
+
+	/**
+	 * @var string $engine Engine the browser uses, if applicable, e.g. "Gecko"
+	 */
+	public $engine = "";
+
+
+	/**
+	 * @var float $engineversion Engine version
+	 */
+	public $engineversion = "";
+
+
+	/**
+	 * @var string $platform Which OS-platform the client is running, e.g. "Windows", "Macintosh", "Linux", "Unix", "Windows CE", etc.
+	 */
+	public $platform = "";
+
+
+	/**
+	 * @var float $platformversion Which OS-version if detectable (mostly the Windows-versions) "4.0" (NT), "5.0" (W2K), "5.1" (XP), "6.0" (Vista), "6.1" (Win7), etc.
+	 */
+	public $platformversion = 0;
+
+
+	/**
+	 * @var string $platformtype "desktop"-browser or "mobile"
+	 */
+	public $platformtype = "desktop";
+
+
 	/**
 	 * Class constructor
-	 * @param void
 	 * @return void
 	 */
 	function __construct()
@@ -35,10 +81,12 @@ class browser
 		$this->getPlatform();
 		$this->getBrowser();
 	}
-	
+
+
 	/**
+	 * getPlatform
 	 * Method to get the platform details from the USER_AGENT string
-	 * @param void
+	 * @return void
 	 */
 	private function getPlatform()
 	{
@@ -96,6 +144,7 @@ class browser
 			if(preg_match('/Playstation Portable[);\s]+([0-9\.]+)/i',$this->useragent,$match) > 0) $this->platformversion = floatval($match[1]);
 		}
 		// Mobile only Devices
+		// TODO: This should be a public class variable for easy extension/updating
 		else
 		{
 			$mobileAgents = array(
@@ -128,11 +177,11 @@ class browser
 			}
 		}
 	}
-	
+
+
 	/**
 	 * Method to get the browser details from the USER_AGENT string
-	 * @param void
-	 * @return string property platform 
+	 * @return string $property platform 
 	 */
 	private function getBrowser()
 	{
@@ -267,7 +316,6 @@ class browser
 			$this->engine = "Gecko";
 			if(preg_match('/rv:([0-9\.]+)/i',$this->useragent,$match) > 0) $this->engineversion = $this->version;
 		}
-
 		// Check for WebKit-family
 		elseif(preg_match("/safari/i", $this->useragent) == 1)
 		{
@@ -352,7 +400,6 @@ class browser
 			$this->engine = $this->family;
 			$this->engineversion = $this->familyversion;
 		}
-
 		// Check for KHTML-family
 		elseif(preg_match("/konqueror/i", $this->useragent) == 1)
 		{
@@ -363,7 +410,6 @@ class browser
 			$this->engine = $this->family;
 			$this->engineversion = $this->familyversion;
 		}
-
 		// Check for MSIE-family
 		elseif(preg_match("/aol/i", $this->useragent) == 1)
 		{
@@ -403,4 +449,6 @@ class browser
 		}
 	}
 }
+
+
 ?>
