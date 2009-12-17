@@ -5,14 +5,14 @@
  */
 @cssp {
 	compress:0;
-	plugins:/*ie_bugfixes inline_block*/ quote_style reset_stylesheet rounded_corner_shorthand transparent_backgrounds datauri;
+	plugins:/*ie_bugfixes inline_block*/ quote_style reset_stylesheet rounded_corner_shorthand transparent_backgrounds datauri hexcrusher;
 }
 
 /*
  * CSSP Constants
  */
 @constants {
-	bgColor: #FFF;
+	bgColor: #FFFFFF;
 	darkGreen: #87C41A;
 	brightGreen: #CCE360;
 	darkText: #1F0A5E;
