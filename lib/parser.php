@@ -510,15 +510,28 @@ class CssParser {
 			}
 		}
 		// Special treatment for @font-face - build from sub-arrays
+		// TODO: This should really NOT be a special treatment for @font-face but rather the default.
+		// Fix this asap.
 		elseif($selector == '@font-face'){
 			foreach($rules as $values){
 				if(!empty($values)){
 					$output .= $prefix . $selector . $s .'{' . $n;
 					foreach($values as $property => $value){
-						$output .= $prefix.$t;
-						$output .= $property.':'.$s;
-						$output .= trim($value);
-						$output .= ';'.$n; // TODO: Remove this for the last rule
+						if(is_array($value)){
+							// If array, output multiple properties in a loop
+							foreach($value as $val){
+								$output .= $prefix.$t;
+								$output .= $property.':'.$s;
+								$output .= trim($val);
+								$output .= ';'.$n; // TODO: Remove this for the last value when compressing
+							}
+						}
+						else{
+							$output .= $prefix.$t;
+							$output .= $property.':'.$s;
+							$output .= trim($value);
+							$output .= ';'.$n; // TODO: Remove this for the last rule
+						}
 					}
 					$output .= $n . '}' .$n;
 				}
