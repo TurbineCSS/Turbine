@@ -30,6 +30,7 @@
 	 * 
 	 * Status: Beta
 	 * 
+	 * @todo Add support for svg and woff
 	 * @param mixed &$parsed
 	 * @return void
 	 */
