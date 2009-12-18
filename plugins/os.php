@@ -109,10 +109,10 @@
 				// Os mismatch
 				else{
 					if($negate){
-						$match = false;
+						$match = true;
 					}
 					else{
-						$match = true;
+						$match = false;
 					}
 				}
 			}
