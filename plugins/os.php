@@ -18,48 +18,82 @@
 	 * Status: Alpha
 	 * @todo Implement version number matching for windows
 	 * @todo Implement multiple rules
-	 * @todo Walk the @font-face arrays too!
 	 * 
 	 * @param mixed &$parsed
 	 * @return void
 	 */
 	function os(&$parsed){
-		global $browser;
+		print_r($parsed);
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
-				// Find os property
-				if($parsed[$block][$selector]['os']){
-					$remove = false;
-					$osrules = explode(' ', $parsed[$block][$selector]['os']);
-					foreach($osrules as $osrule){
-						$matches = array();
-						preg_match_all('/(\^)?(windows|mac|linux|unix)/i', $osrule, $matches);
-						// Os match?
-						if(strtolower($matches[2][0]) == strtolower($browser->platform)){
-							if($matches[1][0] == '^'){
-								$remove = true;
-							}
-							else{
-								$remove = false;
-							}
+				// Loop through @font-face
+				if($selector == '@font-face'){
+					foreach($styles as $index => $style){
+						$osparsed = os_parse_os($style);
+						if($osparsed){
+							$parsed[$block][$selector][$index] = $osparsed;
 						}
-						else{
-							if($matches[1][0] == '^'){
-								$remove = false;
-							}
-							else{
-								$remove = true;
-							}
+						else {
+							unset($parsed[$block][$selector][$index]);
 						}
 					}
 				}
-				if($remove == true){
-					unset($parsed[$block][$selector]);
-				}
+				// Parse the rest
 				else{
-					unset($parsed[$block][$selector]['os']);
+					$osparsed = os_parse_os($styles);
+					if($osparsed){
+						$parsed[$block][$selector] = $osparsed;
+					}
+					else {
+						unset($parsed[$block][$selector]);
+					}
 				}
 			}
+		}
+	}
+
+
+	/**
+	 * os_parse_os
+	 * Looks for the "os" property in an element and parses it
+	 * 
+	 * @param object $styles
+	 * @return 
+	 */
+	function os_parse_os($styles){
+		global $browser;
+		$remove = false;
+		// Find os property
+		if(isset($styles['os'])){
+			$osrules = explode(' ', $styles['os']);
+			foreach($osrules as $osrule){
+				$matches = array();
+				preg_match_all('/(\^)?(windows|mac|linux|unix)/i', $osrule, $matches);
+				// Os match?
+				if(strtolower($matches[2][0]) == strtolower($browser->platform)){
+					if($matches[1][0] == '^'){
+						$remove = true;
+					}
+					else{
+						$remove = false;
+					}
+				}
+				else{
+					if($matches[1][0] == '^'){
+						$remove = false;
+					}
+					else{
+						$remove = true;
+					}
+				}
+			}
+		}
+		if($remove !== true){
+			unset($styles['os']);
+			return $styles;
+		}
+		else {
+			return false;
 		}
 	}
 
