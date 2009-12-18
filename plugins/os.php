@@ -18,6 +18,24 @@
 	 * Status: Alpha
 	 * @todo Implement version number matching for windows
 	 * @todo Implement multiple rules
+	 */
+
+
+	/**
+	 * @var array $os_windows_versions List of windows versions
+	 */
+	$os_windows_versions = array(
+		'2k' => 5.0,
+		'2000' => 5.0,
+		'xp' => 5.1,
+		'Vista' => 6.0,
+		'7' => 6.1
+	);
+
+
+	/**
+	 * os
+	 * Main plugin function
 	 * 
 	 * @param mixed &$parsed
 	 * @return void
@@ -62,36 +80,50 @@
 	 */
 	function os_parse_os($styles){
 		global $browser;
-		$remove = false;
+		$match = true;
 		// Find os property
 		if(isset($styles['os'])){
 			$osrules = explode(' ', $styles['os']);
 			foreach($osrules as $osrule){
 				$matches = array();
-				preg_match_all('/(\^)?(windows|mac|linux|unix)/i', $osrule, $matches);
-				// Os match?
-				if(strtolower($matches[2][0]) == strtolower($browser->platform)){
-					if($matches[1][0] == '^'){
-						$remove = true;
+				preg_match_all('/(\^)?(mac|linux|unix|windows)(:?(\<|\>|=)(\S*))?/i', $osrule, $matches);
+				// Os rule properties
+				$negate = ($matches[1][0] == '^') ? true:false;
+				$system = $matches[2][0];
+				$operator = $matches[4][0];
+				$version = $matches[5][0];
+				// Translate shotcuts
+				if(strtolower($system) == 'mac'){
+					$system = 'macintosh';
+				}
+				// Os match
+				if(strtolower($system) == strtolower($browser->platform)){
+					// TODO: Version match
+					// TODO: Version mismatch
+					if($negate){
+						$match = false;
 					}
 					else{
-						$remove = false;
+						$match = true;
 					}
 				}
+				// Os mismatch
 				else{
-					if($matches[1][0] == '^'){
-						$remove = false;
+					if($negate){
+						$match = false;
 					}
 					else{
-						$remove = true;
+						$match = true;
 					}
 				}
 			}
 		}
-		if($remove !== true){
+		// Keep the styles, unset os property
+		if($match){
 			unset($styles['os']);
 			return $styles;
 		}
+		// Remove the element
 		else {
 			return false;
 		}
