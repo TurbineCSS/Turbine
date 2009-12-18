@@ -512,14 +512,16 @@ class CssParser {
 		// Special treatment for @font-face - build from sub-arrays
 		elseif($selector == '@font-face'){
 			foreach($rules as $values){
-				$output .= $prefix . $selector . $s .'{' . $n;
-				foreach($values as $property => $value){
-					$output .= $prefix.$t;
-					$output .= $property.':'.$s;
-					$output .= trim($value);
-					$output .= ';'.$n; // TODO: Remove this for the last rule
+				if(!empty($values)){
+					$output .= $prefix . $selector . $s .'{' . $n;
+					foreach($values as $property => $value){
+						$output .= $prefix.$t;
+						$output .= $property.':'.$s;
+						$output .= trim($value);
+						$output .= ';'.$n; // TODO: Remove this for the last rule
+					}
+					$output .= $n . '}' .$n;
 				}
-				$output .= $n . '}' .$n;
 			}
 		}
 		else{

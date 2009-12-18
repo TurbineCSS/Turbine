@@ -41,7 +41,6 @@
 	 * @return void
 	 */
 	function os(&$parsed){
-		print_r($parsed);
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				// Loop through @font-face
