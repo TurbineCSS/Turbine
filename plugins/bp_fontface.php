@@ -5,42 +5,67 @@
 	 * Automatic bulletproof @font-face syntax
 	 * Source: http://paulirish.com/2009/bulletproof-font-face-implementation-syntax/
 	 * 
-	 * Usage: TODO
-	 * Example: TODO
-	 * Status: Work in progress
+	 * Usage:
+	 * 1) Build a normal @font-face-rule
+	 * 2) Omit "src"-attribute
+	 * 3) Add properties "eot", "local" and "ttf" or "otf"
+	 * 
+	 * Example:
+	 * @font-face {
+	 *     font-family:'Graublau Web';
+	 *     local:'Graublau Web Regular';
+	 *     otf:url('GraublauWeb.otf');
+	 *     eot:url('GraublauWeb.eot');
+	 *     font-weight:bold;
+	 *     font-style:italic;
+	 * }
+	 * Result:
+	 * @font-face {
+	 *     font-family: 'Graublau Web';
+	 *     font-weight: bold;
+	 *     font-style: italic;
+	 *     src: url('GraublauWeb.eot');
+	 *     src: local('Graublau Web Regular'), local('Graublau Web'), url('GraublauWeb.otf') format(opentype);
+	 * }
+	 * 
+	 * Status: Beta
 	 * 
 	 * @param mixed &$parsed
 	 * @return void
 	 */
 	function bp_fontface(&$parsed){
 		foreach($parsed as $block => $css){
-			foreach($parsed[$block] as $selector => $styles){
-				// Find @font-Declarations
-				if(substr($selector, 0, 5) == '@font'){
-					// Begin a new @font-face element
-					$fontface = array();
-					// Extract font name
-					preg_match_all('/@font\s+(.*)/', $selector, $matches);
-					$fontname = $matches[1][0];
-					// Build @font-face-rule for each style
-					foreach($styles as $style => $urls){
-						// Add font family
-						$fontface['font-family'] = $fontname;
-						// Add style information
-						$fontstyles = explode(' ', $style);
-						if($fontstyles[0]){ // Style
-							if($fontstyle == 'all' || $fontstyle == 'italic' || $fontstyle == 'oblique'){
-								$fontface['font-style'] = $fontstyle;
+			if(isset($parsed[$block]['@font-face'])){
+				foreach($parsed[$block]['@font-face'] as $key => $font){
+					// Properties present?
+					if(isset($font['local']) && isset($font['eot']) && (isset($font['ttf']) || isset($font['otf']))){
+						// New font array
+						$newfont = array();
+						// Default format and url
+						$main_format = NULL;
+						$main_url = NULL;
+						// Copy all properties that are not plugin specific to the new font array
+						$specific = array('local', 'ttf', 'otf', 'eot');
+						foreach($font as $property => $value){
+							if(!in_array($property, $specific)){
+								$newfont[$property] = $value;
 							}
 						}
-						if($fontstyles[1]){ // Weight
-							if($fontstyle == 'bold' || $fontstyle == 'bolder' || $fontstyle == 'lighter' || preg_match('/^[1-9]00$/', $fontstyle)){
-								$fontface['font-weight'] = $fontstyle;
-							}
+						// Select main font format
+						if(isset($font['ttf'])){
+							$main_format = 'truetype';
+							$main_url = $font['ttf'];
 						}
-						
-						
-						print_r($fontface);
+						elseif(isset($font['otf'])){
+							$main_format = 'opentype';
+							$main_url = $font['otf'];
+						}
+						// Create eot src string
+						$newfont['src'][] = $font['eot'];
+						// Create main src string
+						$newfont['src'][] = 'local('.$font['local'].'), local('.$font['font-family'].'), '.$main_url.' format('.$main_format.')';
+						// Replace the old @font-face definition
+						$parsed[$block]['@font-face'][$key] = $newfont;
 					}
 				}
 			}
