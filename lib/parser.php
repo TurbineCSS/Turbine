@@ -510,8 +510,9 @@ class CssParser {
 			}
 		}
 		// Special treatment for @font-face - build from sub-arrays
-		// TODO: This should really NOT be a special treatment for @font-face but rather the default.
-		// Fix this asap.
+		// TODO: This should really NOT be a special treatment for @font-face but rather the default. There
+		// is no reason for this to be exclusive to @font-face and the copy-and-pase-code is stupid too
+		// Fix this (lines 516-564) asap.
 		elseif($selector == '@font-face'){
 			foreach($rules as $values){
 				if(!empty($values)){
