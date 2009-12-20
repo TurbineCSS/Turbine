@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>CSSP Documentation</title>
+		<style type="text/css">
+			body { background:#F7F6C6; color:#1C2124; font-family:Verdana, Arial, sans-serif; font-size:14px; line-height:1.75; }
+			a { font-weight:bold; text-decoration:none; border-bottom:0.15em solid #4E8264; }
+			a:link, a:visited { color:#4E8264; border-color:#4E8264; }
+			a:hover, a:active { color:#000; border-bottom:#FFF; }
+			h2, h3, h4, h5, p, ol, ul, pre { margin:1.25em 24px; }
+			h1 { font-size:1.85em; background:#1C2124; color:#FFF; padding:8px 24px; margin:0; cursor:pointer; }
+			h1:hover {  }
+			h1+div { background:#FFF; }
+			h2 { font-size:1.7em; margin-bottom:0.25em; }
+			h3 { font-size:1.4em; color:#D62822; margin-bottom:0.25em; }
+			h4 { font-size:1.2em; margin-bottom:0.25em; }
+			h5 { font-size:1.125em; margin-bottom:0.25em; }
+			pre { border:2px solid #1C2124; padding:1.25em; }
+			.abstract { background:#EEE; color:#1C2124; border:2px solid #1C2124; font-weight:bold; padding:1.25em; }
+			code { background:#F7F6C6; display:inline-block; padding:0 0.1em; border:1px solid #EAEAC3; }
+			#wrapper { background:#1C2124; border:0.5em solid #1C2124; width:960px; margin:2em auto; -moz-border-radius:0.5em; -webkit-border-radius:0.5em; border-radius:0.5em; }
+			h1 {  }
+		</style>
+	</head>
+	<!--[if IE 6]><body id="ie6"><![endif]-->
+	<!--[if IE 7]><body id="ie7"><![endif]-->
+	<!--[if IE 8]><body id="ie8"><![endif]-->
+	<!--[if !IE]><!--><body><!-- <![endif]-->
+		<div id="wrapper">
+
+
+
+<h1>Introduction</h1><div id="introduction">
+<p>
+	Asdf
+</p>
+</div>
+
+
+
+<h1>Usage</h1><div id="usage">
+<p>
+	Asdf
+</p>
+
+
+
+<h2>Configuration</h2><div>
+<p>
+	Foo
+</p>
+</div>
+
+
+
+<h2>Constants</h2><div>
+<p>
+	Foo
+</p>
+</div>
+
+
+
+<h2>Aliases</h2><div>
+<p>
+	Foo
+</p>
+</div>
+
+
+
+<h2>Inheritance</h2><div>
+<p>
+	Foo
+</p>
+</div>
+
+
+
+<h2>Nested selectors</h2><div>
+<p>
+	Foo
+</p>
+</div>
+
+
+
+<h2>Flags</h2><div>
+<p>
+	Foo
+</p>
+</div>
+
+
+
+</div>
+
+
+
+<h1>Plugins</h1><div id="plugins">
+
+
+
+<h2>Bullet proof @font-face syntax plugin</h2>
+<p class="abstract">
+	Generates bullet proof @font-face declarations from a simplified syntax.
+</p>
+<p>
+	<a href="http://paulirish.com/2009/bulletproof-font-face-implementation-syntax/">Bulletproof @font-face syntax</a> is a syntax
+	for embedding web fonts in a manner that works for all browsers and takes care of numerous IE quirks. Its only downside is that
+	it's rather complicated:
+</p>
+<pre>@font-face {
+    font-family: 'Graublau Web';
+    src: url('GraublauWeb.eot');
+    src: local('Graublau Web Regular'), local('Graublau Web'), url('GraublauWeb.otf') format('opentype')
+}</pre>
+<p>
+	The bullet proof @font-face syntax plugin generates bullet proof @font-face declarations from a simplified syntax.
+</p>
+<h3>Usage</h3>
+<ol>
+	<li>Build a normal <code>@font-face</code>-rule</li>
+	<li>Omit the <code>src</code>-attribute</li>
+	<li>Add properties <code>eot</code>, <code>local</code> and <code>ttf</code> or <code>otf</code></li>
+</ol>
+<h3>Example</h3>
+<pre>@font-face {
+    font-family:'Graublau Web';
+    local:'Graublau Web Regular';
+    otf:url('GraublauWeb.otf');
+    eot:url('GraublauWeb.eot');
+    font-weight:bold;
+    font-style:italic;
+}</pre>
+<p>
+	Result:
+</p>
+<pre>@font-face {
+    font-family: 'Graublau Web';
+    font-weight: bold;
+    font-style: italic;
+    src: url('GraublauWeb.eot');
+    src: local('Graublau Web Regular'), local('Graublau Web'), url('GraublauWeb.otf') format(opentype);
+}</pre>
+
+
+
+<h2>Browser detection</h2><div>
+<p class="abstract">
+	Foo
+</p>
+<p>
+	Bar
+</p>
+</div>
+
+
+
+<h2>Data-URIs</h2><div>
+<p class="abstract">
+	Foo
+</p>
+<p>
+	Bar
+</p>
+</div>
+
+
+
+<h2>Hexcrusher</h2><div>
+<p class="abstract">
+	Foo
+</p>
+<p>
+	Bar
+</p>
+</div>
+
+
+
+<h2>IE bugfixes</h2><div>
+<p class="abstract">
+	Foo
+</p>
+<p>
+	Bar
+</p>
+</div>
+
+
+
+<h2>OS detection</h2><div>
+<p class="abstract">
+	Foo
+</p>
+<p>
+	Bar
+</p>
+</div>
+
+
+
+<h2>Quote style</h2><div>
+<p class="abstract">
+	Foo
+</p>
+<p>
+	Bar
+</p>
+</div>
+
+
+
+<h2>Reset stylesheet</h2><div>
+<p class="abstract">
+	Foo
+</p>
+<p>
+	Bar
+</p>
+</div>
+
+
+
+<h2>Rounded corner shorthand</h2><div>
+<p class="abstract">
+	Foo
+</p>
+<p>
+	Bar
+</p>
+</div>
+
+
+
+<h2>Transparent backgrounds</h2><div>
+<p class="abstract">
+	Foo
+</p>
+<p>
+	Bar
+</p>
+</div>
+
+
+
+</div>
+
+
+
+<h1>Development</h1><div id="development">
+<p>
+	CSSP is free open source software (LGPL) and development takes place on <a href="http://github.com/">GitHub</a>.
+</p>
+
+
+
+<h2>Contribute</h2><div>
+<p>
+	Asdf
+</p>
+</div>
+
+
+
+<h2>Plugin development</h2><div>
+<p>
+	Plugin development for CSSP is rather simple. All you need is a file called <code>plugin_name.php</code> containing
+	a function <code>plugin_name()</code>. The function must accept <code>&amp;$parsed</code> as it's only argument.
+	<code>&amp;$parsed</code> is a reference to the multi-dimensional array containing the parsed CSSP code and it can be
+	freely manipulated by your plugins.
+</p>
+<h3>Array structure</h3>
+<pre>Array
+(
+    [@media foo] => Array
+    (
+        [#bar] => Array
+            (
+                [property1] => valueA
+                [property2] => valueB
+            )
+    )
+    [@media bar] => Array
+    (
+        [#bar] => Array
+            (
+                [property1] => valueA
+                [property2] => valueB
+            )
+    )
+)</pre>
+<p>
+	CSS rules that a not part of any <code>@media</code> block a stored in the global block (key <code>css</code>).
+</p>
+<h3>Plugin example</h3>
+<p>
+	In case you wanted your plugin to remove all occurences of <code>background-image</code> from your stylesheets,
+	this would be the code:
+</p>
+<pre>&lt;?php
+    /**
+     * remove_background_image.php
+     * Remove all occurences of background-image (a nonsensical example)
+     */
+    function remove_background_image(&$parsed){
+        foreach($parsed as $block => $css){ // Loop through the blocks
+            foreach($parsed[$block] as $selector => $styles){ // Loop through the selectors
+                if($parsed[$block][$selector]['background-image']){ // Look for background-image
+                    unset($parsed[$block][$selector]['background-image']); // Be gone!
+                }
+            }
+        }
+        // No need to return anything
+    }
+?&gt;</pre>
+<p>
+	Don't be afraid to do anything CPU- or memory consuming in your plugins - in the end, everything will be calculated
+	only once and be cached afterwards.
+</p>
+
+
+
+</div>
+
+
+
+<h3>API reference</h3><div>
+<h4>parser.php</h4>
+<h5><code>public</code> Var <code>$foo</code></h5>
+<p>
+	Bla bla
+</p>
+<h5><code>protected</code> Function <code>bar($foo, $bar = NULL)</code></h5>
+<p>
+	Bla bla
+</p>
+<ul>
+	<li>Argument <code>$foo</code> string Bla bla</li>
+	<li>Argument <code>$bar</code> string (NULL) Bla bla</li>
+	<li>Returns <code>void</code></li>
+</ul>
+<h4>cssp.php</h4>
+<h5><code>public</code> Var <code>$foo</code></h5>
+<p>
+	Bla bla
+</p>
+<h5><code>protected</code> Function <code>bar($foo, $bar = NULL)</code></h5>
+<p>
+	Bla bla
+</p>
+<ul>
+	<li>Argument <code>$foo</code> string Bla bla</li>
+	<li>Argument <code>$bar</code> string (NULL) Bla bla</li>
+	<li>Returns <code>void</code></li>
+</ul>
+<h4>browser_class_.php</h4>
+<h5><code>public</code> Var <code>$foo</code></h5>
+<p>
+	Bla bla
+</p>
+<h5><code>protected</code> Function <code>bar($foo, $bar = NULL)</code></h5>
+<p>
+	Bla bla
+</p>
+<ul>
+	<li>Argument <code>$foo</code> string Bla bla</li>
+	<li>Argument <code>$bar</code> string (NULL) Bla bla</li>
+	<li>Returns <code>void</code></li>
+</ul>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.4/mootools-yui-compressed.js"></script>
+<script>MooTools.More={version:"1.2.4.2",build:"bd5a93c0913cce25917c48cbdacde568e15e02ef"};Fx.Elements=new Class({Extends:Fx.CSS,initialize:function(b,a){this.elements=this.subject=$$(b);
+this.parent(a);},compute:function(g,h,j){var c={};for(var d in g){var a=g[d],e=h[d],f=c[d]={};for(var b in a){f[b]=this.parent(a[b],e[b],j);}}return c;
+},set:function(b){for(var c in b){var a=b[c];for(var d in a){this.render(this.elements[c],d,a[d],this.options.unit);}}return this;},start:function(c){if(!this.check(c)){return this;
+}var h={},j={};for(var d in c){var f=c[d],a=h[d]={},g=j[d]={};for(var b in f){var e=this.prepare(this.elements[d],b,f[b]);a[b]=e.from;g[b]=e.to;}}return this.parent(h,j);
+}});var Accordion=Fx.Accordion=new Class({Extends:Fx.Elements,options:{display:0,show:false,height:true,width:false,opacity:true,alwaysHide:false,trigger:"click",initialDisplayFx:true,returnHeightToAuto:true},initialize:function(){var c=Array.link(arguments,{container:Element.type,options:Object.type,togglers:$defined,elements:$defined});
+this.parent(c.elements,c.options);this.togglers=$$(c.togglers);this.container=document.id(c.container);this.previous=-1;this.internalChain=new Chain();
+if(this.options.alwaysHide){this.options.wait=true;}if($chk(this.options.show)){this.options.display=false;this.previous=this.options.show;}if(this.options.start){this.options.display=false;
+this.options.show=false;}this.effects={};if(this.options.opacity){this.effects.opacity="fullOpacity";}if(this.options.width){this.effects.width=this.options.fixedWidth?"fullWidth":"offsetWidth";
+}if(this.options.height){this.effects.height=this.options.fixedHeight?"fullHeight":"scrollHeight";}for(var b=0,a=this.togglers.length;b<a;b++){this.addSection(this.togglers[b],this.elements[b]);
+}this.elements.each(function(e,d){if(this.options.show===d){this.fireEvent("active",[this.togglers[d],e]);}else{for(var f in this.effects){e.setStyle(f,0);
+}}},this);if($chk(this.options.display)){this.display(this.options.display,this.options.initialDisplayFx);}this.addEvent("complete",this.internalChain.callChain.bind(this.internalChain));
+},addSection:function(e,c){e=document.id(e);c=document.id(c);var f=this.togglers.contains(e);this.togglers.include(e);this.elements.include(c);var a=this.togglers.indexOf(e);
+var b=this.display.bind(this,a);e.store("accordion:display",b);e.addEvent(this.options.trigger,b);if(this.options.height){c.setStyles({"padding-top":0,"border-top":"none","padding-bottom":0,"border-bottom":"none"});
+}if(this.options.width){c.setStyles({"padding-left":0,"border-left":"none","padding-right":0,"border-right":"none"});}c.fullOpacity=1;if(this.options.fixedWidth){c.fullWidth=this.options.fixedWidth;
+}if(this.options.fixedHeight){c.fullHeight=this.options.fixedHeight;}c.setStyle("overflow","hidden");if(!f){for(var d in this.effects){c.setStyle(d,0);
+}}return this;},detach:function(){this.togglers.each(function(a){a.removeEvent(this.options.trigger,a.retrieve("accordion:display"));},this);},display:function(a,b){if(!this.check(a,b)){return this;
+}b=$pick(b,true);if(this.options.returnHeightToAuto){var d=this.elements[this.previous];if(d&&!this.selfHidden){for(var c in this.effects){d.setStyle(c,d[this.effects[c]]);
+}}}a=($type(a)=="element")?this.elements.indexOf(a):a;if((this.timer&&this.options.wait)||(a===this.previous&&!this.options.alwaysHide)){return this;}this.previous=a;
+var e={};this.elements.each(function(h,g){e[g]={};var f;if(g!=a){f=true;}else{if(this.options.alwaysHide&&((h.offsetHeight>0&&this.options.height)||h.offsetWidth>0&&this.options.width)){f=true;
+this.selfHidden=true;}}this.fireEvent(f?"background":"active",[this.togglers[g],h]);for(var j in this.effects){e[g][j]=f?0:h[this.effects[j]];}},this);
+this.internalChain.chain(function(){if(this.options.returnHeightToAuto&&!this.selfHidden){var f=this.elements[a];if(f){f.setStyle("height","auto");}}}.bind(this));
+return b?this.start(e):this.set(e);}});</script>
+<script>
+	window.addEvent('domready', function(){
+		var mainAccordion = new Fx.Accordion('h1', 'h1+div');
+	});
+</script>
+
+
+
+	</body>
+</html>
