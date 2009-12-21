@@ -4,22 +4,26 @@
 		<meta charset="utf-8">
 		<title>CSSP Documentation</title>
 		<style type="text/css">
-			body { background:#F7F6C6; color:#1C2124; font-family:Verdana, Arial, sans-serif; font-size:14px; line-height:1.75; }
+			body { background:#F7F6C6; color:#1C2124; font-family:Verdana, Arial, sans-serif; font-size:13px; line-height:1.70; }
 			a { font-weight:bold; text-decoration:none; border-bottom:0.15em solid #4E8264; }
 			a:link, a:visited { color:#4E8264; border-color:#4E8264; }
 			a:hover, a:active { color:#000; border-bottom:#FFF; }
-			h2, h3, h4, h5, p, ol, ul, pre { margin:1.25em 24px; }
-			h1 { font-size:1.85em; background:#1C2124; color:#FFF; padding:8px 24px; margin:0; cursor:pointer; }
+			h2, h3, h4, h5, p, ol, ul, pre, table { margin:1em 24px; }
+			h1 { font-size:1.7em; background:#1C2124; color:#FFF; padding:8px 24px; margin:0; cursor:pointer; }
 			h1:hover {  }
-			h1+div { background:#FFF; }
-			h2 { font-size:1.7em; margin-bottom:0.25em; }
-			h3 { font-size:1.4em; color:#D62822; margin-bottom:0.25em; }
-			h4 { font-size:1.2em; margin-bottom:0.25em; }
-			h5 { font-size:1.125em; margin-bottom:0.25em; }
-			pre { border:2px solid #1C2124; padding:1.25em; }
+			h1+div {  }
+			h2 { font-size:1.5em; margin-bottom:-0.5em; }
+				h2 span { color:#CCC; }
+			h3 { font-size:1.3em; margin-top:1.5em; color:#D62822; margin-bottom:-0.5em; }
+			h4 { font-size:1.2em; margin-top:1.5em; margin-bottom:-0.5em; }
+			h5 { font-size:1.1em; margin-top:1.5em; margin-bottom:-0.5em; }
+			pre { border:2px solid #1C2124; padding:1.25em; line-height:1.4; }
+			table { border-collapse:collapse; }
+			th, td { text-align:left; border:1px solid #CCC; padding:0.25em 0.5em; }
+			th { background:#EEE; font-weight:bold; }
 			.abstract { background:#EEE; color:#1C2124; border:2px solid #1C2124; font-weight:bold; padding:1.25em; }
-			code { background:#F7F6C6; display:inline-block; padding:0 0.1em; border:1px solid #EAEAC3; }
-			#wrapper { background:#1C2124; border:0.5em solid #1C2124; width:960px; margin:2em auto; -moz-border-radius:0.5em; -webkit-border-radius:0.5em; border-radius:0.5em; }
+			code {  }
+			#wrapper { background:#FFF; border:0.5em solid #1C2124; width:960px; margin:2em auto; -moz-border-radius:0.5em; -webkit-border-radius:0.5em; border-radius:0.5em; }
 			h1 {  }
 		</style>
 	</head>
@@ -102,7 +106,7 @@
 
 
 
-<h2>Bullet proof @font-face syntax plugin</h2>
+<h2>Bullet proof @font-face syntax plugin <span>[ Optimization, Lazy ]</span></h2>
 <p class="abstract">
 	Generates bullet proof @font-face declarations from a simplified syntax.
 </p>
@@ -169,12 +173,17 @@
 
 
 
-<h2>Hexcrusher</h2><div>
+<h2>Hexcrusher <span>[ Performance, Optimization ]</span></h2><div>
 <p class="abstract">
-	Foo
+	Optimizes hex color definitions.
 </p>
 <p>
-	Bar
+	Hexcrusher finds hex color definition and shortens them whenever possible. A color definition like
+	<code>#FFEE44</code> would be shortend to <code>#FE4</code>, saving a (tiny) bit of space and loading time.
+</p>
+<h3>Usage</h3>
+<p>
+	Just add <code>hexcrusher</code> to your <code>@cssp</code> plugins rule. Done!
 </p>
 </div>
 
@@ -202,23 +211,71 @@
 
 
 
-<h2>Quote style</h2><div>
+<h2>Quote style <span>[ Typography, Lazy ]</span></h2><div>
 <p class="abstract">
-	Foo
+	Inserts language- and country-specific quotation marks.
 </p>
 <p>
-	Bar
+	Different languages and countries use different quotation marks. The quote style plugin introduces
+	a new CSS property called <code>quote-style</code> which allows you to set quotation marks by language
+	and/or country. No more need to remember all the glyphs.
 </p>
+<h3>Usage</h3>
+<p>
+	Include <code>quote_style</code> in your <code>@cssp</code> plugins rule and start using the new
+	<code>quote-style</code> property with the values listed below.
+</p>
+<h3>Possible <code>quote-style</code> values</h3>
+<table>
+	<thead>
+		<tr>
+			<th>Value</th>
+			<th>Result</th>
+			<th>Glyphs</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><code>german</code></td>
+			<td><code>#foo { quotes:'\201E \201C \201A \2018'; }</code></td>
+			<td>„ “ ‚ ‘</td>
+		</tr>
+		<tr>
+			<td><code>german-alt</code></td>
+			<td><code>#foo { quotes:'\00BB \00AB \203A \2039'; }</code></td>
+			<td>» « › ‹</td>
+		</tr>
+		<tr>
+			<td><code>swiss</code></td>
+			<td><code>#foo { quotes:'\00AB \00BB \2039 \203A'; }</code></td>
+			<td>« » ‹ ›</td>
+		</tr>
+		<tr>
+			<td><code>english-uk</code></td>
+			<td><code>#foo { quotes:'\2018 \2019 \201C \201D'; }</code></td>
+			<td>‘ ’ “ ”</td>
+		</tr>
+		<tr>
+			<td><code>english-us</code></td>
+			<td><code>#foo { quotes:'\201C \201D \2018 \2019'; }</code></td>
+			<td>“ ” ‘ ’</td>
+		</tr>
+	</tbody>
+</table>
 </div>
 
 
 
-<h2>Reset stylesheet</h2><div>
+<h2>Reset stylesheet <span>[ Lazy ]</span></h2><div>
 <p class="abstract">
-	Foo
+	Includes a reset stylesheet.
 </p>
 <p>
-	Bar
+	Auto-includes a handy set of css rules that unsets the default styling for all elements.
+</p>
+<h3>Usage</h3>
+<p>
+	Just add <code>reset_stylesheet</code> to your <code>@cssp</code> plugins rule. Done!
 </p>
 </div>
 
@@ -251,16 +308,28 @@
 
 
 <h1>Development</h1><div id="development">
-<p>
-	CSSP is free open source software (LGPL) and development takes place on <a href="http://github.com/">GitHub</a>.
-</p>
-
-
-
 <h2>Contribute</h2><div>
 <p>
-	Asdf
+	CSSP is free open source software (LGPL) and development takes place on <a href="http://github.com/">GitHub</a>,
+	a hosting platform for the excellent distributed version control system <a href="http://git-scm.com/">Git</a>. 
+	Github membership is free and makes helping your favourite open source project really easy. See the following
+	video for details.
 </p>
+<p>
+	<object width="576" height="324">
+		<param name="movie" value="http://d.yimg.com/m/up/ypp/default/player.swf"></param>
+		<param name="flashVars" value="vid=15004396&"></param>
+		<param name="allowfullscreen" value="true"></param>
+		<param name="wmode" value="transparent"></param>
+		<embed width="576" height="324" allowFullScreen="true" src="http://d.yimg.com/m/up/ypp/default/player.swf" type="application/x-shockwave-flash" flashvars="vid=15004396&"></embed>
+	</object>
+	<br />
+	<a href="http://developer.yahoo.com/yui/theater/video.php?v=prestonwerner-github">Tom Preston-Werner, Chris Wanstrath and Scott Chacon — Git, GitHub and Social Coding</a>
+</p>
+<p>
+	Everybody is welcome to <a href="http://github.com/SirPepe/CSSP">fork CSSP</a> and start contributing!
+</p>
+
 </div>
 
 
@@ -327,27 +396,13 @@
 
 
 
-<h3>API reference</h3><div>
-<h4>parser.php</h4>
-<h5><code>public</code> Var <code>$foo</code></h5>
+<h2>API reference</h2><div>
+<h3>parser.php</h3>
+<h4><code>public</code> Var <code>$foo</code></h4>
 <p>
 	Bla bla
 </p>
-<h5><code>protected</code> Function <code>bar($foo, $bar = NULL)</code></h5>
-<p>
-	Bla bla
-</p>
-<ul>
-	<li>Argument <code>$foo</code> string Bla bla</li>
-	<li>Argument <code>$bar</code> string (NULL) Bla bla</li>
-	<li>Returns <code>void</code></li>
-</ul>
-<h4>cssp.php</h4>
-<h5><code>public</code> Var <code>$foo</code></h5>
-<p>
-	Bla bla
-</p>
-<h5><code>protected</code> Function <code>bar($foo, $bar = NULL)</code></h5>
+<h4><code>protected</code> Function <code>bar($foo, $bar = NULL)</code></h4>
 <p>
 	Bla bla
 </p>
@@ -356,12 +411,26 @@
 	<li>Argument <code>$bar</code> string (NULL) Bla bla</li>
 	<li>Returns <code>void</code></li>
 </ul>
-<h4>browser_class_.php</h4>
-<h5><code>public</code> Var <code>$foo</code></h5>
+<h3>cssp.php</h3>
+<h4><code>public</code> Var <code>$foo</code></h4>
 <p>
 	Bla bla
 </p>
-<h5><code>protected</code> Function <code>bar($foo, $bar = NULL)</code></h5>
+<h4><code>protected</code> Function <code>bar($foo, $bar = NULL)</code></h4>
+<p>
+	Bla bla
+</p>
+<ul>
+	<li>Argument <code>$foo</code> string Bla bla</li>
+	<li>Argument <code>$bar</code> string (NULL) Bla bla</li>
+	<li>Returns <code>void</code></li>
+</ul>
+<h3>browser_class_.php</h3>
+<h4><code>public</code> Var <code>$foo</code></h4>
+<p>
+	Bla bla
+</p>
+<h4><code>protected</code> Function <code>bar($foo, $bar = NULL)</code></h4>
 <p>
 	Bla bla
 </p>
@@ -382,32 +451,8 @@
 
 
 <script src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.4/mootools-yui-compressed.js"></script>
-<script>MooTools.More={version:"1.2.4.2",build:"bd5a93c0913cce25917c48cbdacde568e15e02ef"};Fx.Elements=new Class({Extends:Fx.CSS,initialize:function(b,a){this.elements=this.subject=$$(b);
-this.parent(a);},compute:function(g,h,j){var c={};for(var d in g){var a=g[d],e=h[d],f=c[d]={};for(var b in a){f[b]=this.parent(a[b],e[b],j);}}return c;
-},set:function(b){for(var c in b){var a=b[c];for(var d in a){this.render(this.elements[c],d,a[d],this.options.unit);}}return this;},start:function(c){if(!this.check(c)){return this;
-}var h={},j={};for(var d in c){var f=c[d],a=h[d]={},g=j[d]={};for(var b in f){var e=this.prepare(this.elements[d],b,f[b]);a[b]=e.from;g[b]=e.to;}}return this.parent(h,j);
-}});var Accordion=Fx.Accordion=new Class({Extends:Fx.Elements,options:{display:0,show:false,height:true,width:false,opacity:true,alwaysHide:false,trigger:"click",initialDisplayFx:true,returnHeightToAuto:true},initialize:function(){var c=Array.link(arguments,{container:Element.type,options:Object.type,togglers:$defined,elements:$defined});
-this.parent(c.elements,c.options);this.togglers=$$(c.togglers);this.container=document.id(c.container);this.previous=-1;this.internalChain=new Chain();
-if(this.options.alwaysHide){this.options.wait=true;}if($chk(this.options.show)){this.options.display=false;this.previous=this.options.show;}if(this.options.start){this.options.display=false;
-this.options.show=false;}this.effects={};if(this.options.opacity){this.effects.opacity="fullOpacity";}if(this.options.width){this.effects.width=this.options.fixedWidth?"fullWidth":"offsetWidth";
-}if(this.options.height){this.effects.height=this.options.fixedHeight?"fullHeight":"scrollHeight";}for(var b=0,a=this.togglers.length;b<a;b++){this.addSection(this.togglers[b],this.elements[b]);
-}this.elements.each(function(e,d){if(this.options.show===d){this.fireEvent("active",[this.togglers[d],e]);}else{for(var f in this.effects){e.setStyle(f,0);
-}}},this);if($chk(this.options.display)){this.display(this.options.display,this.options.initialDisplayFx);}this.addEvent("complete",this.internalChain.callChain.bind(this.internalChain));
-},addSection:function(e,c){e=document.id(e);c=document.id(c);var f=this.togglers.contains(e);this.togglers.include(e);this.elements.include(c);var a=this.togglers.indexOf(e);
-var b=this.display.bind(this,a);e.store("accordion:display",b);e.addEvent(this.options.trigger,b);if(this.options.height){c.setStyles({"padding-top":0,"border-top":"none","padding-bottom":0,"border-bottom":"none"});
-}if(this.options.width){c.setStyles({"padding-left":0,"border-left":"none","padding-right":0,"border-right":"none"});}c.fullOpacity=1;if(this.options.fixedWidth){c.fullWidth=this.options.fixedWidth;
-}if(this.options.fixedHeight){c.fullHeight=this.options.fixedHeight;}c.setStyle("overflow","hidden");if(!f){for(var d in this.effects){c.setStyle(d,0);
-}}return this;},detach:function(){this.togglers.each(function(a){a.removeEvent(this.options.trigger,a.retrieve("accordion:display"));},this);},display:function(a,b){if(!this.check(a,b)){return this;
-}b=$pick(b,true);if(this.options.returnHeightToAuto){var d=this.elements[this.previous];if(d&&!this.selfHidden){for(var c in this.effects){d.setStyle(c,d[this.effects[c]]);
-}}}a=($type(a)=="element")?this.elements.indexOf(a):a;if((this.timer&&this.options.wait)||(a===this.previous&&!this.options.alwaysHide)){return this;}this.previous=a;
-var e={};this.elements.each(function(h,g){e[g]={};var f;if(g!=a){f=true;}else{if(this.options.alwaysHide&&((h.offsetHeight>0&&this.options.height)||h.offsetWidth>0&&this.options.width)){f=true;
-this.selfHidden=true;}}this.fireEvent(f?"background":"active",[this.togglers[g],h]);for(var j in this.effects){e[g][j]=f?0:h[this.effects[j]];}},this);
-this.internalChain.chain(function(){if(this.options.returnHeightToAuto&&!this.selfHidden){var f=this.elements[a];if(f){f.setStyle("height","auto");}}}.bind(this));
-return b?this.start(e):this.set(e);}});</script>
 <script>
-	window.addEvent('domready', function(){
-		var mainAccordion = new Fx.Accordion('h1', 'h1+div');
-	});
+	
 </script>
 
 
