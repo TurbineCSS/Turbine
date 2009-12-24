@@ -136,7 +136,6 @@ if($_GET['files']){
 			$css .= $output;
 		}
 	}
-
 	// Endtime
 	$end = microtime(true);
 

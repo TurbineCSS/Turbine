@@ -7,7 +7,7 @@
 			body { background:#F7F6C6; color:#1C2124; font-family:Verdana, Arial, sans-serif; font-size:13px; line-height:1.70; }
 			a { font-weight:bold; text-decoration:none; border-bottom:0.15em solid #4E8264; }
 			a:link, a:visited { color:#4E8264; border-color:#4E8264; }
-			a:hover, a:active { color:#000; border-bottom:#FFF; }
+			a:hover, a:active { color:#000; border-color:#FFF; }
 			h2, h3, h4, h5, p, ol, ul, pre, table { margin:1em 24px; }
 			h1 { font-size:1.7em; background:#1C2124; color:#FFF; padding:8px 24px; margin:0; cursor:pointer; }
 			h1:hover {  }
@@ -24,18 +24,57 @@
 			.abstract { background:#EEE; color:#1C2124; border:2px solid #1C2124; font-weight:bold; padding:1.25em; }
 			code {  }
 			#wrapper { background:#FFF; border:0.5em solid #1C2124; width:960px; margin:2em auto; -moz-border-radius:0.5em; -webkit-border-radius:0.5em; border-radius:0.5em; }
-			h1 {  }
+			#toc { position:fixed; background:#1C2124; padding-bottom:1em; -moz-border-radius:0.5em; -webkit-border-radius:0.5em; border-radius:0.5em; }
+				#toc h1 { font-size:1em;margin:1em; padding:0; }
+				#toc ul { list-style:none; margin:0 1em; padding:0; }
+				#toc a { font-weight:bold; text-decoration:none; border-bottom:0.15em solid #FFF; }
+				#toc a:link, #toc a:visited { color:#FFF; border-color:#FFF; }
+				#toc a:hover, #toc a:active { color:#FFF; border-color:#1C2124; }
 		</style>
 	</head>
 	<!--[if IE 6]><body id="ie6"><![endif]-->
 	<!--[if IE 7]><body id="ie7"><![endif]-->
 	<!--[if IE 8]><body id="ie8"><![endif]-->
 	<!--[if !IE]><!--><body><!-- <![endif]-->
+
+
+<div id="toc">
+	<h1>Table of contents</h1>
+	<ul>
+		<li><a href="#toc-1">Introduction</a></li>
+		<li><a href="#toc-2">Usage</a></li>
+		<li><a href="#toc-3">Plugins</a>
+			<ul>
+				<li><a href="#toc-3-1">Box shadow</a></li>
+				<li><a href="#toc-3-2">Bullet proof @font-face</a></li>
+				<li><a href="#toc-3-3">Browser detection</a></li>
+				<li><a href="#toc-3-4">Data-URIs</a></li>
+				<li><a href="#toc-3-5">Hexcrusher</a></li>
+				<li><a href="#toc-3-6">IE bugfixes</a></li>
+				<li><a href="#toc-3-7">OS detection</a></li>
+				<li><a href="#toc-3-8">Quote style</a></li>
+				<li><a href="#toc-3-9">Reset stylesheet</a></li>
+				<li><a href="#toc-3-10">Rounded corner shorthand</a></li>
+				<li><a href="#toc-3-11">Transparent backgrounds</a></li>
+			</ul>
+		</li>
+		<li><a href="#toc-4">Development</a>
+			<ul>
+				<li><a href="#toc-4-1">Contribute</a></li>
+				<li><a href="#toc-4-2">Plugin development</a></li>
+				<li><a href="#toc-4-3">API reference</a></li>
+			</ul>
+		</li>
+		
+	</ul>
+</div>
+
+
 		<div id="wrapper">
 
 
 
-<h1>Introduction</h1><div id="introduction">
+<h1 id="toc-1">Introduction</h1><div id="introduction">
 <p>
 	Asdf
 </p>
@@ -43,7 +82,7 @@
 
 
 
-<h1>Usage</h1><div id="usage">
+<h1 id="toc-2">Usage</h1><div id="usage">
 <p>
 	Asdf
 </p>
@@ -102,11 +141,20 @@
 
 
 
-<h1>Plugins</h1><div id="plugins">
+<h1 id="toc-3">Plugins</h1><div id="plugins">
 
 
 
-<h2>Bullet proof @font-face syntax plugin <span>[ Optimization, Lazy ]</span></h2>
+<h2 id="toc-3-1">Box shadow <span>[ Lazy ]</span></h2>
+<p class="abstract">
+	Automatically adds vendor-specific versions of box-shadow
+</p>
+<p>
+	Bla bla
+</p>
+
+
+<h2 id="toc-3-2">Bullet proof @font-face syntax plugin <span>[ Optimization, Lazy ]</span></h2>
 <p class="abstract">
 	Generates bullet proof @font-face declarations from a simplified syntax.
 </p>
@@ -151,7 +199,7 @@
 
 
 
-<h2>Browser detection</h2><div>
+<h2 id="toc-3-3">Browser detection</h2><div>
 <p class="abstract">
 	Foo
 </p>
@@ -162,7 +210,7 @@
 
 
 
-<h2>Data-URIs</h2><div>
+<h2 id="toc-3-4">Data-URIs</h2><div>
 <p class="abstract">
 	Foo
 </p>
@@ -173,7 +221,7 @@
 
 
 
-<h2>Hexcrusher <span>[ Performance, Optimization ]</span></h2><div>
+<h2 id="toc-3-5">Hexcrusher <span>[ Performance, Optimization ]</span></h2><div>
 <p class="abstract">
 	Optimizes hex color definitions.
 </p>
@@ -189,7 +237,7 @@
 
 
 
-<h2>IE bugfixes</h2><div>
+<h2 id="toc-3-6">IE bugfixes</h2><div>
 <p class="abstract">
 	Foo
 </p>
@@ -200,7 +248,7 @@
 
 
 
-<h2>OS detection</h2><div>
+<h2 id="toc-3-7">OS detection</h2><div>
 <p class="abstract">
 	Foo
 </p>
@@ -211,7 +259,7 @@
 
 
 
-<h2>Quote style <span>[ Typography, Lazy ]</span></h2><div>
+<h2 id="toc-3-8">Quote style <span>[ Typography, Lazy ]</span></h2><div>
 <p class="abstract">
 	Inserts language- and country-specific quotation marks.
 </p>
@@ -266,7 +314,7 @@
 
 
 
-<h2>Reset stylesheet <span>[ Lazy ]</span></h2><div>
+<h2 id="toc-3-9">Reset stylesheet <span>[ Lazy ]</span></h2><div>
 <p class="abstract">
 	Includes a reset stylesheet.
 </p>
@@ -281,7 +329,7 @@
 
 
 
-<h2>Rounded corner shorthand</h2><div>
+<h2 id="toc-3-10">Rounded corner shorthand</h2><div>
 <p class="abstract">
 	Foo
 </p>
@@ -292,7 +340,7 @@
 
 
 
-<h2>Transparent backgrounds</h2><div>
+<h2 id="toc-3-11">Transparent backgrounds</h2><div>
 <p class="abstract">
 	Foo
 </p>
@@ -307,8 +355,8 @@
 
 
 
-<h1>Development</h1><div id="development">
-<h2>Contribute</h2><div>
+<h1 id="toc-4">Development</h1><div id="development">
+<h2 id="toc-4-1">Contribute</h2><div>
 <p>
 	CSSP is free open source software (LGPL) and development takes place on <a href="http://github.com/">GitHub</a>,
 	a hosting platform for the excellent distributed version control system <a href="http://git-scm.com/">Git</a>. 
@@ -334,7 +382,7 @@
 
 
 
-<h2>Plugin development</h2><div>
+<h2 id="toc-4-2">Plugin development</h2><div>
 <p>
 	Plugin development for CSSP is rather simple. All you need is a file called <code>plugin_name.php</code> containing
 	a function <code>plugin_name()</code>. The function must accept <code>&amp;$parsed</code> as it's only argument.
@@ -396,7 +444,7 @@
 
 
 
-<h2>API reference</h2><div>
+<h2 id="toc-4-3">API reference</h2><div>
 <h3>parser.php</h3>
 <h4><code>public</code> Var <code>$foo</code></h4>
 <p>
@@ -451,9 +499,7 @@
 
 
 <script src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.4/mootools-yui-compressed.js"></script>
-<script>
-	
-</script>
+<script></script>
 
 
 
