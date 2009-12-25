@@ -11,7 +11,7 @@
 	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function transparent_backgrounds(&$parsed){
+	function transparent_background(&$parsed){
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				if($parsed[$block][$selector]['transparent-background']){
