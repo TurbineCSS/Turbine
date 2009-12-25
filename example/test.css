@@ -5,7 +5,7 @@
  */
 @cssp {
 	compress:0;
-	plugins:/*ie_bugfixes inline_block*/ quote_style reset_stylesheet rounded_corner_shorthand transparent_backgrounds datauri hexcrusher;
+	plugins:/*ie_bugfixes inline_block*/ quote_style reset_stylesheet border_radius transparent_background box_shadow datauri hexcrusher;
 }
 
 /*
@@ -31,7 +31,7 @@
 	body {
 		font-family:$fontArial;
 		font-size:10px;
-		background:$bgColor url("example/body.png") top left;
+		background:$bgColor url(body.png) top left;
 		color: $darkGreen;
 		padding:32px 0;
 	}
@@ -87,7 +87,7 @@
 						float:left;
 						display:block;
 						padding:4px 12px;
-						rounded-top:2px;
+						border-top-radius:4px;
 						margin:0 0 0 2px;
 					}
 					li {
@@ -116,6 +116,7 @@
 	#content div.section {
 		color:$darkText;
 		background: $bgColor;
+		box-shadow:4px 4px 12px #DCE7DC;
 		margin-bottom:8px;
 		padding:2px 8px 8px 8px;
 	}
