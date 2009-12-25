@@ -69,7 +69,7 @@ if($_GET['files']){
 
 	// Client-side cache: Preparing caching-mechanism using eTags by creating fingerprint of CSS-files
 	$fingerprint = '';
-	foreach($files as $file) $fingerprint .= $file.filemtime($file);
+	foreach($files as $file) $fingerprint .= $file.@filemtime($file);
 	$etag = md5($fingerprint);
 
 	// Client-side cache: now check if client sends eTag, and compare it with our eTag-fingerprint
@@ -94,7 +94,7 @@ if($_GET['files']){
 			}
 			$cachefile = $browser->family.$browser->familyversion.preg_replace('/[^0-9A-Za-z\-\._]/','',str_replace(array('\\','/'),'.',$file));
 			// Server-side cache: Check if a cached version of the file already exists
-			if(file_exists($cachedir.'/'.$cachefile) && filemtime($cachedir.'/'.$cachefile) >= filemtime($file)){
+			if(file_exists($cachedir.'/'.$cachefile) && @filemtime($cachedir.'/'.$cachefile) >= @filemtime($file)){
 				$incache = true;
 			}
 			// Server-side cache: Cached version of the file does not yet exist
