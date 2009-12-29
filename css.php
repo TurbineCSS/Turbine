@@ -25,7 +25,7 @@
 /**
  * css.php
  * Loads CSSP
- * @var string $_GET['files'] A list of css files, seperated by ;
+ * @var string $_GET['files'] A list of css files, separated by ;
  * @var string $_GET['config'] Path to the plugin configuration file
  * @var int $_GET['compress'] Minimize output?
  */

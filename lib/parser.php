@@ -386,7 +386,6 @@ class CssParser {
 								$this->state = 'ff';
 								$this->current['se'] = '@font-face';
 								$this->current['fi'] = count(@$this->parsed[$this->current['at']]['@font-face']);
-								$i = $i + 10;
 							}
 						}
 						// Begin selector
@@ -503,61 +502,52 @@ class CssParser {
 	 */
 	public function glue_rule($selector, $rules, $prefix, $s, $t, $n, $compressed){
 		$output = '';
-		// Special treatment für @import - simply append to literal value
-		if($selector == '@import'){
-			foreach($rules as $value){
-				$output .= $prefix . $selector . ' ' . $value.';' . $n;
-			}
-		}
-		// Special treatment for @font-face - build from sub-arrays
-		// TODO: This should really NOT be a special treatment for @font-face but rather the default. There
-		// is no reason for this to be exclusive to @font-face and the copy-and-pase-code is stupid too
-		// Fix this (lines 516-564) asap.
-		elseif($selector == '@font-face'){
-			foreach($rules as $values){
-				if(!empty($values)){
-					$output .= $prefix . $selector . $s .'{' . $n;
-					foreach($values as $property => $value){
-						if(is_array($value)){
-							// If array, output multiple properties in a loop
-							foreach($value as $val){
-								$output .= $prefix.$t;
-								$output .= $property.':'.$s;
-								$output .= trim($val);
-								$output .= ';'.$n; // TODO: Remove this for the last value when compressing
-							}
-						}
-						else{
-							$output .= $prefix.$t;
-							$output .= $property.':'.$s;
-							$output .= trim($value);
-							$output .= ';'.$n; // TODO: Remove this for the last rule
-						}
-					}
-					$output .= $n . '}' .$n;
+		if($selector == '@import' || $selector == '@font-face'){ // Special cases
+			foreach($rules as $rule){
+				if($selector == '@import'){ // @import rule
+					$output .= $prefix . $selector . ' ' . $rule.';' . $n;
 				}
-			}
-		}
-		else{
-			$output .= $prefix . $selector . $s;
-			$output .= '{' . $n;
-			// Read properties and values
-			foreach($rules as $property => $value){
-				// If array, output multiple properties in a loop
-				if(is_array($value)){
-					$lastval = reset($value);
-					foreach($value as $val){
+				elseif($selector == '@font-face'){ // @font-face rule
+					$output .= $prefix . $selector . $s .'{' . $n;
+					$i = 0;
+					$rule_num = count($rule);
+					foreach($rule as $property => $value){
+						$i++;
 						$output .= $prefix.$t;
 						$output .= $property.':'.$s;
-						$output .= trim($val);
-						$output .= ';'.$n; // TODO: Remove this for the last value when compressing
+						$output .= trim($value);
+						if(!$compressed || $i != $rule_num){ // Remove semicolon this for the last rule
+							$output .= ';';
+						}
+						$output .= $n;
 					}
+					$output .= '}' .$n;
+				}
+			}
+		}
+		else{ // normal elements
+			$output .= $prefix . $selector . $s;
+			$output .= '{' . $n;
+			$i = 0;
+			$rule_num = count($rules);
+			foreach($rules as $property => $value){
+				// Process rules always as arrays, output multiple properties in a loop
+				if(!is_array($value)){
+					$value = array($value);
 				}
 				else{
+					$valcount = count($value);
+					$rule_num = $rule_num + $valcount - 1; // Increases $rule_num for multi-value-arrays
+				}
+				foreach($value as $val){
+					$i++;
 					$output .= $prefix.$t;
 					$output .= $property.':'.$s;
-					$output .= trim($value);
-					$output .= ';'.$n; // TODO: Remove this for the last value when compressing
+					$output .= trim($val);
+					if(!$compressed || $i != $rule_num){ // Remove semicolon this for the last rule
+						$output .= ';';
+					}
+					$output .= $n;
 				}
 			}
 			$output .= $prefix.'}'.$n;

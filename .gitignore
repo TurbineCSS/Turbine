@@ -2,3 +2,5 @@
 .tmp_*
 *~
 cache/*
+.settings
+.buildpath
