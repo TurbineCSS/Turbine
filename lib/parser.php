@@ -498,6 +498,7 @@ class CssParser {
 	 * @param string $s Whitespace character
 	 * @param string $t Whitespace character
 	 * @param string $n Whitespace character
+	 * @param bool $compressed Compress CSS? (removes whitespace)
 	 * @return string $output Formatted CSS
 	 */
 	public function glue_rule($selector, $rules, $prefix, $s, $t, $n, $compressed){
@@ -509,18 +510,7 @@ class CssParser {
 				}
 				elseif($selector == '@font-face'){ // @font-face rule
 					$output .= $prefix . $selector . $s .'{' . $n;
-					$i = 0;
-					$rule_num = count($rule);
-					foreach($rule as $property => $value){
-						$i++;
-						$output .= $prefix.$t;
-						$output .= $property.':'.$s;
-						$output .= trim($value);
-						if(!$compressed || $i != $rule_num){ // Remove semicolon this for the last rule
-							$output .= ';';
-						}
-						$output .= $n;
-					}
+					$output .= $this->glue_properties($rule, $prefix, $s, $t, $n, $compressed);
 					$output .= '}' .$n;
 				}
 			}
@@ -528,29 +518,47 @@ class CssParser {
 		else{ // normal elements
 			$output .= $prefix . $selector . $s;
 			$output .= '{' . $n;
-			$i = 0;
-			$rule_num = count($rules);
-			foreach($rules as $property => $value){
-				// Process rules always as arrays, output multiple properties in a loop
-				if(!is_array($value)){
-					$value = array($value);
-				}
-				else{
-					$valcount = count($value);
-					$rule_num = $rule_num + $valcount - 1; // Increases $rule_num for multi-value-arrays
-				}
-				foreach($value as $val){
-					$i++;
-					$output .= $prefix.$t;
-					$output .= $property.':'.$s;
-					$output .= trim($val);
-					if(!$compressed || $i != $rule_num){ // Remove semicolon this for the last rule
-						$output .= ';';
-					}
-					$output .= $n;
-				}
-			}
+			$output .= $this->glue_properties($rule, $prefix, $s, $t, $n, $compressed);
 			$output .= $prefix.'}'.$n;
+		}
+		return $output;
+	}
+
+
+	/**
+	 * glue_properties
+	 * Combine property sets
+	 * @param mixed $rules Rule contents
+	 * @param string $prefix Prefix 
+	 * @param string $s Whitespace character
+	 * @param string $t Whitespace character
+	 * @param string $n Whitespace character
+	 * @param bool $compressed Compress CSS? (removes whitespace)
+	 * @return string $output Formatted CSS
+	 */
+	public function glue_properties($rules, $prefix, $s, $t, $n, $compressed){
+		$output = '';
+		$i = 0;
+		$rule_num = count($rules);
+		foreach($rules as $property => $value){
+			// Process rules always as arrays, output multiple properties in a loop
+			if(!is_array($value)){
+				$value = array($value);
+			}
+			else{
+				$valcount = count($value);
+				$rule_num = $rule_num + $valcount - 1; // Increases $rule_num for multi-value-arrays
+			}
+			foreach($value as $val){
+				$i++;
+				$output .= $prefix.$t;
+				$output .= $property.':'.$s;
+				$output .= trim($val);
+				if(!$compressed || $i != $rule_num){ // Remove semicolon this for the last rule
+					$output .= ';';
+				}
+				$output .= $n;
+			}
 		}
 		return $output;
 	}

@@ -6,9 +6,10 @@
 	 * Source: http://paulirish.com/2009/bulletproof-font-face-implementation-syntax/
 	 * 
 	 * Usage:
-	 * 1) Build a normal @font-face-rule
-	 * 2) Omit "src"-attribute
-	 * 3) Add properties "eot", "local" and "ttf" or "otf"
+	 * 1) Add bp_font_face to @cssp plugin list
+	 * 2) Build a normal @font-face-rule
+	 * 3) Omit "src"-attribute
+	 * 4) Add properties "eot", "local" and "ttf" or "otf"
 	 * 
 	 * Example:
 	 * @font-face {
@@ -34,7 +35,7 @@
 	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function bp_fontface(&$parsed){
+	function bp_font_face(&$parsed){
 		foreach($parsed as $block => $css){
 			if(isset($parsed[$block]['@font-face'])){
 				foreach($parsed[$block]['@font-face'] as $key => $font){
