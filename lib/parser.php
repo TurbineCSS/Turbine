@@ -518,7 +518,7 @@ class CssParser {
 		else{ // normal elements
 			$output .= $prefix . $selector . $s;
 			$output .= '{' . $n;
-			$output .= $this->glue_properties($rule, $prefix, $s, $t, $n, $compressed);
+			$output .= $this->glue_properties($rules, $prefix, $s, $t, $n, $compressed);
 			$output .= $prefix.'}'.$n;
 		}
 		return $output;
@@ -528,7 +528,7 @@ class CssParser {
 	/**
 	 * glue_properties
 	 * Combine property sets
-	 * @param mixed $rules Rule contents
+	 * @param mixed $values Value contents
 	 * @param string $prefix Prefix 
 	 * @param string $s Whitespace character
 	 * @param string $t Whitespace character
@@ -536,29 +536,27 @@ class CssParser {
 	 * @param bool $compressed Compress CSS? (removes whitespace)
 	 * @return string $output Formatted CSS
 	 */
-	public function glue_properties($rules, $prefix, $s, $t, $n, $compressed){
+	public function glue_properties($values, $prefix, $s, $t, $n, $compressed){
 		$output = '';
 		$i = 0;
-		$rule_num = count($rules);
-		foreach($rules as $property => $value){
-			// Process rules always as arrays, output multiple properties in a loop
-			if(!is_array($value)){
-				$value = array($value);
+		$values_num = count($values);
+		// Process rules always as arrays, output multiple properties in a loop
+		if(!is_array($values)){
+			$values = array($values);
+		}
+		else{
+			$valcount = count($values);
+			$values_num = $values_num + $valcount - 1; // Increases $rule_num for multi-value-arrays
+		}
+		foreach($values as $property => $val){
+			$i++;
+			$output .= $prefix.$t;
+			$output .= $property.':'.$s;
+			$output .= trim($val);
+			if(!$compressed || $i != $values_num){ // Remove semicolon this for the last rule
+				$output .= ';';
 			}
-			else{
-				$valcount = count($value);
-				$rule_num = $rule_num + $valcount - 1; // Increases $rule_num for multi-value-arrays
-			}
-			foreach($value as $val){
-				$i++;
-				$output .= $prefix.$t;
-				$output .= $property.':'.$s;
-				$output .= trim($val);
-				if(!$compressed || $i != $rule_num){ // Remove semicolon this for the last rule
-					$output .= ';';
-				}
-				$output .= $n;
-			}
+			$output .= $n;
 		}
 		return $output;
 	}
