@@ -5,7 +5,7 @@
  */
 @cssp {
 	compress:0;
-	plugins:/*ie_bugfixes inline_block*/ quote_style reset_stylesheet border_radius transparent_background box_shadow datauri hexcrusher;
+	plugins:/*ie_bugfixes inline_block*/ quote_style reset_stylesheet border_radius transparent_background box_shadow data_uri hexcrusher;
 }
 
 /*

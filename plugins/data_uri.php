@@ -1,7 +1,7 @@
 <?php
 
 	/**
-	 * DataURI
+	 * Data-URI
 	 * Injects all images smaller than 24KB right inside the CSS for all dataURI-capable browsers
 	 * 
 	 * Usage: Nobrainer, just switch it on
@@ -11,7 +11,7 @@
 	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function datauri(&$parsed){
+	function data_uri(&$parsed){
 		global $browser;
 		global $file;
 		foreach($parsed as $block => $css){
