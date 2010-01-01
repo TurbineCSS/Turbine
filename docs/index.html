@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>CSSP Documentation</title>
+		<!--<link rel="stylesheet" href="../css.php?files=docs/docs.css">-->
 		<link rel="stylesheet" href="docs.cache.css">
 	</head>
 	<!--[if IE 6]><body id="ie6"><![endif]-->
@@ -13,45 +14,54 @@
 
 <div id="header">
 	<h1>CSSP Documentation</h1>
-	<div id="toc">
-		<h2>Table of contents</h2>
-		<ul>
-			<li><a href="#toc-1">Introduction</a>
-				<ul>
-					<li><a href="#toc-1-1">Goals</a></li>
-					<li><a href="#toc-1-2">Features</a></li>
-				</ul>
-			</li>
-			<li><a href="#toc-2">Usage</a></li>
-			<li><a href="#toc-3">Plugins</a>
-				<ul>
-					<li><a href="#toc-3-1">Border radius</a></li>
-					<li><a href="#toc-3-2">Box shadow</a></li>
-					<li><a href="#toc-3-3">Bullet proof @font-face</a></li>
-					<li><a href="#toc-3-4">Browser detection</a></li>
-					<li><a href="#toc-3-5">Data-URIs</a></li>
-					<li><a href="#toc-3-6">Hexcrusher</a></li>
-					<li><a href="#toc-3-7">IE bugfixes</a></li>
-					<li><a href="#toc-3-8">OS detection</a></li>
-					<li><a href="#toc-3-9">Quote style</a></li>
-					<li><a href="#toc-3-10">Reset stylesheet</a></li>
-					<li><a href="#toc-3-11">Transparent background</a></li>
-				</ul>
-			</li>
-			<li><a href="#toc-4">Development</a>
-				<ul>
-					<li><a href="#toc-4-1">Contribute</a></li>
-					<li><a href="#toc-4-2">Plugin development</a></li>
-					<li><a href="#toc-4-3">API reference</a></li>
-				</ul>
-			</li>
-		</ul>
-	</div>
 </div>
 
 
-
 <div id="wrapper">
+
+
+<div id="toc">
+	<h2><span>Table of contents</span></h2>
+	<ul>
+		<li><a href="#toc-1">Introduction</a>
+			<ul>
+				<li><a href="#toc-1-1">Goals</a></li>
+				<li><a href="#toc-1-2">Features</a></li>
+			</ul>
+		</li>
+		<li><a href="#toc-2">Usage</a>
+			<ul>
+				<li><a href="#toc-2-1">Configuration</a></li>
+				<li><a href="#toc-2-2">Constants and aliases</a></li>
+				<li><a href="#toc-2-3">Inheritance</a></li>
+				<li><a href="#toc-2-4">Nested selectors</a></li>
+				<li><a href="#toc-2-5">Flags</a></li>
+			</ul>
+		</li>
+		<li><a href="#toc-3">Plugins</a>
+			<ul>
+				<li><a href="#toc-3-1">Border radius</a></li>
+				<li><a href="#toc-3-2">Box shadow</a></li>
+				<li><a href="#toc-3-3">Bullet proof @font-face</a></li>
+				<li><a href="#toc-3-4">Browser detection</a></li>
+				<li><a href="#toc-3-5">Data-URIs</a></li>
+				<li><a href="#toc-3-6">Hexcrusher</a></li>
+				<li><a href="#toc-3-7">IE bugfixes</a></li>
+				<li><a href="#toc-3-8">OS detection</a></li>
+				<li><a href="#toc-3-9">Quote style</a></li>
+				<li><a href="#toc-3-10">Reset stylesheet</a></li>
+				<li><a href="#toc-3-11">Transparent background</a></li>
+			</ul>
+		</li>
+		<li><a href="#toc-4">Development</a>
+			<ul>
+				<li><a href="#toc-4-1">Contribute</a></li>
+				<li><a href="#toc-4-2">Plugin development</a></li>
+				<!--<li><a href="#toc-4-3">API reference</a></li>-->
+			</ul>
+		</li>
+	</ul>
+</div>
 
 
 
@@ -79,7 +89,43 @@
 
 
 
-<h2>Configuration</h2><div>
+<h2 id="toc-2-1">Configuration</h2><div>
+<p>
+	The configuration options of CSSP can be set in the stylesheets themselves&nbsp;&ndash a <code>@cssp</code> block (called
+	<strong>configuration block</strong>) allows for options to be set like properties and values in normal CSS code. There are
+	at the moment two things that can be controlled there: compression and plugins.
+</p>
+<h3>Compression</h3>
+<p>
+	CSSP can output CSS code in a compressed form.
+</p>
+<pre>@cssp {
+    compress:1;
+}
+#foo{
+    color: red;
+    background: blue;
+}</pre>
+<p>
+	Becomes
+</p>
+<pre>#foo{color:red;background:blue;}</pre>
+<p>
+	That's a good thing to have since everybody likes smaller downloads and the CSS code generates tends to be more verbose than
+	handwritten CSS. To enable compression simply add <code>compress:1;</code> to your configuration block.
+</p>
+<h3>Plugins</h3>
+<p>
+	
+</p>
+<pre>@cssp {
+    plugins:data_uri border_radius;
+}</pre>
+</div>
+
+
+
+<h2 id="toc-2-2">Constants and Aliases</h2><div>
 <p>
 	Foo
 </p>
@@ -87,7 +133,7 @@
 
 
 
-<h2>Constants</h2><div>
+<h2 id="toc-2-3">Inheritance</h2><div>
 <p>
 	Foo
 </p>
@@ -95,7 +141,7 @@
 
 
 
-<h2>Aliases</h2><div>
+<h2 id="toc-2-4">Nested selectors</h2><div>
 <p>
 	Foo
 </p>
@@ -103,23 +149,7 @@
 
 
 
-<h2>Inheritance</h2><div>
-<p>
-	Foo
-</p>
-</div>
-
-
-
-<h2>Nested selectors</h2><div>
-<p>
-	Foo
-</p>
-</div>
-
-
-
-<h2>Flags</h2><div>
+<h2 id="toc-2-5">Flags</h2><div>
 <p>
 	Foo
 </p>
@@ -209,7 +239,7 @@
 
 
 
-<h2 id="toc-3-3">Bullet proof @font-face syntax plugin <span>[ Optimization, Lazy ]</span></h2><div>
+<h2 id="toc-3-3">Bullet proof @font-face syntax <span>[ Optimization, Lazy ]</span></h2><div>
 <p class="abstract">
 	Generates bullet proof @font-face declarations from a simplified syntax.
 </p>
@@ -221,13 +251,15 @@
 <pre>@font-face {
     font-family: 'Graublau Web';
     src: url('GraublauWeb.eot');
-    src: local('Graublau Web Regular'), local('Graublau Web'), url('GraublauWeb.otf') format('opentype')
+    src: local('Graublau Web Regular'), local('Graublau Web'),
+        url('GraublauWeb.otf') format('opentype')
 }</pre>
 <p>
 	The bullet proof @font-face syntax plugin generates bullet proof @font-face declarations from a simplified syntax.
 </p>
 <h3>Usage</h3>
 <ol>
+	<li>Add <code>bp_font_face</code> to your <code>@cssp</code> plugins rule</li>
 	<li>Build a normal <code>@font-face</code>-rule</li>
 	<li>Omit the <code>src</code>-attribute</li>
 	<li>Add properties <code>eot</code>, <code>local</code> and <code>ttf</code> or <code>otf</code></li>
@@ -249,7 +281,8 @@
     font-weight: bold;
     font-style: italic;
     src: url('GraublauWeb.eot');
-    src: local('Graublau Web Regular'), local('Graublau Web'), url('GraublauWeb.otf') format(opentype);
+    src: local('Graublau Web Regular'), local('Graublau Web'),
+        url('GraublauWeb.otf') format(opentype);
 }</pre>
 </div>
 
@@ -266,12 +299,26 @@
 
 
 
-<h2 id="toc-3-5">Data-URIs</h2><div>
+<h2 id="toc-3-5">Data-URIs <span>[ Performance ]</span></h2><div>
 <p class="abstract">
-	Foo
+	Injects all images smaller than 24kb right inside the CSS for all dataURI-capable browsers
 </p>
+<h3>Example</h3>
+<pre>#foo {
+    background:#FFF url(test.png) top left;
+}</pre>
 <p>
-	Bar
+	Result:
+</p>
+<pre>#foo {
+    background: #FFF url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUg
+    AAAAYAAAAGCAMAAADXEh96AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUA
+    QWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAGUExURf///8zjYPWWfS0AAAARSURBVHjaYm
+    AAAUYiSIAAAwAAqAAH4ng45wAAAABJRU5ErkJggg==') top left;
+}</pre>
+<h3>Usage</h3>
+<p>
+	Just add <code>data-uri</code> to your <code>@cssp</code> plugins rule. Done!
 </p>
 </div>
 
@@ -375,7 +422,7 @@
 	Includes a reset stylesheet.
 </p>
 <p>
-	Auto-includes a handy set of css rules that unsets the default styling for all elements.
+	Auto-includes a handy set of css rules that unset the default styling for all elements.
 </p>
 <h3>Usage</h3>
 <p>
@@ -411,15 +458,11 @@
 	Github membership is free and makes helping your favourite open source project really easy. See the following
 	video for details.
 </p>
-<p>
-	<object width="576" height="324">
-		<param name="movie" value="http://d.yimg.com/m/up/ypp/default/player.swf"></param>
-		<param name="flashVars" value="vid=15004396&"></param>
-		<param name="allowfullscreen" value="true"></param>
-		<param name="wmode" value="transparent"></param>
-		<embed width="576" height="324" allowFullScreen="true" src="http://d.yimg.com/m/up/ypp/default/player.swf" type="application/x-shockwave-flash" flashvars="vid=15004396&"></embed>
-	</object>
+<div class="embed">
+	<embed width="576" height="324" allowFullScreen="true" src="http://d.yimg.com/m/up/ypp/default/player.swf" type="application/x-shockwave-flash" flashvars="vid=15004396&"></embed>
 	<br />
+</div>
+<p>
 	<a href="http://developer.yahoo.com/yui/theater/video.php?v=prestonwerner-github">Tom Preston-Werner, Chris Wanstrath and Scott Chacon — Git, GitHub and Social Coding</a>
 </p>
 <p>
@@ -470,10 +513,14 @@
      * Remove all occurences of background-image (a nonsensical example)
      */
     function remove_background_image(&$parsed){
-        foreach($parsed as $block => $css){ // Loop through the blocks
-            foreach($parsed[$block] as $selector => $styles){ // Loop through the selectors
-                if($parsed[$block][$selector]['background-image']){ // Look for background-image
-                    unset($parsed[$block][$selector]['background-image']); // Be gone!
+        // Loop through the blocks
+        foreach($parsed as $block => $css){
+            // Loop through the selectors
+            foreach($parsed[$block] as $selector => $styles){
+                // Look for background-image
+                if($parsed[$block][$selector]['background-image']){
+                    // Be gone!
+                    unset($parsed[$block][$selector]['background-image']);
                 }
             }
         }
@@ -484,56 +531,6 @@
 	Don't be afraid to do anything CPU- or memory consuming in your plugins - in the end, everything will be calculated
 	only once and be cached afterwards.
 </p>
-
-
-
-</div>
-
-
-
-<h2 id="toc-4-3">API reference</h2><div>
-<h3>parser.php</h3>
-<h4><code>public</code> Var <code>$foo</code></h4>
-<p>
-	Bla bla
-</p>
-<h4><code>protected</code> Function <code>bar($foo, $bar = NULL)</code></h4>
-<p>
-	Bla bla
-</p>
-<ul>
-	<li>Argument <code>$foo</code> string Bla bla</li>
-	<li>Argument <code>$bar</code> string (NULL) Bla bla</li>
-	<li>Returns <code>void</code></li>
-</ul>
-<h3>cssp.php</h3>
-<h4><code>public</code> Var <code>$foo</code></h4>
-<p>
-	Bla bla
-</p>
-<h4><code>protected</code> Function <code>bar($foo, $bar = NULL)</code></h4>
-<p>
-	Bla bla
-</p>
-<ul>
-	<li>Argument <code>$foo</code> string Bla bla</li>
-	<li>Argument <code>$bar</code> string (NULL) Bla bla</li>
-	<li>Returns <code>void</code></li>
-</ul>
-<h3>browser_class_.php</h3>
-<h4><code>public</code> Var <code>$foo</code></h4>
-<p>
-	Bla bla
-</p>
-<h4><code>protected</code> Function <code>bar($foo, $bar = NULL)</code></h4>
-<p>
-	Bla bla
-</p>
-<ul>
-	<li>Argument <code>$foo</code> string Bla bla</li>
-	<li>Argument <code>$bar</code> string (NULL) Bla bla</li>
-	<li>Returns <code>void</code></li>
-</ul>
 
 
 
