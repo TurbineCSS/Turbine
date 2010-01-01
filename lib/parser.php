@@ -550,13 +550,22 @@ class CssParser {
 		}
 		foreach($values as $property => $val){
 			$i++;
-			$output .= $prefix.$t;
-			$output .= $property.':'.$s;
-			$output .= trim($val);
-			if(!$compressed || $i != $values_num){ // Remove semicolon this for the last rule
-				$output .= ';';
+			if(!is_array($val)){
+				$val = array($val);
 			}
-			$output .= $n;
+			else{
+				$valcount = count($values);
+				$values_num = $values_num + $valcount - 1; // Increases $rule_num for multi-value-arrays
+			}
+			foreach($val as $value){
+				$output .= $prefix.$t;
+				$output .= $property.':'.$s;
+				$output .= trim($value);
+				if(!$compressed || $i != $values_num){ // Remove semicolon this for the last rule
+					$output .= ';';
+				}
+				$output .= $n;
+			}
 		}
 		return $output;
 	}
