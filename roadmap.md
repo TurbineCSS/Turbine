@@ -15,7 +15,7 @@ Missing features:
 
 Known bugs:
 
- * cssp.php: Aliased selectors are not inserted at their original position (L129)
+ * [DONE] cssp.php: Aliased selectors are not inserted at their original position (L129)
  * cssp.php: Inheritance does not work for elements in arrays (L161)
  * parser.php: Fix sloppy merge (L446)
  * [DONE] parser.php: Rewrite and unify merging of regular selectors and @font-face (L513-564)

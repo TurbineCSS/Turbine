@@ -126,7 +126,8 @@ class Cssp extends CssParser {
 				// Add a new element with the full selector and delete the old one
 				$newselector = str_replace('$'.$alias, $value, $selector);
 				if($newselector != $selector){
-					$this->parsed[$block][$newselector] = $styles; // TODO: This should really be inserted somewhere near the original position
+					$elements = array($newselector => $styles);
+					$this->insert($elements, $block, $selector);
 					unset($this->parsed[$block][$selector]);
 				}
 			}
