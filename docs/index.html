@@ -35,7 +35,6 @@
 				<li><a href="#toc-2-2">Constants and aliases</a></li>
 				<li><a href="#toc-2-3">Inheritance</a></li>
 				<li><a href="#toc-2-4">Nested selectors</a></li>
-				<li><a href="#toc-2-5">Flags</a></li>
 			</ul>
 		</li>
 		<li><a href="#toc-3">Plugins</a>
@@ -76,7 +75,20 @@
 </div>
 <h2 id="toc-1-2">Features</h2><div>
 <p>
-	Foo
+	CSSP's main feature is a decrease in css devolopment time and web developer headache. This is achieved by a set of basic features
+	that expand what you can do with css:
+</p>
+<ul>
+	<li>Packing and automatic minification of multiple css files</li>
+	<li>Constants (sometimes known as "css variables")</li>
+	<li>Selector aliases</li>
+	<li>Oop-like inheritance, extension and templating features</li>
+	<li>Nested css selectors</li>
+	<li>Fully exensible through a very simple plugin system</li>
+</ul>
+<p>
+	While CSSP's basic features may save you some keystrokes, it's plugins automate and simplify some of the more tedious and complicated
+	aspects of writing css. See <a href="#toc-3">plugins</a> for details.
 </p>
 </div>
 </div>
@@ -129,11 +141,35 @@
 <p>
 	Foo
 </p>
+<h3>Constants</h3>
+<p>
+	Foo
+</p>
+<h3>Aliases</h3>
+<p>
+	Aliases are constants applied to selectors insted of values. Don't want to remember the complicated <code>#wrapper #header > div ul</code>?
+	You don't have to:
+</p>
+<pre>@aliases {
+    mainNavigation: #wrapper #header > div ul;
+}
+
+$mainNavigation {
+    list-style:none;
+}</pre>
+<p>
+	The <code>@aliases</code> block defines <code>mainNavigation</code> as an alias of <code>#wrapper #header > div ul</code>, which
+	results us to the following css code:
+</p>
+<pre>#wrapper #header > div ul {
+    list-style: none;
+}
+</pre>
 </div>
 
 
 
-<h2 id="toc-2-3">Inheritance</h2><div>
+<h2 id="toc-2-3">Inheritance, Extension and Templating</h2><div>
 <p>
 	Foo
 </p>
@@ -143,15 +179,44 @@
 
 <h2 id="toc-2-4">Nested selectors</h2><div>
 <p>
-	Foo
+	CSSP implements nested css selectors that work using the new <code>children</code> property:
 </p>
-</div>
-
-
-
-<h2 id="toc-2-5">Flags</h2><div>
+<pre>#foo div > p {
+	color:red;
+	font-weight:bold;
+	children:{
+		a:link, a:visited {
+			text-decoration:underline;
+		}
+		a:hover, a:active {
+			text-decoration:none;
+		}
+		a:focus{
+			outline:1px dotted #CCC;
+		}
+	};
+}</pre>
 <p>
-	Foo
+	Using nested selectors has to possible benefits (provided you don't go overboard using them): they automatically structure your
+	css into logical units and they can save you a lot of typing. The nested code above compiles to the following css:
+</p>
+<pre>#foo div > p {
+	color: red;
+	font-weight: bold;
+}
+#foo div > p a:link, #foo div > p a:visited {
+	text-decoration: underline;
+}
+#foo div > p a:hover, #foo div > p a:active {
+	text-decoration: none;
+}
+#foo div > p a:focus {
+	outline: 1px dotted #CCC;
+}
+</pre>
+<p>
+	Without nested selectors you would have to have typed a lot more <code>#foo div > p</code>. Nested selectors <em>can</em> become a
+	bit confusing if you overuse them, but with a bit of moderation they can save quite a few keystrokes.
 </p>
 </div>
 
