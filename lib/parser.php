@@ -442,8 +442,8 @@ class CssParser {
 			$dest =& $this->parsed[$at][$se][$pr];
 		}
 		// Take care of !important on merge
-		// FIXME: This should NOT be done this way for obvious reasons
-		if(!@stripos($this->parsed[$at][$se][$pr], '!important')){
+		$tokens = preg_split('/[\s]/', $this->parsed[$at][$se][$pr]);
+		if(!in_array('!important', $tokens)){
 			$dest = $va;
 		}
 	}
