@@ -9,7 +9,7 @@ Missing features:
  * [WIP] Documentation: Everything
  * plugins/browser.php: Everything
  * plugins/inline_block.php: Add usage and example
- * plugins/matrix_position.php: Add usage and example
+ * [DONE] plugins/sprite_position.php: Add usage and example
  * plugins/os.php: Add os version detection
  * plugins/transparent_backgrounds.php: Add IE6 gradient filter
 
