@@ -4,10 +4,11 @@
 	/**
 	 * Automatic quotes for the language of your choice
 	 * 
-	 * Usage: div.foo q { quote-style:language[-country][-alt]; }
-	 * Example: div.foo[lang=de-de] q { quote-style:german-alt; }
-	 * Example: div.foo[lang=en-us] q q { quote-style:english-us; }
-	 * Status: Stable
+	 * Usage:   div.foo q { -cssp-quote-style:language[-country][-alt]; }
+	 * Example: div.foo[lang=de-de] q { -cssp-quote-style:german-alt; }
+	 * Example: div.foo[lang=en-us] q q { -cssp-quote-style:english-us; }
+	 * Status:  Stable
+	 * Version: 1.0
 	 * 
 	 * @param mixed &$parsed
 	 * @return void
@@ -28,13 +29,13 @@
 			$insert = 0;
 			foreach($parsed[$block] as $selector => $styles){
 				// Apply quotes
-				if(isset($parsed[$block][$selector]['quote-style'])){
-					$value = $parsed[$block][$selector]['quote-style'];
+				if(isset($parsed[$block][$selector]['-cssp-quote-style'])){
+					$value = $parsed[$block][$selector]['-cssp-quote-style'];
 					if(isset($quotes[$value])){
 						$parsed[$block][$selector]['quotes'] = '"\\'.$quotes[$value][0].'" "\\'.$quotes[$value][1].'" "\\'.$quotes[$value][2].'" "\\'.$quotes[$value][3].'"';
 					}
 					// Remove quote-style property and unset quotes property
-					unset($parsed[$block][$selector]['quote-style']);
+					unset($parsed[$block][$selector]['-cssp-quote-style']);
 				}
 			}
 		}
