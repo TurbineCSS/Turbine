@@ -58,6 +58,12 @@
 				<!--<li><a href="#toc-4-3">API reference</a></li>-->
 			</ul>
 		</li>
+		<li>&darr; <a href="#toc-5">FAQ</a>
+			<ul>
+				<li><a href="#toc-5-1">Any general advice?</a></li>
+				<li><a href="#toc-5-2">What are the tradeoffs?</a></li>
+			</ul>
+		</li>
 	</ul>
 </div>
 
@@ -65,13 +71,16 @@
 
 <h1 id="toc-1">Introduction</h1><div id="introduction">
 <p>
-	asdf
+	CSSP (CSS Preprocessor) is a PHP-powered tool that...
+	CSSP takes something like this&nbsp;&hellip;
 </p>
+<pre>BEEINDRUCKENDES BEISPIEL</pre>
+&hellip; and turns it into this:
+<pre>BEEINDRUCKENDES BEISPIEL</pre>
 <p>
-	<strong>There is no guarantee, explicit or implied, of its suitability for any purpose.</strong>it is buggy, unstable and you
-	propably shoudn't use it. That said, CSSP <em>can</em> save you a lot of time and allow you to concentrate on a website's design
-	and functionality instead of css's limitations and your least favourite browser's latest bugs. And, being fully extensible, you
-	can customize it to your liking.
+	<strong>There is no guarantee, explicit or implied, of its suitability for any purpose.</strong> That said, CSSP <em>can</em> save
+	you a lot of time and allow you to concentrate on a website's design and functionality instead of css's limitations and your least
+	favourite browser's latest bugs. And, being fully extensible, you can customize it to your liking.
 </p>
 <h2 id="toc-1-1">Goals and Features</h2><div>
 <p>
@@ -79,12 +88,13 @@
 	that expand what you can do with css:
 </p>
 <ul>
-	<li>Packing and automatic minification of multiple css files</li>
-	<li>Constants (sometimes known as "css variables")</li>
+	<li>Packing, gzipping and automatic minification of multiple css files</li>
+	<li>Constants (also known as "css variables")</li>
 	<li>Selector aliases</li>
 	<li>Oop-like inheritance, extension and templating features</li>
 	<li>Nested css selectors</li>
 	<li>Fully exensible through a very simple plugin system</li>
+	<li>Built-in device-, browser- and os sniffing</li>
 </ul>
 <p>
 	While CSSP's basic features may save you some keystrokes, it's plugins automate and simplify some of the more tedious and complicated
@@ -96,7 +106,7 @@
 
 <h1 id="toc-2">Usage</h1><div id="usage">
 <p>
-	Asdf
+	
 </p>
 
 
@@ -173,6 +183,37 @@ $mainNavigation {
 <p>
 	Foo
 </p>
+<h3>Inheriting values from other elements</h3>
+<p>
+	Foo
+</p>
+<pre>
+#foo {
+    color:inherit(#bar background);
+}
+#bar {
+    background:#F00;
+}
+</pre>
+<p>
+	Result:
+</p>
+<pre>
+#foo {
+    color: #F00;
+}
+#bar {
+    background: #F00;
+}
+</pre>
+<h3>Extending other elements</h3>
+<p>
+	Foo
+</p>
+<h3>Templating</h3>
+<p>
+	Foo
+</p>
 </div>
 
 
@@ -197,8 +238,8 @@ $mainNavigation {
 	};
 }</pre>
 <p>
-	Using nested selectors has to possible benefits (provided you don't go overboard using them): they automatically structure your
-	css into logical units and they can save you a lot of typing. The nested code above compiles to the following css:
+	Using nested selectors has two possible benefits (provided you don't go overboard using them): they automatically structure your
+	CSSP code into logical units and they can save you a lot of typing. The nested code above compiles to the following css:
 </p>
 <pre>#foo div > p {
 	color: red;
@@ -236,30 +277,32 @@ $mainNavigation {
 </p>
 <p>
 	Webkit and Mozilla browsers require vendor-specific prefixes for the CSS3 property <code>border-radius</code>. This plugin automatically
-	inserts them wherever a standard <code>border-radius</code> property is found. Additionally, it provides shortcuts for adding rounded
+	inserts them wherever a <code>-cssp-border-radius</code> property is found. Additionally, it provides shortcuts for adding rounded
 	corners only on the left, right, top or bottom side of an element: <code>border-left-radius</code>, <code>border-right-radius</code>,
 	<code>border-top-radius</code>, <code>border-bottom-radius</code>
 </p>
 <h3>Usage</h3>
 <p>
-	Add <code>border_radius</code> to your <code>@cssp</code> plugins rule and start using <code>border-radius</code> (without any prefixes).
+	Add <code>border_radius</code> to your <code>@cssp</code> plugins rule and start using <code>-cssp-border-radius</code> like the
+	standard <code>border-radius</code> CSS3 property.
 </p>
 <h3>Examples</h3>
 <h4>Automatic vendor-specific versions</h4>
 <pre>#foo {
-    border-radius:4px;
+    -cssp-border-radius:4px;
 }</pre>
 <p>
 	Result:
 </p>
 <pre>#foo {
-    border-radius: 4px;
     -moz-border-radius: 4px;
+    -khtml-border-radius: 4px;
     -webkit-border-radius: 4px;
+    border-radius: 4px;
 }</pre>
 <h4>Left side only shortcut</h4>
 <pre>#foo {
-    border-left-radius:4px;
+    -cssp-border-left-radius:4px;
 }</pre>
 <p>
 	Result:
@@ -267,6 +310,8 @@ $mainNavigation {
 <pre>#foo {
     -moz-border-radius-topleft: 4px;
     -moz-border-radius-bottomleft: 4px;
+    -khtml-border-top-left-radius: 4px;
+    -khtml-border-bottom-left-radius: 4px;
     -webkit-border-top-left-radius: 4px;
     -webkit-border-bottom-left-radius: 4px;
     border-top-left-radius: 4px;
@@ -282,23 +327,24 @@ $mainNavigation {
 </p>
 <p>
 	Webkit and Mozilla browsers require vendor-specific prefixes for the CSS3 property <code>box-shadow</code>. This plugin automatically
-	inserts them wherever a standard <code>box-shadow</code> property is found.
+	inserts them wherever a <code>-cssp-box-shadow</code> property is found.
 </p>
 <h3>Usage</h3>
 <p>
-	Add <code>box_shadow</code> to your <code>@cssp</code> plugins rule and start using <code>box-shadow</code> (without any prefixes).
+	Add <code>box_shadow</code> to your <code>@cssp</code> plugins rule and start using <code>-cssp-box-shadow</code> like the
+	standard <code>box-shadow</code> CSS3 property.
 </p>
 <h3>Example</h3>
 <pre>#foo {
-    box-shadow:4px 4px 4px #666;
+    -cssp-box-shadow:4px 4px 4px #666;
 }</pre>
 <p>
 	Result:
 </p>
 <pre>#foo {
-    box-shadow: 4px 4px 4px #666;
     -moz-box-shadow: 4px 4px 4px #666;
     -webkit-box-shadow: 4px 4px 4px #666;
+    box-shadow: 4px 4px 4px #666;
 }</pre>
 </div>
 
@@ -433,15 +479,15 @@ $mainNavigation {
 </p>
 <p>
 	Different languages and countries use different quotation marks. The quote style plugin introduces
-	a new CSS property called <code>quote-style</code> which allows you to set quotation marks by language
+	a new CSS property called <code>-cssp-quote-style</code> which allows you to set quotation marks by language
 	and/or country. No more need to remember all the glyphs.
 </p>
 <h3>Usage</h3>
 <p>
 	Include <code>quote_style</code> in your <code>@cssp</code> plugins rule and start using the new
-	<code>quote-style</code> property with the values listed below.
+	<code>-cssp-quote-style</code> property with the values listed below.
 </p>
-<h3>Possible <code>quote-style</code> values</h3>
+<h3>Possible <code>-cssp-quote-style</code> values</h3>
 <table>
 	<thead>
 		<tr>
@@ -596,7 +642,9 @@ $mainNavigation {
 	Don't be afraid to do anything CPU- or memory consuming in your plugins - in the end, everything will be calculated
 	only once and be cached afterwards.
 </p>
-
+<p>
+	To avoid confusion with regular CSS properties, use of the <code>-cssp-</code> prefix for new properties is recommended.
+</p>
 
 
 </div>
@@ -604,6 +652,44 @@ $mainNavigation {
 
 
 </div>
+
+
+
+<h1 id="toc-5">FAQ</h1><div id="faq">
+
+
+
+<h2 id="toc-5-1">Any general advice?</h2><div>
+<ul>
+	<li>
+		Don't use constants only for colors! If you use them for font stacks and paths, you can save yourself a lot of typing&nbsp;&ndash;
+		<code>font-family:$serif</code> is so much shorter than <code>font-family:Georgia, "Times New Roman", serif</code>.
+	</li>
+	<li>
+		Don't overuse nested selectors, as they get can get quite confusing.
+	</li>
+</ul>
+</div>
+
+
+
+<h2 id="toc-5-2">What are the tradeoffs?</h2><div>
+<ul>
+	<li>
+		CSSP uses the input css files to generate <em>completely</em> new CSS code that won't necessarily look very much like it's source.
+		That means that css debugging tools like Firebug <strong>may</strong> not be very useful anymore, depending on how many of CSSP's
+		features and plugins you actually use.
+	</li>
+	<li>
+		The CSS selectors generated by CSSP are usually not as efficent as human-written CSS would be.
+	</li>
+</ul>
+</div>
+
+
+
+</div>
+
 
 
 

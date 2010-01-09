@@ -39,10 +39,14 @@
 		font-weight:bold;
 	}
 
+	em, i {
+		font-style:italic;
+	}
+
 	#header {
 		background:$dark;
 		border-bottom:2px solid $white;
-		box-shadow:0 3px 8px $shadow;
+		-cssp-box-shadow:0 3px 8px $shadow;
 		position:fixed;
 		top:0;
 		left:0;
@@ -111,7 +115,7 @@
 			}
 			table {
 				margin:1em 0;
-				box-shadow:3px 3px 8px $shadow;
+				-cssp-box-shadow:3px 3px 8px $shadow;
 				children:{
 					td {
 						background:$white;
@@ -140,7 +144,7 @@
 				font-size:125%;
 				background:$white;
 				border:1px solid $border;
-				box-shadow:3px 3px 8px $shadow;
+				-cssp-box-shadow:3px 3px 8px $shadow;
 				margin:1em 0;
 				padding:1em;
 			}
@@ -148,7 +152,7 @@
 				width:576px;
 				height:324px;
 				border:1px solid $border;
-				box-shadow:3px 3px 8px $shadow;
+				-cssp-box-shadow:3px 3px 8px $shadow;
 				margin:1em 0;
 			}
 		};
