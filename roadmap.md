@@ -13,7 +13,7 @@ Version 0.1
  * cssp.php: Inheritance does not work for elements in arrays (L161)
  * [DONE] parser.php: Fix sloppy merge (L446)
  * [DONE] parser.php: Rewrite and unify merging of regular selectors and @font-face (L513-564)
- * Add template selector prefix (? character)
+ * [DONE] Add template selector prefix (? character)
 
 
 

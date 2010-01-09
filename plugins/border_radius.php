@@ -18,12 +18,13 @@
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				// Everywhere
-				if(isset($parsed[$block][$selector]['-ccsp-border-radius'])){
-					$value = $parsed[$block][$selector]['-ccsp-border-radius'];
+				if(isset($parsed[$block][$selector]['-cssp-border-radius'])){
+					$value = $parsed[$block][$selector]['-cssp-border-radius'];
 					$parsed[$block][$selector]['-moz-border-radius'] = $value;
 					$parsed[$block][$selector]['-khtml-border-radius'] = $value;
 					$parsed[$block][$selector]['-webkit-border-radius'] = $value;
 					$parsed[$block][$selector]['border-radius'] = $value;
+					unset($parsed[$block][$selector]['-cssp-border-radius']);
 				}
 				// Top only
 				if(isset($parsed[$block][$selector]['-ccsp-border-top-radius'])){
@@ -36,7 +37,7 @@
 					$parsed[$block][$selector]['-webkit-border-top-right-radius'] = $value;
 					$parsed[$block][$selector]['border-top-left-radius'] = $value;
 					$parsed[$block][$selector]['border-top-right-radius'] = $value;
-					unset($parsed[$block][$selector]['border-top-radius']);
+					unset($parsed[$block][$selector]['-cssp-border-top-radius']);
 				}
 				// Bottom only
 				if(isset($parsed[$block][$selector]['-ccsp-border-bottom-radius'])){
@@ -49,7 +50,7 @@
 					$parsed[$block][$selector]['-webkit-border-bottom-right-radius'] = $value;
 					$parsed[$block][$selector]['border-bottom-left-radius'] = $value;
 					$parsed[$block][$selector]['border-bottom-right-radius'] = $value;
-					unset($parsed[$block][$selector]['border-bottom-radius']);
+					unset($parsed[$block][$selector]['-cssp-border-bottom-radius']);
 				}
 				// Left only
 				if(isset($parsed[$block][$selector]['-ccsp-border-left-radius'])){
@@ -62,7 +63,7 @@
 					$parsed[$block][$selector]['-webkit-border-bottom-left-radius'] = $value;
 					$parsed[$block][$selector]['border-top-left-radius'] = $value;
 					$parsed[$block][$selector]['border-bottom-left-radius'] = $value;
-					unset($parsed[$block][$selector]['border-left-radius']);
+					unset($parsed[$block][$selector]['-cssp-border-left-radius']);
 				}
 				// Right only
 				if(isset($parsed[$block][$selector]['-ccsp-border-right-radius'])){
@@ -75,7 +76,7 @@
 					$parsed[$block][$selector]['-webkit-border-bottom-right-radius'] = $value;
 					$parsed[$block][$selector]['border-top-right-radius'] = $value;
 					$parsed[$block][$selector]['border-bottom-right-radius'] = $value;
-					unset($parsed[$block][$selector]['border-right-radius']);
+					unset($parsed[$block][$selector]['-cssp-border-right-radius']);
 				}
 				// Top left only
 				if(isset($parsed[$block][$selector]['-ccsp-border-top-left-radius'])){
@@ -84,6 +85,7 @@
 					$parsed[$block][$selector]['-khtml-border-top-left-radius'] = $value;
 					$parsed[$block][$selector]['-webkit-border-top-left-radius'] = $value;
 					$parsed[$block][$selector]['border-top-left-radius'] = $value;
+					unset($parsed[$block][$selector]['-cssp-border-top-left-radius']);
 				}
 				// Top right only
 				if(isset($parsed[$block][$selector]['-ccsp-border-top-right-radius'])){
@@ -92,6 +94,7 @@
 					$parsed[$block][$selector]['-khtml-border-top-right-radius'] = $value;
 					$parsed[$block][$selector]['-webkit-border-top-right-radius'] = $value;
 					$parsed[$block][$selector]['border-top-right-radius'] = $value;
+					unset($parsed[$block][$selector]['-ccsp-border-top-right-radius']);
 				}
 				// Bottom left only
 				if(isset($parsed[$block][$selector]['-ccsp-border-bottom-left-radius'])){
@@ -100,6 +103,7 @@
 					$parsed[$block][$selector]['-khtml-border-bottom-left-radius'] = $value;
 					$parsed[$block][$selector]['-webkit-border-bottom-left-radius'] = $value;
 					$parsed[$block][$selector]['border-bottom-left-radius'] = $value;
+					unset($parsed[$block][$selector]['-ccsp-border-bottom-left-radius']);
 				}
 				// Bottom right only
 				if(isset($parsed[$block][$selector]['-ccsp-border-bottom-right-radius'])){
@@ -108,6 +112,7 @@
 					$parsed[$block][$selector]['-khtml-border-bottom-right-radius'] = $value;
 					$parsed[$block][$selector]['-webkit-border-bottom-right-radius'] = $value;
 					$parsed[$block][$selector]['border-bottom-right-radius'] = $value;
+					unset($parsed[$block][$selector]['-ccsp-border-bottom-right-radius']);
 				}
 			}
 		}

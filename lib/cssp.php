@@ -30,9 +30,6 @@
 class Cssp extends CssParser {
 
 
-	public $ignore_on_merge = array('flags');
-
-
 	/**
 	 * Constructor
 	 * @param string $query String of Files to load, sepperated by ;
@@ -47,7 +44,6 @@ class Cssp extends CssParser {
 			$this->apply_aliases();
 			$this->apply_inheritance();
 			$this->apply_constants();
-			$this->apply_flags();
 			$this->cleanup();
 		}
 	}
@@ -151,7 +147,7 @@ class Cssp extends CssParser {
 						$this->parsed[$block][$selector] = $this->merge_rules(
 							$this->parsed[$block][$selector],
 							$this->parsed[$block][$ancestor],
-							$this->ignore_on_merge
+							array()
 						);
 					}
 					unset($this->parsed[$block][$selector]['extends']);
@@ -247,7 +243,7 @@ class Cssp extends CssParser {
 							$this->parsed[$block][$new_selector] = $this->merge_rules(
 								$this->parsed[$block][$new_selector],
 								$child_properties,
-								$this->ignore_on_merge
+								array()
 							);
 						}
 						// Else insert after the last element
@@ -284,33 +280,8 @@ class Cssp extends CssParser {
 
 
 	/**
-	 * apply_flags
-	 * Applies flags
-	 * @return void
-	 */
-	public function apply_flags(){
-		foreach($this->parsed as $block => $css){
-			foreach($this->parsed[$block] as $selector => $styles){
-				if(isset($this->parsed[$block][$selector]['flags'])){
-					$flags = explode(',', $this->parsed[$block][$selector]['flags']);
-					// Remove flag
-					if(in_array('remove', $flags)){
-						unset($this->parsed[$block][$selector]);
-					}
-					else{
-						// TODO: Add more flags!
-						// Last step: Remove flags property
-						unset($this->parsed[$block][$selector]['flags']);
-					}
-				}
-			}
-		}
-	}
-
-
-	/**
 	 * cleanup
-	 * Deletes empty and cssp-only elements
+	 * Deletes empty elements, templates and cssp-only elements
 	 * @return void
 	 */
 	public function cleanup(){
@@ -322,9 +293,9 @@ class Cssp extends CssParser {
 			if(isset($this->parsed[$block]['@aliases'])){
 				unset($this->parsed[$block]['@aliases']);
 			}
-			// Remove empty elements
+			// Remove empty elements and templates
 			foreach($this->parsed[$block] as $selector => $styles){
-				if(empty($styles)){
+				if(empty($styles) || $selector{0} == '?'){
 					unset($this->parsed[$block][$selector]);
 				}
 			}
