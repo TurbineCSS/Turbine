@@ -206,15 +206,14 @@ class Cssp extends CssParser {
 		foreach($this->parsed as $block => $css){
 			foreach($this->parsed[$block] as $selector => $styles){
 				$current_element = $selector;
-				if(isset($styles['children'])){
+				if(isset($styles['-cssp-children'])){
 					// Remove curly braces around child css
-					$styles['children'] = preg_replace('/\{(.*)\}/ms', '$1', $styles['children']);
-					$styles['children'] = trim($styles['children']);
+					$styles['-cssp-children'] = preg_replace('/\{(.*)\}/ms', '$1', $styles['-cssp-children']);
+					$styles['-cssp-children'] = trim($styles['-cssp-children']);
 					// Parse child css
 					$childParser = new Cssp();
-					$childParser->load_string($styles['children']);
+					$childParser->load_string($styles['-cssp-children']);
 					$childParser->parse();
-					$childParser->apply_combinators();
 					$childParser->apply_children();
 					$childParser->cleanup();
 					$children = $childParser->parsed['css'];
@@ -252,27 +251,7 @@ class Cssp extends CssParser {
 							$current_element = $new_selector;
 						}
 					}
-					unset($this->parsed[$block][$selector]['children']);
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * apply_combinators
-	 * Applies combinator property
-	 * @return void
-	 */
-	public function apply_combinators(){
-		foreach($this->parsed as $block => $css){
-			foreach($this->parsed[$block] as $selector => $styles){
-				if(isset($this->parsed[$block][$selector]['combinator'])){
-					$combinator = $this->parsed[$block][$selector]['combinator'];
-					$newkey = trim($combinator).' '.$selector;
-					$this->parsed[$block][$newkey] = $this->parsed[$block][$selector];
-					unset($this->parsed[$block][$selector]);
-					unset($this->parsed[$block][$newkey]['combinator']);
+					unset($this->parsed[$block][$selector]['-cssp-children']);
 				}
 			}
 		}
