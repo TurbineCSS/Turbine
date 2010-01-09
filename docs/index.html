@@ -373,14 +373,14 @@ $mainNavigation {
 	<li>Add <code>bp_font_face</code> to your <code>@cssp</code> plugins rule</li>
 	<li>Build a normal <code>@font-face</code>-rule</li>
 	<li>Omit the <code>src</code>-attribute</li>
-	<li>Add properties <code>eot</code>, <code>local</code> and <code>ttf</code> or <code>otf</code></li>
+	<li>Add properties <code>-cssp-eot</code>, <code>-cssp-local</code> and <code>-cssp-ttf</code> or <code>-cssp-otf</code></li>
 </ol>
 <h3>Example</h3>
 <pre>@font-face {
     font-family:'Graublau Web';
-    local:'Graublau Web Regular';
-    otf:url('GraublauWeb.otf');
-    eot:url('GraublauWeb.eot');
+    -cssp-local:'Graublau Web Regular';
+    -cssp-otf:url('GraublauWeb.otf');
+    -cssp-eot:url('GraublauWeb.eot');
     font-weight:bold;
     font-style:italic;
 }</pre>

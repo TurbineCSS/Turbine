@@ -7,7 +7,7 @@ Version 0.1
  * plugins/inline_block.php: Add usage and example
  * plugins/ie_bugfixes.php: Add some more fixes
  * [DONE] plugins/sprite_position.php: Add usage and example
- * Add Vendor prefixes
+ * [DONE] Add Vendor prefixes
  * Add enumerated selectors
  * [DONE] cssp.php: Aliased selectors are not inserted at their original position (L129)
  * cssp.php: Inheritance does not work for elements in arrays (L161)

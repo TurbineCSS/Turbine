@@ -9,14 +9,14 @@
 	 * 1) Add bp_font_face to @cssp plugin list
 	 * 2) Build a normal @font-face-rule
 	 * 3) Omit "src"-attribute
-	 * 4) Add properties "eot", "local" and "ttf" or "otf"
+	 * 4) Add properties "-cssp-eot", "-cssp-local" and "-cssp-ttf" or "-cssp-otf"
 	 * 
 	 * Example:
 	 * @font-face {
 	 *     font-family:'Graublau Web';
-	 *     local:'Graublau Web Regular';
-	 *     otf:url('GraublauWeb.otf');
-	 *     eot:url('GraublauWeb.eot');
+	 *     -cssp-local:'Graublau Web Regular';
+	 *     -cssp-otf:url('GraublauWeb.otf');
+	 *     -cssp-eot:url('GraublauWeb.eot');
 	 *     font-weight:bold;
 	 *     font-style:italic;
 	 * }
@@ -29,7 +29,8 @@
 	 *     src: local('Graublau Web Regular'), local('Graublau Web'), url('GraublauWeb.otf') format(opentype);
 	 * }
 	 * 
-	 * Status: Beta
+	 * Status:  Stable
+	 * Version: 1.0
 	 * 
 	 * @todo Add support for svg and woff
 	 * @param mixed &$parsed
@@ -40,32 +41,31 @@
 			if(isset($parsed[$block]['@font-face'])){
 				foreach($parsed[$block]['@font-face'] as $key => $font){
 					// Properties present?
-					if(isset($font['local']) && isset($font['eot']) && (isset($font['ttf']) || isset($font['otf']))){
+					if(isset($font['-cssp-local']) && isset($font['-cssp-eot']) && (isset($font['-cssp-ttf']) || isset($font['-cssp-otf']))){
 						// New font array
 						$newfont = array();
 						// Default format and url
 						$main_format = NULL;
 						$main_url = NULL;
 						// Copy all properties that are not plugin specific to the new font array
-						$specific = array('local', 'ttf', 'otf', 'eot');
 						foreach($font as $property => $value){
-							if(!in_array($property, $specific)){
+							if(substr($property, 0, 6) != '-cssp-'){
 								$newfont[$property] = $value;
 							}
 						}
 						// Select main font format
-						if(isset($font['ttf'])){
+						if(isset($font['-cssp-ttf'])){
 							$main_format = 'truetype';
-							$main_url = $font['ttf'];
+							$main_url = $font['-cssp-ttf'];
 						}
-						elseif(isset($font['otf'])){
+						elseif(isset($font['-cssp-otf'])){
 							$main_format = 'opentype';
-							$main_url = $font['otf'];
+							$main_url = $font['-cssp-otf'];
 						}
 						// Create eot src string
-						$newfont['src'][] = $font['eot'];
+						$newfont['src'][] = $font['-cssp-eot'];
 						// Create main src string
-						$newfont['src'][] = 'local('.$font['local'].'), local('.$font['font-family'].'), '.$main_url.' format('.$main_format.')';
+						$newfont['src'][] = 'local('.$font['-cssp-local'].'), local('.$font['font-family'].'), '.$main_url.' format('.$main_format.')';
 						// Replace the old @font-face definition
 						$parsed[$block]['@font-face'][$key] = $newfont;
 					}
