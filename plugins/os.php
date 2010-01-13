@@ -35,6 +35,7 @@
 				// Loop through @font-face
 				if($selector == '@font-face'){
 					foreach($styles as $index => $style){
+						
 						$osparsed = os_parse_os($style);
 						if($osparsed){
 							$parsed[$block][$selector][$index] = $osparsed;
@@ -87,7 +88,7 @@
 						// Turn a single =-operator into a PHP-interpretable ==-operator
 						if($matches[3] == '=') $matches[3] = '==';
 						// Filter and run the detected rule through the PHP-interpreter
-						eval('if('.floatval($browser->platformversion).$matches[3].floatval($matches[4]).') $match = true; else $match = false;';
+						eval('if('.floatval($browser->platformversion).$matches[3].floatval($matches[4]).') $match = true; else $match = false;');
 					}
 					// Check if we had a negotiating operator at the beginning and in case flip result
 					if($matches[1] == '^') $match = ($match == true) ? false : true;
@@ -104,5 +105,4 @@
 			return false;
 		}
 	}
-
 ?>
