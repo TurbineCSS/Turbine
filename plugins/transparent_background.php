@@ -15,7 +15,7 @@
 	function transparent_background(&$parsed){
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
-				if($parsed[$block][$selector]['-cssp-transparent-background']){
+				if(isset($parsed[$block][$selector]['-cssp-transparent-background'])){
 					// Get RGBA values
 					$values = array();
 					$rgbapattern = '/rgba\([\s]*(.*?)[\s]*,[\s]*(.*?)[\s]*,[\s]*(.*?)[\s]*,[\s]*(.*?)[\s]*\)/i';
