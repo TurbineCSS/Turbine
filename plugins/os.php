@@ -82,38 +82,26 @@
 		$match = true;
 		// Find os property
 		if(isset($styles['os'])){
+			// Split up any multiple os rules in order to check them one by one
 			$osrules = explode(' ', $styles['os']);
+			// Check each os rule
 			foreach($osrules as $osrule){
-				$matches = array();
-				preg_match_all('/(\^)?(mac|linux|unix|windows)(:?(\<|\>|=)(\S*))?/i', $osrule, $matches);
-				// Os rule properties
-				$negate = ($matches[1][0] == '^') ? true:false;
-				$system = $matches[2][0];
-				$operator = $matches[4][0];
-				$version = $matches[5][0];
-				// Translate shotcuts
-				if(strtolower($system) == 'mac'){
-					$system = 'macintosh';
-				}
-				// Os match
-				if(strtolower($system) == strtolower($browser->platform)){
-					// TODO: Version match
-					// TODO: Version mismatch
-					if($negate){
-						$match = false;
+				preg_match('/([\^]?)(mac|linux|unix|windows)([!=><]{0,2})([0-9]*\.?[0-9]*]*)/i', $osrule, $matches);
+				// If the useragent's detected os/platform is found in the current rule
+				if(strstr(strtolower($matches[2]),strtolower($browser->platform)))
+				{
+					// For the time being set $match to true in case a preceeding rule has set it to false
+					$match = true;
+					// If we found a logical operator and a version number
+					if($matches[3] != '' && $matches[4] == floatval($matches[4]))
+					{
+						// Turn a single =-operator into a PHP-interpretable ==-operator
+						if($matches[3] == '=') $matches[3] = '==';
+						// Filter and run the detected rule through the PHP-interpreter
+						eval('if('.floatval($browser->platformversion).$matches[3].floatval($matches[4]).') $match = true; else $match = false;';
 					}
-					else{
-						$match = true;
-					}
-				}
-				// Os mismatch
-				else{
-					if($negate){
-						$match = true;
-					}
-					else{
-						$match = false;
-					}
+					// Check if we had a negotiating operator at the beginning and in case flip result
+					if($matches[1] == '^') $match = ($match == true) ? false : true;
 				}
 			}
 		}
