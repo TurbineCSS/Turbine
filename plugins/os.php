@@ -2,35 +2,24 @@
 
 	/**
 	 * OS
-	 * Implements the "os" property for operating system detection
+	 * Implements the "-cssp-os" property for operating system detection
 	 * 
-	 * Usage: os:myos myotheros;
+	 * Usage: -cssp-os:myos myotheros;
 	 * 
-	 * Example 1: os:windows; - CSS rules only apply on windows (Simple detection)
-	 * Example 2: os:^windows; - CSS rules apply everywhere but windows (Simple exclusion)
-	 * Example 3: os:windows<5.1; - CSS rules only apply on windows versions older than XP (detection by version number)
-	 * Example 4: os:windows linux; - CSS rules only apply on windows and linux (Multi-Detection)
+	 * Example 1: -cssp-os:windows; - CSS rules only apply on windows (Simple detection)
+	 * Example 2: -cssp-os:^windows; - CSS rules apply everywhere but windows (Simple exclusion)
+	 * Example 3: -cssp-os:windows<5.1; - CSS rules only apply on windows versions older than XP (detection by version number)
+	 * Example 4: -cssp-os:windows<=5.1; - CSS rules only apply on windows versions older than or equal to XP (detection by version number)
+	 * Example 5: -cssp-os:windows!=5.1; - CSS rules only apply on windows versions other than XP (detection by version number)
+	 * Example 6: -cssp-os:windows=5.1; - CSS rules only apply on windows XP (detection by version number)
+	 * Example 7: -cssp-os:windows linux; - CSS rules only apply on windows and linux (Multi-Detection)
 	 * 
-	 * In the case of contradicting statements, the last defines statement wins, eg os:^linux linux; only applys on
+	 * In the case of contradicting statements, the last defines statement wins, eg -cssp-os:^linux linux; only applys on
 	 * linux systems (^linux is overruled)
 	 * 
 	 * 
 	 * Status: Alpha
-	 * @todo Implement version number matching for windows
-	 * @todo Implement multiple rules
 	 */
-
-
-	/**
-	 * @var array $os_windows_versions List of windows versions
-	 */
-	$os_windows_versions = array(
-		'2k' => 5.0,
-		'2000' => 5.0,
-		'xp' => 5.1,
-		'Vista' => 6.0,
-		'7' => 6.1
-	);
 
 
 	/**
@@ -72,7 +61,7 @@
 
 	/**
 	 * os_parse_os
-	 * Looks for the "os" property in an element and parses it
+	 * Looks for the "-cssp-os" property in an element and parses it
 	 * 
 	 * @param object $styles
 	 * @return 
@@ -81,9 +70,9 @@
 		global $browser;
 		$match = true;
 		// Find os property
-		if(isset($styles['os'])){
+		if(isset($styles['-cssp-os'])){
 			// Split up any multiple os rules in order to check them one by one
-			$osrules = explode(' ', $styles['os']);
+			$osrules = explode(' ', $styles['-cssp-os']);
 			// Check each os rule
 			foreach($osrules as $osrule){
 				preg_match('/([\^]?)(mac|linux|unix|windows)([!=><]{0,2})([0-9]*\.?[0-9]*]*)/i', $osrule, $matches);
@@ -107,7 +96,7 @@
 		}
 		// Keep the styles, unset os property
 		if($match){
-			unset($styles['os']);
+			unset($styles['-cssp-os']);
 			return $styles;
 		}
 		// Remove the element
