@@ -72,6 +72,7 @@
 		$match = true;
 		// Find os property
 		if(isset($styles['-cssp-os'])){
+			$match = false;
 			// Split up any multiple os rules in order to check them one by one
 			$osrules = explode(' ', $styles['-cssp-os']);
 			// Check each os rule
@@ -80,7 +81,7 @@
 				// If the useragent's detected os/platform is found in the current rule
 				if(strstr(strtolower($matches[2]),strtolower($browser->platform)))
 				{
-					// For the time being set $match to true in case a preceeding rule has set it to false
+					// For the time being set $match to true
 					$match = true;
 					// If we found a logical operator and a version number
 					if($matches[3] != '' && $matches[4] == floatval($matches[4]))
@@ -90,9 +91,14 @@
 						// Filter and run the detected rule through the PHP-interpreter
 						eval('if('.floatval($browser->platformversion).$matches[3].floatval($matches[4]).') $match = true; else $match = false;');
 					}
-					// Check if we had a negotiating operator at the beginning and in case flip result
-					if($matches[1] == '^') $match = ($match == true) ? false : true;
 				}
+				else
+				{
+					// Set $match to false
+					$match = false;
+				}
+				// Check if we had a negotiating operator at the beginning and in case flip result
+				if($matches[1] == '^') $match = ($match == true) ? false : true;
 			}
 		}
 		// Keep the styles, unset os property
