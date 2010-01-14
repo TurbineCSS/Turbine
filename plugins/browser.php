@@ -7,14 +7,77 @@
 	 * Usage: -cssp-browser:mybrowser myotherbrowser;
 	 * Usage: -cssp-engine:myengine myotherengine;
 	 * Usage: -cssp-device:mydevice myotherdevice;
+	 * If there are multiple arguments defined: Any positive submatch with the rule makes a positive match out of the whole rule
+	 * 
+	 * 
+	 * 
+	 * -cssp-browser matches the browser
+	 * possible browsers-names are:
+	 * opera_mini
+	 * opera
+	 * netscape
+	 * flock
+	 * mozilla
+	 * minimo
+	 * fennec
+	 * minefield
+	 * firebird
+	 * k-meleon
+	 * seamonkey
+	 * orca
+	 * firefox
+	 * gecko
+	 * safari
+	 * chromeframe
+	 * chrome
+	 * omniweb
+	 * shiira
+	 * arora
+	 * midori
+	 * icab
+	 * webkit
+	 * konqueror
+	 * aol
+	 * avant_browser
+	 * maxthon
+	 * msie (which is the internet explorer)
 	 * 
 	 * Example 1: -cssp-browser:firefox; - CSS rules only apply on firefox (Simple detection)
-	 * Example 2: -cssp-browser:^firefox; - CSS rules apply everywhere but firefox (Simple exclusion)
+	 * Example 2: -cssp-browser:^firefox; - CSS rules apply everywhere except firefox (Simple exclusion)
 	 * Example 3: -cssp-browser:firefox<3.5; - CSS rules only apply on firefox versions older than 3.5 (detection by version number)
-	 * Example 4: -cssp-browser:firefox opera; - CSS rules only apply on firefox and opera (Multi-Detection)
+	 * Example 3: -cssp-browser:firefox<=3.5; - CSS rules only apply on firefox versions older than or equal to 3.5 (detection by version number)
+	 * Example 4: -cssp-browser:firefox opera; - CSS rules only apply on firefox OR opera (Multi-Detection)
 	 * 
-	 * In the case of contradicting statements, the last defines statement wins, eg -cssp-browser:^opera opera; only applys on
-	 * opera ("^opera" is overruled)
+	 * 
+	 * 
+	 * -cssp-engine matches the browser's underlying engine
+	 * possible engine-names are (versioning-syntax is different on each):
+	 * 
+	 * opera
+	 * gecko
+	 * webkit
+	 * icab
+	 * khtml
+	 * msie
+	 * 
+	 * Example 1: -cssp-engine:gecko; - CSS rules only apply on browsers with gecko-engine (Simple detection)
+	 * Example 2: -cssp-engine:^gecko; - CSS rules apply everywhere except on browsers with gecko-engine (Simple exclusion)
+	 * Example 3: -cssp-engine:gecko<1.92; - CSS rules only apply on browsers with gecko-engine older than 1.92 (detection by version number)
+	 * Example 3: -cssp-engine:gecko<=1.92; - CSS rules only apply on browsers with gecko-engine older than or equal to 1.92 (detection by version number)
+	 * Example 4: -cssp-engine:gecko webkit; - CSS rules only apply on on browsers with gecko- OR webkit-engine (Multi-Detection)
+	 * 
+	 * 
+	 * 
+	 * -cssp-device matches the user's device
+	 * possible device-names are:
+	 * 
+	 * desktop
+	 * mobile
+	 * 
+	 * Example 1: -cssp-device:desktop; - CSS rules only apply on desktop-browsers (Simple detection)
+	 * Example 2: -cssp-device:mobile; - CSS rules only apply on mobile-browsers (Simple detection)
+	 * 
+	 * "mobile" not only matches portable devices but also game-consoles
 	 */
 
 
@@ -78,26 +141,28 @@
 			foreach($browserrules as $browserrule){
 				preg_match('/([\^]?)([a-z\-]+)([!=><]{0,2})([0-9]*\.?[0-9]*]*)/i', $browserrule, $matches);
 				// If the useragent's detected browser is found in the current rule
-				if(strstr(strtolower($matches[2]),strtolower($browser->name)))
+				if(strstr(strtolower($matches[2]),strtolower(str_replace(' ','_',$browser->name))))
 				{
-					// For the time being set $match to true
-					$match = true;
+					// For the time being set $submatch to true
+					$submatch = true;
 					// If we found a logical operator and a version number
 					if($matches[3] != '' && $matches[4] == floatval($matches[4]))
 					{
 						// Turn a single =-operator into a PHP-interpretable ==-operator
 						if($matches[3] == '=') $matches[3] = '==';
 						// Filter and run the detected rule through the PHP-interpreter
-						eval('if('.floatval($browser->version).$matches[3].floatval($matches[4]).') $match = true; else $match = false;');
+						eval('if('.floatval($browser->version).$matches[3].floatval($matches[4]).') $submatch = true; else $submatch = false;');
 					}
 				}
 				else
 				{
-					// Set $match to false
-					$match = false;
+					// Set $submatch to false
+					$submatch = false;
 				}
-				// Check if we had a negotiating operator at the beginning and in case flip result
-				if($matches[1] == '^') $match = ($match == true) ? false : true;
+				// Check if we had a negating operator at the beginning and in case flip result
+				if($matches[1] == '^') $submatch = ($submatch == true) ? false : true;
+				// Check the final state of $submatch and set $match only to true if $submatch is true
+				if($submatch) $match = true;
 			}
 		}
 		// Keep the styles, unset browser property
@@ -131,26 +196,28 @@
 			foreach($browserrules as $browserrule){
 				preg_match('/([\^]?)([a-z\-]+)([!=><]{0,2})([0-9]*\.?[0-9]*]*)/i', $browserrule, $matches);
 				// If the useragent's detected engine is found in the current rule
-				if(strstr(strtolower($matches[2]),strtolower($browser->engine)))
+				if(strstr(strtolower($matches[2]),strtolower(str_replace(' ','_',$browser->engine))))
 				{
-					// For the time being set $match to true
-					$match = true;
+					// For the time being set $submatch to true
+					$submatch = true;
 					// If we found a logical operator and a version number
 					if($matches[3] != '' && $matches[4] == floatval($matches[4]))
 					{
 						// Turn a single =-operator into a PHP-interpretable ==-operator
 						if($matches[3] == '=') $matches[3] = '==';
 						// Filter and run the detected rule through the PHP-interpreter
-						eval('if('.floatval($browser->engineversion).$matches[3].floatval($matches[4]).') $match = true; else $match = false;');
+						eval('if('.floatval($browser->engineversion).$matches[3].floatval($matches[4]).') $submatch = true; else $submatch = false;');
 					}
 				}
 				else
 				{
-					// Set $match to false
-					$match = false;
+					// Set $submatch to false
+					$submatch = false;
 				}
-				// Check if we had a negotiating operator at the beginning and in case flip result
-				if($matches[1] == '^') $match = ($match == true) ? false : true;
+				// Check if we had a negating operator at the beginning and in case flip result
+				if($matches[1] == '^') $submatch = ($submatch == true) ? false : true;
+				// Check the final state of $submatch and set $match only to true if $submatch is true
+				if($submatch) $match = true;
 			}
 		}
 		// Keep the styles, unset engine property
@@ -182,10 +249,12 @@
 			$browserrules = explode(' ', $styles['-cssp-device']);
 			// Check each device rule
 			foreach($browserrules as $browserrule){
-				if(strtolower($browserrule) == strtolower($browser->platformtype)) $match = true;
-				else $match = false;
-				// Check if we had a negotiating operator at the beginning and in case flip result
-				if($matches[1] == '^') $match = ($match == true) ? false : true;
+				if(strtolower($browserrule) == strtolower(str_replace(' ','_',$browser->platformtype))) $submatch = true;
+				else $submatch = false;
+				// Check if we had a negating operator at the beginning and in case flip result
+				if($matches[1] == '^') $submatch = ($submatch == true) ? false : true;
+				// Check the final state of $submatch and set $match only to true if $submatch is true
+				if($submatch) $match = true;
 			}
 		}
 		// Keep the styles, unset device property
