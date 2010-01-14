@@ -16,9 +16,6 @@
 	 * 
 	 * In the case of contradicting statements, the last defines statement wins, eg -cssp-os:^linux linux; only applys on
 	 * linux systems (^linux is overruled)
-	 * 
-	 * 
-	 * Status: Alpha
 	 */
 
 
@@ -77,7 +74,7 @@
 			$osrules = explode(' ', $styles['-cssp-os']);
 			// Check each os rule
 			foreach($osrules as $osrule){
-				preg_match('/([\^]?)(mac|linux|unix|windows)([!=><]{0,2})([0-9]*\.?[0-9]*]*)/i', $osrule, $matches);
+				preg_match('/([\^]?)([a-z\-]+)([!=><]{0,2})([0-9]*\.?[0-9]*]*)/i', $osrule, $matches);
 				// If the useragent's detected os/platform is found in the current rule
 				if(strstr(strtolower($matches[2]),strtolower($browser->platform)))
 				{
