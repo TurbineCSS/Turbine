@@ -5,6 +5,19 @@
 	 * Implements the "-cssp-os" property for operating system detection
 	 * 
 	 * Usage: -cssp-os:myos myotheros;
+	 * If there are multiple arguments defined: Any positive submatch with the rule makes a positive match out of the whole rule
+	 * 
+	 * possible os-names are:
+	 * windows
+	 * windows_ce
+	 * linux
+	 * mac
+	 * freebsd
+	 * openbsd
+	 * solaris
+	 * nintendo_wii
+	 * playstation_3
+	 * playstation_portable
 	 * 
 	 * Example 1: -cssp-os:windows; - CSS rules only apply on windows (Simple detection)
 	 * Example 2: -cssp-os:^windows; - CSS rules apply everywhere but windows (Simple exclusion)
@@ -12,10 +25,7 @@
 	 * Example 4: -cssp-os:windows<=5.1; - CSS rules only apply on windows versions older than or equal to XP (detection by version number)
 	 * Example 5: -cssp-os:windows!=5.1; - CSS rules only apply on windows versions other than XP (detection by version number)
 	 * Example 6: -cssp-os:windows=5.1; - CSS rules only apply on windows XP (detection by version number)
-	 * Example 7: -cssp-os:windows linux; - CSS rules only apply on windows and linux (Multi-Detection)
-	 * 
-	 * In the case of contradicting statements, the last defines statement wins, eg -cssp-os:^linux linux; only applys on
-	 * linux systems (^linux is overruled)
+	 * Example 7: -cssp-os:windows linux; - CSS rules only apply on windows OR linux (Multi-Detection)
 	 */
 
 
@@ -76,26 +86,28 @@
 			foreach($osrules as $osrule){
 				preg_match('/([\^]?)([a-z\-]+)([!=><]{0,2})([0-9]*\.?[0-9]*]*)/i', $osrule, $matches);
 				// If the useragent's detected os/platform is found in the current rule
-				if(strstr(strtolower($matches[2]),strtolower($browser->platform)))
+				if(strstr(strtolower($matches[2]),strtolower(str_replace(' ','_',$browser->platform))))
 				{
-					// For the time being set $match to true
-					$match = true;
+					// For the time being set $submatch to true
+					$submatch = true;
 					// If we found a logical operator and a version number
 					if($matches[3] != '' && $matches[4] == floatval($matches[4]))
 					{
 						// Turn a single =-operator into a PHP-interpretable ==-operator
 						if($matches[3] == '=') $matches[3] = '==';
 						// Filter and run the detected rule through the PHP-interpreter
-						eval('if('.floatval($browser->platformversion).$matches[3].floatval($matches[4]).') $match = true; else $match = false;');
+						eval('if('.floatval($browser->platformversion).$matches[3].floatval($matches[4]).') $submatch = true; else $submatch = false;');
 					}
 				}
 				else
 				{
-					// Set $match to false
-					$match = false;
+					// Set $submatch to false
+					$submatch = false;
 				}
-				// Check if we had a negotiating operator at the beginning and in case flip result
-				if($matches[1] == '^') $match = ($match == true) ? false : true;
+				// Check if we had a negating operator at the beginning and in case flip result
+				if($matches[1] == '^') $submatch = ($submatch == true) ? false : true;
+				// Check the final state of $submatch and set $match only to true if $submatch is true
+				if($submatch) $match = true;
 			}
 		}
 		// Keep the styles, unset os property
