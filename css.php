@@ -44,6 +44,8 @@ if (
 else{
 	@ob_start();
 }
+@ini_set("display_errors", 1);
+@error_reporting(E_ALL);
 
 // Begin parsing
 if($_GET['files']){
@@ -92,7 +94,7 @@ if($_GET['files']){
 			if(!is_dir($cachedir)){
 				@mkdir($cachedir, 0777);
 			}
-			$cachefile = $browser->family.$browser->familyversion.preg_replace('/[^0-9A-Za-z\-\._]/','',str_replace(array('\\','/'),'.',$file));
+			$cachefile = md5($browser->platform.$browser->platformversion.$browser->family.$browser->familyversion.$file).'.txt';
 			// Server-side cache: Check if a cached version of the file already exists
 			if(file_exists($cachedir.'/'.$cachefile) && @filemtime($cachedir.'/'.$cachefile) >= @filemtime($file)){
 				$incache = true;
@@ -130,7 +132,7 @@ if($_GET['files']){
 			}
 			else{
 				// Server-side cache: read the cached version of the file
-				$output .= @file_get_contents($cachedir.'/'.$cachefile);
+				$output = @file_get_contents($cachedir.'/'.$cachefile);
 			}
 			// Add to final css
 			$css .= $output;
