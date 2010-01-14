@@ -5,7 +5,7 @@
  */
 @cssp {
 	compress:0;
-	plugins:/*ie_bugfixes inline_block*/ quote_style reset_stylesheet border_radius transparent_background box_shadow data_uri hexcrusher;
+	plugins:/*ie_bugfixes inline_block*/ quote_style reset_stylesheet border_radius transparent_background box_shadow data_uri hexcrusher os;
 }
 
 /*
@@ -121,5 +121,86 @@
 		padding:2px 8px 8px 8px;
 	}
 
-
+	/**
+	 * OS plugin tests
+	 */
+	#windows {
+		-cssp-os: windows;
+		color: red;
+	}
+	
+	#windowslt51 {
+		-cssp-os: windows<5.1;
+		color: red;
+	}
+	
+	#windowsgte51 {
+		-cssp-os: windows>=5.1;
+		color: red;
+	}
+	
+	#windowse61 {
+		-cssp-os: windows=6.1;
+		color: red;
+	}
+	
+	#windowse61_2 {
+		-cssp-os: ^windows!=6.1;
+		color: red;
+	}
+	
+	#notwindowse50 {
+		-cssp-os: windows!=5.0;
+		color: red;
+	}
+	
+	#notwindows {
+		-cssp-os: ^windows;
+		color: red;
+	}
+	
+	#notwindows_2 {
+		-cssp-os: windows ^windows;
+		color: red;
+	}
+	
+	#notlinux {
+		-cssp-os: ^linux;
+		color: red;
+	}
+	
+	#notlinux_2 {
+		-cssp-os: linux ^linux;
+		color: red;
+	}
+	
+	#linux {
+		-cssp-os: linux;
+		color: red;
+	}
+	
+	#linux_2 {
+		-cssp-os: ^linux linux;
+		color: red;
+	}
+	
+	#notmac {
+		-cssp-os: ^mac;
+		color: red;
+	}
+	
+	#notmac_2 {
+		-cssp-os: mac ^mac;
+		color: red;
+	}
+	
+	#mac {
+		-cssp-os: mac;
+		color: red;
+	}
+	
+	#mac_2 {
+		-cssp-os: ^mac mac;
+		color: red;
+	}
 }
