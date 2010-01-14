@@ -251,14 +251,6 @@ class browser
 			$this->engine = "Gecko";
 			if(preg_match('/rv:([0-9\.]+)/i',$this->useragent,$match) > 0) $this->engineversion = $this->floatvalVersion($match[1]);
 		}
-		elseif(preg_match("/minimo/i", $this->useragent) == 1)
-		{
-			$this->name = "Minimo";
-			if(preg_match('/Minimo\/([0-9\.]+)/i',$this->useragent,$match) > 0) $this->version = $this->floatvalVersion($match[1]);
-			$this->family = "Firefox";
-			$this->engine = "Gecko";
-			if(preg_match('/rv:([0-9\.]+)/i',$this->useragent,$match) > 0) $this->engineversion = $this->floatvalVersion($match[1]);
-		}
 		if(preg_match("/minefield/i", $this->useragent) == 1)
 		{
 			$this->name = "Minefield";
