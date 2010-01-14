@@ -5,7 +5,7 @@
  */
 @cssp {
 	compress:0;
-	plugins:/*ie_bugfixes inline_block*/ quote_style reset_stylesheet border_radius transparent_background box_shadow data_uri hexcrusher os;
+	plugins:/*ie_bugfixes inline_block*/ quote_style reset_stylesheet border_radius transparent_background box_shadow data_uri hexcrusher os browser;
 }
 
 /*
@@ -201,6 +201,78 @@
 	
 	#mac_2 {
 		-cssp-os: ^mac mac;
+		color: red;
+	}
+	
+	#firefox {
+		-cssp-browser: firefox;
+		color: red;
+	}
+	
+	#notfirefox {
+		-cssp-browser: ^firefox;
+		color: red;
+	}
+	
+	#firefoxgte20 {
+		-cssp-browser: firefox>=2.0;
+		color: red;
+	}
+	
+	#firefoxgte50 {
+		-cssp-browser: firefox>=5.0;
+		color: red;
+	}
+	
+	#firefoxsafari {
+		-cssp-browser: firefox safari;
+		color: red;
+	}
+	
+	#safari {
+		-cssp-browser: safari;
+		color: red;
+	}
+	
+	#gecko {
+		-cssp-engine: gecko;
+		color: red;
+	}
+	
+	#notgecko {
+		-cssp-engine: ^gecko;
+		color: red;
+	}
+	
+	#webkit {
+		-cssp-engine: webkit;
+		color: red;
+	}
+	
+	#notwebkit {
+		-cssp-engine: ^webkit;
+		color: red;
+	}
+	
+	#mobile {
+		-cssp-device: mobile;
+		color: red;
+	}
+	
+	#desktop {
+		-cssp-device: desktop;
+		color: red;
+	}
+	
+	#mobile_gecko {
+		-cssp-device: mobile;
+		-cssp-engine: gecko;
+		color: red;
+	}
+	
+	#desktop_gecko {
+		-cssp-device: desktop;
+		-cssp-engine: gecko;
 		color: red;
 	}
 }
