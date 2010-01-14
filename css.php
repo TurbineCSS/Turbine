@@ -44,8 +44,6 @@ if (
 else{
 	@ob_start();
 }
-@ini_set("display_errors", 1);
-@error_reporting(E_ALL);
 
 // Begin parsing
 if($_GET['files']){
