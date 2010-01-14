@@ -210,7 +210,7 @@ class CssParser {
 
 				// End comment state
 				case 'co';
-					if($this->css{$i} == '/' && $this->css{$i-1} == '*'){
+					if($i > 0 && $this->css{$i} == '/' && $this->css{$i-1} == '*'){
 						$this->state = $this->prev_state;
 					}
 				break;
