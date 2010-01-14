@@ -92,7 +92,17 @@ if($_GET['files']){
 			if(!is_dir($cachedir)){
 				@mkdir($cachedir, 0777);
 			}
-			$cachefile = md5($browser->platform.$browser->platformversion.$browser->family.$browser->familyversion.$file).'.txt';
+			$cachefile = md5(
+				$browser->platform.
+				$browser->platformversion.
+				$browser->platformtype.
+				$browser->engine.
+				$browser->engineversion.
+				$browser->family.
+				$browser->familyversion.
+				$browser->name.
+				$browser->version.
+				$file).'.txt';
 			// Server-side cache: Check if a cached version of the file already exists
 			if(file_exists($cachedir.'/'.$cachefile) && @filemtime($cachedir.'/'.$cachefile) >= @filemtime($file)){
 				$incache = true;
