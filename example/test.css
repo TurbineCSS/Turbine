@@ -159,7 +159,7 @@
 		color: red;
 	}
 	
-	#notwindows_2 {
+	#any_os {
 		-cssp-os: windows ^windows;
 		color: red;
 	}
@@ -169,7 +169,7 @@
 		color: red;
 	}
 	
-	#notlinux_2 {
+	#any_os_2 {
 		-cssp-os: linux ^linux;
 		color: red;
 	}
@@ -179,7 +179,7 @@
 		color: red;
 	}
 	
-	#linux_2 {
+	#any_os_3 {
 		-cssp-os: ^linux linux;
 		color: red;
 	}
@@ -189,7 +189,7 @@
 		color: red;
 	}
 	
-	#notmac_2 {
+	#any_os_4 {
 		-cssp-os: mac ^mac;
 		color: red;
 	}
@@ -199,7 +199,7 @@
 		color: red;
 	}
 	
-	#mac_2 {
+	#any_os_5 {
 		-cssp-os: ^mac mac;
 		color: red;
 	}
