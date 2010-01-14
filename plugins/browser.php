@@ -139,7 +139,7 @@
 			$browserrules = explode(' ', $styles['-cssp-browser']);
 			// Check each browser rule
 			foreach($browserrules as $browserrule){
-				preg_match('/([\^]?)([a-z\-]+)([!=><]{0,2})([0-9]*\.?[0-9]*]*)/i', $browserrule, $matches);
+				preg_match('/([\^]?)([a-z\-_0-9]+)([!=><]{0,2})([0-9]*\.?[0-9]*]*)/i', $browserrule, $matches);
 				// If the useragent's detected browser is found in the current rule
 				if(strstr(strtolower($matches[2]),strtolower(str_replace(' ','_',$browser->name))))
 				{
@@ -194,7 +194,7 @@
 			$browserrules = explode(' ', $styles['-cssp-engine']);
 			// Check each engine rule
 			foreach($browserrules as $browserrule){
-				preg_match('/([\^]?)([a-z\-]+)([!=><]{0,2})([0-9]*\.?[0-9]*]*)/i', $browserrule, $matches);
+				preg_match('/([\^]?)([a-z\-_0-9]+)([!=><]{0,2})([0-9]*\.?[0-9]*]*)/i', $browserrule, $matches);
 				// If the useragent's detected engine is found in the current rule
 				if(strstr(strtolower($matches[2]),strtolower(str_replace(' ','_',$browser->engine))))
 				{

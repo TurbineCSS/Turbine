@@ -84,7 +84,7 @@
 			$osrules = explode(' ', $styles['-cssp-os']);
 			// Check each os rule
 			foreach($osrules as $osrule){
-				preg_match('/([\^]?)([a-z\-]+)([!=><]{0,2})([0-9]*\.?[0-9]*]*)/i', $osrule, $matches);
+				preg_match('/([\^]?)([a-z\-_0-9]+)([!=><]{0,2})([0-9]*\.?[0-9]*]*)/i', $osrule, $matches);
 				// If the useragent's detected os/platform is found in the current rule
 				if(strstr(strtolower($matches[2]),strtolower(str_replace(' ','_',$browser->platform))))
 				{
