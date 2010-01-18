@@ -26,7 +26,7 @@
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				foreach($colorproperties as $colorproperty){
-					if($parsed[$block][$selector][$colorproperty]){
+					if(isset($parsed[$block][$selector][$colorproperty])){
 						$parsed[$block][$selector][$colorproperty] =
 							preg_replace($pattern, '#\1\2\3', $parsed[$block][$selector][$colorproperty]);
 					}
