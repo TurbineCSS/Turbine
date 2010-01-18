@@ -42,7 +42,6 @@
 				// Loop through @font-face
 				if($selector == '@font-face'){
 					foreach($styles as $index => $style){
-						
 						$osparsed = os_parse_os($style);
 						if($osparsed){
 							$parsed[$block][$selector][$index] = $osparsed;

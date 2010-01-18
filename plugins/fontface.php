@@ -36,7 +36,7 @@
 	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function bp_font_face(&$parsed){
+	function fontface(&$parsed){
 		foreach($parsed as $block => $css){
 			if(isset($parsed[$block]['@font-face'])){
 				foreach($parsed[$block]['@font-face'] as $key => $font){

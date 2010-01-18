@@ -11,7 +11,7 @@
 	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function data_uri(&$parsed){
+	function datauri(&$parsed){
 		global $browser;
 		global $file;
 		foreach($parsed as $block => $css){

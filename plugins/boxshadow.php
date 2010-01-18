@@ -13,7 +13,7 @@
 	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function box_shadow(&$parsed){
+	function boxshadow(&$parsed){
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				if(isset($parsed[$block][$selector]['box-shadow'])){

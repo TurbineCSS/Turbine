@@ -1,7 +1,9 @@
 <?php
+
+
 /**
- * CSS Parser
- * A tool for parsing and manipulating stylesheets.
+ * CSSP - CSS Preprocessor
+ * A new way to write CSS
  * 
  * Copyright (C) 2009 Peter Kröner
  * 
@@ -21,33 +23,38 @@
 
 
 /**
- * CssParser
- * General purpose CSS parser
- * @todo Support @import
+ * Parser2
+ * CSSP syntax parser
  */
-class CssParser {
+class Parser2 {
 
 
 	/**
 	 * @var bool $debug
 	 */
-	public $debug;
+	public $debug = false;
 
 
 	/**
-	 * @var string $css The loaded css code (before parsing)
+	 * @var array $css The loaded css code (before parsing)
 	 */
-	public $css;
+	public $css = array();
 
 
 	/**
 	 * @var array $parsed The parsed css
 	 */
-	public $parsed = array('css' => array());
+	public $parsed = array('global' =>
+		array(
+			'@import' => array(),
+			'@font-face' => array()
+		)
+	);
 
 
 	/**
 	 * @var array $state The parser state
+	 * @todo: Some of these are unused now
 	 * se = in selector
 	 * pr = in property
 	 * va = in value
@@ -55,13 +62,13 @@ class CssParser {
 	 * co = in comment
 	 * at = in @-block
 	 * im = in @import
-	 * ff = in @font-face
 	 */
 	public $state = null;
 
 
 	/**
 	 * @var array $prev_state The previous parser state
+	 * @todo: Some of these are unused now
 	 * se = in selector
 	 * pr = in property
 	 * va = in value
@@ -69,7 +76,6 @@ class CssParser {
 	 * co = in comment
 	 * at = in @media
 	 * im = in @import
-	 * ff = in @font-face
 	 */
 	public $prev_state = null;
 
@@ -87,9 +93,9 @@ class CssParser {
 
 
 	/**
-	 * @var int $n The current nesting depth
+	 * @var array $nesting The nesting stack
 	 */
-	public $n = 0;
+	public $nesting = array();
 
 
 	/**
@@ -104,8 +110,16 @@ class CssParser {
 		'se' => null,
 		'pr' => null,
 		'va' => null,
-		'at' => 'css',
-		'fi' => null
+		'at' => 'global',
+		'fi' => -1
+	);
+
+
+	/*
+	 * @var array $options Parser options
+	 */
+	public $options = array(
+		'indention_char' => "	"
 	);
 
 
@@ -130,16 +144,18 @@ class CssParser {
 
 	/**
 	 * load_string
-	 * Loads a css string
+	 * Loads a css string line by line and appends it to the unparsed css code if $overwirite is false
 	 * @param string $string the css to load
 	 * @param bool $overwrite overwrite already loaded css or append the new string?
 	 * @return object $this The CSS Parser object
 	 */
 	public function load_string($string, $overwrite = false){
+		$lines = explode("\n", $string);
 		if($overwrite){
-			$this->css = $string;
-		} else {
-			$this->css .= $string;
+			$this->css = $lines;
+		}
+		else{
+			$this->css = array_merge($this->css, $lines);
 		}
 		return $this;
 	}
@@ -175,250 +191,236 @@ class CssParser {
 
 	/**
 	 * parse
-	 * Reads the loaded css into $this->parsed
+	 * Reads the loaded css line by line into $this->parsed
 	 * @return object $this The CSS Parser object
 	 */
 	public function parse(){
-		$len = strlen($this->css);
-		for($i = 0; $i < $len; $i++ ){
 
+		/* DEBUG */  echo ($this->debug) ? '<table border="1" cellpadding="4"><tr><th>Zeile</th><th>@-Block</th><th>Selektor</th><th>Eigenschaft / Wert</th></tr>' : '';
 
-			// Begin comment state
-			if($this->state != 'st' && $this->state != 'co'){
-				if($this->css{$i} == '/' && $this->css{$i+1} == '*'){
-					$this->prev_state = $this->state;
-					$this->state = 'co';
+		$linecount = count($this->css);
+		for($i = 0; $i < $linecount; $i++){
+			$line = $this->css[$i];
+			$nextline = $this->css[1+$i];
+			$this->token = '';
+
+			// Ignore empty lines and comments
+			if(trim($line) != '' && substr(trim($line), 0, 2) != '//'){
+
+				if(substr(trim($line), 0, 6) == '@media'){ // Parse @media switch
+					$this->parse_media_line($line);
 				}
-			}
-
-
-			// Begin string state
-			if($this->state != 'co' && $this->state != 'st'){
-				$strings = array('"', "'", '(');
-				if(in_array($this->css{$i}, $strings)){
-					$this->prev_state = $this->state;
-					$this->string_state = $this->css{$i};
-					$this->state = 'st';
-					$this->token .= $this->css{$i};
-					$i++;
+				//elseif(){ // TODO: Parse @font-face
+				//}
+				elseif(substr(trim($line), 0, 7) == '@import'){
+					$this->parse_import_line($line);
 				}
-			}
-
-
-			switch($this->state){
-
-
-				// End comment state
-				case 'co';
-					if($i > 0 && $this->css{$i} == '/' && $this->css{$i-1} == '*'){
-						$this->state = $this->prev_state;
+				else{
+					$level = $this->get_indention_level($line); // TODO: Level should be always 0 when there's no line before this line
+					if($this->get_indention_level($nextline) == $level + 1){ // Parse as selector when the next line is further indented
+						$this->parse_selector_line($line, $level);
 					}
-				break;
-
-
-				// End string state
-				case 'st';
-					if($this->css{$i} == $this->string_state || ($this->css{$i} == ')' && $this->string_state == '(')){
-						$this->state = $this->prev_state;
-						$this->string_state = null;
-					}
-					$this->token .= $this->css{$i};
-				break;
-
-
-				// @import state
-				case 'im';
-					if($this->css{$i} == ';'){
-						$this->state = null;
-						$this->parsed[$this->current['at']]['@import'][] = trim($this->token);
-						$this->token = '';
-					}
-					else {
-						$this->token .= $this->css{$i};
-					}
-				break;
-
-
-				// @font-face
-				case 'ff';
-					// End @font-face
-					if($this->css{$i} == '}'){
-						$this->parsed[$this->current['at']]['@font-face'][$this->current['fi']] = trim($this->token);
-						$this->state = null;
-						$this->current['fi'] = null;
-					}
-					// Begin property
-					elseif($this->css{$i} == '{'){
-						$this->state = 'pr';
-						$this->token = '';
-					}
-				break;
-
-
-				// At-rule state
-				case 'at';
-					// Begin selector, end at-rule
-					if($this->css{$i} == '{'){
-						$this->state = 'se';
-						$this->current['at'] = $this->token;
-						$this->token = '';
-					}
-					else {
-						$this->token .= $this->css{$i};
-					}
-				break;
-
-
-				// Selector state
-				case 'se';
-					// @import
-					if($this->css{$i} == '@' && substr($this->css, $i, 7) == '@import'){
-						$this->state = 'im';
-						$this->current['se'] = '@import';
-						$i = $i + 7;
-					}
-					// Leave at-rule
-					elseif($this->css{$i} == '}'){
-						if($this->current['at'] != 'css'){
-							$this->state = null;
-						}
-					}
-					// End selector, begin property
-					elseif($this->css{$i} == '{'){
-						$this->state = 'pr';
-						$this->current['se'] = $this->token;
-						$this->token = '';
-					}
-					else {
-						$this->token .= $this->css{$i};
-					}
-				break;
-
-
-				// Property state
-				case 'pr';
-					// Begin value
-					if($this->css{$i} == ':'){
-						$this->state = 'va';
-						$this->current['pr'] = $this->token;
-						$this->token = '';
-					} else {
-						// End property, return to selector or null state, add to parsed array
-						if($this->css{$i} == '}'){
-							if($this->current['at'] == 'css'){
-								$this->state = null;
-							}
-							else {
-								$this->state = 'se';
-							}
-							$this->merge();
-						} else {
-							$this->token .= $this->css{$i};
-						}
-					}
-				break;
-
-
-				// Value state
-				case 'va';
-					// End value, return to property, null or selector
-					if($this->css{$i} == ';' || $this->css{$i} == '}'){
-						// Semicolon: return to property state if not nested
-						if($this->css{$i} == ';'){
-							if($this->n == 0){
-								$this->state = 'pr';
-								$this->current['va'] = $this->token;
-								$this->merge();
-								$this->token = '';
-							}
-							else{
-								$this->token .= $this->css{$i};
-							}
-						}
-						// Closing curly brace: return to null state (if not in @-rule) or selector state if not nested
-						elseif($this->css{$i} == '}') {
-							if($this->n == 0){
-								if($this->current['at'] == 'css'){
-									$this->state = null;
-								}
-								else {
-									$this->state = 'se';
-								}
-								$this->current['va'] = $this->token;
-								$this->merge();
-								$this->token = '';
-							}
-							else{
-								$this->n--;
-								$this->token .= $this->css{$i};
-							}
-						}
-					}
+					// ...or else as property/value pair
 					else{
-						if($this->css{$i} == '{'){
-							$this->n++;
-						}
-						$this->token .= $this->css{$i};
+						$this->parse_property_line($line);
 					}
-				break;
+				}
 
-
-				// No state
-				case null:
-				default;
-					// Do nothing if whitespace
-					if(!preg_match('[^\s]', $this->css{$i})){
-						// Begin @-block
-						if($this->css{$i} == '@'){
-							// @media
-							if(substr($this->css, $i, 6) == '@media'){
-								$this->state = 'at';
-								$this->current['at'] = '';
-							}
-							// @import
-							elseif(substr($this->css, $i, 7) == '@import'){
-								$this->state = 'im';
-								$this->current['se'] = '@import';
-								$i = $i + 7;
-							}
-							// @font-face
-							elseif(substr($this->css, $i, 10) == '@font-face'){
-								$this->state = 'ff';
-								$this->current['se'] = '@font-face';
-								$this->current['fi'] = count(@$this->parsed[$this->current['at']]['@font-face']);
-							}
-						}
-						// Begin selector
-						else{
-							$this->state = 'se';
-							$this->current['at'] = 'css';
-						}
-						$this->token .= $this->css{$i};
-					}
-				break;
-
+				/* DEBUG */  echo ($this->debug) ? '<tr>' : '';
+				/* DEBUG */  echo ($this->debug) ? '<td><pre>'.$line.'</pre></td>' : '';
+				/* DEBUG */  echo ($this->debug) ? '<td><pre>'.$this->current['at'].'</pre></td>' : '';
+				/* DEBUG */  echo ($this->debug) ? '<td><pre>'.$this->current['se'].'</pre></td>' : '';
+				/* DEBUG */  echo ($this->debug) ? '<td><pre>'.$this->current['pr'].' / '.$this->current['va'].'</pre></td>' : '';
+				/* DEBUG */  echo ($this->debug) ? '</tr>' : '';
 
 			}
-
-
-			// Debug
-			if($this->debug){
-				echo ' | ';
-				echo (preg_match('[^\s]', $this->css{$i})) ? '&nbsp;': $this->css{$i};
-				echo ' | ';
-				echo ($this->state) ? $this->state : 'nl';
-				echo ' | ';
-				echo trim($this->token);
-				echo '<br>';
-			}
-
-
 		}
 
+		/* DEBUG */  echo ($this->debug) ? '</table>' : '';
 
 		return $this;
+	}
 
 
+	/**
+	 * parse_media_line
+	 * 
+	 * @param string $line A line containing an @media switch
+	 * @return void
+	 */
+	protected function parse_media_line($line){
+		$this->current['at'] = '';
+		$this->current['se'] = '';
+		$this->current['pr'] = '';
+		$this->current['va'] = '';
+		$line = trim(substr($line, 6));
+		$len = strlen($line);
+		for($i = 0; $i < $len; $i++ ){
+			$this->switch_string_state($line{$i});
+			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){ // Break on comment
+				break;
+			}
+			$this->token .= $line{$i};
+		}
+		$this->current['at'] = trim(preg_replace('/[\s]+/', ' ', $this->token)); // Trim whitespace, use as current @media
+	}
+
+
+	/**
+	 * parse_import_line
+	 * 
+	 * @param string $line A line containing @import
+	 * @return void
+	 */
+	protected function parse_import_line($line){
+		$line = trim(substr($line, 7));
+		$len = strlen($line);
+		for($i = 0; $i < $len; $i++ ){
+			$this->switch_string_state($line{$i});
+			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){ // Break on comment
+				break;
+			}
+			$this->token .= $line{$i};
+		}
+		$this->parsed['global']['@import'][] = $this->token;
+	}
+
+
+	/**
+	 * parse_selector_line
+	 * 
+	 * @param string $line A line containing a selector
+	 * @param
+	 * @return void
+	 */
+	protected function parse_selector_line($line, $level){
+		$line = trim($line);
+		$len = strlen($line);
+		for($i = 0; $i < $len; $i++ ){
+			$this->switch_string_state($line{$i});
+			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){ // Break on comment
+				break;
+			}
+			$this->token .= $line{$i};
+		}
+		// Trim whitespace
+		$selector = trim(preg_replace('/[\s]+/', ' ', $this->token));
+		// Combine selector with the nesting stack
+		if($level > 0){
+			//$selector = $this->nesting[$level-1].' '.$selector; // TODO Comma combinations
+			$selector = $this->merge_selectors($this->nesting[$level-1], $selector);
+		}
+		// Increase font-face index
+		if($selector == '@font-face'){
+			$this->current['fi']++;
+		}
+		$this->current['se'] = $selector; // Use as current selector
+		$this->nesting[(int)$level] = $selector; // Add to the nesting stack
+	}
+
+
+	/**
+	 * parse_property_line
+	 * 
+	 * @param string $line A line containing one (or more) property-value-pairs
+	 * @return void
+	 */
+	protected function parse_property_line($line){
+		$line = trim($line);
+		$len = strlen($line);
+		$this->state = 'pr';
+		for($i = 0; $i < $len; $i++ ){
+			$this->switch_string_state($line{$i});
+			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){ // Break on comment
+				if(trim($this->token) != ''){
+					$this->current['va'] = trim($this->token);
+					$this->token = '';
+					$this->merge();
+				}
+				break;
+			}
+			elseif($this->state != 'st' && $line{$i} == ':'){ // End property state on colon
+				$this->current['pr'] = trim($this->token);
+				$this->state = 'va';
+				$this->token = '';
+			}
+			elseif($i + 1 == $len || ($this->state != 'st' && $line{$i} == ';')){ // End pair on line end or semicolon
+				if($i + 1 == $len && $line{$i} != ';'){
+					$this->token .= $line{$i};
+				}
+				$this->current['va'] = trim($this->token);
+				$this->token = '';
+				$this->merge();
+			}
+			else{
+				$this->token .= $line{$i};
+			}
+		}
+	}
+
+
+	/**
+	 * 
+	 */
+	protected function merge_selectors($parent, $child){
+		// FIXME This is obviously just a quick hack and should be replaced by real parsing
+		$parent = explode(',', $parent);
+		$parent = array_map('trim', $parent);
+		$child = explode(',', $child);
+		$child = array_map('trim', $child);
+		// Merge the split selectors
+		$selectors = array();
+		foreach($parent as $p){
+			$selector = array();
+			foreach($child as $c){
+				$selector[] = $p.' '.$c;
+			}
+			$selectors[] = $selector;
+		}
+		$num = count($selectors);
+		for($i = 0; $i < $num; $i++){
+			$selectors[$i] = implode(', ', $selectors[$i]);
+		}
+		return implode(', ', $selectors);
+	}
+
+
+	/**
+	 * switch_string_state
+	 * Manages the string state
+	 * 
+	 * @param string $char A single char
+	 * @return void
+	 */
+	protected function switch_string_state($char){
+		$strings = array('"', "'", '(');
+		if($this->state != 'st'){ // Enter string state
+			if(in_array($char, $strings)){
+				$this->prev_state = $this->state;
+				$this->string_state = $char;
+				$this->state = 'st';
+			}
+		}
+		else{ // Leave string state
+			if($char == $this->string_state || ($char == ')' && $this->string_state == '(')){
+				$this->string_state = null;
+				$this->state = $this->prev_state;
+			}
+		}
+	}
+
+
+	/**
+	 * get_indention_level
+	 * 
+	 * @param string $line The line to get the indention level for
+	 * @return int $level The indention level
+	 */
+	protected function get_indention_level($line){
+		if(substr($line, 0, strlen($this->options['indention_char'])) == $this->options['indention_char']){
+			$level = 1 + $this->get_indention_level(substr($line, strlen($this->options['indention_char'])));
+		}
+		return $level;
 	}
 
 
@@ -428,11 +430,11 @@ class CssParser {
 	 * @return void
 	 */
 	protected function merge(){
-		// Trim the current and probably very messy values
-		$at = trim($this->current['at']);
-		$se = trim($this->current['se']);
-		$pr = trim($this->current['pr']);
-		$va = trim($this->current['va']);
+		// The current values
+		$at = ($this->current['at'] !== 'global') ? '@media '.$this->current['at']: $this->current['at'];
+		$se = $this->current['se'];
+		$pr = $this->current['pr'];
+		$va = $this->current['va'];
 		$fi = $this->current['fi'];
 		// Special treatment for @font-face
 		if($se == '@font-face'){

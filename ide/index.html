@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>CSSP IDE</title>
+		<script src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.4/mootools-yui-compressed.js"></script>
+		<script src="ide.js"></script>
+		<script>
+			var MainIDE = null;
+			window.addEvent('domready', function(){
+				var MainIDE = new Ide('editor');
+			});
+		</script>
+		<style type="text/css">
+			html, body { height:100%; width:100%; background:#000; margin:0; padding:0; }
+			#toolbar { font-family:Arial, sans-serif; background:#111; color:#666; position:fixed; top:0; right:0; border-bottom:1px solid #333; border-left:1px solid #333; -moz-border-radius-bottomleft:2em; -moz-box-shadow:-8px 8px 16px #111; }
+				#toolbar h1 { font-size:0.8em; color:#555; text-align:right; font-weight:normal; margin:0; padding:1em 2.25em 0 2.25em; }
+				#toolbar ul { list-style:none; margin:0; padding:1em; }
+					#toolbar ul li { display:inline; padding:0 1em; }
+				#toolbar a { text-decoration:none; outline:none !important; }
+				#toolbar a:link, a:visited { color:#CCC; }
+				#toolbar a:hover, a:active { color:#FFF; }
+			#editor { min-height:100%; font-family:Consolas, Courier, monospace; background:#222; color:#FFF; font-size:100%; line-height:1.25em; outline:none !important; margin:0; padding:1%; }
+		</style>
+	</head>
+	<body>
+
+<div id="toolbar">
+	<h1>CSSP IDE &bull; Untitled file</h1>
+	<ul>
+		<li>New</li>
+		<li>Open</li>
+		<li>Edit</li>
+		<li><a id="savelink" href="#">Save</a></li>
+		<li><a id="revertlink" href="#">Revert</a></li>
+		<li>Export</li>
+		<li>Settings</li>
+	</ul>
+</div>
+
+<pre contenteditable="true" id="editor">@import url(foo.css) screen
+@import "bar.css"
+
+#foo, #bar, #arf
+	color: red
+	font-weight: bold; font-style: italic
+	#spam,  #eggs
+		color: green
+
+@media screen
+
+#blubb
+	color: blue
+
+
+// Kommentar!
+#foo div.bar
+	font-weight: bold; // Semikolons sind erlaubt, aber nicht nötig...
+	color: red
+	font-style: italic; text-transform: uppercase; vertical-align: middle // ... außer man will mehr in eine Zeile quetschen
+	font-family:Verdana, Arial, sans
+	ul, ol
+		list-style: square
+		li
+			display: block
+			content: "';:e///\{]}"
+			b
+				font-weight: bold
+
+div.blubbs
+	font-weight: normal !important
+	color: blue
+
+
+@media print
+
+div.blubbs
+	font-weight: bold</pre>
+
+	</body>
+</html>

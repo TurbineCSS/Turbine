@@ -20,7 +20,7 @@
 	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function sprite_position(&$parsed){
+	function sprite(&$parsed){
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				if(isset($parsed[$block][$selector]['sprite']) && isset($parsed[$block][$selector]['sprite-position'])){

@@ -14,7 +14,7 @@
 	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function border_radius(&$parsed){
+	function borderradius(&$parsed){
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				// Everywhere

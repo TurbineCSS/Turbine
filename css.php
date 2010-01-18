@@ -57,8 +57,8 @@ if($_GET['files']){
 	}
 
 	// Load libraries
-	include('lib/browser_class_inc.php');
-	include('lib/parser2.php');
+	include('lib/browser.php');
+	include('lib/parser.php');
 	include('lib/cssp.php');
 
 	// Get and store browser properties

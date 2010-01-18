@@ -1,7 +1,7 @@
 <?php
 
 	/**
-	 * Cross-browser transparent backgrounds
+	 * AlphaBG - Cross-browser transparent backgrounds
 	 * 
 	 * Usage:   alpha-background:rgba(red [0-255], green [0-255], blue [0-255], alpha [0-1]);
 	 * Example: alpha-background:rgba(0, 255, 20, 0.25);
@@ -12,7 +12,7 @@
 	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function transparent_background(&$parsed){
+	function alphabg(&$parsed){
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				if(isset($parsed[$block][$selector]['alpha-background'])){
