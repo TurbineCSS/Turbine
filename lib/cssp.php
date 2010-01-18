@@ -40,7 +40,6 @@ class Cssp extends Parser2 {
 		if($query){
 			$this->load_file($query);
 			$this->parse();
-			$this->apply_children();
 			$this->apply_aliases();
 			$this->apply_inheritance();
 			$this->apply_constants();

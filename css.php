@@ -111,9 +111,9 @@ if($_GET['files']){
 			if(!$incache){
 				$cssp = new Cssp($file);
 				// Apply plugins
-				if(isset($cssp->parsed['css']['@cssp']['plugins'])){ // TODO; What if the configuration element is not in the global block?
+				if(isset($cssp->parsed['global']['@cssp']['plugins'])){ // TODO; What if the configuration element is not in the global block?
 					$plugin_dir = 'plugins';
-					$plugins = preg_split("/\s+/", $cssp->parsed['css']['@cssp']['plugins']);
+					$plugins = preg_split("/\s+/", $cssp->parsed['global']['@cssp']['plugins']);
 					foreach($plugins as $plugin){
 						$pluginfile = $plugin_dir.'/'.$plugin.'.php';
 						if(file_exists($pluginfile)){
@@ -125,14 +125,14 @@ if($_GET['files']){
 					}
 				}
 				// Set compression mode
-				if(isset($cssp->parsed['css']['@cssp']['compress'])){
-					$compress = (bool) $cssp->parsed['css']['@cssp']['compress'];
+				if(isset($cssp->parsed['global']['@cssp']['compress'])){
+					$compress = (bool) $cssp->parsed['global']['@cssp']['compress'];
 				}
 				else{
 					$compress = false;
 				}
 				// Remove configuration @-rule
-				unset($cssp->parsed['css']['@cssp']);
+				unset($cssp->parsed['global']['@cssp']);
 				// Glue css output
 				$output = $cssp->glue($compress);
 				// Add to css output
