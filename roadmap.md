@@ -20,6 +20,7 @@ Version 0.1
 Version 0.2
 ===========
 
+ * Move roadmap to github bugtracker
  * Add MHTML support (For IE7 & 6)
  * Add support for CSSP to some popular IDEs
  * plugins/transparent_backgrounds.php: Add IE6 gradient filter
