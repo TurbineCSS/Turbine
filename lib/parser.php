@@ -200,18 +200,26 @@ class Parser2 {
 
 		$linecount = count($this->css);
 		for($i = 0; $i < $linecount; $i++){
-			$line = $this->css[$i];
-			$nextline = (isset($this->css[1+$i])) ? $this->css[1+$i] : '';
 			$this->token = '';
+			$line = $this->css[$i];
+			
+			// Setup next line. Must always be present, must not contain whitespace when empty
+			if(isset($this->css[1+$i])){
+				if(trim($this->css[1+$i]) == ''){
+					$this->css[1+$i] = '';
+				}
+				$nextline = $this->css[1+$i];
+			}
+			else{
+				$nextline = '';
+			}
 
-			// Ignore empty lines and comments
-			if(trim($line) != '' && substr(trim($line), 0, 2) != '//'){
+			// Ignore comment lines
+			if(substr(trim($line), 0, 2) != '//'){
 
 				if(substr(trim($line), 0, 6) == '@media'){ // Parse @media switch
 					$this->parse_media_line($line);
 				}
-				//elseif(){ // TODO: Parse @font-face
-				//}
 				elseif(substr(trim($line), 0, 7) == '@import'){
 					$this->parse_import_line($line);
 				}
