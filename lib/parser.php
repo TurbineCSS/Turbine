@@ -131,7 +131,7 @@ class Parser2 {
 	 * @return object $this The CSS Parser object
 	 */
 	public static function factory(){
-		return new CssParser();
+		return new Parser2();
 	}
 
 
@@ -201,7 +201,7 @@ class Parser2 {
 		$linecount = count($this->css);
 		for($i = 0; $i < $linecount; $i++){
 			$line = $this->css[$i];
-			$nextline = $this->css[1+$i];
+			$nextline = (isset($this->css[1+$i])) ? $this->css[1+$i] : '';
 			$this->token = '';
 
 			// Ignore empty lines and comments
@@ -417,6 +417,7 @@ class Parser2 {
 	 * @return int $level The indention level
 	 */
 	protected function get_indention_level($line){
+		$level = 0;
 		if(substr($line, 0, strlen($this->options['indention_char'])) == $this->options['indention_char']){
 			$level = 1 + $this->get_indention_level(substr($line, strlen($this->options['indention_char'])));
 		}
@@ -444,7 +445,10 @@ class Parser2 {
 			$dest =& $this->parsed[$at][$se][$pr];
 		}
 		// Take care of !important on merge
-		$tokens = preg_split('/[\s]/', $this->parsed[$at][$se][$pr]);
+		$tokens = array();
+		if(isset($this->parsed[$at][$se][$pr])){
+			$tokens = preg_split('/[\s]/', $this->parsed[$at][$se][$pr]);
+		}
 		if(!in_array('!important', $tokens)){
 			$dest = $va;
 		}
