@@ -143,13 +143,13 @@ class Cssp extends Parser2 {
 				// Full inheritance
 				if(isset($this->parsed[$block][$selector]['extends'])){
 					// Extract ancestor
-					// TODO: Do inherited property overwrite own properties? They shouldn't...
 					$ancestor = $this->parsed[$block][$selector]['extends'];
 					if($this->parsed[$block][$ancestor]){
 						$this->parsed[$block][$selector] = $this->merge_rules(
 							$this->parsed[$block][$selector],
 							$this->parsed[$block][$ancestor],
-							array()
+							array(),
+							false
 						);
 					}
 					unset($this->parsed[$block][$selector]['extends']);
@@ -178,15 +178,16 @@ class Cssp extends Parser2 {
 	 * @param mixed $old The OLD rules (overridden by the new rules)
 	 * @param mixed $new The NEW rules (override the old rules)
 	 * @param array $exclude A list of properties NOT to merge
+	 * @param array $allow_overwrite Allow new rules to overwrite old ones?
 	 * @return mixed $rule The new, merged rule
 	 */
-	public function merge_rules($old, $new, $exclude = array()){
+	public function merge_rules($old, $new, $exclude = array(), $allow_overwrite = true){
 		$rule = $old;
 		foreach($new as $property => $value){
 			if(!in_array($property, $exclude)){
 				if(isset($rule[$property])){
 					// TODO: This should be protected against the unlikly case that "!important" gets used inside strings
-					if(!strpos($rule[$property], ' !important')){
+					if($allow_overwrite == true && !strpos($rule[$property], ' !important')){
 						$rule[$property] = $value;
 					}
 				}
