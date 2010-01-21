@@ -24,18 +24,13 @@
 		);
 		// Main loop
 		foreach($parsed as $block => $css){
-			$block_count = count($css);
-			$block_keys = array_keys($css);
-			$insert = 0;
 			foreach($parsed[$block] as $selector => $styles){
 				// Apply quotes
-				if(isset($parsed[$block][$selector]['quote-style'])){
-					$value = $parsed[$block][$selector]['quote-style'];
+				if(isset($parsed[$block][$selector]['quotes'])){
+					$value = $parsed[$block][$selector]['quotes'];
 					if(isset($quotes[$value])){
 						$parsed[$block][$selector]['quotes'] = '"\\'.$quotes[$value][0].'" "\\'.$quotes[$value][1].'" "\\'.$quotes[$value][2].'" "\\'.$quotes[$value][3].'"';
 					}
-					// Remove quote-style property and unset quotes property
-					unset($parsed[$block][$selector]['quote-style']);
 				}
 			}
 		}
