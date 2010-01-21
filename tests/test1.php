@@ -3,6 +3,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
+	<title>CSSP Test 1</title>
 	<script src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.4/mootools-yui-compressed.js"></script>
 	<script>
 		window.addEvent('domready', function(){
@@ -97,20 +98,18 @@
 			<pre<?php if(isset($_POST['highlight'])) { echo ' class="highlight"'; } ?>><?php if(isset($_POST['css'])) { echo implode("\n", $parser->css); } ?></pre>
 		</td>
 		<td valign="top">
-			<h2>Kompiliert</h2>
+			<h2>Compiled</h2>
 			<pre><?php if(isset($_POST['css'])) { echo $parser->glue($_POST['compress']); } ?></pre>
 		</td>
 		<td valign="top">
-			<h2>Geparsed</h2>
+			<h2>Parsed</h2>
 			<pre><?php if(isset($_POST['css'])) { print_r($parser->parsed); } ?></pre>
 		</td>
 	</tr>
 </table>
 
-<p>
-	Fehlende Features: @font-face, besseres Highlighting (Strings!), Support für Leerzeichen zum Einrücken
-</p>
-<form action="1.php" method="post">
+
+<form action="test1.php" method="post">
 	<textarea cols="120" rows="20" name="css"><?php if(isset($_POST['css'])): echo stripslashes($_POST['css']); else: ?>@import url(foo.css) screen
 @import "bar.css"
 
