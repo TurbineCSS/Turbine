@@ -366,6 +366,7 @@ class Parser2 {
 					$this->token .= $line{$i};
 				}
 				$this->current['va'] = trim($this->token);
+				$this->state = 'pr';
 				$this->token = '';
 				$this->merge();
 			}
