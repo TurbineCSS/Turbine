@@ -356,7 +356,7 @@ class Parser2 {
 				}
 				break;
 			}
-			elseif($this->state != 'st' && $line{$i} == ':'){ // End property state on colon
+			elseif($this->state == 'pr' && $line{$i} == ':'){ // End property state on colon
 				$this->current['pr'] = trim($this->token);
 				$this->state = 'va';
 				$this->token = '';
