@@ -196,7 +196,7 @@ class Parser2 {
 	 */
 	public function parse(){
 
-		/* DEBUG */  echo ($this->debug) ? '<table border="1" cellpadding="4"><tr><th>Zeile</th><th>@-Block</th><th>Selektor</th><th>Eigenschaft / Wert</th></tr>' : '';
+		/* DEBUG */  echo ($this->debug) ? '<table border="1" cellpadding="4"><tr><th>Zeile</th><th>@-Block</th><th>Selektor</th><th>Eigenschaft / Wert</th><th>Level / Next</th><th>Selector Stack</th></tr>' : '';
 
 		$linecount = count($this->css);
 		for($i = 0; $i < $linecount; $i++){
@@ -225,12 +225,15 @@ class Parser2 {
 				}
 				else{
 					$level = $this->get_indention_level($line); // TODO: Level should be always 0 when there's no line before this line
-					if($this->get_indention_level($nextline) == $level + 1){ // Parse as selector when the next line is further indented
-						$this->parse_selector_line($line, $level);
+					$nextlevel = $this->get_indention_level($nextline);
+					if($nextlevel > $level){ // Parse as selector when the next line is indented
+						$this->parse_selector_line($line, $level); // New selector
 					}
-					// ...or else as property/value pair
 					else{
-						$this->parse_property_line($line);
+						$this->parse_property_line($line); // Else parse as property/value pair
+						if($nextlevel < $level){ // When the next line is less indented, revert to the matching selector according to the level
+							$this->current['se'] = $this->nesting[count($this->nesting) - $level];
+						}
 					}
 				}
 
@@ -239,6 +242,8 @@ class Parser2 {
 				/* DEBUG */  echo ($this->debug) ? '<td><pre>'.$this->current['at'].'</pre></td>' : '';
 				/* DEBUG */  echo ($this->debug) ? '<td><pre>'.$this->current['se'].'</pre></td>' : '';
 				/* DEBUG */  echo ($this->debug) ? '<td><pre>'.$this->current['pr'].' / '.$this->current['va'].'</pre></td>' : '';
+				/* DEBUG */  echo ($this->debug) ? '<td><pre>'.$level.' / '.$nextlevel.'</pre></td>' : '';
+				/* DEBUG */  echo ($this->debug) ? '<td><pre>'.print_r($this->nesting, true).'</pre></td>' : '';
 				/* DEBUG */  echo ($this->debug) ? '</tr>' : '';
 
 			}
