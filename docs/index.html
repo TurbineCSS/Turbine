@@ -658,15 +658,19 @@ $mainNavigation {
 <h1 id="toc-5">FAQ</h1><div id="faq">
 
 
-
 <h2 id="toc-5-1">Any general advice?</h2><div>
 <ul>
+	<li>
+		<strong>Don't ever mess up your indention!</strong> Seriously. CSSP is (at the moment) not very good at catching incorrectly
+		indented lines and they <em>will</em> destroy your css in places you'll expect. So just pay attention to your whitespace or
+		wait for the parser to become/help us to make the parser more tolerant towards indention errors.
+	</li>
 	<li>
 		Don't use constants only for colors! If you use them for font stacks and paths, you can save yourself a lot of typing&nbsp;&ndash;
 		<code>font-family:$serif</code> is so much shorter than <code>font-family:Georgia, "Times New Roman", serif</code>.
 	</li>
 	<li>
-		Don't overuse nested selectors, as they get can get quite confusing.
+		Don't overuse nested selectors, as they may get quite confusing.
 	</li>
 </ul>
 </div>
