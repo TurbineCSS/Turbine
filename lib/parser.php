@@ -232,7 +232,9 @@ class Parser2 {
 					else{
 						$this->parse_property_line($line); // Else parse as property/value pair
 						if($nextlevel < $level){ // When the next line is less indented, revert to the matching selector according to the level
-							$this->current['se'] = $this->nesting[count($this->nesting) - $level];
+							if(isset($this->nesting[count($this->nesting) - $nextlevel])){
+								$this->current['se'] = $this->nesting[count($this->nesting) - $nextlevel];
+							}
 						}
 					}
 				}
@@ -309,26 +311,28 @@ class Parser2 {
 	protected function parse_selector_line($line, $level){
 		$line = trim($line);
 		$len = strlen($line);
-		for($i = 0; $i < $len; $i++ ){
-			$this->switch_string_state($line{$i});
-			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){ // Break on comment
-				break;
+		if($len > 0){
+			for($i = 0; $i < $len; $i++ ){
+				$this->switch_string_state($line{$i});
+				if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){ // Break on comment
+					break;
+				}
+				$this->token .= $line{$i};
 			}
-			$this->token .= $line{$i};
+			// Trim whitespace
+			$selector = trim(preg_replace('/[\s]+/', ' ', $this->token));
+			// Combine selector with the nesting stack
+			if($level > 0){
+				//$selector = $this->nesting[$level-1].' '.$selector; // TODO Comma combinations
+				$selector = $this->merge_selectors($this->nesting[$level-1], $selector);
+			}
+			// Increase font-face index
+			if($selector == '@font-face'){
+				$this->current['fi']++;
+			}
+			$this->current['se'] = $selector; // Use as current selector
+			$this->nesting[(int)$level] = $selector; // Add to the nesting stack
 		}
-		// Trim whitespace
-		$selector = trim(preg_replace('/[\s]+/', ' ', $this->token));
-		// Combine selector with the nesting stack
-		if($level > 0){
-			//$selector = $this->nesting[$level-1].' '.$selector; // TODO Comma combinations
-			$selector = $this->merge_selectors($this->nesting[$level-1], $selector);
-		}
-		// Increase font-face index
-		if($selector == '@font-face'){
-			$this->current['fi']++;
-		}
-		$this->current['se'] = $selector; // Use as current selector
-		$this->nesting[(int)$level] = $selector; // Add to the nesting stack
 	}
 
 
