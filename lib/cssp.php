@@ -80,8 +80,7 @@ class Cssp extends Parser2 {
 		foreach($constants as $constant => $value){
 			foreach($this->parsed[$block] as $selector => $styles){
 				foreach($styles as $css_property => $css_value){
-					// TODO: Prevent $foo from partially replacing $foobar
-					$this->parsed[$block][$selector][$css_property] = str_replace('$'.$constant, $value, $css_value);
+					$this->parsed[$block][$selector][$css_property] = preg_replace('/(\$'.$constant.')\b/', $value, $css_value);
 				}
 			}
 		}
@@ -120,8 +119,7 @@ class Cssp extends Parser2 {
 		foreach($aliases as $alias => $value){
 			foreach($this->parsed[$block] as $selector => $styles){
 				// Add a new element with the full selector and delete the old one
-				// TODO: Prevent $foo from partially replacing $foobar
-				$newselector = str_replace('$'.$alias, $value, $selector);
+				$newselector = preg_replace('/(\$'.$alias.')\b/', $value, $selector);
 				if($newselector != $selector){
 					$elements = array($newselector => $styles);
 					$this->insert($elements, $block, $selector);
