@@ -1,0 +1,168 @@
+@cssp
+	compress:1
+	plugins:resetstyle boxshadow borderradius
+
+
+@constants
+	bg:#F5F7FA
+	txt:#111
+	white:#FFF
+	dark:#4C5761
+	link:#23507A
+	hoverlink:#1C74C7
+	shadow:#A3B1BF
+	border:#BEC4CF
+	lightborder:#DADEE3
+	lighterborder:#E8EAED
+
+
+@media screen, projection
+
+
+body
+	font-family:Verdana, Arial, sans-serif
+	font-size:80%
+	line-height:1.6
+	color:$txt
+	background:$bg
+a:link, a:visited
+	color:$link
+	text-decoration:underline
+a:hover, a:active
+	color:$hoverlink
+	text-decoration:none
+strong, b
+	font-weight:bold
+em, i
+	font-style:italic
+
+
+#header
+	background:$dark
+	border-bottom:2px solid $white
+	box-shadow:0 3px 8px $shadow
+	position:fixed
+	top:0
+	left:0
+	right:0
+	z-index:1337
+	h1
+		color:$white;
+		font-weight:bold;
+		padding:1em;
+
+
+#wrapper
+	width:45em
+	margin:0 auto
+	padding:2em 25em 0 0
+	h1
+		border-bottom:1px solid $lightborder
+		color:$dark
+		font-size:2em
+		margin:-1em 0 0 0
+		padding:2.5em 0 0.5em 0
+	h2
+		font-size:1.4em
+		font-weight:bold
+		margin:-2em 0 -0.5em 0
+		padding:3.5em 0 0.5em 0
+		span
+			color:$shadow;
+	h3
+		color:#CC5042
+		font-size:1.3em
+		margin:1.55em 0 0 0
+	h4
+		font-size:1em
+		font-weight:bold
+		margin:1.55em 0 0 0
+	p
+		margin:1em 0
+	ul
+		list-style:square
+		margin:1em 0
+	ol
+		list-style:decimal
+		margin:1em 0
+	li
+		list-style:inherit
+		margin-left:2em
+	p.abstract
+		font-style:italic
+	table
+		margin:1em 0
+		box-shadow:3px 3px 8px $shadow
+		td
+			background:$white
+			text-align:left
+			border:1px solid $border
+			padding:0.5em
+		th
+			background:$dark !important
+			font-size:0.9em
+			font-weight:bold
+			color:$white
+			extends:#wrapper table td
+	code
+		font-family:monospace
+		font-size:125%
+		border:1px solid $lighterborder
+		background:$white
+		padding:1px
+	pre
+		font-family:Consolas, Courier, monospace;
+		font-size:100%
+		background:$white
+		color:#000;
+		border:1px solid $border
+		box-shadow:3px 3px 8px $shadow
+		line-height:1.5em
+		margin:1em 0
+		padding:1em
+		.se
+			color:#247; font-weight:bold; font-style:normal
+		.co
+			color:#070; font-weight:normal; font-style:italic
+		.at
+			color:#09F; font-weight:bold; font-style:normal
+		.st
+			color:#00F; font-weight:normal; font-style:normal
+		.ch
+			color:#479; font-weight:normal; font-style:normal
+		.im
+			color:#D00; font-weight:normal; font-style:normal
+		.tab
+			color:#999; font-weight:normal; font-style:normal
+	.embed
+		width:576px
+		height:324px
+		border:1px solid $border
+		box-shadow:3px 3px 8px $shadow
+		margin:1em 0
+
+
+#toc
+	position:fixed
+	width:17.5em
+	margin:6.5em 0 0 50em
+	padding:0 0 0 2.5em
+	border-left:1px solid $lightborder
+	ul, li
+		line-height:1.7
+		margin:0
+		padding:0
+		list-style:none
+		ul
+			padding-left:2em
+	h2
+		color:$dark
+		font-weight:normal
+		font-style:italic
+		margin:0
+		padding:0
+		span
+			display:block
+			height:0
+			width:0
+			overflow:hidden
