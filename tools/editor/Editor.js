@@ -1,4 +1,5 @@
-var Ide = new Class({
+var Editor = new Class({
+
 
 	Implements: [Options, Events],
 	options: {
@@ -6,32 +7,61 @@ var Ide = new Class({
 		autosave: {
 			enabled: true,
 			slots: 5,
-			interval: 6000
+			interval: 6000,
+			menubar: null
 		}
 	},
-	ide: null,
+	editor: null,
+	menubar: null,
 	buffer: '',
 
-	initialize: function(ide, options){
+
+	initialize: function(editor, options){
 		this.setOptions(options);
-		this.ide = document.id(ide);
-		this.ideSetup();
+		this.editor = document.id(editor);
+		this.editorSetup();
+		this.menubarSetup();
+		this.highlight();
 		return this;
 	},
 
-	ideSetup: function(){
-		this.ide.addEvent('keypress', function(e){
+
+	editorSetup: function(){
+		this.editor.addEvent('keypress', function(e){
 			this.handleKeypress(e);
 		}.bind(this));
-		this.ide.addEvent('keyup', function(e){
+		this.editor.addEvent('keyup', function(e){
 			this.handleKeyup(e);
 		}.bind(this));
-		$('savelink').addEvent('click', function(e){
-			this.save(e);
-		}.bind(this));
-		$('revertlink').addEvent('click', function(e){
-			this.revert(e);
-		}.bind(this));
+	},
+
+
+	menubarSetup: function(){
+		var ed = this;
+		if(this.options.menubar !== null){
+			this.menubar = document.id(this.options.menubar);
+			var menulinks =[
+				new Element('a', {
+					text: 'Save', href: '#', events:{
+						'click':function(event){
+							ed.save();
+							event.stop();
+						}
+					}
+				}),
+				new Element('a', {
+					text: 'Revert', href: '#', events:{
+						'click':function(event){
+							ed.revert();
+							event.stop();
+						}
+					}
+				})
+			];
+			menulinks.each(function(link){
+				link.inject(new Element('li').inject(this.menubar));
+			}.bind(this));
+		}
 	},
 
 	handleKeypress: function(e){
@@ -46,16 +76,20 @@ var Ide = new Class({
 		}
 	},
 
+
 	handleKeyup: function(e){
 		if(e.code == 13){ // Enter
 			this.handleEnter(e);
 		}
+		this.highlight();
 	},
+
 
 	handleSingleTab: function(e){
 		e.stop();
 		this.insert(this.options.tab);
 	},
+
 
 	handleEnter: function(e){
 		var insert = this.insert('');
@@ -72,6 +106,7 @@ var Ide = new Class({
 		}
 	},
 
+
 	insert: function(text){
 		var insert = document.createTextNode(text);
 		var range = window.getSelection().getRangeAt(0);
@@ -79,6 +114,7 @@ var Ide = new Class({
 		this.setCursorAfter(insert);
 		return insert;
 	},
+
 
 	getTabCount: function(text){
 		var num = 0;
@@ -91,6 +127,7 @@ var Ide = new Class({
 		return num;
 	},
 
+
 	setCursorAfter: function(node){
 		var selection = window.getSelection();
 		var range = document.createRange();
@@ -100,36 +137,31 @@ var Ide = new Class({
 		selection.addRange(range);
 	},
 
-	save: function(e){
-		e.stop();
+
+	highlight:function(){
+	},
+
+
+	save: function(){
 		if(typeof window.localStorage !== 'undefined'){
-			var data = this.ide.get('html');
-			console.log(data);
+			var data = this.editor.get('html');
 			data = data.replace(/<br[^>\/]*\>/g, 'NEWLINENEWLINE');
 			window.localStorage.setItem('save', data);
-			alert('Gespeichert!');
-		}
-		else{
-			alert('if(browser != Firefox 3.5+){ funktionieren = false; }');
+			console.log('Saved!');
 		}
 	},
 
-	revert: function(e){
-		e.stop();
+
+	revert: function(){
 		if(typeof window.localStorage !== 'undefined'){
 			var data = window.localStorage.getItem('save');
 			if(data){
 				data = data.replace(/NEWLINENEWLINE/g, "\n");
-				this.ide.set('text', data);
-				alert('Geladen!');
+				this.editor.set('html', data);
+				console.log('Loaded!');
 			}
-			else{
-				alert('Nichts zum laden da!');
-			}
-		}
-		else{
-			alert('if(browser != Firefox 3.5+){ funktionieren = false; }');
 		}
 	}
+
 
 });

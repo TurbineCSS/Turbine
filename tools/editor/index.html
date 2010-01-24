@@ -2,13 +2,16 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>CSSP IDE</title>
+		<title>CSSP Editor</title>
 		<script src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.4/mootools-yui-compressed.js"></script>
-		<script src="ide.js"></script>
+		<script src="Editor.js"></script>
+		<script src="CSSPEditor.js"></script>
 		<script>
-			var MainIDE = null;
+			var Ed = null;
 			window.addEvent('domready', function(){
-				var MainIDE = new Ide('editor');
+				var Ed = new CSSPEditor('editor', {
+					menubar: 'menubar'
+				});
 			});
 		</script>
 		<style type="text/css">
@@ -21,21 +24,19 @@
 				#toolbar a:link, a:visited { color:#CCC; }
 				#toolbar a:hover, a:active { color:#FFF; }
 			#editor { min-height:100%; font-family:Consolas, Courier, monospace; background:#222; color:#FFF; font-size:100%; line-height:1.25em; outline:none !important; margin:0; padding:1%; }
+				#editor span.se { color:#FC0; font-weight:bold; font-style:normal; }
+				#editor span.co { color:#666; font-weight:normal; font-style:italic; }
+				#editor span.at { color:#09F; font-weight:bold; font-style:normal; }
+				#editor span.st { color:#00F; font-weight:normal; font-style:normal; }
+				#editor span.ch { color:#AAA; font-weight:normal; font-style:normal; }
+				#editor span.im { color:#D00; font-weight:normal; font-style:normal; }
 		</style>
 	</head>
 	<body>
 
 <div id="toolbar">
-	<h1>CSSP IDE &bull; Untitled file</h1>
-	<ul>
-		<li>New</li>
-		<li>Open</li>
-		<li>Edit</li>
-		<li><a id="savelink" href="#">Save</a></li>
-		<li><a id="revertlink" href="#">Revert</a></li>
-		<li>Export</li>
-		<li>Settings</li>
-	</ul>
+	<h1>CSSP Editor &bull; Untitled file</h1>
+	<ul id="menubar"></ul>
 </div>
 
 <pre contenteditable="true" id="editor">@import url(foo.css) screen
