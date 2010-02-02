@@ -126,8 +126,6 @@ class Parser2 {
 	/**
 	 * Factory
 	 * Creates and returns a new CSS Parser object
-	 * @param string $code CSS code to load
-	 * @param bool $debug Debug mode switch
 	 * @return object $this The CSS Parser object
 	 */
 	public static function factory(){

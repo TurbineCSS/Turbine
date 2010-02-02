@@ -24,7 +24,6 @@
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				if(isset($parsed[$block][$selector]['sprite']) && isset($parsed[$block][$selector]['sprite-position'])){
-					//$sprite = explode(' ', trim($parsed[$block][$selector]['sprite']));
 					$unitpattern = '/(.*?)(%|em|ex|px|in|cm|mm|pt|pc)(.*?)(%|em|ex|px|in|cm|mm|pt|pc)/';
 					preg_match_all($unitpattern ,$parsed[$block][$selector]['sprite'], $sprite);
 					if(count($sprite) == 5){ // 5 matches = useful "sprite" value
@@ -47,6 +46,12 @@
 			}
 		}
 	}
+
+
+	/**
+	 * Register the plugin
+	 */
+	register_plugin('before_compile', 0, 'sprites');
 
 
 ?>

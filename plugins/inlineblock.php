@@ -1,5 +1,6 @@
 <?php
 
+
 	/**
 	 * Inline Block
 	 * Implements the "display: inline-block" property for all current browsers
@@ -28,5 +29,12 @@
 			}
 		}
 	}
+
+
+	/**
+	 * Register the plugin
+	 */
+	register_plugin('before_compile', 0, 'inlineblock');
+
 
 ?>

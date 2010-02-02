@@ -38,12 +38,20 @@ class Cssp extends Parser2 {
 		global $browser;
 		if($query){
 			$this->load_file($query);
-			$this->parse();
-			$this->apply_aliases();
-			$this->apply_inheritance();
-			$this->apply_constants();
-			$this->cleanup();
 		}
+	}
+
+
+	/**
+	 * compile
+	 * This is where the magic happens :)
+	 * @return void
+	 */
+	public function compile(){
+		$this->apply_aliases();
+		$this->apply_inheritance();
+		$this->apply_constants();
+		$this->cleanup();
 	}
 
 

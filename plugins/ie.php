@@ -1,5 +1,6 @@
 <?php
 
+
 	/**
 	 * A bunch of general IE Bugfixes
 	 * 
@@ -10,7 +11,7 @@
 	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function ie_bugfixes(&$parsed){
+	function iebugfixes(&$parsed){
 		global $browser;
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
@@ -23,5 +24,12 @@
 			}
 		}
 	}
+
+
+	/**
+	 * Register the plugin
+	 */
+	register_plugin('before_compile', 0, 'iebugfixes');
+
 
 ?>
