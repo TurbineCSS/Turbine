@@ -3,6 +3,14 @@ var CSSPEditor = new Class({
 
 	Extends: Editor,
 
+	initialize: function(editor, options){
+		this.parent(editor, options);
+		this.highlight();
+		this.addEvent('keyup', function(){
+			this.highlight();
+		});
+		return this;
+	},
 
 	highlight:function(){
 		var get_indention_level = function(line){

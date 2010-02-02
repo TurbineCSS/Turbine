@@ -21,7 +21,6 @@ var Editor = new Class({
 		this.editor = document.id(editor);
 		this.editorSetup();
 		this.menubarSetup();
-		this.highlight();
 		return this;
 	},
 
@@ -74,6 +73,7 @@ var Editor = new Class({
 				e.stop();
 			}
 		}
+		this.fireEvent('keypress');
 	},
 
 
@@ -81,13 +81,14 @@ var Editor = new Class({
 		if(e.code == 13){ // Enter
 			this.handleEnter(e);
 		}
-		this.highlight();
+		this.fireEvent('keyup');
 	},
 
 
 	handleSingleTab: function(e){
 		e.stop();
 		this.insert(this.options.tab);
+		this.fireEvent('keytab');
 	},
 
 
@@ -104,6 +105,7 @@ var Editor = new Class({
 				insert.textContent = tabs;
 			}
 		}
+		this.fireEvent('enter');
 	},
 
 
@@ -135,10 +137,6 @@ var Editor = new Class({
 		range.setEndAfter(node);
 		selection.removeAllRanges();
 		selection.addRange(range);
-	},
-
-
-	highlight:function(){
 	},
 
 
