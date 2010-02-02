@@ -30,14 +30,16 @@
 						$basedirectories = array(dirname($file),str_replace('\\','/',dirname(realpath($_SERVER['SCRIPT_FILENAME']))),str_replace('\\','/',dirname(__FILE__)));
 						foreach($properties as $property){
 							foreach($basedirectories as $basedirectory){
-								if(isset($parsed[$block][$selector][$property])) {
-									if(preg_match($regex,$parsed[$block][$selector][$property],$matches) > 0){
-										$imagefile = $basedirectory.'/'.$matches[2];
-										if(file_exists($imagefile) && filesize($imagefile) <= 24000){
-											$pathinfo = pathinfo($imagefile);
-											$imagetype = strtolower($pathinfo['extension']);
-											$imagedata = base64_encode(file_get_contents($imagefile));
-											$parsed[$block][$selector][$property] = preg_replace($regex,'$1\'data:image/'.$imagetype.';base64,'.$imagedata.'\'$3',$parsed[$block][$selector][$property]);
+								if(isset($parsed[$block][$selector][$property])){
+									if(!is_array($parsed[$block][$selector][$property])){ // Ignore multi-value-properties so we don't mess with other plugins
+										if(preg_match($regex, $parsed[$block][$selector][$property], $matches) > 0){
+											$imagefile = $basedirectory.'/'.$matches[2];
+											if(file_exists($imagefile) && filesize($imagefile) <= 24000){
+												$pathinfo = pathinfo($imagefile);
+												$imagetype = strtolower($pathinfo['extension']);
+												$imagedata = base64_encode(file_get_contents($imagefile));
+												$parsed[$block][$selector][$property] = preg_replace($regex, '$1\'data:image/'.$imagetype.';base64,'.$imagedata.'\'$3', $parsed[$block][$selector][$property]);
+											}
 										}
 									}
 								}
@@ -53,7 +55,7 @@
 	/**
 	 * Register the plugin
 	 */
-	register_plugin('before_compile', 0, 'datauri');
+	register_plugin('before_glue', 0, 'datauri');
 
 
 ?>
