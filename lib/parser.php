@@ -323,7 +323,6 @@ class Parser2 {
 			$selector = trim(preg_replace('/[\s]+/', ' ', $this->token));
 			// Combine selector with the nesting stack
 			if($level > 0){
-				//$selector = $this->nesting[$level-1].' '.$selector; // TODO Comma combinations
 				$selector = $this->merge_selectors($this->nesting[$level-1], $selector);
 			}
 			// Increase font-face index
@@ -381,11 +380,8 @@ class Parser2 {
 	 * 
 	 */
 	protected function merge_selectors($parent, $child){
-		// FIXME This is obviously just a quick hack and should be replaced by real parsing
-		$parent = explode(',', $parent);
-		$parent = array_map('trim', $parent);
-		$child = explode(',', $child);
-		$child = array_map('trim', $child);
+		$parent = $this->tokenize($parent, ',');
+		$child = $this->tokenize($child, ',');
 		// Merge the split selectors
 		$selectors = array();
 		foreach($parent as $p){
@@ -463,10 +459,11 @@ class Parser2 {
 			$dest =& $this->parsed[$at][$se][$pr];
 		}
 		// Take care of !important on merge
-		$tokens = array();
+		/*$tokens = array();
 		if(isset($this->parsed[$at][$se][$pr])){
 			$tokens = preg_split('/[\s]/', $this->parsed[$at][$se][$pr]);
-		}
+		}*/
+		$tokens = $this->tokenize($rule[$property]);
 		if(!in_array('!important', $tokens)){
 			$dest = $va;
 		}
@@ -603,6 +600,55 @@ class Parser2 {
 	public function set_debug($mode){
 		$this->debug = (bool) $mode;
 		return $this;
+	}
+
+
+	/**
+	 * tokenize
+	 * Tokenizes $str, respecting css string delimeters
+	 * @param string $str
+	 * @param mixed $separator
+	 * @return array $tokens
+	 */
+	public function tokenize($str, $separator = array(' ', '	')){
+		$tokens = array();
+		$current = '';
+		$string_delimeters = array('"', "'", '(');
+		$current_string_delimeter = null;
+		if(!is_array($separator)){
+			$separator = array($separator);
+		}
+		$strlen = strlen($str);
+		for($i = 0; $i < $strlen; $i++){
+			if($current_string_delimeter === null){
+				// End current token
+				if(in_array($str{$i}, $separator)){
+					$tokens[] = trim($current);
+					$current = '';
+					$i++;
+				}
+				// Begin string state
+				elseif(in_array($str{$i}, $string_delimeters)){
+					$current_string_delimeter = $str{$i};
+				}
+			}
+			else{
+				// End string state
+				if($str{$i} === $current_string_delimeter || ($current_string_delimeter == '(' && $str{$i} === ')')){
+					$current_string_delimeter = null;
+				}
+			}
+			// Add to the current token
+			$current .= $str{$i};
+			// Handle the last token
+			if($i == $strlen - 1){
+				$lasttoken = trim($current);
+				if($lasttoken){
+					$tokens[] = $lasttoken;
+				}
+			}
+		}
+		return $tokens;
 	}
 
 

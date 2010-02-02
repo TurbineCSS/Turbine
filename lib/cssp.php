@@ -25,7 +25,6 @@
 /**
  * CSSP
  * CSS Preprocessor
- * @todo Only process files starting with "CSSP"
  */
 class Cssp extends Parser2 {
 
@@ -155,7 +154,7 @@ class Cssp extends Parser2 {
 				// Selective copying via "copy(selector property)"
 				$inheritance_pattern = "/copy\((.*)[\s]+(.*)\)/";
 				foreach($styles as $property => $value){
-					if(!is_array($value)){ // TODO: Make inheritance work for array objects too
+					if(!is_array($value)){ // TODO: Make inheritance work for array objects (that is, a property that has multiple values as an array) too
 						if(preg_match($inheritance_pattern, $value)){
 							preg_match_all($inheritance_pattern, $value, $matches);
 							if(isset($this->parsed[$block][$matches[1][0]][$matches[2][0]])){
@@ -184,8 +183,8 @@ class Cssp extends Parser2 {
 		foreach($new as $property => $value){
 			if(!in_array($property, $exclude)){
 				if(isset($rule[$property])){
-					// TODO: This should be protected against the unlikly case that "!important" gets used inside strings
-					if($allow_overwrite == true && !strpos($rule[$property], ' !important')){
+					$tokens = $this->tokenize($rule[$property]);
+					if($allow_overwrite == true && !in_array('!important', $tokens)){
 						$rule[$property] = $value;
 					}
 				}
