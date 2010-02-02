@@ -154,9 +154,13 @@ class Cssp extends Parser2 {
 				// Selective copying via "copy(selector property)"
 				$inheritance_pattern = "/copy\((.*)[\s]+(.*)\)/";
 				foreach($styles as $property => $value){
-					if(!is_array($value)){ // TODO: Make inheritance work for array objects (that is, a property that has multiple values as an array) too
-						if(preg_match($inheritance_pattern, $value)){
-							preg_match_all($inheritance_pattern, $value, $matches);
+					// Properties that have multiple values as an array are possible too.. this may be slow, but it's simple
+					if(!is_array($value)){
+						$value = array($value);
+					}
+					foreach($value as $val){
+						if(preg_match($inheritance_pattern, $val)){
+							preg_match_all($inheritance_pattern, $val, $matches);
 							if(isset($this->parsed[$block][$matches[1][0]][$matches[2][0]])){
 								$this->parsed[$block][$selector][$property] = $this->parsed[$block][$matches[1][0]][$matches[2][0]];
 							}
