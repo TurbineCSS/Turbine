@@ -113,7 +113,6 @@ if($_GET['files']){
 	foreach($files as $file){
 		if(file_exists($file)){
 
-
 			// Server-side cache: Has file already been parsed?
 			$incache = false;
 
@@ -147,6 +146,7 @@ if($_GET['files']){
 			if(!$incache){
 				$cssp = new Cssp($file);
 
+
 				// Load all plugins
 				$plugindir = 'plugins';
 				if($handle = opendir($plugindir)){
@@ -160,9 +160,10 @@ if($_GET['files']){
 
 				// Apply plugins for before parse
 				// TODO: Order by priority
+				// TODO: How can we let the stylesheet author control which plugins get used?
 				foreach($plugins_before_parse as $plugin => $priority){
 					if(function_exists($plugin)){
-						call_user_func_array($plugin, array(&$this->css));
+						call_user_func_array($plugin, array(&$cssp->css));
 					}
 				}
 
@@ -226,6 +227,10 @@ if($_GET['files']){
 			$css .= $output;
 		}
 	}
+
+
+	// TODO: A final "before headers" plugin hook would be nice
+
 
 	// Endtime
 	$end = microtime(true);
