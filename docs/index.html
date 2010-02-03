@@ -120,7 +120,7 @@
 
 <h1 id="toc-2">Usage</h1><div id="usage">
 <p>
-	asdf
+	TODO
 </p>
 
 
@@ -145,7 +145,7 @@
 	This behaviour allows nested selectors, which can be quite powerful (see <a href="#toc-2-3">nested selectors</a>).
 </p>
 <p>
-	<code>@media</code>
+	<code>@media</code> TODO
 </p>
 </div>
 
@@ -247,11 +247,11 @@
 
 <h2 id="toc-2-4">Constants and Aliases</h2><div>
 <p>
-	Foo
+	TODO
 </p>
 <h3>Constants</h3>
 <p>
-	Foo
+	TODO
 </p>
 <h3>Aliases</h3>
 <p>
@@ -277,11 +277,11 @@ $mainNavigation
 
 <h2 id="toc-2-5">Inheritance and Templating</h2><div>
 <p>
-	Foo
+	TODO
 </p>
 <h3>Copying values from other elements</h3>
 <p>
-	Foo
+	TODO
 </p>
 <pre class="cssp">
 #foo
@@ -300,11 +300,11 @@ $mainNavigation
 }</pre>
 <h3>Extending other elements</h3>
 <p>
-	Foo
+	TODO
 </p>
 <h3>Templating</h3>
 <p>
-	Foo
+	TODO
 </p>
 </div>
 
@@ -324,20 +324,19 @@ $mainNavigation
 </p>
 <p>
 	Webkit and Mozilla browsers require vendor-specific prefixes for the CSS3 property <code>border-radius</code>. This plugin automatically
-	inserts them wherever a <code>-cssp-border-radius</code> property is found. Additionally, it provides shortcuts for adding rounded
+	inserts all of them wherever a <code>border-radius</code> property is found. Additionally, it provides shortcuts for adding rounded
 	corners only on the left, right, top or bottom side of an element: <code>border-left-radius</code>, <code>border-right-radius</code>,
 	<code>border-top-radius</code>, <code>border-bottom-radius</code>
 </p>
 <h3>Usage</h3>
 <p>
-	Add <code>border_radius</code> to your <code>@cssp</code> plugins rule and start using <code>-cssp-border-radius</code> like the
+	Add <code>borderradius</code> to your <code>@cssp</code> plugins rule and start using <code>border-radius</code> like the
 	standard <code>border-radius</code> CSS3 property.
 </p>
 <h3>Examples</h3>
 <h4>Automatic vendor-specific versions</h4>
-<pre>#foo {
-    -cssp-border-radius:4px;
-}</pre>
+<pre class="cssp">#foo
+	border-radius:4px;</pre>
 <p>
 	Result:
 </p>
@@ -348,9 +347,8 @@ $mainNavigation
     border-radius: 4px;
 }</pre>
 <h4>Left side only shortcut</h4>
-<pre>#foo {
-    -cssp-border-left-radius:4px;
-}</pre>
+<pre class="cssp">#foo
+	border-left-radius:4px;</pre>
 <p>
 	Result:
 </p>
@@ -374,17 +372,16 @@ $mainNavigation
 </p>
 <p>
 	Webkit and Mozilla browsers require vendor-specific prefixes for the CSS3 property <code>box-shadow</code>. This plugin automatically
-	inserts them wherever a <code>-cssp-box-shadow</code> property is found.
+	inserts them wherever a <code>box-shadow</code> property is found.
 </p>
 <h3>Usage</h3>
 <p>
-	Add <code>box_shadow</code> to your <code>@cssp</code> plugins rule and start using <code>-cssp-box-shadow</code> like the
+	Add <code>boxshadow</code> to your <code>@cssp</code> plugins rule and start using <code>box-shadow</code> like the
 	standard <code>box-shadow</code> CSS3 property.
 </p>
 <h3>Example</h3>
-<pre>#foo {
-    -cssp-box-shadow:4px 4px 4px #666;
-}</pre>
+<pre class="cssp">#foo
+	box-shadow:4px 4px 4px #666;</pre>
 <p>
 	Result:
 </p>
@@ -406,7 +403,7 @@ $mainNavigation
 	for embedding web fonts in a manner that works for all browsers and takes care of numerous IE quirks. Its only downside is that
 	it's rather complicated:
 </p>
-<pre>@font-face {
+<pre class="css">@font-face {
     font-family: 'Graublau Web';
     src: url('GraublauWeb.eot');
     src: local('Graublau Web Regular'), local('Graublau Web'),
@@ -417,24 +414,23 @@ $mainNavigation
 </p>
 <h3>Usage</h3>
 <ol>
-	<li>Add <code>bp_font_face</code> to your <code>@cssp</code> plugins rule</li>
+	<li>Add <code>fontface</code> to your <code>@cssp</code> plugins rule</li>
 	<li>Build a normal <code>@font-face</code>-rule</li>
 	<li>Omit the <code>src</code>-attribute</li>
-	<li>Add properties <code>-cssp-eot</code>, <code>-cssp-local</code> and <code>-cssp-ttf</code> or <code>-cssp-otf</code></li>
+	<li>Add properties <code>eot</code>, <code>local</code> and <code>ttf</code> or <code>otf</code></li>
 </ol>
 <h3>Example</h3>
-<pre>@font-face {
-    font-family:'Graublau Web';
-    -cssp-local:'Graublau Web Regular';
-    -cssp-otf:url('GraublauWeb.otf');
-    -cssp-eot:url('GraublauWeb.eot');
-    font-weight:bold;
-    font-style:italic;
-}</pre>
+<pre class="cssp">@font-face
+	font-family:'Graublau Web';
+	local:'Graublau Web Regular';
+	otf:url('GraublauWeb.otf');
+	eot:url('GraublauWeb.eot');
+	font-weight:bold;
+	font-style:italic;</pre>
 <p>
 	Result:
 </p>
-<pre>@font-face {
+<pre class="css">@font-face {
     font-family: 'Graublau Web';
     font-weight: bold;
     font-style: italic;
@@ -448,10 +444,10 @@ $mainNavigation
 
 <h2 id="toc-3-4">Browser detection</h2><div>
 <p class="abstract">
-	Foo
+	TODO
 </p>
 <p>
-	Bar
+	TODO
 </p>
 </div>
 
@@ -462,9 +458,8 @@ $mainNavigation
 	Injects all images smaller than 24kb right inside the CSS for all dataURI-capable browsers
 </p>
 <h3>Example</h3>
-<pre>#foo {
-    background:#FFF url(test.png) top left;
-}</pre>
+<pre class="cssp">#foo
+	background:#FFF url(test.png) top left;</pre>
 <p>
 	Result:
 </p>
@@ -476,23 +471,23 @@ $mainNavigation
 }</pre>
 <h3>Usage</h3>
 <p>
-	Just add <code>data-uri</code> to your <code>@cssp</code> plugins rule. Done!
+	Just add <code>datauri</code> to your <code>@cssp</code> plugins rule. Done!
 </p>
 </div>
 
 
 
-<h2 id="toc-3-6">Hexcrusher <span>[ Performance, Optimization ]</span></h2><div>
+<h2 id="toc-3-6">Minifier <span>[ Performance, Optimization ]</span></h2><div>
 <p class="abstract">
-	Optimizes hex color definitions.
+	Performs a number of micro-optimizations.
 </p>
 <p>
-	Hexcrusher finds hex color definition and shortens them whenever possible. A color definition like
+	Minifier finds hex color definition and shortens them whenever possible. A color definition like
 	<code>#FFEE44</code> would be shortend to <code>#FE4</code>, saving a (tiny) bit of space and loading time.
 </p>
 <h3>Usage</h3>
 <p>
-	Just add <code>hexcrusher</code> to your <code>@cssp</code> plugins rule. Done!
+	Just add <code>minifier</code> to your <code>@cssp</code> plugins rule. Done!
 </p>
 </div>
 
@@ -500,10 +495,10 @@ $mainNavigation
 
 <h2 id="toc-3-7">IE bugfixes</h2><div>
 <p class="abstract">
-	Foo
+	TODO
 </p>
 <p>
-	Bar
+	TODO
 </p>
 </div>
 
@@ -511,10 +506,10 @@ $mainNavigation
 
 <h2 id="toc-3-8">OS detection</h2><div>
 <p class="abstract">
-	Foo
+	TODO
 </p>
 <p>
-	Bar
+	TODO
 </p>
 </div>
 
@@ -591,10 +586,10 @@ $mainNavigation
 
 <h2 id="toc-3-11">Transparent background</h2><div>
 <p class="abstract">
-	Foo
+	TODO
 </p>
 <p>
-	Bar
+	TODO
 </p>
 </div>
 
@@ -632,11 +627,53 @@ $mainNavigation
 <h2 id="toc-4-2">Plugin development</h2><div>
 <p>
 	Plugin development for CSSP is rather simple. All you need is a file called <code>plugin_name.php</code> containing
-	a function <code>plugin_name()</code>, located in the plugins directory. The function must accept <code>&amp;$parsed</code>
-	as it's only argument. <code>&amp;$parsed</code> is a reference to the multi-dimensional array containing the parsed
-	CSSP code and it can be freely manipulated by plugins.
+	a function <code>plugin_name()</code>, located in the plugins directory. The function must accept only one argument, which
+	is passed as a reference. The contents of this argument depends on the hook the plugin is assigned to:
 </p>
+<table>
+	<thead>
+		<tr>
+			<th>Hook</th>
+			<th>Time of execution</th>
+			<th>Argument</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><code>before_parse</code></td>
+			<td>Before the original cssp files are parsed</td>
+			<td>An array containing the lines of the original cssp files</td>
+		</tr>
+		<tr>
+			<td><code>before_compile</code></td>
+			<td>After compilation, before applying cssp core features (inheritance and the like)</td>
+			<td>An array containing the parsed cssp code</td>
+		</tr>
+		<tr>
+			<td><code>before_glue</code></td>
+			<td>After compilation and cssp magic, just before the output ist generated</td>
+			<td>An array containing the parsed cssp code</td>
+		</tr>
+		<tr>
+			<td><code>before_output</code></td>
+			<td>After generating the output of one cssp file, before combining the output with other files</td>
+			<td>A string containing the final css output from the current cssp file</td>
+		</tr>
+	</tbody>
+</table>
+<h3>Hooks</h3>
+<p>
+	Too hook into cssp you need to call the <code>register_plugin()</code> function using three arguments: the hook, an
+	execution priority and your plugin function's name:
+</p>
+<pre class="php">
+register_plugin('before_compile', 0, 'mypluginfunction');
+</pre>
 <h3>Array structure</h3>
+<p>
+	When using <code>before_compile</code> or <code>before_glue</code> the array recieved as the argument for the plugin
+	function will look like this:
+</p>
 <pre>Array
 (
     [@media foo] => Array
@@ -664,7 +701,7 @@ $mainNavigation
 	In case you wanted your plugin to remove all occurences of <code>background-image</code> from your stylesheets,
 	this would be the code:
 </p>
-<pre>&lt;?php
+<pre class="php">&lt;?php
     /**
      * remove_background_image.php
      * Remove all occurences of background-image (a nonsensical example)
@@ -683,6 +720,9 @@ $mainNavigation
         }
         // No need to return anything
     }
+
+    // Hook into cssp
+    register_plugin('before_compile', 0, 'remove_background_image');
 ?&gt;</pre>
 <p>
 	Don't be afraid to do anything CPU- or memory consuming in your plugins - in the end, everything will be calculated
