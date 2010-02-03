@@ -125,7 +125,7 @@ em, i
 		.co
 			color:#070; font-weight:normal; font-style:italic
 		.at
-			color:#09F; font-weight:bold; font-style:normal
+			color:#247; font-weight:bold; font-style:normal
 		.st
 			color:#00F; font-weight:normal; font-style:normal
 		.ch

@@ -26,9 +26,6 @@ window.addEvent('domready', function(){
 
 	// Hightlighting
 	var indention_char = "\t";
-	var rex = {
-		comment: /(.*?)(\/\/(?:.*?))$/
-	};
 	// Get a line's indention level
 	function get_indention_level(line){
 		var level = 1;
@@ -49,11 +46,8 @@ window.addEvent('domready', function(){
 			var line = lines[i];
 			var nextline = lines[i + 1];
 			// @rules
-			if(line.substr(0, 6) == '@media'){
-				line = '<span class="at media">' + line + '</span>';
-			}
-			else if(line.substr(0, 7) == '@import'){
-				line = '<span class="at import">' + line + '</span>';
+			if(line.substr(0, 1) == '@'){
+				line = '<span class="at">' + line + '</span>';
 			}
 			// Selector style line?
 			if(get_indention_level(line) + 1 == get_indention_level(nextline)){
@@ -64,10 +58,9 @@ window.addEvent('domready', function(){
 				line = line.replace(/:/g, '<span class="ch">:</span>');
 				line = line.replace(/;/g, '<span class="ch">;</span>');
 			}
-			// Strings
-			// TODO
+			// Strings (TODO)
 			// Comments
-			var matches = rex.comment.exec(line);
+			var matches = /(.*?)(\/\/(?:.*?))$/.exec(line);
 			if(matches && matches.length == 3){
 				line = matches[1] + '<span class="co">' + matches[2] + '</span>';
 			}
