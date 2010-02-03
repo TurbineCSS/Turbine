@@ -32,12 +32,13 @@
 
 
 // Gzipping Output for faster transfer to client
-@ini_set('zlib.output_compression',2048);
-@ini_set('zlib.output_compression_level',4);
+@ini_set('zlib.output_compression', 2048);
+@ini_set('zlib.output_compression_level', 4);
 if(isset($_SERVER['HTTP_ACCEPT_ENCODING']) &&
 	substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') &&
 	function_exists('ob_gzhandler') &&
-	!ini_get('zlib.output_compression')
+	!ini_get('zlib.output_compression') &&
+	((!ini_get('zlib.output_compression') || intval(ini_get('zlib.output_compression')) == 0))
 ){
 	@ob_start('ob_gzhandler');
 }
@@ -227,9 +228,6 @@ if($_GET['files']){
 			$css .= $output;
 		}
 	}
-
-
-	// TODO: A final "before headers" plugin hook would be nice
 
 
 	// Endtime
