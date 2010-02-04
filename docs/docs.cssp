@@ -99,11 +99,14 @@ em, i
 			border:1px solid $border
 			padding:0.5em
 		th
-			background:$dark !important
-			font-size:0.9em
-			font-weight:bold
-			color:$white
 			extends:#wrapper table td
+			font-weight:bold
+			font-size:0.9em
+			vertical-align:middle
+			text-align:center
+		thead th
+			background:$dark !important
+			color:$white
 	code
 		font-family:monospace
 		font-size:125%
