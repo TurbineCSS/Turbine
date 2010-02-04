@@ -190,7 +190,7 @@ if($_GET['files']){
 				$cssp->parse();
 				$stylesheet_plugins = array();
 				if(isset($cssp->parsed['global']['@cssp']['plugins'])){
-					$stylesheet_plugins = preg_split('/\s+/', $cssp->parsed['global']['@cssp']['plugins']);
+					$stylesheet_plugins = $cssp->tokenize($cssp->parsed['global']['@cssp']['plugins'], ',');
 				}
 
 				// Apply plugins for before compile

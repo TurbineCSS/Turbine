@@ -193,9 +193,6 @@ class Parser2 {
 	 * @return object $this The CSS Parser object
 	 */
 	public function parse(){
-
-		/* DEBUG */  echo ($this->debug) ? '<table border="1" cellpadding="4"><tr><th>Zeile</th><th>@-Block</th><th>Selektor</th><th>Eigenschaft / Wert</th><th>Level / Next</th><th>Selector Stack</th></tr>' : '';
-
 		$linecount = count($this->css);
 		for($i = 0; $i < $linecount; $i++){
 			$this->token = '';
@@ -237,27 +234,15 @@ class Parser2 {
 					}
 				}
 
-				/* DEBUG */  echo ($this->debug) ? '<tr>' : '';
-				/* DEBUG */  echo ($this->debug) ? '<td><pre>'.$line.'</pre></td>' : '';
-				/* DEBUG */  echo ($this->debug) ? '<td><pre>'.$this->current['at'].'</pre></td>' : '';
-				/* DEBUG */  echo ($this->debug) ? '<td><pre>'.$this->current['se'].'</pre></td>' : '';
-				/* DEBUG */  echo ($this->debug) ? '<td><pre>'.$this->current['pr'].' / '.$this->current['va'].'</pre></td>' : '';
-				/* DEBUG */  echo ($this->debug) ? '<td><pre>'.$level.' / '.$nextlevel.'</pre></td>' : '';
-				/* DEBUG */  echo ($this->debug) ? '<td><pre>'.print_r($this->nesting, true).'</pre></td>' : '';
-				/* DEBUG */  echo ($this->debug) ? '</tr>' : '';
-
 			}
 		}
-
-		/* DEBUG */  echo ($this->debug) ? '</table>' : '';
-
 		return $this;
 	}
 
 
 	/**
 	 * parse_media_line
-	 * 
+	 * Parses an @media line
 	 * @param string $line A line containing an @media switch
 	 * @return void
 	 */
@@ -281,7 +266,7 @@ class Parser2 {
 
 	/**
 	 * parse_import_line
-	 * 
+	 * Parses an @import line
 	 * @param string $line A line containing @import
 	 * @return void
 	 */
@@ -301,7 +286,7 @@ class Parser2 {
 
 	/**
 	 * parse_selector_line
-	 * 
+	 * Parses a selector line
 	 * @param string $line A line containing a selector
 	 * @param
 	 * @return void
@@ -335,7 +320,7 @@ class Parser2 {
 
 	/**
 	 * parse_property_line
-	 * 
+	 * Parses a property/value line
 	 * @param string $line A line containing one (or more) property-value-pairs
 	 * @return void
 	 */
@@ -375,7 +360,11 @@ class Parser2 {
 
 
 	/**
-	 * 
+	 * merge_selectors
+	 * Merges two selectors
+	 * @param array $parent
+	 * @param array $child
+	 * @return array $selectors
 	 */
 	protected function merge_selectors($parent, $child){
 		$parent = $this->tokenize($parent, ',');
@@ -400,7 +389,6 @@ class Parser2 {
 	/**
 	 * switch_string_state
 	 * Manages the string state
-	 * 
 	 * @param string $char A single char
 	 * @return void
 	 */
@@ -424,7 +412,7 @@ class Parser2 {
 
 	/**
 	 * get_indention_level
-	 * 
+	 * Returns the indention level for a line
 	 * @param string $line The line to get the indention level for
 	 * @return int $level The indention level
 	 */
@@ -457,10 +445,6 @@ class Parser2 {
 			$dest =& $this->parsed[$at][$se][$pr];
 		}
 		// Take care of !important on merge
-		/*$tokens = array();
-		if(isset($this->parsed[$at][$se][$pr])){
-			$tokens = preg_split('/[\s]/', $this->parsed[$at][$se][$pr]);
-		}*/
 		$tokens = $this->tokenize($rule[$property]);
 		if(!in_array('!important', $tokens)){
 			$dest = $va;
