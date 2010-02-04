@@ -22,7 +22,7 @@
 					// Apply global path constants
 					global $global_constants;
 					foreach($global_constants as $g_constant => $g_value){
-						$filepath = preg_replace('/(_'.$g_constant.')\b/', $g_value, $filepath);
+						$filepath = preg_replace('/(\$_'.$g_constant.')\b/', $g_value, $filepath);
 					}
 					// Import the new lines
 					$import = file($filepath);

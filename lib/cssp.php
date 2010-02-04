@@ -61,8 +61,8 @@ class Cssp extends Parser2 {
 	 * @return void
 	 */
 	public function apply_constants(){
-		// Apply global constants to all blocks
-		$this->apply_global_constants();
+		// Apply special constants to all blocks
+		$this->apply_special_constants();
 		// Apply constants, if present, to the global block
 		if(isset($this->parsed['global']['@constants'])){
 			foreach($this->parsed as $block => $css){
@@ -97,17 +97,17 @@ class Cssp extends Parser2 {
 
 
 	/**
-	 * apply_global_constants
-	 * Applies global constants to all blocks
+	 * apply_special_constants
+	 * Applies special constants to all blocks
 	 * @return void
 	 */
-	protected function apply_global_constants(){
+	protected function apply_special_constants(){
 		global $global_constants;
 		foreach($global_constants as $g_constant => $g_value){
 			foreach($this->parsed as $block => $css){
 				foreach($this->parsed[$block] as $selector => $styles){
 					foreach($styles as $property => $value){
-						$this->parsed[$block][$selector][$property] = preg_replace('/(_'.$g_constant.')\b/', $g_value, $value);
+						$this->parsed[$block][$selector][$property] = preg_replace('/(\$_'.$g_constant.')\b/', $g_value, $value);
 					}
 				}
 			}

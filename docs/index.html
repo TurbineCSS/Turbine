@@ -170,9 +170,9 @@
 			<td>Constant</td>
 		</tr>
 		<tr>
-			<th>_</th>
+			<th>$_</th>
 			<td>Value</td>
-			<td>Special constant (<code>_CSSPPATH</code>, <code>_FILEPATH</code>)</td>
+			<td>Special constant (<code>$_CSSPPATH</code>, <code>$_FILEPATH</code>)</td>
 		</tr>
 		<tr>
 			<th>?</th>
@@ -210,14 +210,14 @@
 <pre class="css">#foo{color:red;background:blue}</pre>
 <p>
 	That's a good thing to have since everybody likes smaller downloads and the CSS code generates tends to be more verbose than
-	handwritten CSS. To enable compression simply add <code>compress:1;</code> to your configuration block.
+	handwritten CSS anyway. To enable compression simply add <code>compress:1;</code> to your configuration block.
 </p>
 <h3>Plugins</h3>
 <p>
-	To active a plugin, simply add it's name to the <code>plugins</code> property:
+	To active a plugin, simply add it's name to the <code>plugins</code> property (the order doesn't matter):
 </p>
 <pre class="cssp">@cssp
-	plugins:resetstyle datauri borderradius</pre>
+	plugins:resetstyle, datauri, borderradius</pre>
 </div>
 
 
@@ -292,6 +292,14 @@
 <p>
 	TODO
 </p>
+<h3>Special constants</h3>
+<p>
+	The constants defined in in an <code>@cssp</code> block only apply to the current cssp file. There are two special:
+</p>
+<ol>
+	<li><code>$_CSSPPATH</code>: The path of <code>css.php</code></li>
+	<li><code>$_FILEPATH</code>: The path of the current cssp file</li>
+</ol>
 <h3>Aliases</h3>
 <p>
 	Aliases are constants applied to selectors insted of values. Don't want to remember the complicated <code>#wrapper #header > div ul</code>?
