@@ -47,6 +47,13 @@ else{
 }
 
 
+// Global constants
+$global_constants = array(
+	'CSSPPATH' => dirname($_SERVER['SCRIPT_NAME']),
+	'FILEPATH' => ''
+);
+
+
 // Plugin hooks
 $plugins_before_parse = array();    // Before the initial code is touced at all by cssp
 $plugins_before_compile = array();  // After parsing, before adding any cssp features (like inheritance)
@@ -145,8 +152,19 @@ if($_GET['files']){
 
 			// Server-side cache: Cached version of the file does not yet exist
 			if(!$incache){
+
+				// TODO: Only parse .cssp files, simply append .css files 
+
 				$cssp = new Cssp($file);
 
+				// Set filepath
+				$filepath = dirname($file);
+				if($filepath != '.'){
+					$global_constants['FILEPATH'] = $filepath;
+				}
+				else{
+					$global_constants['FILEPATH'] = '';
+				}
 
 				// Load all plugins
 				$plugindir = 'plugins';
