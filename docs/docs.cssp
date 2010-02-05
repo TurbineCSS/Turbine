@@ -1,6 +1,6 @@
 @cssp
 	compress:1
-	plugins:resetstyle boxshadow borderradius
+	plugins:resetstyle, boxshadow, borderradius
 
 
 @constants
