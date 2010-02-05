@@ -7,7 +7,7 @@
 	 * 
 	 * Usage: @load path/relative/to/css.php/foo.cssp
 	 * Example: -
-	 * Status: Experimental
+	 * Status: Beta
 	 * 
 	 * @param array &$css
 	 * @return void
@@ -16,7 +16,7 @@
 		$new = array();
 		$matches = array();
 		foreach($css as $line){
-			if(preg_match('/^[\s]*@load[\s]+(.*)/', $line, $matches)){ // TODO: Take care of comments after the url
+			if(preg_match('/^[\s]*@load[\s]+url\((.*?)\)/', $line, $matches)){
 				if(count($matches) == 2){
 					$filepath = $matches[1];
 					// Apply global path constants
@@ -43,7 +43,7 @@
 	/**
 	 * Register the plugin
 	 */
-	register_plugin('before_parse', 0, 'load');
+	register_plugin('before_parse', 1000, 'load');
 
 
 ?>

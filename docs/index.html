@@ -45,7 +45,7 @@
 				<li><a href="#toc-3-4">Browser detection</a></li>
 				<li><a href="#toc-3-5">Data-URIs</a></li>
 				<li><a href="#toc-3-6">Hexcrusher</a></li>
-				<li><a href="#toc-3-7">IE bugfixes</a></li>
+				<li><a href="#toc-3-7">Loader</a></li>
 				<li><a href="#toc-3-8">OS detection</a></li>
 				<li><a href="#toc-3-9">Quote style</a></li>
 				<li><a href="#toc-3-10">Reset stylesheet</a></li>
@@ -540,12 +540,17 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-7">IE bugfixes</h2><div>
+<h2 id="toc-3-7">Loader</h2><div>
 <p class="abstract">
-	TODO
+	Loads another cssp file.
 </p>
 <p>
-	TODO
+	Loader loads the contents of another cssp file at the exact location where <code>@load</code> ist placed. It inserts the actual
+	cssp code before parsing anything.
+</p>
+<h3>Usage</h3>
+<p>
+	Add <code>@load url(path/to/file.cssp)</code> whereever you want the file to be loaded
 </p>
 </div>
 
