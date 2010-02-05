@@ -84,11 +84,22 @@
 	/**
 	 * browser
 	 * Main plugin function
-	 * 
 	 * @param mixed &$parsed
 	 * @return void
 	 */
 	function browser(&$parsed){
+		// Look for a browser rule in @cssp, empty $parsed on mismatch
+		if(isset($parsed['global']['@cssp']['browser']) ||
+			isset($parsed['global']['@cssp']['engine']) ||
+			isset($parsed['global']['@cssp']['device'])
+		){
+			$browserparsed = browser_parse_browser($parsed['global']['@cssp']);
+			$browserparsed = browser_parse_engine($browserparsed);
+			$browserparsed = browser_parse_device($browserparsed);
+			if($browserparsed === false){
+				$parsed = array();
+			}
+		}
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				// Loop through @font-face
@@ -113,7 +124,7 @@
 					if($browserparsed){
 						$parsed[$block][$selector] = $browserparsed;
 					}
-					else {
+					else{
 						unset($parsed[$block][$selector]);
 					}
 				}
@@ -125,7 +136,6 @@
 	/**
 	 * browser_parse_browser
 	 * Looks for the "browser" property in an element and parses it
-	 * 
 	 * @param object $styles
 	 * @return 
 	 */
@@ -136,26 +146,23 @@
 		if(isset($styles['browser'])){
 			$match = false;
 			// Split up any multiple browser rules in order to check them one by one
-			$browserrules = explode(' ', $styles['browser']);
+			$browserrules = preg_split('/\s+/', $styles['browser']);
 			// Check each browser rule
 			foreach($browserrules as $browserrule){
 				preg_match('/([\^]?)([a-z\-_0-9]+)([!=><]{0,2})([0-9]*\.?[0-9]*]*)/i', $browserrule, $matches);
 				// If the useragent's detected browser is found in the current rule
-				if(strstr(strtolower($matches[2]),strtolower(str_replace(' ','_',$browser->name))))
-				{
+				if(strstr(strtolower($matches[2]),strtolower(str_replace(' ','_',$browser->name)))){
 					// For the time being set $submatch to true
 					$submatch = true;
 					// If we found a logical operator and a version number
-					if($matches[3] != '' && $matches[4] == floatval($matches[4]))
-					{
+					if($matches[3] != '' && $matches[4] == floatval($matches[4])){
 						// Turn a single =-operator into a PHP-interpretable ==-operator
 						if($matches[3] == '=') $matches[3] = '==';
-						// Filter and run the detected rule through the PHP-interpreter
+						// Filter and run the detected rule through the PHP interpreter
 						eval('if('.floatval($browser->version).$matches[3].floatval($matches[4]).') $submatch = true; else $submatch = false;');
 					}
 				}
-				else
-				{
+				else{
 					// Set $submatch to false
 					$submatch = false;
 				}
@@ -191,7 +198,7 @@
 		if(isset($styles['engine'])){
 			$match = false;
 			// Split up any multiple engine rules in order to check them one by one
-			$browserrules = explode(' ', $styles['engine']);
+			$browserrules = preg_split('/\s+/', $styles['engine']);
 			// Check each engine rule
 			foreach($browserrules as $browserrule){
 				preg_match('/([\^]?)([a-z\-_0-9]+)([!=><]{0,2})([0-9]*\.?[0-9]*]*)/i', $browserrule, $matches);
@@ -205,7 +212,7 @@
 					{
 						// Turn a single =-operator into a PHP-interpretable ==-operator
 						if($matches[3] == '=') $matches[3] = '==';
-						// Filter and run the detected rule through the PHP-interpreter
+						// Filter and run the detected rule through the PHP interpreter
 						eval('if('.floatval($browser->engineversion).$matches[3].floatval($matches[4]).') $submatch = true; else $submatch = false;');
 					}
 				}
@@ -246,7 +253,7 @@
 		if(isset($styles['device'])){
 			$match = false;
 			// Split up any multiple device rules in order to check them one by one
-			$browserrules = explode(' ', $styles['device']);
+			$browserrules = preg_split('/\s+/', $styles['device']);
 			// Check each device rule
 			foreach($browserrules as $browserrule){
 				if(strtolower($browserrule) == strtolower(str_replace(' ','_',$browser->platformtype))) $submatch = true;
@@ -272,7 +279,7 @@
 	/**
 	 * Register the plugin
 	 */
-	register_plugin('before_compile', 0, 'browser');
+	register_plugin('before_compile', 1000, 'browser');
 
 
 ?>
