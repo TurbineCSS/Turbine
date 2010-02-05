@@ -7,25 +7,21 @@
 	 * Usage: Simply include the plugin in @cssp
 	 * Status: Stable
 	 * 
-	 * @param mixed &$parsed
+	 * @param mixed &$output
 	 * @return void
 	 */
-	function resetstyle(&$parsed){
+	function resetstyle(&$output){
 		// The reset stylesheet
-		$reset_stylesheet = "*\n	margin:0;padding:0;text-decoration:none;border:0;outline:0;font-weight:normal;font-style:inherit;font-size:100%;font-family:inherit;vertical-align:baseline;line-height:inherit;color:inherit;background:none;text-align:inherit;quotes:'''';list-style:none;border-collapse:collapse;border-spacing:0;outline:none";
-		// Parse the stylesheet
-		$cssp = new Cssp();
-		$cssp->load_string($reset_stylesheet);
-		$cssp->parse();
-		// Merge the reset array into the existing $parsed
-		$parsed['global'] = array_merge($cssp->parsed['global'], $parsed['global']);
+		$reset_stylesheet = "*{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent;color:inherit;text-decoration:none;font-weight:normal}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outline:0}table{border-collapse:collapse;border-spacing:0}";
+		// Add the reset stylesheet to the output. Done!
+		$output = $reset_stylesheet.$output;
 	}
 
 
 	/**
 	 * Register the plugin
 	 */
-	register_plugin('before_compile', 0, 'resetstyle');
+	register_plugin('before_output', 0, 'resetstyle');
 
 
 ?>
