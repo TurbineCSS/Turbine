@@ -168,15 +168,19 @@ class Cssp extends Parser2 {
 			foreach($this->parsed[$block] as $selector => $styles){
 				// Full inheritance
 				if(isset($this->parsed[$block][$selector]['extends'])){
-					// Extract ancestor
-					$ancestor = $this->parsed[$block][$selector]['extends'];
-					if($this->parsed[$block][$ancestor]){
-						$this->parsed[$block][$selector] = $this->merge_rules(
-							$this->parsed[$block][$selector],
-							$this->parsed[$block][$ancestor],
-							array(),
-							false
-						);
+					// Parse ancestors
+					$ancestors =  $this->tokenize($this->parsed[$block][$selector]['extends'], array('"', "'", ','));
+					foreach($ancestors as $ancestor){
+						// Extract ancestor
+						// $ancestor = $this->parsed[$block][$selector]['extends'];
+						if($this->parsed[$block][$ancestor]){
+							$this->parsed[$block][$selector] = $this->merge_rules(
+								$this->parsed[$block][$selector],
+								$this->parsed[$block][$ancestor],
+								array(),
+								false
+							);
+						}
 					}
 					unset($this->parsed[$block][$selector]['extends']);
 				}

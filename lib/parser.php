@@ -605,7 +605,10 @@ class Parser2 {
 			if($current_string_delimeter === null){
 				// End current token
 				if(in_array($str{$i}, $separator)){
-					$tokens[] = trim($current);
+					$token = trim($current);
+					if(strlen($token) > 0 && !in_array($token, $separator)){
+						$tokens[] = $token;
+					}
 					$current = '';
 					$i++;
 				}
