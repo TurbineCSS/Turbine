@@ -123,7 +123,7 @@ if($_GET['files']){
 
 			// CSSP or CSS?
 			$fileinfo = pathinfo($file);
-			if($fileinfo['extension'] != 'cssp'){
+			if($fileinfo['extension'] == 'css'){
 				// Simply include normal css files in the output
 				$css .= file_get_contents($file);
 			}
@@ -184,8 +184,9 @@ if($_GET['files']){
 					}
 
 					// Apply plugins for before parse
-					// TODO: Order by priority
 					// TODO: How can we let the stylesheet author control which plugins get used?
+					asort($plugins_before_parse);
+					$plugins_before_parse = array_reverse($plugins_before_parse);
 					foreach($plugins_before_parse as $plugin => $priority){
 						if(function_exists($plugin)){
 							call_user_func_array($plugin, array(&$cssp->css));
@@ -200,7 +201,8 @@ if($_GET['files']){
 					}
 
 					// Apply plugins for before compile
-					// TODO: Order by priority
+					asort($plugins_before_compile);
+					$plugins_before_compile = array_reverse($plugins_before_compile);
 					foreach($plugins_before_compile as $plugin => $priority){
 						if(in_array($plugin, $stylesheet_plugins) && function_exists($plugin)){
 							call_user_func_array($plugin, array(&$cssp->parsed));
@@ -211,7 +213,8 @@ if($_GET['files']){
 					$cssp->compile();
 
 					// Apply plugins for before glue
-					// TODO: Order by priority
+					asort($plugins_before_glue);
+					$plugins_before_glue = array_reverse($plugins_before_glue);
 					foreach($plugins_before_glue as $plugin => $priority){
 						if(in_array($plugin, $stylesheet_plugins) && function_exists($plugin)){
 							call_user_func_array($plugin, array(&$cssp->parsed));
@@ -233,9 +236,10 @@ if($_GET['files']){
 					$output = $cssp->glue($compress);
 
 					// Apply plugins for before output
-					// TODO: Order by priority
+					asort($plugins_before_output);
+					$plugins_before_output = array_reverse($plugins_before_output);
 					foreach($plugins_before_output as $plugin => $priority){
-						if(function_exists($plugin)){
+						if(in_array($plugin, $stylesheet_plugins) && function_exists($plugin)){
 							call_user_func_array($plugin, array(&$output));
 						}
 					}
