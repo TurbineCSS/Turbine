@@ -183,12 +183,29 @@ if($_GET['files']){
 						closedir($handle);
 					}
 
+					// Get plugin settings for the before parse hook
+					$before_parse_plugin_settings = array();
+					$found = false;
+					foreach($cssp->css as $line){
+						if(!$found){
+							if($line == '@cssp'){
+								$found = true;
+							}
+						}
+						else{
+							preg_match('/^\s+plugins:(.*)$/', $line, $matches);
+							if(count($matches) == 2){
+								$before_parse_plugin_settings = $cssp->tokenize($matches[1], ',');
+								break;
+							}
+						}
+					}
+
 					// Apply plugins for before parse
-					// TODO: How can we let the stylesheet author control which plugins get used?
 					asort($plugins_before_parse);
 					$plugins_before_parse = array_reverse($plugins_before_parse);
 					foreach($plugins_before_parse as $plugin => $priority){
-						if(function_exists($plugin)){
+						if(in_array($plugin, $before_parse_plugin_settings) && function_exists($plugin)){
 							call_user_func_array($plugin, array(&$cssp->css));
 						}
 					}
