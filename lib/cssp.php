@@ -171,12 +171,13 @@ class Cssp extends Parser2 {
 					// Parse ancestors
 					$ancestors =  $this->tokenize($this->parsed[$block][$selector]['extends'], array('"', "'", ','));
 					foreach($ancestors as $ancestor){
-						// Extract ancestor
-						// $ancestor = $this->parsed[$block][$selector]['extends'];
-						if($this->parsed[$block][$ancestor]){
+						// Find ancestor
+						$ancestor_key = $this->find_ancestor_key($ancestor, $block);
+						// Merge ancestor's rules with own rules
+						if($ancestor_key){
 							$this->parsed[$block][$selector] = $this->merge_rules(
 								$this->parsed[$block][$selector],
-								$this->parsed[$block][$ancestor],
+								$this->parsed[$block][$ancestor_key],
 								array(),
 								false
 							);
@@ -231,6 +232,23 @@ class Cssp extends Parser2 {
 			}
 		}
 		return $rule;
+	}
+
+
+	/**
+	 * find_ancestor
+	 * Find selectors matching (partially) $selector
+	 * @param string $selector The selector to search
+	 * @param string $block The block to search in
+	 * @return string $key The matching key (if any)
+	 */
+	protected function find_ancestor_key($selector, $block){
+		foreach($this->parsed[$block] as $key => $value){
+			$tokens = $this->tokenize($key, ',');
+			if(in_array($selector, $tokens)){
+				return $key;
+			}
+		}
 	}
 
 
