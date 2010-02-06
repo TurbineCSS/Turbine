@@ -121,125 +121,133 @@ if($_GET['files']){
 	foreach($files as $file){
 		if(file_exists($file)){
 
-			// Server-side cache: Has file already been parsed?
-			$incache = false;
-
-			// Server-side cache: Where to store parsed files
-			$cachedir = 'lib/cssp_cache';
-
-			// Server-side cache: Check if cache-directory has been created
-			if(!is_dir($cachedir)){
-				@mkdir($cachedir, 0777);
-			}
-
-			$cachefile = md5(
-				$browser->platform.
-				$browser->platformversion.
-				$browser->platformtype.
-				$browser->engine.
-				$browser->engineversion.
-				$browser->family.
-				$browser->familyversion.
-				$browser->name.
-				$browser->version.
-				$file
-			).'.txt';
-
-			// Server-side cache: Check if a cached version of the file already exists
-			if(file_exists($cachedir.'/'.$cachefile) && @filemtime($cachedir.'/'.$cachefile) >= @filemtime($file)){
-				$incache = true;
-			}
-
-			// Server-side cache: Cached version of the file does not yet exist
-			if(!$incache){
-
-				// TODO: Only parse .cssp files, simply append .css files 
-
-				$cssp = new Cssp($file);
-
-				// Set filepath
-				$filepath = dirname($file);
-				if($filepath != '.'){
-					$global_constants['FILEPATH'] = $filepath;
-				}
-				else{
-					$global_constants['FILEPATH'] = '';
-				}
-
-				// Load all plugins
-				$plugindir = 'plugins';
-				if($handle = opendir($plugindir)){
-					while(false !== ($pluginfile = readdir($handle))){
-						if($pluginfile != '.' && $pluginfile != '..' && !function_exists(substr($pluginfile, 0, -4))){
-							include($plugindir.'/'.$pluginfile);
-						}
-					}
-					closedir($handle);
-				}
-
-				// Apply plugins for before parse
-				// TODO: Order by priority
-				// TODO: How can we let the stylesheet author control which plugins get used?
-				foreach($plugins_before_parse as $plugin => $priority){
-					if(function_exists($plugin)){
-						call_user_func_array($plugin, array(&$cssp->css));
-					}
-				}
-
-				// Parse the code, read the stylesheet-specific plugins
-				$cssp->parse();
-				$stylesheet_plugins = array();
-				if(isset($cssp->parsed['global']['@cssp']['plugins'])){
-					$stylesheet_plugins = $cssp->tokenize($cssp->parsed['global']['@cssp']['plugins'], ',');
-				}
-
-				// Apply plugins for before compile
-				// TODO: Order by priority
-				foreach($plugins_before_compile as $plugin => $priority){
-					if(in_array($plugin, $stylesheet_plugins) && function_exists($plugin)){
-						call_user_func_array($plugin, array(&$cssp->parsed));
-					}
-				}
-
-				// Do the cssp magic
-				$cssp->compile();
-
-				// Apply plugins for before glue
-				// TODO: Order by priority
-				foreach($plugins_before_glue as $plugin => $priority){
-					if(in_array($plugin, $stylesheet_plugins) && function_exists($plugin)){
-						call_user_func_array($plugin, array(&$cssp->parsed));
-					}
-				}
-
-				// Set compression mode
-				if(isset($cssp->parsed['global']['@cssp']['compress'])){
-					$compress = (bool) $cssp->parsed['global']['@cssp']['compress'];
-				}
-				else{
-					$compress = false;
-				}
-
-				// Remove configuration @-rule
-				unset($cssp->parsed['global']['@cssp']);
-
-				// Glue css output
-				$output = $cssp->glue($compress);
-
-				// Apply plugins for before output
-				// TODO: Order by priority
-				foreach($plugins_before_output as $plugin => $priority){
-					if(function_exists($plugin)){
-						call_user_func_array($plugin, array(&$output));
-					}
-				}
-
-				// Add to css output
-				@file_put_contents($cachedir.'/'.$cachefile, $output);
+			// CSSP or CSS?
+			$fileinfo = pathinfo($file);
+			if($fileinfo['extension'] != 'cssp'){
+				// Simply include normal css files in the output
+				$css .= file_get_contents($file);
 			}
 			else{
-				// Server-side cache: read the cached version of the file
-				$output = @file_get_contents($cachedir.'/'.$cachefile);
+
+				// Server-side cache: Has file already been parsed?
+				$incache = false;
+
+				// Server-side cache: Where to store parsed files
+				$cachedir = 'lib/cssp_cache';
+
+				// Server-side cache: Check if cache-directory has been created
+				if(!is_dir($cachedir)){
+					@mkdir($cachedir, 0777);
+				}
+
+				$cachefile = md5(
+					$browser->platform.
+					$browser->platformversion.
+					$browser->platformtype.
+					$browser->engine.
+					$browser->engineversion.
+					$browser->family.
+					$browser->familyversion.
+					$browser->name.
+					$browser->version.
+					$file
+				).'.txt';
+
+				// Server-side cache: Check if a cached version of the file already exists
+				if(file_exists($cachedir.'/'.$cachefile) && @filemtime($cachedir.'/'.$cachefile) >= @filemtime($file)){
+					$incache = true;
+				}
+
+				// Server-side cache: Cached version of the file does not yet exist
+				if(!$incache){
+
+					$cssp = new Cssp($file);
+
+					// Set filepath
+					$filepath = dirname($file);
+					if($filepath != '.'){
+						$global_constants['FILEPATH'] = $filepath;
+					}
+					else{
+						$global_constants['FILEPATH'] = '';
+					}
+
+					// Load all plugins
+					$plugindir = 'plugins';
+					if($handle = opendir($plugindir)){
+						while(false !== ($pluginfile = readdir($handle))){
+							if($pluginfile != '.' && $pluginfile != '..' && !function_exists(substr($pluginfile, 0, -4))){
+								include($plugindir.'/'.$pluginfile);
+							}
+						}
+						closedir($handle);
+					}
+
+					// Apply plugins for before parse
+					// TODO: Order by priority
+					// TODO: How can we let the stylesheet author control which plugins get used?
+					foreach($plugins_before_parse as $plugin => $priority){
+						if(function_exists($plugin)){
+							call_user_func_array($plugin, array(&$cssp->css));
+						}
+					}
+
+					// Parse the code, read the stylesheet-specific plugins
+					$cssp->parse();
+					$stylesheet_plugins = array();
+					if(isset($cssp->parsed['global']['@cssp']['plugins'])){
+						$stylesheet_plugins = $cssp->tokenize($cssp->parsed['global']['@cssp']['plugins'], ',');
+					}
+
+					// Apply plugins for before compile
+					// TODO: Order by priority
+					foreach($plugins_before_compile as $plugin => $priority){
+						if(in_array($plugin, $stylesheet_plugins) && function_exists($plugin)){
+							call_user_func_array($plugin, array(&$cssp->parsed));
+						}
+					}
+
+					// Do the cssp magic
+					$cssp->compile();
+
+					// Apply plugins for before glue
+					// TODO: Order by priority
+					foreach($plugins_before_glue as $plugin => $priority){
+						if(in_array($plugin, $stylesheet_plugins) && function_exists($plugin)){
+							call_user_func_array($plugin, array(&$cssp->parsed));
+						}
+					}
+
+					// Set compression mode
+					if(isset($cssp->parsed['global']['@cssp']['compress'])){
+						$compress = (bool) $cssp->parsed['global']['@cssp']['compress'];
+					}
+					else{
+						$compress = false;
+					}
+
+					// Remove configuration @-rule
+					unset($cssp->parsed['global']['@cssp']);
+
+					// Glue css output
+					$output = $cssp->glue($compress);
+
+					// Apply plugins for before output
+					// TODO: Order by priority
+					foreach($plugins_before_output as $plugin => $priority){
+						if(function_exists($plugin)){
+							call_user_func_array($plugin, array(&$output));
+						}
+					}
+
+					// Add to css output
+					@file_put_contents($cachedir.'/'.$cachefile, $output);
+				}
+				else{
+					// Server-side cache: read the cached version of the file
+					$output = @file_get_contents($cachedir.'/'.$cachefile);
+				}
+
 			}
 
 			// Add to final css
