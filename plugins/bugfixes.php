@@ -30,6 +30,25 @@
 					if(!$parsed[$block]['html']['filter']) $parsed[$block]['html']['filter'] = 'expression(document.execCommand("BackgroundImageCache", false, true))';
 					else $parsed[$block]['html']['filter'] .= ' expression(document.execCommand("BackgroundImageCache",false,true))';
 				}
+				// IE 6 + 7 bugfixes
+				if($browser->family == 'MSIE' && floatval($browser->familyversion) < 8)
+				{
+					// Enable full styleability for IE-buttons
+					// See http://www.sitepoint.com/forums/showthread.php?t=547059
+					if(!$parsed[$block]['button']) $parsed[$block]['button'] = array();	
+					$parsed[$block]['button']['overflow'] = 'visible';
+					$parsed[$block]['button']['width'] = 'auto';
+					$parsed[$block]['button']['white-space'] = 'nowrap';
+				}
+				// Firefox bugfixes
+				if($browser->engine == 'Gecko')
+				{
+					// Ghost margin around buttons
+					// See http://www.sitepoint.com/forums/showthread.php?t=547059
+					if(!$parsed[$block]['button::-moz-focus-inner']) $parsed[$block]['button::-moz-focus-inner'] = array();	
+					$parsed[$block]['button::-moz-focus-inner']['padding'] = '0';
+					$parsed[$block]['button::-moz-focus-inner']['border'] = 'none';
+				}
 			}
 		}
 	}
@@ -38,7 +57,7 @@
 	/**
 	 * Register the plugin
 	 */
-	register_plugin('before_compile', 0, 'ie');
+	register_plugin('before_compile', 0, 'bugfixes');
 
 
 ?>
