@@ -95,6 +95,7 @@ if($_GET['files']){
 	include('lib/browser.php');
 	include('lib/parser.php');
 	include('lib/cssp.php');
+	include('lib/cssmin.php');
 
 	// Get and store browser properties
 	$browser = new browser();
@@ -124,8 +125,13 @@ if($_GET['files']){
 			// CSSP or CSS?
 			$fileinfo = pathinfo($file);
 			if($fileinfo['extension'] == 'css'){
-				// Simply include normal css files in the output
-				$css .= file_get_contents($file);
+				// Simply include normal css files in the output. Minify if not debugging
+				if(!$debug){
+					$css .= cssmin::minify(file_get_contents($file));
+				}
+				else{
+					$css .= file_get_contents($file);
+				}
 			}
 			else{
 
