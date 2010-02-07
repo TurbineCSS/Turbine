@@ -445,7 +445,7 @@ class Parser2 {
 			$dest =& $this->parsed[$at][$se][$pr];
 		}
 		// Take care of !important on merge
-		$tokens = $this->tokenize($rule[$property]);
+		$tokens = $this->tokenize($dest);
 		if(!in_array('!important', $tokens)){
 			$dest = $va;
 		}
