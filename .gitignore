@@ -1,6 +1,6 @@
 .project
 .tmp_*
 *~
-cache/*
+cssp_cache
 .settings
 .buildpath

@@ -1,9 +1,0 @@
-@media screen {
-}
-
-@media print {
-	body {
-		font-family: "Times New Roman", Times, serif;
-	}
-}
-
