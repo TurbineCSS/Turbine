@@ -59,8 +59,8 @@
 											elseif(
 												$browser->family == 'MSIE' && 
 												(
-													floatval($browser->familyversion) < 7 || 
-													(floatval($browser->familyversion) < 8 && $this->platform && $this->platformversion < 6)
+													(floatval($browser->familyversion) < 7 && $this->platform == 'Windows') || 
+													(floatval($browser->familyversion) < 8 && $this->platform == 'Windows'  && $this->platformversion < 6)
 												) 
 											){
 												// Calculate identifier and anchor-tag for the MHTML-file
