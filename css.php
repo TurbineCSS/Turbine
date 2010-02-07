@@ -182,7 +182,7 @@ if($_GET['files']){
 					$plugindir = 'plugins';
 					if($handle = opendir($plugindir)){
 						while(false !== ($pluginfile = readdir($handle))){
-							if($pluginfile != '.' && $pluginfile != '..' && !function_exists(substr($pluginfile, 0, -4))){
+							if($pluginfile != '.' && $pluginfile != '..' && is_file($pluginfile) && pathinfo($pluginfile,PATHINFO_EXTENSION) == 'php' && !function_exists(substr($pluginfile, 0, -4))){
 								include($plugindir.'/'.$pluginfile);
 							}
 						}

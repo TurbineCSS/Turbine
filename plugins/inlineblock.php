@@ -22,7 +22,7 @@
 						$parsed[$block][$selector]['display'] = 'inline';
 						$parsed[$block][$selector]['zoom'] = '1';
 					} 
-					elseif($browser->family == 'Firefox'){
+					elseif($browser->engine == 'Gecko' && floatval($browser->engineversion) < 1.9){
 						$parsed[$block][$selector]['display'] = '-moz-inline-stack';
 					}
 				}
