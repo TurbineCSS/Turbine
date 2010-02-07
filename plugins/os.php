@@ -81,6 +81,18 @@
 	function os_parse_os($styles){
 		global $browser;
 		$match = true;
+		// Prepare special array for Windows name to version mapping
+		$os_windowsnames = array();
+		$os_windowsnames['95'] = 4.0;
+		$os_windowsnames['NT4'] = 4.0;
+		$os_windowsnames['98'] = 4.1;
+		$os_windowsnames['ME'] = 4.9;
+		$os_windowsnames['2000'] = $os_windowsnames['2K'] = 5.0;
+		$os_windowsnames['XP'] = 5.1;
+		$os_windowsnames['2003'] = $os_windowsnames['2K3'] = 5.2;
+		$os_windowsnames['Vista'] = $os_windowsnames['2008'] = $os_windowsnames['2K8'] = 6.0;
+		$os_windowsnames['Windows7'] = $os_windowsnames['Win7'] = $os_windowsnames['2008R2'] = $os_windowsnames['2K8R2'] = 6.1;
+		
 		// Find os property
 		if(isset($styles['os'])){
 			$match = false;
@@ -94,9 +106,11 @@
 					// For the time being set $submatch to true
 					$submatch = true;
 					// If we found a logical operator and a version number
-					if($matches[3] != '' && $matches[4] == floatval($matches[4])){
+					if($matches[3] != '' && (isset($os_windowsnames[$matches[4]]) || $matches[4] == floatval($matches[4]))){
 						// Turn a single =-operator into a PHP-interpretable ==-operator
 						if($matches[3] == '=') $matches[3] = '==';
+						// Check for Windows name mapping and apply
+						if(isset($os_windowsnames[$matches[4]])) $matches[4] = $os_windowsnames[$matches[4]];
 						// Filter and run the detected rule through the PHP interpreter
 						eval('if('.floatval($browser->platformversion).$matches[3].floatval($matches[4]).') $submatch = true; else $submatch = false;');
 					}

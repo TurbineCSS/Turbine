@@ -8,7 +8,6 @@
 	compress:0							// Set to "1" to enable minified output
 	plugins:boxshadow, borderradius		// Add more plugins here
 
-
 @constants								// Why would you have to remember (and type) font stacks? Use constants!
 	font_sans:Verdana, Arial, sans-serif
 	font_serif:"Times New Roman", Times, serif
