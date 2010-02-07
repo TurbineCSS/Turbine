@@ -3,8 +3,8 @@
 	<head>
 		<meta charset="utf-8">
 		<title>CSSP Documentation</title>
-		<!--<link rel="stylesheet" href="../css.php?files=docs/docs.css">-->
-		<link rel="stylesheet" href="docs.cache.css">
+		<!--<link rel="stylesheet" href="../css.php?files=docs/docs.cssp">-->
+		<link rel="stylesheet" href="docs.css">
 	</head>
 	<!--[if IE 6]><body id="ie6"><![endif]-->
 	<!--[if IE 7]><body id="ie7"><![endif]-->
@@ -30,10 +30,11 @@
 		</li>
 		<li>&darr; <a href="#toc-2">Usage</a>
 			<ul>
-				<li><a href="#toc-2-1">Configuration</a></li>
-				<li><a href="#toc-2-2">Constants and aliases</a></li>
-				<li><a href="#toc-2-3">Inheritance</a></li>
-				<li><a href="#toc-2-4">Nested selectors</a></li>
+				<li><a href="#toc-2-1">Syntax</a></li>
+				<li><a href="#toc-2-2">Configuration</a></li>
+				<li><a href="#toc-2-3">Nested selectors</a></li>
+				<li><a href="#toc-2-4">Constants and aliases</a></li>
+				<li><a href="#toc-2-5">Inheritance and templating</a></li>
 			</ul>
 		</li>
 		<li>&darr; <a href="#toc-3">Plugins</a>
@@ -44,7 +45,7 @@
 				<li><a href="#toc-3-4">Browser detection</a></li>
 				<li><a href="#toc-3-5">Data-URIs</a></li>
 				<li><a href="#toc-3-6">Hexcrusher</a></li>
-				<li><a href="#toc-3-7">IE bugfixes</a></li>
+				<li><a href="#toc-3-7">Loader</a></li>
 				<li><a href="#toc-3-8">OS detection</a></li>
 				<li><a href="#toc-3-9">Quote style</a></li>
 				<li><a href="#toc-3-10">Reset stylesheet</a></li>
@@ -71,30 +72,43 @@
 
 <h1 id="toc-1">Introduction</h1><div id="introduction">
 <p>
-	CSSP (CSS Preprocessor) is a PHP-powered tool that...
-	CSSP takes something like this&nbsp;&hellip;
+	CSSP (CSS Preprocessor) is a PHP-powered tool that introduces a new way for writing CSS. It's syntax and features are designed to
+	decrease css devolopment time and web developer headache. CSSP takes something like this&nbsp;&hellip;
 </p>
-<pre>BEEINDRUCKENDES BEISPIEL</pre>
+<pre class="cssp">// This is a comment!
+#foo
+	color:red
+	div.alpha, div.beta
+		font-weight:bold
+		border-radius:4px</pre>
 &hellip; and turns it into this:
-<pre>BEEINDRUCKENDES BEISPIEL</pre>
+<pre class="css">#foo {
+    color: red;
+}
+#foo div.alpha, #foo div.beta {
+    font-weight: bold;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -khtml-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+</pre>
 <p>
-	<strong>There is no guarantee, explicit or implied, of its suitability for any purpose.</strong> That said, CSSP <em>can</em> save
-	you a lot of time and allow you to concentrate on a website's design and functionality instead of css's limitations and your least
-	favourite browser's latest bugs. And, being fully extensible, you can customize it to your liking.
+	CSSP can save you a lot of typing and time <em>and</em> allow you to concentrate on a website's design and functionality instead of
+	css's limitations and your least favourite browser's latest bugs. And, being fully extensible, you can customize it to your liking.
 </p>
 <h2 id="toc-1-1">Goals and Features</h2><div>
 <p>
-	CSSP's main goal is a decrease in css devolopment time and web developer headache. This is achieved by a set of basic features
-	that expand what you can do with css:
+	CSSP basic features include:
 </p>
 <ul>
+	<li>Minmal syntax&nbsp;&ndash; the less you have have to type, the more you get done</li>
 	<li>Packing, gzipping and automatic minification of multiple css files</li>
-	<li>Constants (also known as "css variables")</li>
-	<li>Selector aliases</li>
+	<li>Constants (also known as "css variables") and selector aliases</li>
 	<li>Oop-like inheritance, extension and templating features</li>
 	<li>Nested css selectors</li>
-	<li>Fully exensible through a very simple plugin system</li>
 	<li>Built-in device-, browser- and os sniffing</li>
+	<li>Fully exensible through a very simple plugin system</li>
 </ul>
 <p>
 	While CSSP's basic features may save you some keystrokes, it's plugins automate and simplify some of the more tedious and complicated
@@ -106,12 +120,81 @@
 
 <h1 id="toc-2">Usage</h1><div id="usage">
 <p>
-	
+	To use CSSP, embed <code>css.php</code> in your HTML like a normal css file and add the <code>files</code> argument containing
+	a list of cssp files sepperated by semicolons.
+</p>
+<pre>&lt;link rel="stylesheet" href="path/to/cssp/css.php?files=file1.cssp;file2.cssp"&gt;</pre>
+<p>
+	You can also include regular css files.
 </p>
 
 
+<h2 id="toc-2-1">Syntax</h2><div>
+<p>
+	CSSP's syntax is a bit like <a href="#">Python</a>&nbsp;&ndash; the level of indention instead of curly braces decides what is
+	what. A simple rule looks like this:
+</p>
+<pre class="cssp">#foo div > p               // Selector
+	color:red              // Property and value
+	font-weight:bold       // Property and value</pre>
+<p>
+	The way CSSP determines if a given line is a selector or a property-value-pair is the indention level of the <em>following</em>
+	line:
+</p>
+<pre class="cssp">#foo div > p               // Next line is indented = this is a selector
+	color:red
+	font-weight:bold
+	span                   // Next line is indented = this is a selector
+		color:red</pre>
+<p>
+	This behaviour allows nested selectors, which can be quite powerful (see <a href="#toc-2-3">nested selectors</a>).
+</p>
+<p>
+	<code>@media</code> TODO
+</p>
+<h3>Prefixes</h3>
+<p>
+	TODO
+</p>
+<table>
+	<thead>
+		<tr>
+			<th>Prefix</th>
+			<th>Context</th>
+			<th>Effect</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th rowspan="2">$</th>
+			<td>Selector</td>
+			<td>Selector alias</td>
+		</tr>
+		<tr>
+			<td>Value</td>
+			<td>Constant</td>
+		</tr>
+		<tr>
+			<th>$_</th>
+			<td>Value</td>
+			<td>Special constant (<code>$_CSSPPATH</code>, <code>$_FILEPATH</code>)</td>
+		</tr>
+		<tr>
+			<th>?</th>
+			<td>Selector</td>
+			<td>Prototype - whole element will be removed before output</td>
+		</tr>
+		<tr>
+			<th>&amp;</th>
+			<td>Value</td>
+			<td>Function</td>
+		</tr>
+	</tbody>
+</table>
+</div>
 
-<h2 id="toc-2-1">Configuration</h2><div>
+
+<h2 id="toc-2-2">Configuration</h2><div>
 <p>
 	The configuration options of CSSP can be set in the stylesheets themselves&nbsp;&ndash a <code>@cssp</code> block (called
 	<strong>configuration block</strong>) allows for options to be set like properties and values in normal CSS code. There are
@@ -121,143 +204,159 @@
 <p>
 	CSSP can output CSS code in a compressed form.
 </p>
-<pre>@cssp {
-    compress:1;
-}
-#foo{
-    color: red;
-    background: blue;
-}</pre>
+<pre class="cssp">@cssp
+	compress:1
+#foo
+	color:red
+	background:blue</pre>
 <p>
 	Becomes
 </p>
-<pre>#foo{color:red;background:blue;}</pre>
+<pre class="css">#foo{color:red;background:blue}</pre>
 <p>
 	That's a good thing to have since everybody likes smaller downloads and the CSS code generates tends to be more verbose than
-	handwritten CSS. To enable compression simply add <code>compress:1;</code> to your configuration block.
+	handwritten CSS anyway. To enable compression simply add <code>compress:1;</code> to your configuration block.
 </p>
 <h3>Plugins</h3>
 <p>
-	
+	To active a plugin, simply add it's name to the <code>plugins</code> property (the order doesn't matter):
 </p>
-<pre>@cssp {
-    plugins:data_uri border_radius;
+<pre class="cssp">@cssp
+	plugins:resetstyle, datauri, borderradius</pre>
+</div>
+
+
+<h2 id="toc-2-3">Nested selectors</h2><div>
+<p>
+	CSSP implements nested css selectors using a simple principle: whenever the <em>next</em> line is indented, to current line
+	is used as a selector and combined with it's parent selectors.
+</p>
+<pre class="cssp">#foo div > p
+	color:red
+	font-weight:bold
+	a:link, a:visited
+		text-decoration:underline
+	a:hover, a:active
+		text-decoration:none;
+	a:focus
+		outline:1px dotted #CCC;</pre>
+<p>
+	The nested code above compiles to the following css:
+</p>
+<pre class="css">#foo div > p {
+    color: red;
+    font-weight: bold;
+}
+#foo div > p a:link, #foo div > p a:visited {
+    text-decoration: underline;
+}
+#foo div > p a:hover, #foo div > p a:active {
+    text-decoration: none;
+}
+#foo div > p a:focus {
+    outline: 1px dotted #CCC;
+}</pre>
+<p>
+	Without nested selectors you would have to have typed a lot more <code>#foo div > p</code>. Nested selectors <em>can</em> become a
+	bit confusing if you overuse them, but with a bit of moderation they can save quite a bit of typing. Consider this example:
+</p>
+<pre class="cssp">#header, #footer
+	ul, ol, p
+		a:link, a:visited
+			text-decoration:underline
+		a:active, a:hover
+			text-decoration:none</pre>
+<p>
+	Result:
+</p>
+<pre class="css">#header ul a:link, #header ul a:visited,
+#header ol a:link, #header ol a:visited,
+#header p a:link, #header p a:visited,
+#footer ul a:link, #footer ul a:visited,
+#footer ol a:link, #footer ol a:visited,
+#footer p a:link, #footer p a:visited {
+	text-decoration: underline;
+}
+#header ul a:active, #header ul a:hover,
+#header ol a:active, #header ol a:hover,
+#header p a:active, #header p a:hover,
+#footer ul a:active, #footer ul a:hover,
+#footer ol a:active, #footer ol a:hover,
+#footer p a:active, #footer p a:hover {
+	text-decoration: none;
 }</pre>
 </div>
 
 
 
-<h2 id="toc-2-2">Constants and Aliases</h2><div>
+<h2 id="toc-2-4">Constants and Aliases</h2><div>
 <p>
-	Foo
+	TODO
 </p>
 <h3>Constants</h3>
 <p>
-	Foo
+	TODO
 </p>
+<h3>Special constants</h3>
+<p>
+	The constants defined in in an <code>@cssp</code> block only apply to the current cssp file. There are two special:
+</p>
+<ol>
+	<li><code>$_CSSPPATH</code>: The path of <code>css.php</code></li>
+	<li><code>$_FILEPATH</code>: The path of the current cssp file</li>
+</ol>
 <h3>Aliases</h3>
 <p>
 	Aliases are constants applied to selectors insted of values. Don't want to remember the complicated <code>#wrapper #header > div ul</code>?
 	You don't have to:
 </p>
-<pre>@aliases {
-    mainNavigation: #wrapper #header > div ul;
-}
+<pre class="cssp">@aliases
+	mainNavigation: #wrapper #header > div ul
 
-$mainNavigation {
-    list-style:none;
-}</pre>
+$mainNavigation
+	list-style:none</pre>
 <p>
 	The <code>@aliases</code> block defines <code>mainNavigation</code> as an alias of <code>#wrapper #header > div ul</code>, which
 	results us to the following css code:
 </p>
-<pre>#wrapper #header > div ul {
-    list-style: none;
+<pre class="css">#wrapper #header > div ul {
+    list-style: none
 }
 </pre>
 </div>
 
 
 
-<h2 id="toc-2-3">Inheritance, Extension and Templating</h2><div>
+<h2 id="toc-2-5">Inheritance and Templating</h2><div>
 <p>
-	Foo
+	TODO
 </p>
-<h3>Inheriting values from other elements</h3>
+<h3>Copying values from other elements</h3>
 <p>
-	Foo
+	TODO
 </p>
-<pre>
-#foo {
-    color:inherit(#bar background);
-}
-#bar {
-    background:#F00;
-}
-</pre>
+<pre class="cssp">
+#foo
+	color:copy(#bar background)
+#bar
+	background:#F00</pre>
 <p>
 	Result:
 </p>
-<pre>
+<pre class="css">
 #foo {
-    color: #F00;
+    color: #F00
 }
 #bar {
-    background: #F00;
-}
-</pre>
+    background: #F00
+}</pre>
 <h3>Extending other elements</h3>
 <p>
-	Foo
+	TODO
 </p>
 <h3>Templating</h3>
 <p>
-	Foo
-</p>
-</div>
-
-
-
-<h2 id="toc-2-4">Nested selectors</h2><div>
-<p>
-	CSSP implements nested css selectors that work using the new <code>children</code> property:
-</p>
-<pre>#foo div > p {
-	color:red;
-	font-weight:bold;
-	children:{
-		a:link, a:visited {
-			text-decoration:underline;
-		}
-		a:hover, a:active {
-			text-decoration:none;
-		}
-		a:focus{
-			outline:1px dotted #CCC;
-		}
-	};
-}</pre>
-<p>
-	Using nested selectors has two possible benefits (provided you don't go overboard using them): they automatically structure your
-	CSSP code into logical units and they can save you a lot of typing. The nested code above compiles to the following css:
-</p>
-<pre>#foo div > p {
-	color: red;
-	font-weight: bold;
-}
-#foo div > p a:link, #foo div > p a:visited {
-	text-decoration: underline;
-}
-#foo div > p a:hover, #foo div > p a:active {
-	text-decoration: none;
-}
-#foo div > p a:focus {
-	outline: 1px dotted #CCC;
-}
-</pre>
-<p>
-	Without nested selectors you would have to have typed a lot more <code>#foo div > p</code>. Nested selectors <em>can</em> become a
-	bit confusing if you overuse them, but with a bit of moderation they can save quite a few keystrokes.
+	TODO
 </p>
 </div>
 
@@ -277,20 +376,19 @@ $mainNavigation {
 </p>
 <p>
 	Webkit and Mozilla browsers require vendor-specific prefixes for the CSS3 property <code>border-radius</code>. This plugin automatically
-	inserts them wherever a <code>-cssp-border-radius</code> property is found. Additionally, it provides shortcuts for adding rounded
+	inserts all of them wherever a <code>border-radius</code> property is found. Additionally, it provides shortcuts for adding rounded
 	corners only on the left, right, top or bottom side of an element: <code>border-left-radius</code>, <code>border-right-radius</code>,
 	<code>border-top-radius</code>, <code>border-bottom-radius</code>
 </p>
 <h3>Usage</h3>
 <p>
-	Add <code>border_radius</code> to your <code>@cssp</code> plugins rule and start using <code>-cssp-border-radius</code> like the
+	Add <code>borderradius</code> to your <code>@cssp</code> plugins rule and start using <code>border-radius</code> like the
 	standard <code>border-radius</code> CSS3 property.
 </p>
 <h3>Examples</h3>
 <h4>Automatic vendor-specific versions</h4>
-<pre>#foo {
-    -cssp-border-radius:4px;
-}</pre>
+<pre class="cssp">#foo
+	border-radius:4px;</pre>
 <p>
 	Result:
 </p>
@@ -301,9 +399,8 @@ $mainNavigation {
     border-radius: 4px;
 }</pre>
 <h4>Left side only shortcut</h4>
-<pre>#foo {
-    -cssp-border-left-radius:4px;
-}</pre>
+<pre class="cssp">#foo
+	border-left-radius:4px;</pre>
 <p>
 	Result:
 </p>
@@ -327,17 +424,16 @@ $mainNavigation {
 </p>
 <p>
 	Webkit and Mozilla browsers require vendor-specific prefixes for the CSS3 property <code>box-shadow</code>. This plugin automatically
-	inserts them wherever a <code>-cssp-box-shadow</code> property is found.
+	inserts them wherever a <code>box-shadow</code> property is found.
 </p>
 <h3>Usage</h3>
 <p>
-	Add <code>box_shadow</code> to your <code>@cssp</code> plugins rule and start using <code>-cssp-box-shadow</code> like the
+	Add <code>boxshadow</code> to your <code>@cssp</code> plugins rule and start using <code>box-shadow</code> like the
 	standard <code>box-shadow</code> CSS3 property.
 </p>
 <h3>Example</h3>
-<pre>#foo {
-    -cssp-box-shadow:4px 4px 4px #666;
-}</pre>
+<pre class="cssp">#foo
+	box-shadow:4px 4px 4px #666;</pre>
 <p>
 	Result:
 </p>
@@ -359,7 +455,7 @@ $mainNavigation {
 	for embedding web fonts in a manner that works for all browsers and takes care of numerous IE quirks. Its only downside is that
 	it's rather complicated:
 </p>
-<pre>@font-face {
+<pre class="css">@font-face {
     font-family: 'Graublau Web';
     src: url('GraublauWeb.eot');
     src: local('Graublau Web Regular'), local('Graublau Web'),
@@ -370,24 +466,23 @@ $mainNavigation {
 </p>
 <h3>Usage</h3>
 <ol>
-	<li>Add <code>bp_font_face</code> to your <code>@cssp</code> plugins rule</li>
+	<li>Add <code>fontface</code> to your <code>@cssp</code> plugins rule</li>
 	<li>Build a normal <code>@font-face</code>-rule</li>
 	<li>Omit the <code>src</code>-attribute</li>
-	<li>Add properties <code>-cssp-eot</code>, <code>-cssp-local</code> and <code>-cssp-ttf</code> or <code>-cssp-otf</code></li>
+	<li>Add properties <code>eot</code>, <code>local</code> and <code>ttf</code> or <code>otf</code></li>
 </ol>
 <h3>Example</h3>
-<pre>@font-face {
-    font-family:'Graublau Web';
-    -cssp-local:'Graublau Web Regular';
-    -cssp-otf:url('GraublauWeb.otf');
-    -cssp-eot:url('GraublauWeb.eot');
-    font-weight:bold;
-    font-style:italic;
-}</pre>
+<pre class="cssp">@font-face
+	font-family:'Graublau Web';
+	local:'Graublau Web Regular';
+	otf:url('GraublauWeb.otf');
+	eot:url('GraublauWeb.eot');
+	font-weight:bold;
+	font-style:italic;</pre>
 <p>
 	Result:
 </p>
-<pre>@font-face {
+<pre class="css">@font-face {
     font-family: 'Graublau Web';
     font-weight: bold;
     font-style: italic;
@@ -401,10 +496,10 @@ $mainNavigation {
 
 <h2 id="toc-3-4">Browser detection</h2><div>
 <p class="abstract">
-	Foo
+	TODO
 </p>
 <p>
-	Bar
+	TODO
 </p>
 </div>
 
@@ -415,9 +510,8 @@ $mainNavigation {
 	Injects all images smaller than 24kb right inside the CSS for all dataURI-capable browsers
 </p>
 <h3>Example</h3>
-<pre>#foo {
-    background:#FFF url(test.png) top left;
-}</pre>
+<pre class="cssp">#foo
+	background:#FFF url(test.png) top left;</pre>
 <p>
 	Result:
 </p>
@@ -429,34 +523,39 @@ $mainNavigation {
 }</pre>
 <h3>Usage</h3>
 <p>
-	Just add <code>data-uri</code> to your <code>@cssp</code> plugins rule. Done!
+	Just add <code>datauri</code> to your <code>@cssp</code> plugins rule. Done!
 </p>
 </div>
 
 
 
-<h2 id="toc-3-6">Hexcrusher <span>[ Performance, Optimization ]</span></h2><div>
+<h2 id="toc-3-6">Minifier <span>[ Performance, Optimization ]</span></h2><div>
 <p class="abstract">
-	Optimizes hex color definitions.
+	Performs a number of micro-optimizations.
 </p>
 <p>
-	Hexcrusher finds hex color definition and shortens them whenever possible. A color definition like
+	Minifier finds hex color definition and shortens them whenever possible. A color definition like
 	<code>#FFEE44</code> would be shortend to <code>#FE4</code>, saving a (tiny) bit of space and loading time.
 </p>
 <h3>Usage</h3>
 <p>
-	Just add <code>hexcrusher</code> to your <code>@cssp</code> plugins rule. Done!
+	Just add <code>minifier</code> to your <code>@cssp</code> plugins rule. Done!
 </p>
 </div>
 
 
 
-<h2 id="toc-3-7">IE bugfixes</h2><div>
+<h2 id="toc-3-7">Loader</h2><div>
 <p class="abstract">
-	Foo
+	Loads another cssp file.
 </p>
 <p>
-	Bar
+	Loader loads the contents of another cssp file at the exact location where <code>@load</code> ist placed. It inserts the actual
+	cssp code before parsing anything.
+</p>
+<h3>Usage</h3>
+<p>
+	Add <code>@load url(path/to/file.cssp)</code> where you want a file to be included. Done!
 </p>
 </div>
 
@@ -464,30 +563,29 @@ $mainNavigation {
 
 <h2 id="toc-3-8">OS detection</h2><div>
 <p class="abstract">
-	Foo
+	TODO
 </p>
 <p>
-	Bar
+	TODO
 </p>
 </div>
 
 
 
-<h2 id="toc-3-9">Quote style <span>[ Typography, Lazy ]</span></h2><div>
+<h2 id="toc-3-9">Quotes <span>[ Typography, Lazy ]</span></h2><div>
 <p class="abstract">
 	Inserts language- and country-specific quotation marks.
 </p>
 <p>
-	Different languages and countries use different quotation marks. The quote style plugin introduces
-	a new CSS property called <code>-cssp-quote-style</code> which allows you to set quotation marks by language
-	and/or country. No more need to remember all the glyphs.
+	Different languages and countries use different quotation marks. The quote style plugin allows you to set
+	the contents for the <code>quotes</code> property by language and/or country. No more need to remember all the glyphs.
 </p>
 <h3>Usage</h3>
 <p>
-	Include <code>quote_style</code> in your <code>@cssp</code> plugins rule and start using the new
-	<code>-cssp-quote-style</code> property with the values listed below.
+	Include <code>quotes</code> in your <code>@cssp</code> plugins rule and start using the <code>quotes</code> property with
+	the values listed below.
 </p>
-<h3>Possible <code>-cssp-quote-style</code> values</h3>
+<h3>Possible <code>quotes</code> values</h3>
 <table>
 	<thead>
 		<tr>
@@ -537,7 +635,7 @@ $mainNavigation {
 </p>
 <h3>Usage</h3>
 <p>
-	Just add <code>reset_stylesheet</code> to your <code>@cssp</code> plugins rule. Done!
+	Just add <code>resetstyle</code> to your <code>@cssp</code> plugins rule. Done!
 </p>
 </div>
 
@@ -545,10 +643,10 @@ $mainNavigation {
 
 <h2 id="toc-3-11">Transparent background</h2><div>
 <p class="abstract">
-	Foo
+	TODO
 </p>
 <p>
-	Bar
+	TODO
 </p>
 </div>
 
@@ -586,11 +684,53 @@ $mainNavigation {
 <h2 id="toc-4-2">Plugin development</h2><div>
 <p>
 	Plugin development for CSSP is rather simple. All you need is a file called <code>plugin_name.php</code> containing
-	a function <code>plugin_name()</code>, located in the plugins directory. The function must accept <code>&amp;$parsed</code>
-	as it's only argument. <code>&amp;$parsed</code> is a reference to the multi-dimensional array containing the parsed
-	CSSP code and it can be freely manipulated by plugins.
+	a function <code>plugin_name()</code>, located in the plugins directory. The function must accept only one argument, which
+	is passed as a reference. The contents of this argument depends on the hook the plugin is assigned to:
 </p>
+<table>
+	<thead>
+		<tr>
+			<th>Hook</th>
+			<th>Time of execution</th>
+			<th>Argument</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><code>before_parse</code></td>
+			<td>Before the original cssp files are parsed</td>
+			<td>An array containing the lines of the original cssp files</td>
+		</tr>
+		<tr>
+			<td><code>before_compile</code></td>
+			<td>After compilation, before applying cssp core features (inheritance and the like)</td>
+			<td>An array containing the parsed cssp code</td>
+		</tr>
+		<tr>
+			<td><code>before_glue</code></td>
+			<td>After compilation and cssp magic, just before the output ist generated</td>
+			<td>An array containing the parsed cssp code</td>
+		</tr>
+		<tr>
+			<td><code>before_output</code></td>
+			<td>After generating the output of one cssp file, before combining the output with other files</td>
+			<td>A string containing the final css output from the current cssp file</td>
+		</tr>
+	</tbody>
+</table>
+<h3>Hooks</h3>
+<p>
+	Too hook into cssp you need to call the <code>register_plugin()</code> function using three arguments: the hook, an
+	execution priority and your plugin function's name:
+</p>
+<pre class="php">
+register_plugin('before_compile', 0, 'mypluginfunction');
+</pre>
 <h3>Array structure</h3>
+<p>
+	When using <code>before_compile</code> or <code>before_glue</code> the array recieved as the argument for the plugin
+	function will look like this:
+</p>
 <pre>Array
 (
     [@media foo] => Array
@@ -611,14 +751,14 @@ $mainNavigation {
     )
 )</pre>
 <p>
-	CSS rules that a not part of any <code>@media</code> block a stored in the global block (key <code>css</code>).
+	CSS rules that a not part of any <code>@media</code> block a stored in the <code>global</code> block.
 </p>
 <h3>Plugin example</h3>
 <p>
 	In case you wanted your plugin to remove all occurences of <code>background-image</code> from your stylesheets,
 	this would be the code:
 </p>
-<pre>&lt;?php
+<pre class="php">&lt;?php
     /**
      * remove_background_image.php
      * Remove all occurences of background-image (a nonsensical example)
@@ -637,13 +777,13 @@ $mainNavigation {
         }
         // No need to return anything
     }
+
+    // Hook into cssp
+    register_plugin('before_compile', 0, 'remove_background_image');
 ?&gt;</pre>
 <p>
 	Don't be afraid to do anything CPU- or memory consuming in your plugins - in the end, everything will be calculated
-	only once and be cached afterwards.
-</p>
-<p>
-	To avoid confusion with regular CSS properties, use of the <code>-cssp-</code> prefix for new properties is recommended.
+	only once and is cached afterwards.
 </p>
 
 
@@ -658,15 +798,19 @@ $mainNavigation {
 <h1 id="toc-5">FAQ</h1><div id="faq">
 
 
-
 <h2 id="toc-5-1">Any general advice?</h2><div>
 <ul>
+	<li>
+		<strong>Don't ever mess up your indention!</strong> Seriously. CSSP is (at the moment) not very good at catching incorrectly
+		indented lines and they <em>will</em> destroy your css in places you'll never expect. So just pay attention to your whitespace
+		or wait for the parser to become/help us to make the parser more tolerant towards indention errors.
+	</li>
 	<li>
 		Don't use constants only for colors! If you use them for font stacks and paths, you can save yourself a lot of typing&nbsp;&ndash;
 		<code>font-family:$serif</code> is so much shorter than <code>font-family:Georgia, "Times New Roman", serif</code>.
 	</li>
 	<li>
-		Don't overuse nested selectors, as they get can get quite confusing.
+		Don't overuse nested selectors as they can get quite confusing.
 	</li>
 </ul>
 </div>
@@ -677,7 +821,7 @@ $mainNavigation {
 <ul>
 	<li>
 		CSSP uses the input css files to generate <em>completely</em> new CSS code that won't necessarily look very much like it's source.
-		That means that css debugging tools like Firebug <strong>may</strong> not be very useful anymore, depending on how many of CSSP's
+		That means that css debugging tools like Firebug may not be very useful anymore, depending on how many of CSSP's
 		features and plugins you actually use.
 	</li>
 	<li>

@@ -1,10 +1,10 @@
 <?php
 
 	/**
-	 * Cross-browser transparent backgrounds
+	 * AlphaBG - Cross-browser transparent backgrounds
 	 * 
-	 * Usage:   -cssp-transparent-background:rgba(red [0-255], green [0-255], blue [0-255], alpha [0-1]);
-	 * Example: -cssp-transparent-background:rgba(0, 255, 20, 0.25);
+	 * Usage:   alpha-background:rgba(red [0-255], green [0-255], blue [0-255], alpha [0-1]);
+	 * Example: alpha-background:rgba(0, 255, 20, 0.25);
 	 * Status:  Stable
 	 * Version: 1.0
 	 * 
@@ -12,14 +12,14 @@
 	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function transparent_background(&$parsed){
+	function alphabg(&$parsed){
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
-				if(isset($parsed[$block][$selector]['-cssp-transparent-background'])){
+				if(isset($parsed[$block][$selector]['alpha-background'])){
 					// Get RGBA values
 					$values = array();
 					$rgbapattern = '/rgba\([\s]*(.*?)[\s]*,[\s]*(.*?)[\s]*,[\s]*(.*?)[\s]*,[\s]*(.*?)[\s]*\)/i';
-					preg_match_all($rgbapattern, $parsed[$block][$selector]['-cssp-transparent-background'], $values);
+					preg_match_all($rgbapattern, $parsed[$block][$selector]['alpha-background'], $values);
 					// Solid-color fallback
 					$fallback = 'rgb('.$values[1][0].','.$values[2][0].','.$values[3][0].')';
 					// Calculate alpha value
@@ -40,10 +40,17 @@
 						"url('data:image/png;base64,".$imagestring."')"
 					);
 					// Unset original transparent-backgrounds-property
-					unset($parsed[$block][$selector]['-cssp-transparent-background']);
+					unset($parsed[$block][$selector]['alpha-background']);
 				}
 			}
 		}
 	}
+
+
+	/**
+	 * Register the plugin
+	 */
+	register_plugin('before_compile', 0, 'alphabg');
+
 
 ?>

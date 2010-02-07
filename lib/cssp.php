@@ -3,7 +3,7 @@
 
 /**
  * CSSP - CSS Preprocessor
- * Constants and inheritance for CSS
+ * A new way to write CSS
  * 
  * Copyright (C) 2009 Peter Kröner, Christian Schaefer
  * 
@@ -25,9 +25,8 @@
 /**
  * CSSP
  * CSS Preprocessor
- * @todo Only process files starting with "CSSP"
  */
-class Cssp extends CssParser {
+class Cssp extends Parser2 {
 
 
 	/**
@@ -39,13 +38,20 @@ class Cssp extends CssParser {
 		global $browser;
 		if($query){
 			$this->load_file($query);
-			$this->parse();
-			$this->apply_children();
-			$this->apply_aliases();
-			$this->apply_inheritance();
-			$this->apply_constants();
-			$this->cleanup();
 		}
+	}
+
+
+	/**
+	 * compile
+	 * This is where the magic happens :)
+	 * @return void
+	 */
+	public function compile(){
+		$this->apply_aliases();
+		$this->apply_inheritance();
+		$this->apply_constants();
+		$this->cleanup();
 	}
 
 
@@ -55,10 +61,12 @@ class Cssp extends CssParser {
 	 * @return void
 	 */
 	public function apply_constants(){
-		// Apply global constants, if present, to all blocks
-		if(isset($this->parsed['css']['@constants'])){
+		// Apply special constants to all blocks
+		$this->apply_special_constants();
+		// Apply constants, if present, to the global block
+		if(isset($this->parsed['global']['@constants'])){
 			foreach($this->parsed as $block => $css){
-				$this->apply_block_constants($this->parsed['css']['@constants'], $block);
+				$this->apply_block_constants($this->parsed['global']['@constants'], $block);
 			}
 		}
 		// Apply constants for @media blocks
@@ -81,7 +89,26 @@ class Cssp extends CssParser {
 		foreach($constants as $constant => $value){
 			foreach($this->parsed[$block] as $selector => $styles){
 				foreach($styles as $css_property => $css_value){
-					$this->parsed[$block][$selector][$css_property] = str_replace('$'.$constant, $value, $css_value);
+					$this->parsed[$block][$selector][$css_property] = preg_replace('/(\$'.$constant.')\b/', $value, $css_value);
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * apply_special_constants
+	 * Applies special constants to all blocks
+	 * @return void
+	 */
+	protected function apply_special_constants(){
+		global $global_constants;
+		foreach($global_constants as $g_constant => $g_value){
+			foreach($this->parsed as $block => $css){
+				foreach($this->parsed[$block] as $selector => $styles){
+					foreach($styles as $property => $value){
+						$this->parsed[$block][$selector][$property] = preg_replace('/(\$_'.$g_constant.')\b/', $g_value, $value);
+					}
 				}
 			}
 		}
@@ -95,9 +122,9 @@ class Cssp extends CssParser {
 	 */
 	public function apply_aliases(){
 		// Apply global aliases, if present, to all blocks
-		if(isset($this->parsed['css']['@aliases'])){
+		if(isset($this->parsed['global']['@aliases'])){
 			foreach($this->parsed as $block => $css){
-				$this->apply_block_aliases($this->parsed['css']['@aliases'], $block);
+				$this->apply_block_aliases($this->parsed['global']['@aliases'], $block);
 			}
 		}
 		// Apply aliases for @media blocks
@@ -120,7 +147,7 @@ class Cssp extends CssParser {
 		foreach($aliases as $alias => $value){
 			foreach($this->parsed[$block] as $selector => $styles){
 				// Add a new element with the full selector and delete the old one
-				$newselector = str_replace('$'.$alias, $value, $selector);
+				$newselector = preg_replace('/(\$'.$alias.')\b/', $value, $selector);
 				if($newselector != $selector){
 					$elements = array($newselector => $styles);
 					$this->insert($elements, $block, $selector);
@@ -133,7 +160,7 @@ class Cssp extends CssParser {
 
 	/**
 	 * apply_inheritance
-	 * Applies inheritance to the stylesheet
+	 * Applies inheritance and property copying to the stylesheet
 	 * @return void
 	 */
 	public function apply_inheritance(){
@@ -141,23 +168,33 @@ class Cssp extends CssParser {
 			foreach($this->parsed[$block] as $selector => $styles){
 				// Full inheritance
 				if(isset($this->parsed[$block][$selector]['extends'])){
-					// Extract ancestor
-					$ancestor = $this->parsed[$block][$selector]['extends'];
-					if($this->parsed[$block][$ancestor]){
-						$this->parsed[$block][$selector] = $this->merge_rules(
-							$this->parsed[$block][$selector],
-							$this->parsed[$block][$ancestor],
-							array()
-						);
+					// Parse ancestors
+					$ancestors =  $this->tokenize($this->parsed[$block][$selector]['extends'], array('"', "'", ','));
+					foreach($ancestors as $ancestor){
+						// Find ancestor
+						$ancestor_key = $this->find_ancestor_key($ancestor, $block);
+						// Merge ancestor's rules with own rules
+						if($ancestor_key){
+							$this->parsed[$block][$selector] = $this->merge_rules(
+								$this->parsed[$block][$selector],
+								$this->parsed[$block][$ancestor_key],
+								array(),
+								false
+							);
+						}
 					}
 					unset($this->parsed[$block][$selector]['extends']);
 				}
-				// Selective inheritance via inherit(selector property)
-				$inheritance_pattern = "/inherit\((.*)[\s]+(.*)\)/";
+				// Selective copying via "copy(selector property)"
+				$inheritance_pattern = "/copy\((.*)[\s]+(.*)\)/";
 				foreach($styles as $property => $value){
-					if(!is_array($value)){ // TODO: Make inheritance work for array objects too
-						if(preg_match($inheritance_pattern, $value)){
-							preg_match_all($inheritance_pattern, $value, $matches);
+					// Properties that have multiple values as an array are possible too.. this may be slow, but it's simple
+					if(!is_array($value)){
+						$value = array($value);
+					}
+					foreach($value as $val){
+						if(preg_match($inheritance_pattern, $val)){
+							preg_match_all($inheritance_pattern, $val, $matches);
 							if(isset($this->parsed[$block][$matches[1][0]][$matches[2][0]])){
 								$this->parsed[$block][$selector][$property] = $this->parsed[$block][$matches[1][0]][$matches[2][0]];
 							}
@@ -176,15 +213,16 @@ class Cssp extends CssParser {
 	 * @param mixed $old The OLD rules (overridden by the new rules)
 	 * @param mixed $new The NEW rules (override the old rules)
 	 * @param array $exclude A list of properties NOT to merge
+	 * @param array $allow_overwrite Allow new rules to overwrite old ones?
 	 * @return mixed $rule The new, merged rule
 	 */
-	public function merge_rules($old, $new, $exclude = array()){
+	public function merge_rules($old, $new, $exclude = array(), $allow_overwrite = true){
 		$rule = $old;
 		foreach($new as $property => $value){
 			if(!in_array($property, $exclude)){
 				if(isset($rule[$property])){
-					// TODO: This should be protected against the unlikly case that "!important" gets used inside strings
-					if(!strpos($rule[$property], ' !important')){
+					$tokens = $this->tokenize($rule[$property]);
+					if($allow_overwrite == true && !in_array('!important', $tokens)){
 						$rule[$property] = $value;
 					}
 				}
@@ -198,61 +236,17 @@ class Cssp extends CssParser {
 
 
 	/**
-	 * apply_children
-	 * Applies children
-	 * @return void
+	 * find_ancestor
+	 * Find selectors matching (partially) $selector
+	 * @param string $selector The selector to search
+	 * @param string $block The block to search in
+	 * @return string $key The matching key (if any)
 	 */
-	public function apply_children(){
-		foreach($this->parsed as $block => $css){
-			foreach($this->parsed[$block] as $selector => $styles){
-				$current_element = $selector;
-				if(isset($styles['-cssp-children'])){
-					// Remove curly braces around child css
-					$styles['-cssp-children'] = preg_replace('/\{(.*)\}/ms', '$1', $styles['-cssp-children']);
-					$styles['-cssp-children'] = trim($styles['-cssp-children']);
-					// Parse child css
-					$childParser = new Cssp();
-					$childParser->load_string($styles['-cssp-children']);
-					$childParser->parse();
-					$childParser->apply_children();
-					$childParser->cleanup();
-					$children = $childParser->parsed['css'];
-					// Add children to blocks or merge with existing properties
-					foreach($children as $child_selector => $child_properties){
-						// Build new selector
-						// TODO: Take care of commas in strings
-						$new_selector = '';
-						$child_selectors = explode(',', $child_selector);
-						$child_selectors_count = count($child_selectors);
-						$parent_selectors = explode(',', $selector);
-						$parent_selectors_count = count($parent_selectors);
-						for($i = 0; $i < $parent_selectors_count; $i++){
-							for($j = 0; $j < $child_selectors_count; $j++){
-								$new_selector .= trim($parent_selectors[$i]).' '.trim($child_selectors[$j]);
-								if(isset($child_selectors[$j + 1])){
-									$new_selector .= ', ';
-								}
-							}
-							if(isset($parent_selectors[$i + 1])){
-								$new_selector .= ', ';
-							}
-						}
-						// Merge rules if needed
-						if(isset($this->parsed[$block][$new_selector])){
-							$this->parsed[$block][$new_selector] = $this->merge_rules(
-								$this->parsed[$block][$new_selector],
-								$child_properties,
-								array()
-							);
-						}
-						// Else insert after the last element
-						else{
-							$this->insert(array($new_selector => $child_properties), $block, $current_element);
-							$current_element = $new_selector;
-						}
-					}
-					unset($this->parsed[$block][$selector]['-cssp-children']);
-				}
+	protected function find_ancestor_key($selector, $block){
+		foreach($this->parsed[$block] as $key => $value){
+			$tokens = $this->tokenize($key, ',');
+			if(in_array($selector, $tokens)){
+				return $key;
 			}
 		}
 	}

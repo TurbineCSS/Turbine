@@ -4,16 +4,16 @@
 	/**
 	 * Automatic quotes for the language of your choice
 	 * 
-	 * Usage:   div.foo q { -cssp-quote-style:language[-country][-alt]; }
-	 * Example: div.foo[lang=de-de] q { -cssp-quote-style:german-alt; }
-	 * Example: div.foo[lang=en-us] q q { -cssp-quote-style:english-us; }
+	 * Usage:   div.foo q { quotes:language[-country][-alt]; }
+	 * Example: div.foo[lang=de-de] q { quotes:german-alt; }
+	 * Example: div.foo[lang=en-us] q q { quotes:english-us; }
 	 * Status:  Stable
 	 * Version: 1.0
 	 * 
 	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function quote_style(&$parsed){
+	function quotes(&$parsed){
 		// List of quotes (Source: http://de.wikipedia.org/wiki/Anf%C3%BChrungszeichen#Kodierung)
 		$quotes = array(
 			'german' => array('201E', '201C', '201A', '2018'),
@@ -24,22 +24,23 @@
 		);
 		// Main loop
 		foreach($parsed as $block => $css){
-			$block_count = count($css);
-			$block_keys = array_keys($css);
-			$insert = 0;
 			foreach($parsed[$block] as $selector => $styles){
 				// Apply quotes
-				if(isset($parsed[$block][$selector]['-cssp-quote-style'])){
-					$value = $parsed[$block][$selector]['-cssp-quote-style'];
+				if(isset($parsed[$block][$selector]['quotes'])){
+					$value = $parsed[$block][$selector]['quotes'];
 					if(isset($quotes[$value])){
 						$parsed[$block][$selector]['quotes'] = '"\\'.$quotes[$value][0].'" "\\'.$quotes[$value][1].'" "\\'.$quotes[$value][2].'" "\\'.$quotes[$value][3].'"';
 					}
-					// Remove quote-style property and unset quotes property
-					unset($parsed[$block][$selector]['-cssp-quote-style']);
 				}
 			}
 		}
 	}
+
+
+	/**
+	 * Register the plugin
+	 */
+	register_plugin('before_compile', 0, 'quotes');
 
 
 ?>

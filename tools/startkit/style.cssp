@@ -1,0 +1,29 @@
+// STYLE.CSSP
+// This an example cssp file for use as a starting point in your next project!
+// How to include this file in HTML: <link rel="stylesheet" href="path/to/cssp/css.php?files=path/to/stylesheets/style.cssp">
+
+
+// CSSP options
+@cssp
+	compress:0							// Set to "1" to enable minified output
+	plugins:boxshadow, borderradius, os		// Add more plugins here
+
+
+@constants								// Why would you have to remember (and type) font stacks? Use constants!
+	font_sans:Verdana, Arial, sans-serif
+	font_serif:"Times New Roman", Times, serif
+
+
+
+@media screen							// Begins "@media screen" section
+
+body
+	os:xp
+	font-family:$font_sans
+
+
+
+@media print							// Begins "@media print" section
+
+body
+	font-family:$font_serif

@@ -1,16 +1,18 @@
 <?php
 
 	/**
-	 * Hexcrusher
-	 * Shortens long hey color codes like #FFFFFF to #FFF
+	 * Minifier
+	 * Performs a number of micro-optimizations
+	 * 
 	 * Usage: Nobrainer, just switch it on
 	 * Status: Beta
 	 * 
 	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function hexcrusher(&$parsed){
+	function minifier(&$parsed){
 		global $browser;
+		// Hex colors
 		$pattern = '/#([A-F0-9])\1([A-F0-9])\2([A-F0-9])\3/i';
 		$colorproperties = array(
 			'color',
@@ -23,6 +25,7 @@
 			'border-bottom',
 			'border-right'
 		);
+		// TODO: Optimize stuff like margin: 4px 4px 4px 4px;
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				foreach($colorproperties as $colorproperty){
@@ -34,5 +37,11 @@
 			}
 		}
 	}
+
+
+	/**
+	 * Register the plugin
+	 */
+	register_plugin('before_compile', 0, 'minifier');
 
 ?>
