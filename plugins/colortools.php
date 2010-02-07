@@ -15,7 +15,7 @@
 	 */
 	function colortools(&$parsed){
 		$properties = array('background', 'background-color', 'color', 'border', 'border-color',
-			'border-top', 'border-left', 'border-bottom', 'border-right, text-shadow, box-shadow');
+			'border-top', 'border-left', 'border-bottom', 'border-right', 'text-shadow', 'box-shadow');
 		foreach($properties as $search){
 			foreach($parsed as $block => $css){
 				foreach($parsed[$block] as $selector => $styles){
