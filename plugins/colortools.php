@@ -22,7 +22,7 @@
 					if(isset($parsed[$block][$selector][$search])){
 						// Search for colortool expressions
 						$pattern = '/&(darker|lighter)[\s]*\([\s]*(.*?)[\s]*,[\s]*(.*?)%[\s]*\)/';
-						$parsed[$block][$selector][$search] = preg_replace_callback($pattern, colortools_parse_expressions, $parsed[$block][$selector][$search]);
+						$parsed[$block][$selector][$search] = preg_replace_callback($pattern, 'colortools_parse_expressions', $parsed[$block][$selector][$search]);
 					}
 				}
 			}
