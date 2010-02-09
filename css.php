@@ -113,7 +113,7 @@ if($_GET['files']){
 			// CSSP or CSS?
 			$fileinfo = pathinfo($file);
 			if($fileinfo['extension'] == 'css'){
-				// Simply include normal css files in the output. Minify if not debugging
+				// Simply include normal css files in the output. Minify if not debugging or configured not to minify
 				if($config['debug_level'] == 0 && $config['minify_css'] == true){
 					$css .= cssmin::minify(file_get_contents($file));
 				}
@@ -126,10 +126,13 @@ if($_GET['files']){
 				// Server-side cache: Has file already been parsed?
 				$incache = false;
 
+				// Cache dir
+				$cachedir = 'cache';
+
 				// Server-side cache: Check if cache-directory has been created
 				// TODO: Output some error message if the directory doesn't exist or is not writeable
-				if(!is_dir($config['cache_dir'])){
-					mkdir($config['cache_dir'], 0777);
+				if(!is_dir($cachedir)){
+					mkdir($cachedir, 0777);
 				}
 
 				$cachefile = md5(
@@ -146,7 +149,7 @@ if($_GET['files']){
 				).'.txt';
 
 				// Server-side cache: Check if a cached version of the file already exists
-				if(file_exists($config['cache_dir'].'/'.$cachefile) && filemtime($config['cache_dir'].'/'.$cachefile) >= filemtime($file)){
+				if(file_exists($cachedir.'/'.$cachefile) && filemtime($cachedir.'/'.$cachefile) >= filemtime($file)){
 					$incache = true;
 				}
 
@@ -254,11 +257,11 @@ if($_GET['files']){
 					}
 
 					// Add to css output
-					file_put_contents($config['cache_dir'].'/'.$cachefile, $output);
+					file_put_contents($cachedir.'/'.$cachefile, $output);
 				}
 				else{
 					// Server-side cache: read the cached version of the file
-					$output = file_get_contents($config['cache_dir'].'/'.$cachefile);
+					$output = file_get_contents($cachedir.'/'.$cachefile);
 				}
 
 			}

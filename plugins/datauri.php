@@ -27,7 +27,7 @@
 			$file
 		);
 		// Start preparing MHTML
-		$mhtmlfile = 'lib/cssp_cache/'.$mhtmlmd5.'_mhtml.txt';
+		$mhtmlfile = 'cache/'.$mhtmlmd5.'_mhtml.txt';
 		$mhtmlarray = array();
 		$mhtmlcontent = "Content-Type: multipart/related; boundary=\"_ANY_STRING_WILL_DO_AS_A_SEPARATOR\"\r\n\r\n";
 		foreach($parsed as $block => $css){

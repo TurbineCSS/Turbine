@@ -21,10 +21,20 @@
  */
 
 $config = array(
-	'debug_level' => 2,             // Sets debugging off (0), on (1), or in developer mode (2)
-	'css_base_dir' => '',           // Base path to cssp and css files
-	'minify_css' => true,           // Minify regular css files (true) oder include them unchanged (false)
-	'cache_dir' => 'lib/cssp_cache' // Cache directory
+
+
+	// Sets debugging off (0), on (1), or in developer mode (2)
+	'debug_level' => 2,
+
+
+	// Base path to cssp and css files [NOT IMPLEMENTED]
+	'css_base_dir' => '',
+
+
+	// Minify regular css files (true) oder include them unchanged (false)
+	'minify_css' => true
+
+
 );
 
 ?>
