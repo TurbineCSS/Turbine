@@ -74,8 +74,13 @@
 													// Put file on our processed-list
 													$mhtmlarray[$imagetag] = 1;
 												}
-												
-												$parsed[$block][$selector][$property] = preg_replace($regex, '$1\'mhtml:'.($_SERVER['HTTPS'] ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'].rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/datauri/mhtml.php?cache='.$mhtmlmd5.'!'.$imagetag.'\'$3', $parsed[$block][$selector][$property]);
+												if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'https'){
+													$protocol = 'https';
+												}
+												else{
+													$protocol = 'http';
+												}
+												$parsed[$block][$selector][$property] = preg_replace($regex, '$1\'mhtml:'.$protocol.'://'.$_SERVER['HTTP_HOST'].rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/datauri/mhtml.php?cache='.$mhtmlmd5.'!'.$imagetag.'\'$3', $parsed[$block][$selector][$property]);
 											}
 										}
 									}
