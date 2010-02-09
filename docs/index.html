@@ -30,11 +30,12 @@
 		</li>
 		<li>&darr; <a href="#toc-2">Usage</a>
 			<ul>
-				<li><a href="#toc-2-1">Syntax</a></li>
-				<li><a href="#toc-2-2">Configuration</a></li>
-				<li><a href="#toc-2-3">Nested selectors</a></li>
-				<li><a href="#toc-2-4">Constants and aliases</a></li>
-				<li><a href="#toc-2-5">Inheritance and templating</a></li>
+				<li><a href="#toc-2-1">Installation and setup</a></li>
+				<li><a href="#toc-2-2">Syntax</a></li>
+				<li><a href="#toc-2-3">Configuration</a></li>
+				<li><a href="#toc-2-4">Nested selectors</a></li>
+				<li><a href="#toc-2-5">Constants and aliases</a></li>
+				<li><a href="#toc-2-6">Inheritance and templating</a></li>
 			</ul>
 		</li>
 		<li>&darr; <a href="#toc-3">Plugins</a>
@@ -119,6 +120,17 @@
 
 
 <h1 id="toc-2">Usage</h1><div id="usage">
+
+<h2 id="toc-2-1">Installation and setup</h2><div>
+<h3>Installation</h3>
+<p>
+	TODO
+</p>
+<h3>Base configuration</h3>
+<p>
+	TODO
+</p>
+<h3>Adding CSSP files to HTML documents</h3>
 <p>
 	To use CSSP, embed <code>css.php</code> in your HTML like a normal css file and add the <code>files</code> argument containing
 	a list of cssp files sepperated by semicolons.
@@ -128,8 +140,7 @@
 	You can also include regular css files.
 </p>
 
-
-<h2 id="toc-2-1">Syntax</h2><div>
+<h2 id="toc-2-2">Syntax</h2><div>
 <p>
 	CSSP's syntax is a bit like <a href="#">Python</a>&nbsp;&ndash; the level of indention instead of curly braces decides what is
 	what. A simple rule looks like this:
@@ -194,7 +205,7 @@
 </div>
 
 
-<h2 id="toc-2-2">Configuration</h2><div>
+<h2 id="toc-2-3">Configuration</h2><div>
 <p>
 	The configuration options of CSSP can be set in the stylesheets themselves&nbsp;&ndash a <code>@cssp</code> block (called
 	<strong>configuration block</strong>) allows for options to be set like properties and values in normal CSS code. There are
@@ -226,7 +237,7 @@
 </div>
 
 
-<h2 id="toc-2-3">Nested selectors</h2><div>
+<h2 id="toc-2-4">Nested selectors</h2><div>
 <p>
 	CSSP implements nested css selectors using a simple principle: whenever the <em>next</em> line is indented, to current line
 	is used as a selector and combined with it's parent selectors.
@@ -289,7 +300,7 @@
 
 
 
-<h2 id="toc-2-4">Constants and Aliases</h2><div>
+<h2 id="toc-2-5">Constants and Aliases</h2><div>
 <p>
 	TODO
 </p>
@@ -327,7 +338,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-2-5">Inheritance and Templating</h2><div>
+<h2 id="toc-2-6">Inheritance and Templating</h2><div>
 <p>
 	TODO
 </p>
