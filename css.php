@@ -199,7 +199,7 @@ if($_GET['files']){
 							}
 						}
 						else{
-							preg_match('/^\s+plugins:(.*)$/', $line, $matches);
+							preg_match('~^\s+plugins:(.*?)(?://|$)~', $line, $matches);
 							if(count($matches) == 2){
 								$before_parse_plugin_settings = $cssp->tokenize($matches[1], ',');
 								break;
