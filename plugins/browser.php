@@ -279,7 +279,7 @@
 	/**
 	 * Register the plugin
 	 */
-	register_plugin('before_compile', 1000, 'browser');
+	$cssp->register_plugin('before_compile', 1000, 'browser');
 
 
 ?>

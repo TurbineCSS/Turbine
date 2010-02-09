@@ -7,8 +7,7 @@
  * @package browser
  */
 
-class Browser 
-{
+class Browser extends Base{
 
 	/**
 	 * @var string $useragent

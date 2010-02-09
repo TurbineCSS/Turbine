@@ -35,6 +35,7 @@ class Cssp extends Parser2 {
 	 * @return void
 	 */
 	public function __construct($query = NULL){
+		parent::__construct();
 		global $browser;
 		if($query){
 			$this->load_file($query);
@@ -102,8 +103,7 @@ class Cssp extends Parser2 {
 	 * @return void
 	 */
 	protected function apply_special_constants(){
-		global $global_constants;
-		foreach($global_constants as $g_constant => $g_value){
+		foreach($this->global_constants as $g_constant => $g_value){
 			foreach($this->parsed as $block => $css){
 				foreach($this->parsed[$block] as $selector => $styles){
 					foreach($styles as $property => $value){

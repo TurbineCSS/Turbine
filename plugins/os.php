@@ -140,7 +140,7 @@
 	/**
 	 * Register the plugin
 	 */
-	register_plugin('before_compile', 1000, 'os');
+	$cssp->register_plugin('before_compile', 1000, 'os');
 
 
 ?>

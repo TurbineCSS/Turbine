@@ -66,13 +66,11 @@
 												// Calculate identifier and anchor-tag for the MHTML-file
 												$imagetag = 'img'.md5($imagefile);
 												// Look up in our list if we did not already process that exact file, if not append it
-												if(!isset($mhtmlarray[$imagetag])) 
-												{
+												if(!isset($mhtmlarray[$imagetag])) {
 													$mhtmlcontent .= "--_ANY_STRING_WILL_DO_AS_A_SEPARATOR\r\n";
 													$mhtmlcontent .= "Content-Location:".$imagetag."\r\n";
 													$mhtmlcontent .= "Content-Transfer-Encoding:base64\r\n\r\n";
 													$mhtmlcontent .= base64_encode(file_get_contents($imagefile))."==\r\n";
-													
 													// Put file on our processed-list
 													$mhtmlarray[$imagetag] = 1;
 												}
@@ -98,7 +96,7 @@
 	/**
 	 * Register the plugin
 	 */
-	register_plugin('before_glue', 0, 'datauri');
+	$cssp->register_plugin('before_glue', 0, 'datauri');
 
 
 ?>

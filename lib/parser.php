@@ -26,7 +26,7 @@
  * Parser2
  * CSSP syntax parser
  */
-class Parser2 {
+class Parser2 extends Base{
 
 
 	/**
@@ -137,6 +137,7 @@ class Parser2 {
 	 * Constructor
 	 */
 	public function __construct(){
+		parent::__construct();
 	}
 
 

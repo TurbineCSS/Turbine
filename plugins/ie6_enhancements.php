@@ -38,7 +38,7 @@
 	/**
 	 * Register the plugin
 	 */
-	register_plugin('before_compile', 0, 'ie6_enhancements');
+	$cssp->register_plugin('before_compile', 0, 'ie6_enhancements');
 
 
 ?>

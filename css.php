@@ -30,17 +30,8 @@
  */
 
 
-// Load Config
-include('config.php');
-
-
-// Set error output
-if($config['debug_level'] == 2){
-	error_reporting(E_ALL);
-}
-else{
-	error_reporting(E_NONE);
-}
+// Start time
+$start = microtime(true);
 
 
 // Gzip output for faster transfer to client
@@ -59,42 +50,46 @@ else{
 }
 
 
-// Global constants
-$global_constants = array(
-	'CSSPPATH' => dirname($_SERVER['SCRIPT_NAME']),
-	'FILEPATH' => ''
-);
+// Load libraries
+include('lib/base.php');
+include('lib/browser.php');
+include('lib/parser.php');
+include('lib/cssp.php');
+include('lib/cssmin.php');
 
 
-// Plugin hooks
-$plugins_before_parse = array();    // Before the initial code is touced at all by cssp
-$plugins_before_compile = array();  // After parsing, before adding any cssp features (like inheritance)
-$plugins_before_glue = array();     // After cssp features, before compiling the parsed array to css
-$plugins_before_output = array();   // Before adding the processed css code to the output file
+// New CSSP instance
+$cssp = new CSSP();
 
 
-// Begin parsing
+// Get and store browser properties
+$browser = new Browser();
+
+
+// Set global path constant CSSPPATH
+$cssp->global_constants['CSSPPATH'] = dirname($_SERVER['SCRIPT_NAME']);
+
+
+// Load plugins
+$plugindir = 'plugins';
+if($handle = opendir($plugindir)){
+	while(false !== ($pluginfile = readdir($handle))){
+		if($pluginfile != '.' && $pluginfile != '..' && is_file($plugindir.'/'.$pluginfile) && pathinfo($plugindir.'/'.$pluginfile,PATHINFO_EXTENSION) == 'php' && !function_exists(substr($pluginfile, 0, -4))){
+			include($plugindir.'/'.$pluginfile);
+		}
+	}
+	closedir($handle);
+}
+
+
+// Precess files
 if($_GET['files']){
 
-	// Starttime
-	$start = microtime(true);
-
-	// Load libraries
-	include('lib/utility.php');
-	include('lib/browser.php');
-	include('lib/parser.php');
-	include('lib/cssp.php');
-	include('lib/cssmin.php');
-
-	// Store errors
-	$cssp_errors = array();
-
-	// Get and store browser properties
-	$browser = new Browser();
 
 	// Split multiple semicolon-separated files into an array
 	$files = explode(';', $_GET['files']);
 
+	
 	// Client-side cache: Preparing caching-mechanism using eTags by creating fingerprint of CSS-files
 	$fingerprint = '';
 	foreach($files as $file){
@@ -102,14 +97,17 @@ if($_GET['files']){
 	}
 	$etag = md5($fingerprint);
 
+
 	// Client-side cache: now check if client sends eTag, and compare it with our eTag-fingerprint
-	if($config['debug_level'] == 0 && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag){
+	if($cssp->config['debug_level'] == 0 && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag){
 		header('HTTP/1.1 304 Not Modified'); // Client-side cache: Browser already has the file so we tell him nothing changed and exit
 		exit();
 	}
 
-	// Parse files
+	// Else: parse files
 	$css = '';
+
+
 	foreach($files as $file){
 		if(file_exists($file)){
 
@@ -117,7 +115,7 @@ if($_GET['files']){
 			$fileinfo = pathinfo($file);
 			if($fileinfo['extension'] == 'css'){
 				// Simply include normal css files in the output. Minify if not debugging or configured not to minify
-				if($config['debug_level'] == 0 && $config['minify_css'] == true){
+				if($cssp->config['debug_level'] == 0 && $cssp->config['minify_css'] == true){
 					$css .= cssmin::minify(file_get_contents($file));
 				}
 				else{
@@ -126,24 +124,23 @@ if($_GET['files']){
 			}
 			else{
 
-				// Server-side cache: Has file already been parsed?
-				$incache = false;
-
-				// Cache dir
-				$cachedir = 'cache';
+				$incache = false;    // Server-side cache: Has file already been parsed?
+				$cachedir = 'cache'; // Cache directory
 
 				// Server-side cache: Check if cache-directory has been created
 				if(!is_dir($cachedir)){
 					if(!mkdir($cachedir, 0777)){
-						add_error('CSSP warning: The cache directory doesn\'t exist!');
+						$cssp->report_error('CSSP warning: The cache directory doesn\'t exist!');
 					}
 				}
 				elseif(!is_writable($cachedir)){
 					if(!chmod($cachedir, 0777)){
-						add_error('CSSP warning: The cache directory is not writeable!');
+						$cssp->report_error('CSSP warning: The cache directory is not writeable!');
 					}
 				}
 
+
+				// Server-side cache: Create a name for the new cache file
 				$cachefile = md5(
 					$browser->platform.
 					$browser->platformversion.
@@ -157,38 +154,33 @@ if($_GET['files']){
 					$file
 				).'.txt';
 
+
 				// Server-side cache: Check if a cached version of the file already exists
 				if(file_exists($cachedir.'/'.$cachefile) && filemtime($cachedir.'/'.$cachefile) >= filemtime($file)){
 					$incache = true;
 				}
 
+
 				// Server-side cache: Cached version of the file does not yet exist
 				if(!$incache){
 
-					$cssp = new Cssp($file);
 
-					// Set filepath
+					// Load the file into cssp
+					$cssp->load_file($file, true);
+
+
+					// Set global filepath constant for the current file
 					$filepath = dirname($file);
 					if($filepath != '.'){
-						$global_constants['FILEPATH'] = $filepath;
+						$cssp->global_constants['FILEPATH'] = $filepath;
 					}
 					else{
-						$global_constants['FILEPATH'] = '';
+						$cssp->global_constants['FILEPATH'] = '';
 					}
 
-					// Load all plugins
-					$plugindir = 'plugins';
-					if($handle = opendir($plugindir)){
-						while(false !== ($pluginfile = readdir($handle))){
-							if($pluginfile != '.' && $pluginfile != '..' && is_file($plugindir.'/'.$pluginfile) && pathinfo($plugindir.'/'.$pluginfile,PATHINFO_EXTENSION) == 'php' && !function_exists(substr($pluginfile, 0, -4))){
-								include($plugindir.'/'.$pluginfile);
-							}
-						}
-						closedir($handle);
-					}
 
 					// Get plugin settings for the before parse hook
-					$before_parse_plugin_settings = array();
+					$plugin_list = array();
 					$found = false;
 					foreach($cssp->css as $line){
 						if(!$found){
@@ -199,48 +191,18 @@ if($_GET['files']){
 						else{
 							preg_match('~^\s+plugins:(.*?)(?://|$)~', $line, $matches);
 							if(count($matches) == 2){
-								$before_parse_plugin_settings = $cssp->tokenize($matches[1], ',');
+								$plugin_list = $cssp->tokenize($matches[1], ',');
 								break;
 							}
 						}
 					}
 
-					// Apply plugins for before parse
-					asort($plugins_before_parse);
-					$plugins_before_parse = array_reverse($plugins_before_parse);
-					foreach($plugins_before_parse as $plugin => $priority){
-						if(in_array($plugin, $before_parse_plugin_settings) && function_exists($plugin)){
-							call_user_func_array($plugin, array(&$cssp->css));
-						}
-					}
+					$cssp->apply_plugins('before_parse', $plugin_list, &$cssp->css);      // Apply plugins for before parse
+					$cssp->parse();                                                       // Parse the code
+					$cssp->apply_plugins('before_compile', $plugin_list, &$cssp->parsed); // Apply plugins for before compile
+					$cssp->compile();                                                     // Do the cssp magic
+					$cssp->apply_plugins('before_glue', $plugin_list, &$cssp->parsed);    // Apply plugins for before glue
 
-					// Parse the code, read the stylesheet-specific plugins
-					$cssp->parse();
-					$stylesheet_plugins = array();
-					if(isset($cssp->parsed['global']['@cssp']['plugins'])){
-						$stylesheet_plugins = $cssp->tokenize($cssp->parsed['global']['@cssp']['plugins'], ',');
-					}
-
-					// Apply plugins for before compile
-					asort($plugins_before_compile);
-					$plugins_before_compile = array_reverse($plugins_before_compile);
-					foreach($plugins_before_compile as $plugin => $priority){
-						if(in_array($plugin, $stylesheet_plugins) && function_exists($plugin)){
-							call_user_func_array($plugin, array(&$cssp->parsed));
-						}
-					}
-
-					// Do the cssp magic
-					$cssp->compile();
-
-					// Apply plugins for before glue
-					asort($plugins_before_glue);
-					$plugins_before_glue = array_reverse($plugins_before_glue);
-					foreach($plugins_before_glue as $plugin => $priority){
-						if(in_array($plugin, $stylesheet_plugins) && function_exists($plugin)){
-							call_user_func_array($plugin, array(&$cssp->parsed));
-						}
-					}
 
 					// Set compression mode
 					if(isset($cssp->parsed['global']['@cssp']['compress'])){
@@ -250,23 +212,18 @@ if($_GET['files']){
 						$compress = false;
 					}
 
-					// Remove configuration @-rule
-					unset($cssp->parsed['global']['@cssp']);
 
-					// Glue css output
-					$output = $cssp->glue($compress);
+					unset($cssp->parsed['global']['@cssp']);                     // Remove configuration @-rule
+					$output = $cssp->glue($compress);                            // Glue css output
+					$cssp->apply_plugins('before_output', $plugin_list, &$output); // Apply plugins for before output
 
-					// Apply plugins for before output
-					asort($plugins_before_output);
-					$plugins_before_output = array_reverse($plugins_before_output);
-					foreach($plugins_before_output as $plugin => $priority){
-						if(in_array($plugin, $stylesheet_plugins) && function_exists($plugin)){
-							call_user_func_array($plugin, array(&$output));
-						}
+
+					// Add output to cache
+					if($cssp->config['debug_level'] == 0){
+						file_put_contents($cachedir.'/'.$cachefile, $output);
 					}
 
-					// Add to css output
-					file_put_contents($cachedir.'/'.$cachefile, $output);
+
 				}
 				else{
 					// Server-side cache: read the cached version of the file
@@ -281,19 +238,17 @@ if($_GET['files']){
 	}
 
 	// Show errors
-	if($config['debug_level'] > 0 && !empty($cssp_errors)){
-		$error_message = implode("\r\n", $cssp_errors);
+	if($cssp->config['debug_level'] > 0 && !empty($cssp->errors)){
+		$error_message = implode("\r\n", $cssp->errors);
 		$css = $css.'body:before { content:"'.$error_message.'" !important; font-family:Verdana, Arial, sans-serif !important;
 			font-weight:bold !important; color:#000 !important; background:#F4EA9F !important; display:block !important;
 			border-bottom:1px solid #D5CA6E; padding:8px !important; }';
 	}
 
-	// Endtime
-	$end = microtime(true);
 
 	// Send headers
 	header('Content-Type: text/css');
-	if($config['debug_level'] > 0){
+	if($cssp->config['debug_level'] > 0){
 		header('Cache-Control: must-revalidate, pre-check=0, no-store, no-cache, max-age=0, post-check=0');
 	}
 	else{
@@ -303,8 +258,14 @@ if($_GET['files']){
 		header('ETag: '.$etag);
 	}
 
+
+	// End time
+	$end = microtime(true);
+
+
 	// Output css
 	echo "/* Generated by CSSP - CSS Preprocessor - http://github.com/SirPepe/CSSP - Time taken: ".($end - $start)." */\r\n".$css;
+
 
 }
 

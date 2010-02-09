@@ -48,7 +48,7 @@
 	/**
 	 * Register the plugin
 	 */
-	register_plugin('before_compile', 0, 'multicolumn');
+	$cssp->register_plugin('before_compile', 0, 'multicolumn');
 
 
 ?>

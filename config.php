@@ -27,7 +27,7 @@ $config = array(
 	'debug_level' => 2,
 
 
-	// Base path to cssp and css files [NOT IMPLEMENTED]
+	// Base path to cssp and css files [NOT IMPLEMENTED ATM]
 	'css_base_dir' => '',
 
 

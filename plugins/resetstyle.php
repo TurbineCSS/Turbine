@@ -21,7 +21,7 @@
 	/**
 	 * Register the plugin
 	 */
-	register_plugin('before_output', 0, 'resetstyle');
+	$cssp->register_plugin('before_output', 0, 'resetstyle');
 
 
 ?>

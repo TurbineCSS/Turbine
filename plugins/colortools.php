@@ -96,7 +96,7 @@
 	/**
 	 * Register the plugin
 	 */
-	register_plugin('before_glue', 0, 'colortools');
+	$cssp->register_plugin('before_glue', 0, 'colortools');
 
 
 ?>
