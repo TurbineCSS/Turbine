@@ -86,6 +86,9 @@ if($_GET['files']){
 	include('lib/cssp.php');
 	include('lib/cssmin.php');
 
+	// Store errors
+	$cssp_errors = array();
+
 	// Get and store browser properties
 	$browser = new Browser();
 
@@ -130,9 +133,15 @@ if($_GET['files']){
 				$cachedir = 'cache';
 
 				// Server-side cache: Check if cache-directory has been created
-				// TODO: Output some error message if the directory doesn't exist or is not writeable
 				if(!is_dir($cachedir)){
-					mkdir($cachedir, 0777);
+					if(!mkdir($cachedir, 0777)){
+						add_error('CSSP warning: The cache directory doesn\'t exist!');
+					}
+				}
+				elseif(!is_writable($cachedir)){
+					if(!chmod($cachedir, 0777)){
+						add_error('CSSP warning: The cache directory is not writeable!');
+					}
 				}
 
 				$cachefile = md5(
@@ -271,6 +280,13 @@ if($_GET['files']){
 		}
 	}
 
+	// Show errors
+	if($config['debug_level'] > 0 && !empty($cssp_errors)){
+		$error_message = implode("\r\n", $cssp_errors);
+		$css = $css.'body:before { content:"'.$error_message.'" !important; font-family:Verdana, Arial, sans-serif !important;
+			font-weight:bold !important; color:#000 !important; background:#F4EA9F !important; display:block !important;
+			border-bottom:1px solid #D5CA6E; padding:8px !important; }';
+	}
 
 	// Endtime
 	$end = microtime(true);

@@ -90,8 +90,8 @@
 		}
 		$mhtmlcontent .= "\r\n\r\n";
 		// Store the MHTML cache-file
-		@file_put_contents($mhtmlfile,$mhtmlcontent);
-		@chmod($mhtmlfile,0777);
+		file_put_contents($mhtmlfile,$mhtmlcontent);
+		chmod($mhtmlfile,0777);
 	}
 
 

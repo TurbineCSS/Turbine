@@ -21,7 +21,13 @@
  */
 
 
-// Plugin register function
+/**
+ * Plugin register function
+ * @param string $hook The plugin hook
+ * @param int $priority The execution priority. Higher number = earlier execution
+ * @param $function The plugin's mail function
+ * @return void
+ */
 function register_plugin($hook, $priority, $function){
 	global $plugins_before_parse, $plugins_before_compile, $plugins_before_glue, $plugins_before_output;
 	if($hook == 'before_parse'){
@@ -35,6 +41,19 @@ function register_plugin($hook, $priority, $function){
 	}
 	elseif($hook == 'before_output'){
 		$plugins_before_output[$function] = $priority;
+	}
+}
+
+
+/**
+ * Stores an error for output if debug level is > 0
+ * @param string $error The error message
+ * @return void
+ */
+function add_error($error){
+	global $config, $cssp_errors;
+	if($config['debug_level'] > 0){
+		$cssp_errors[] = $error;
 	}
 }
 
