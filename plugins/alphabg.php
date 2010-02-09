@@ -13,6 +13,7 @@
 	 * @return void
 	 */
 	function alphabg(&$parsed){
+		global $browser;
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				if(isset($parsed[$block][$selector]['alpha-background'])){
@@ -22,22 +23,28 @@
 					preg_match_all($rgbapattern, $parsed[$block][$selector]['alpha-background'], $values);
 					// Solid-color fallback
 					$fallback = 'rgb('.$values[1][0].','.$values[2][0].','.$values[3][0].')';
-					// Calculate alpha value
-					$alpha = 127 - 127 * $values[4][0];
-					// Create image
-					$i = imagecreatetruecolor(1, 1);
-					$c = imagecolorallocatealpha($i, $values[1][0], $values[2][0], $values[3][0], $alpha);
-					imagefill($i, 0, 0, $c);
-					imagealphablending($i, false);
-					imagesavealpha($i, true);
-					ob_start();
-					imagepng($i);
-					$imagestring = ob_get_clean();
-					$imagestring = base64_encode($imagestring);
+					// PNG-Data-URI for modern browsers
+					if($browser->family != 'MSIE' || floatval($browser->familyversion) > 7){
+						$alpha = 127 - 127 * $values[4][0];
+						$i = imagecreatetruecolor(1, 1);
+						$c = imagecolorallocatealpha($i, $values[1][0], $values[2][0], $values[3][0], $alpha);
+						imagefill($i, 0, 0, $c);
+						imagealphablending($i, false);
+						imagesavealpha($i, true);
+						ob_start();
+						imagepng($i);
+						$imagestring = ob_get_clean();
+						$imagestring = base64_encode($imagestring);
+						$alphabg = "url('data:image/png;base64,".$imagestring."')";
+					}
+					// TODO: Gradient filter for IE < 8
+					else{
+						$alphabg = '';
+					}
 					// Set as background
 					$parsed[$block][$selector]['background'] = array(
 						$fallback,
-						"url('data:image/png;base64,".$imagestring."')"
+						$alphabg
 					);
 					// Unset original transparent-backgrounds-property
 					unset($parsed[$block][$selector]['alpha-background']);
@@ -50,7 +57,7 @@
 	/**
 	 * Register the plugin
 	 */
-	register_plugin('before_compile', 0, 'alphabg');
+	$cssp->register_plugin('before_compile', 0, 'alphabg');
 
 
 ?>
