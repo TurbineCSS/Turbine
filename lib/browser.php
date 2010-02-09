@@ -7,7 +7,7 @@
  * @package browser
  */
 
-class browser 
+class Browser 
 {
 
 	/**

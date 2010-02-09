@@ -27,23 +27,35 @@
  * Loads CSSP
  * @var string $_GET['files'] A list of css files, separated by ;
  * @var string $_GET['config'] Path to the plugin configuration file
- * @var int $_GET['compress'] Minimize output?
  */
 
 
-// Gzipping Output for faster transfer to client
-@ini_set('zlib.output_compression', 2048);
-@ini_set('zlib.output_compression_level', 4);
+// Load Config
+include('config.php');
+
+
+// Set error output
+if($config['debug_level'] == 2){
+	error_reporting(E_ALL);
+}
+else{
+	error_reporting(E_NONE);
+}
+
+
+// Gzip output for faster transfer to client
+ini_set('zlib.output_compression', 2048);
+ini_set('zlib.output_compression_level', 4);
 if(isset($_SERVER['HTTP_ACCEPT_ENCODING']) &&
 	substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') &&
 	function_exists('ob_gzhandler') &&
 	!ini_get('zlib.output_compression') &&
 	((!ini_get('zlib.output_compression') || intval(ini_get('zlib.output_compression')) == 0))
 ){
-	@ob_start('ob_gzhandler');
+	ob_start('ob_gzhandler');
 }
 else{
-	@ob_start();
+	ob_start();
 }
 
 
@@ -61,59 +73,35 @@ $plugins_before_glue = array();     // After cssp features, before compiling the
 $plugins_before_output = array();   // Before adding the processed css code to the output file
 
 
-// Plugin register function
-function register_plugin($hook, $priority, $function){
-	global $plugins_before_parse, $plugins_before_compile, $plugins_before_glue, $plugins_before_output;
-	if($hook == 'before_parse'){
-		$plugins_before_parse[$function] = $priority;
-	}
-	elseif($hook == 'before_compile'){
-		$plugins_before_compile[$function] = $priority;
-	}
-	elseif($hook == 'before_glue'){
-		$plugins_before_glue[$function] = $priority;
-	}
-	elseif($hook == 'before_output'){
-		$plugins_before_output[$function] = $priority;
-	}
-}
-
-
 // Begin parsing
 if($_GET['files']){
 
 	// Starttime
 	$start = microtime(true);
 
-	// Set debug mode
-	$debug = 0;
-	if($debug){
-		error_reporting(E_ALL);
-	}
-
 	// Load libraries
+	include('lib/utility.php');
 	include('lib/browser.php');
 	include('lib/parser.php');
 	include('lib/cssp.php');
 	include('lib/cssmin.php');
 
 	// Get and store browser properties
-	$browser = new browser();
+	$browser = new Browser();
 
-	// Transform multiple semicolon-separated files into an array
+	// Split multiple semicolon-separated files into an array
 	$files = explode(';', $_GET['files']);
 
 	// Client-side cache: Preparing caching-mechanism using eTags by creating fingerprint of CSS-files
 	$fingerprint = '';
 	foreach($files as $file){
-		$fingerprint .= $file.@filemtime($file);
+		$fingerprint .= $file.filemtime($file);
 	}
 	$etag = md5($fingerprint);
 
 	// Client-side cache: now check if client sends eTag, and compare it with our eTag-fingerprint
-	if($debug == 0 && @$_SERVER['HTTP_IF_NONE_MATCH'] === $etag){
-		// Client-side cache: Success! Browser already has the file so we tell him nothing changed and exit
-		header('HTTP/1.1 304 Not Modified');
+	if($config['debug_level'] == 0 && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag){
+		header('HTTP/1.1 304 Not Modified'); // Client-side cache: Browser already has the file so we tell him nothing changed and exit
 		exit();
 	}
 
@@ -126,7 +114,7 @@ if($_GET['files']){
 			$fileinfo = pathinfo($file);
 			if($fileinfo['extension'] == 'css'){
 				// Simply include normal css files in the output. Minify if not debugging
-				if(!$debug){
+				if($config['debug_level'] == 0 && $config['minify_css'] == true){
 					$css .= cssmin::minify(file_get_contents($file));
 				}
 				else{
@@ -138,12 +126,10 @@ if($_GET['files']){
 				// Server-side cache: Has file already been parsed?
 				$incache = false;
 
-				// Server-side cache: Where to store parsed files
-				$cachedir = 'lib/cssp_cache';
-
 				// Server-side cache: Check if cache-directory has been created
-				if(!is_dir($cachedir)){
-					@mkdir($cachedir, 0777);
+				// TODO: Output some error message if the directory doesn't exist or is not writeable
+				if(!is_dir($config['cache_dir'])){
+					mkdir($config['cache_dir'], 0777);
 				}
 
 				$cachefile = md5(
@@ -160,7 +146,7 @@ if($_GET['files']){
 				).'.txt';
 
 				// Server-side cache: Check if a cached version of the file already exists
-				if(file_exists($cachedir.'/'.$cachefile) && @filemtime($cachedir.'/'.$cachefile) >= @filemtime($file)){
+				if(file_exists($config['cache_dir'].'/'.$cachefile) && filemtime($config['cache_dir'].'/'.$cachefile) >= filemtime($file)){
 					$incache = true;
 				}
 
@@ -268,11 +254,11 @@ if($_GET['files']){
 					}
 
 					// Add to css output
-					@file_put_contents($cachedir.'/'.$cachefile, $output);
+					file_put_contents($config['cache_dir'].'/'.$cachefile, $output);
 				}
 				else{
 					// Server-side cache: read the cached version of the file
-					$output = @file_get_contents($cachedir.'/'.$cachefile);
+					$output = file_get_contents($config['cache_dir'].'/'.$cachefile);
 				}
 
 			}
@@ -287,12 +273,11 @@ if($_GET['files']){
 	$end = microtime(true);
 
 	// Send headers
-	if($debug){
+	header('Content-Type: text/css');
+	if($config['debug_level'] > 0){
 		header('Cache-Control: must-revalidate, pre-check=0, no-store, no-cache, max-age=0, post-check=0');
-		header('Content-Type: text/html');
 	}
 	else{
-		header('Content-Type: text/css');
 		header('Cache-Control: no-cache, must-revalidate');
 		header('Expires: '.gmdate('D, d M Y H:i:s').' GMT');
 		header('Content-type: text/css'); 
