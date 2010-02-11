@@ -18,6 +18,8 @@
 
 body
 	font-family:$font_sans
+	div
+		border-radius:4px
 
 
 

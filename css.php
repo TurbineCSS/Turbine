@@ -213,8 +213,8 @@ if($_GET['files']){
 					}
 
 
-					unset($cssp->parsed['global']['@cssp']);                     // Remove configuration @-rule
-					$output = $cssp->glue($compress);                            // Glue css output
+					unset($cssp->parsed['global']['@cssp']);                       // Remove configuration @-rule
+					$output = $cssp->glue($compress);                              // Glue css output
 					$cssp->apply_plugins('before_output', $plugin_list, &$output); // Apply plugins for before output
 
 
