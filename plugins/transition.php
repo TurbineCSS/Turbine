@@ -2,8 +2,7 @@
 
 	/**
 	 * Easy and extended transition
-	 * Adds vendor-specific versions of transition and adds border-top-radius,
-	 * border-bottom-radius, border-left-radius and border-right-radius
+	 * Adds vendor-specific versions of transition
 	 * 
 	 * Usage:     Use any currently known trnasition-property wihtout vendor-prefixes
 	 * Example 1: transition: left 1s linear;
