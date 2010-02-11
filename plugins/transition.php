@@ -24,10 +24,8 @@
 		
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
-				$parsed[$block][$selector]['arraylength'] = count($transition_properties);
 				foreach($transition_properties as $property)
 				{
-					$parsed[$block][$selector]['schepp'] = $property;
 					if(isset($parsed[$block][$selector][$property])){
 						$value = $parsed[$block][$selector][$property];
 						$parsed[$block][$selector]['-moz-'.$property] = $value;

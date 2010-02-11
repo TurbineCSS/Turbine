@@ -5,16 +5,16 @@
 
 // CSSP options
 @cssp
-	compress:0							// Set to "1" to enable minified output
-	plugins:boxshadow, borderradius		// Add more plugins here
+	compress:0                                   // Set to "1" to enable minified output
+	plugins:boxshadow, borderradius              // Add more plugins here
 
-@constants								// Why would you have to remember (and type) font stacks? Use constants!
+@constants                                       // Why would you have to remember (and type) font stacks? Use constants!
 	font_sans:Verdana, Arial, sans-serif
 	font_serif:"Times New Roman", Times, serif
 
 
 
-@media screen							// Begins "@media screen" section
+@media screen                                    // Begins "@media screen" section
 
 body
 	font-family:$font_sans
@@ -23,7 +23,7 @@ body
 
 
 
-@media print							// Begins "@media print" section
+@media print                                     // Begins "@media print" section
 
 body
 	font-family:$font_serif

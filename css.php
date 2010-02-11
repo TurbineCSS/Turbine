@@ -184,7 +184,7 @@ if($_GET['files']){
 					$found = false;
 					foreach($cssp->css as $line){
 						if(!$found){
-							if($line == '@cssp'){
+							if(preg_match('/^[\s\t]*@cssp/i',$line) == 1){
 								$found = true;
 							}
 						}
@@ -196,12 +196,15 @@ if($_GET['files']){
 							}
 						}
 					}
-
-					$cssp->apply_plugins('before_parse', $plugin_list, &$cssp->css);      // Apply plugins for before parse
+					
+					$cssp->report_error('CSSP warning: The cache directory is not writeable!');
+					$cssp->report_error('adas not writeable!');
+					
+					$cssp->apply_plugins('before_parse', $plugin_list, $cssp->css);      // Apply plugins for before parse
 					$cssp->parse();                                                       // Parse the code
-					$cssp->apply_plugins('before_compile', $plugin_list, &$cssp->parsed); // Apply plugins for before compile
+					$cssp->apply_plugins('before_compile', $plugin_list, $cssp->parsed); // Apply plugins for before compile
 					$cssp->compile();                                                     // Do the cssp magic
-					$cssp->apply_plugins('before_glue', $plugin_list, &$cssp->parsed);    // Apply plugins for before glue
+					$cssp->apply_plugins('before_glue', $plugin_list, $cssp->parsed);    // Apply plugins for before glue
 
 
 					// Set compression mode
@@ -213,9 +216,9 @@ if($_GET['files']){
 					}
 
 
-					unset($cssp->parsed['global']['@cssp']);                       // Remove configuration @-rule
-					$output = $cssp->glue($compress);                              // Glue css output
-					$cssp->apply_plugins('before_output', $plugin_list, &$output); // Apply plugins for before output
+					unset($cssp->parsed['global']['@cssp']);                      // Remove configuration @-rule
+					$output = $cssp->glue($compress);                             // Glue css output
+					$cssp->apply_plugins('before_output', $plugin_list, $output); // Apply plugins for before output
 
 
 					// Add output to cache
@@ -239,7 +242,7 @@ if($_GET['files']){
 
 	// Show errors
 	if($cssp->config['debug_level'] > 0 && !empty($cssp->errors)){
-		$error_message = implode("\r\n", $cssp->errors);
+		$error_message = implode('\\00000A', $cssp->errors);
 		$css = $css.'body:before { content:"'.$error_message.'" !important; font-family:Verdana, Arial, sans-serif !important;
 			font-weight:bold !important; color:#000 !important; background:#F4EA9F !important; display:block !important;
 			border-bottom:1px solid #D5CA6E; padding:8px !important; }';
