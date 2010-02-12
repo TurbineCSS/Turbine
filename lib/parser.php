@@ -519,7 +519,10 @@ class Parser2 extends Base{
 				}
 			}
 		}
-		else{ // normal elements
+		else{ // Normal elements
+			if($compressed){// Strip whitespace from selectors
+				$selector = implode(',', $this->tokenize($selector, ','));
+			}
 			$output .= $prefix . $selector . $s;
 			$output .= '{' . $n;
 			$output .= $this->glue_properties($rules, $prefix, $s, $t, $n, $compressed);
