@@ -26,8 +26,6 @@
 				$offset_y = 0;
 				$offset_x_unit = 'px';
 				$offset_y_unit = 'px';
-				$origin_x = 50%;
-				$origin_y = 50%;
 				$rotate_x = 0;
 				$rotate_y = 0;
 				$translate_x = 0;
@@ -149,8 +147,14 @@
 							}
 						}
 						//Legacy IE-compliance
-						if(!isset($parsed[$block][$selector]['filter'])) $parsed[$block][$selector]['filter'] = $filter;
-						else if(!strpos($parsed[$block][$selector]['filter'],$filter)) $parsed[$block][$selector]['filter'] = $filter.' '.$parsed[$block][$selector]['filter'];
+						if(!isset($parsed[$block][$selector]['filter'])) 
+						{
+							$parsed[$block][$selector]['filter'] = $filter;
+						}
+						else 
+						{
+							if(!strpos($parsed[$block][$selector]['filter'],$filter)) $parsed[$block][$selector]['filter'] = $filter.' '.$parsed[$block][$selector]['filter'];
+						}
 
 						//Set hasLayout
 						$parsed[$block][$selector]['zoom'] = 1;
