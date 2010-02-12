@@ -196,10 +196,8 @@ if($_GET['files']){
 							}
 						}
 					}
-					
-					$cssp->report_error('CSSP warning: The cache directory is not writeable!');
-					$cssp->report_error('adas not writeable!');
-					
+
+
 					$cssp->apply_plugins('before_parse', $plugin_list, $cssp->css);      // Apply plugins for before parse
 					$cssp->parse();                                                       // Parse the code
 					$cssp->apply_plugins('before_compile', $plugin_list, $cssp->parsed); // Apply plugins for before compile
