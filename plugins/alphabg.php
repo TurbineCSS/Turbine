@@ -57,7 +57,7 @@
 	/**
 	 * Register the plugin
 	 */
-	$cssp->register_plugin('before_compile', 0, 'alphabg');
+	$cssp->register_plugin('before_glue', 0, 'alphabg');
 
 
 ?>
