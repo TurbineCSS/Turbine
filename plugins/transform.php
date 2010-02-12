@@ -4,12 +4,14 @@
 	 * Easy and extended transform
 	 * Adds vendor-specific versions of transform
 	 * 
-	 * Usage:     Use any currently known transform-property wihtout vendor-prefixes, BUT NOT YET! transform-origin. 
-	 *            For IE you need to define width and height dimensions and use the same units (px/em) for dimensions and translation
+	 * Usage:     Use any currently known transform-property wihtout vendor-prefixes,  
+	 *            BUT NOT YET! transform-origin.
+	 *            For IE you need to define width and height dimensions and use the same units (px/em)
+	 *            for dimensions and translation
 	 * Example 1: width: 100px; height: 100px; transform: translate(2px, 2px);
 	 * Example 1: width: 20em; height: 20em; transform: translate(1em, 2em);
-	 * Example 3: transform: rotate(90deg);
-	 * Example 4: transform: skew(15deg,25deg);
+	 * Example 3: width: 100px; height: 100px; transform: translate(2px, 2px) rotate(90deg);
+	 * Example 4:width: 100px; height: 100px;  transform: skew(15deg,25deg);
 	 * Status:    Stable
 	 * Version:   1.0
 	 * 
