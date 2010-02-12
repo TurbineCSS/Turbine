@@ -63,12 +63,24 @@
 						}
 						
 						//IE8-compliance (note: value inside apostrophes!)
-						if(!isset($parsed[$block][$selector]['-ms-filter'])) $parsed[$block][$selector]['-ms-filter'] = '"'.$filter.'"';
-						else $parsed[$block][$selector]['-ms-filter'] = '"'.trim($parsed[$block][$selector]['-ms-filter'],'"').' '.$filter.'"';
+						if(!isset($parsed[$block][$selector]['-ms-filter'])) 
+						{
+							$parsed[$block][$selector]['-ms-filter'] = '"'.$filter.'"';
+						}
+						else 
+						{
+							$parsed[$block][$selector]['-ms-filter'] = '"'.trim($parsed[$block][$selector]['-ms-filter'],'"').' '.$filter.'"';
+						}
 						//Legacy IE-compliance
-						if(!isset($parsed[$block][$selector]['filter'])) $parsed[$block][$selector]['filter'] = $filter;
-						else $parsed[$block][$selector]['filter'] .= ' '.$filter;
-						$parsed[$block][$selector]['zoom'] = 1;
+						if(!isset($parsed[$block][$selector]['filter'])) 
+						{	
+							$parsed[$block][$selector]['filter'] = $filter;
+						}
+						else 
+						{
+							$parsed[$block][$selector]['filter'] .= ' '.$filter;
+							$parsed[$block][$selector]['zoom'] = 1;
+						}
 					}
 				}
 			}
