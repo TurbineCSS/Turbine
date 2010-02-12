@@ -20,7 +20,7 @@
 					$value = $parsed[$block][$selector]['box-shadow'];
 					$parsed[$block][$selector]['-moz-box-shadow'] = $value;
 					$parsed[$block][$selector]['-webkit-box-shadow'] = $value;
-					if(preg_match('/([0-9]+)\D+([0-9]+)\D+([0-9]+)\D+#([0-9A-F]{3,6})+/i',trim($value),$matches) == 1)
+					if(preg_match('/([0-9]+)\D+([0-9]+)\D+([0-9]+)\D+#([0-9A-F]{3,6})+/i',trim($value),$matches) == 1 && (isset($parsed[$block][$selector]['background']) || isset($parsed[$block][$selector]['background-color'])))
 					{
 						$xoffset = intval($matches[1]);
 						$yoffset = intval($matches[2]);
@@ -54,18 +54,20 @@
 						if($blur == 0)
 						{
 							// Hard Shadow
-							$filter = 'progid:DXImageTransform.Microsoft.dropshadow(OffX='.$xoffset.',OffY='.$yoffset.',Color="#'.strtoupper(str_pad(dechex(round($opacity * 255)),2,'0',STR_PAD_LEFT)).$color.'",Positive="true")';
+							$filter = 'progid:DXImageTransform.Microsoft.dropshadow(OffX='.$xoffset.',OffY='.$yoffset.',Color=\'#'.strtoupper(str_pad(dechex(round($opacity * 255)),2,'0',STR_PAD_LEFT)).$color.'\',Positive=\'true\')';
 						}
 						else
 						{
 							// Soft Shadow
-							$filter = 'progid:DXImageTransform.Microsoft.Shadow(Color="#'.$color.'",Direction='.$direction.',Strength='.$median_offset.')';
+							$filter = 'progid:DXImageTransform.Microsoft.Shadow(Color=\'#'.$color.'\',Direction='.$direction.',Strength='.$median_offset.')';
 						}
 						
+						//IE8-compliance (note: value inside apostrophes!)
+						if(!isset($parsed[$block][$selector]['-ms-filter'])) $parsed[$block][$selector]['-ms-filter'] = '"'.$filter.'"';
+						else $parsed[$block][$selector]['-ms-filter'] = '"'.trim($parsed[$block][$selector]['-ms-filter'],'"').' '.$filter.'"';
+						//Legacy IE-compliance
 						if(!isset($parsed[$block][$selector]['filter'])) $parsed[$block][$selector]['filter'] = $filter;
 						else $parsed[$block][$selector]['filter'] .= ' '.$filter;
-						if(!isset($parsed[$block][$selector]['-ms-filter'])) $parsed[$block][$selector]['-ms-filter'] = $filter;
-						else $parsed[$block][$selector]['-ms-filter'] .= ' '.$filter;
 						$parsed[$block][$selector]['zoom'] = 1;
 					}
 				}
