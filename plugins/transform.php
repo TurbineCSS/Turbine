@@ -4,9 +4,12 @@
 	 * Easy and extended transform
 	 * Adds vendor-specific versions of transform
 	 * 
-	 * Usage:     Use any currently known transform-property wihtout vendor-prefixes
-	 * Example 1: transform: translate(2px, 2px);
-	 * Example 2: transform: rotate(90deg);
+	 * Usage:     Use any currently known transform-property wihtout vendor-prefixes, BUT NOT YET! transform-origin. 
+	 *            For IE you need to define width and height dimensions and use the same units (px/em) for dimensions and translation
+	 * Example 1: width: 100px; height: 100px; transform: translate(2px, 2px);
+	 * Example 1: width: 20em; height: 20em; transform: translate(1em, 2em);
+	 * Example 3: transform: rotate(90deg);
+	 * Example 4: transform: skew(15deg,25deg);
 	 * Status:    Stable
 	 * Version:   1.0
 	 * 
@@ -21,20 +24,16 @@
 				$offset_y = 0;
 				$offset_x_unit = 'px';
 				$offset_y_unit = 'px';
-				$origin_x = 1;
-				$origin_y = 1;
+				$origin_x = 50%;
+				$origin_y = 50%;
 				$rotate_x = 0;
 				$rotate_y = 0;
 				$translate_x = 0;
 				$translate_y = 0;
+				$translate_x_unit = 'px';
+				$translate_y_unit = 'px';
 				$scale_x = 1;
 				$scale_y = 1;
-				if(isset($parsed[$block][$selector]['transform-origin'])){
-					$value = $parsed[$block][$selector]['transform-origin'];
-					$parsed[$block][$selector]['-moz-transform-origin'] = $value;
-					$parsed[$block][$selector]['-o-transform-origin'] = $value;
-					$parsed[$block][$selector]['-webkit-transform-origin'] = $value;
-				}
 				if(isset($parsed[$block][$selector]['transform'])){
 					$value = $parsed[$block][$selector]['transform'];
 					$parsed[$block][$selector]['-moz-transform'] = $value;
@@ -62,10 +61,12 @@
 						}
 						else
 						{
-							if(preg_match('/translate\(\D*([0-9\-]+)\s([0-9\-]+)\D*\)/i',$value,$matches) == 1)
+							if(preg_match('/translate\(\D*([0-9\-]+)([a-z%]*),\s*([0-9\-]+)([a-z%]*)\D*\)/i',$value,$matches) == 1)
 							{
 								$translate_x = $matches[1];
-								$translate_y = $matches[2];
+								$translate_x_unit = $matches[2];
+								$translate_y = $matches[3];
+								$translate_y_unit = $matches[4];
 							}
 							if(preg_match('/rotate\(\D*([0-9\-]+)\D*\)/i',$value,$matches) == 1)
 							{
@@ -110,16 +111,41 @@
 						//Adjust offset for IEs, needs to come in first
 						if($browser->family == 'MSIE' && floatval($browser->familyversion) < 9)
 						{
-							if(!isset($parsed[$block][$selector]['position'])) $parsed[$block][$selector]['position'] = 'relative';
-
-							if(!isset($parsed[$block][$selector]['margin']) && !isset($parsed[$block][$selector]['margin-left']) && !isset($parsed[$block][$selector]['margin-right'])) $parsed[$block][$selector]['margin-left'] = ($offset_x * -1 * $scale_x).$offset_x_unit;
-							if(!isset($parsed[$block][$selector]['margin']) && !isset($parsed[$block][$selector]['margin-top']) && !isset($parsed[$block][$selector]['margin-bottom'])) $parsed[$block][$selector]['margin-top'] = ($offset_y * -1 * $scale_y).$offset_y_unit;
+							if(!isset($parsed[$block][$selector]['position'])) 
+							{
+								$parsed[$block][$selector]['position'] = 'relative';
+							}
+							if(
+								!isset($parsed[$block][$selector]['margin']) && 
+								!isset($parsed[$block][$selector]['margin-left']) && 
+								!isset($parsed[$block][$selector]['margin-right'])
+							) 
+							{
+								$parsed[$block][$selector]['margin-left'] = (($offset_x * -1 * $scale_x) + ($translate_x * $scale_x)).$offset_x_unit;
+							}
+							if(
+								!isset($parsed[$block][$selector]['margin']) && 
+								!isset($parsed[$block][$selector]['margin-top']) && 
+								!isset($parsed[$block][$selector]['margin-bottom'])
+							) 
+							{
+								$parsed[$block][$selector]['margin-top'] = (($offset_y * -1 * $scale_y) + ($translate_y * $scale_y)).$offset_y_unit;
+							}
 						}
 							
 						//IE8-compliance (note: value inside apostrophes!)
-						//Needs its filter-value to be put in first place!
-						if(!isset($parsed[$block][$selector]['-ms-filter'])) $parsed[$block][$selector]['-ms-filter'] = '"'.$filter.'"';
-						else if(!strpos($parsed[$block][$selector]['-ms-filter'],$filter)) $parsed[$block][$selector]['-ms-filter'] = '"'.$filter.' '.trim($parsed[$block][$selector]['-ms-filter'],'"').'"';
+						if(!isset($parsed[$block][$selector]['-ms-filter'])) 
+						{
+							$parsed[$block][$selector]['-ms-filter'] = '"'.$filter.'"';
+						}
+						else 
+						{
+							if(!strpos($parsed[$block][$selector]['-ms-filter'],$filter)) 
+							{
+								//Needs its filter-value to be put in first place!
+								$parsed[$block][$selector]['-ms-filter'] = '"'.$filter.' '.trim($parsed[$block][$selector]['-ms-filter'],'"').'"';
+							}
+						}
 						//Legacy IE-compliance
 						if(!isset($parsed[$block][$selector]['filter'])) $parsed[$block][$selector]['filter'] = $filter;
 						else if(!strpos($parsed[$block][$selector]['filter'],$filter)) $parsed[$block][$selector]['filter'] = $filter.' '.$parsed[$block][$selector]['filter'];
