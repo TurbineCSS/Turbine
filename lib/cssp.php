@@ -144,14 +144,25 @@ class Cssp extends Parser2 {
 	 * @return void
 	 */
 	protected function apply_block_aliases($aliases, $block){
-		foreach($aliases as $alias => $value){
+		foreach($aliases as $alias => $alias_value){
 			foreach($this->parsed[$block] as $selector => $styles){
-				// Add a new element with the full selector and delete the old one
-				$newselector = preg_replace('/(\$'.$alias.')\b/', $value, $selector);
+				// Replace in selectors: add a new element with the full selector and delete the old one
+				$newselector = preg_replace('/(\$'.$alias.')\b/', $alias_value, $selector);
 				if($newselector != $selector){
 					$elements = array($newselector => $styles);
 					$this->insert($elements, $block, $selector);
 					unset($this->parsed[$block][$selector]);
+				}
+				// Replace in values
+				foreach($styles as $property => $value){
+					$matches = array();
+					if($property == 'extends'){
+						$this->parsed[$block][$selector]['extends'] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $this->parsed[$block][$selector]['extends']);
+					}
+					elseif(preg_match('/copy\((.*)[\s]+(.*)\)/', $this->parsed[$block][$selector][$property], $matches)){
+						$matches[1] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $matches[1]);
+						$this->parsed[$block][$selector][$property] = 'copy('.$matches[1].' '.$matches[2].')';
+					}
 				}
 			}
 		}
@@ -186,7 +197,7 @@ class Cssp extends Parser2 {
 					unset($this->parsed[$block][$selector]['extends']);
 				}
 				// Selective copying via "copy(selector property)"
-				$inheritance_pattern = "/copy\((.*)[\s]+(.*)\)/";
+				$inheritance_pattern = '/copy\((.*)[\s]+(.*)\)/';
 				foreach($styles as $property => $value){
 					// Properties that have multiple values as an array are possible too.. this may be slow, but it's simple
 					if(!is_array($value)){
