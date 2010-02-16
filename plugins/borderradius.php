@@ -4,6 +4,8 @@
 	 * Easy and extended border radius
 	 * Adds vendor-specific versions of border-radius and adds border-top-radius,
 	 * border-bottom-radius, border-left-radius and border-right-radius
+	 * For IE, only general radius works. And make sure, border-radius declaration 
+	 * comes before any (box-)shadow-declaration in CSS-code!
 	 * 
 	 * Usage:     border-radius[-top/-bottom/-left/-right/-top-left/...]: value;
 	 * Example 1: border-top-radius:4px;
@@ -25,8 +27,8 @@
 					$parsed[$block][$selector]['-webkit-border-radius'] = $value;
 					// Fix for IEs found on http://www.htmlremix.com/css/curved-corner-border-radius-cross-browser/
 					$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/borderradius/border-radius.htc';
-					if(!isset($parsed[$block][$selector]['behaviour'])) $parsed[$block]['body']['behaviour'] = 'url("'.$htc_path.'")';
-					else if(!strpos($parsed[$block][$selector]['behaviour'],'url("'.$htc_path.'")')) $parsed[$block][$selector]['behaviour'] .= ', url("'.$htc_path.'")';
+					if(!isset($parsed[$block][$selector]['behavior'])) $parsed[$block][$selector]['behavior'] = 'url("'.$htc_path.'")';
+					else if(!strpos($parsed[$block][$selector]['behavior'],'url("'.$htc_path.'")')) $parsed[$block][$selector]['behavior'] .= ', url("'.$htc_path.'")';
 				}
 				// Top only
 				if(isset($parsed[$block][$selector]['border-top-radius'])){
