@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html class="shell">
+	<head>
+		<meta charset="utf-8">
+		<title>CSSP Shell</title>
+		<!--<link rel="stylesheet" href="../../css.php?files=docs/docs.cssp">-->
+		<link rel="stylesheet" href="../../docs/docs.css">
+	</head>
+	<!--[if IE 6]><body class="shell" id="ie6"><![endif]-->
+	<!--[if IE 7]><body class="shell" id="ie7"><![endif]-->
+	<!--[if IE 8]><body class="shell" id="ie8"><![endif]-->
+	<!--[if !IE]><!--><body class="shell"><!-- <![endif]-->
+
+
+<div id="header">
+	<h1>CSSP Shell</h1>
+</div>
+
+
+<div id="wrapper" class="shellwrapper">
+
+
+<div class="shellcell fl">
+	<h2>Paste CSSP code here</h2>
+	<textarea id="cssp">@cssp
+	compress:0
+	plugins:borderradius
+
+@constants
+	radius:1em
+
+@aliases
+	foo:#foo
+
+$foo
+	border-radius:$radius
+	background:red</textarea>
+</div>
+<div class="shellcell fr">
+	<h2>Paste HTML code here</h2>
+	<textarea id="html"><p id="foo">
+	Lorem Ipsum
+</p></textarea>
+</div>
+<div class="shellcell fl">
+	<h2>Resulting CSS</h2>
+	<textarea id="css"></textarea>
+</div>
+<div class="shellcell fr">
+	<h2>Resulting CSS + HTML</h2>
+	<iframe id="result" src="display.html"></iframe>
+</div>
+<p>
+	<button id="go">Go!</button>
+</p>
+
+
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.4/mootools-yui-compressed.js"></script>
+<script src="shell.js"></script>
+
+</body>
+</html>
