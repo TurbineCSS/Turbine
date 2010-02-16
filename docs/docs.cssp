@@ -19,6 +19,7 @@
 @media screen, projection
 
 
+// Basics
 body
 	font-family:Verdana, Arial, sans-serif
 	font-size:80%
@@ -35,8 +36,13 @@ strong, b
 	font-weight:bold
 em, i
 	font-style:italic
+.fl
+	float:left
+.fr
+	float:right
 
 
+// Header
 #header
 	background:$dark
 	border-bottom:2px solid $white
@@ -52,6 +58,7 @@ em, i
 		padding:1em;
 
 
+// Main content
 #wrapper
 	width:45em
 	margin:0 auto
@@ -145,6 +152,7 @@ em, i
 		margin:1em 0
 
 
+// Table of contents
 #toc
 	position:fixed
 	width:17.5em
@@ -169,3 +177,33 @@ em, i
 			height:0
 			width:0
 			overflow:hidden
+
+
+// Shell
+.shell
+	height:100%
+.shellwrapper
+	width:auto !important
+	padding-right:1em !important
+	padding-left:1em !important
+	height:100%
+	p
+		clear:both
+		text-align:right
+		padding:2% 1% !important
+	#go
+		extends:#wrapper table
+		font-weight:bold
+		background:$dark
+		color:$white
+		border:2px solid $white
+		padding:0.5em 1em
+		cursor:pointer
+.shellcell
+	margin-top:1em
+	width:49%
+	height:43%
+	textarea, iframe
+		extends:#wrapper pre
+		width:95%
+		height:75%

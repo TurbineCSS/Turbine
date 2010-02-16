@@ -38,7 +38,7 @@
 				<li><a href="#toc-2-6">Inheritance and templating</a></li>
 			</ul>
 		</li>
-		<li>&darr; <a href="#toc-3">Plugins</a>
+		<li>&darr; <a href="#toc-3">Core Plugins</a>
 			<ul>
 				<li><a href="#toc-3-1">Border radius</a></li>
 				<li><a href="#toc-3-2">Box shadow</a></li>
@@ -60,10 +60,16 @@
 				<!--<li><a href="#toc-4-3">API reference</a></li>-->
 			</ul>
 		</li>
-		<li>&darr; <a href="#toc-5">FAQ</a>
+		<li>&darr; <a href="#toc-5">Tools</a>
 			<ul>
-				<li><a href="#toc-5-1">Any general advice?</a></li>
-				<li><a href="#toc-5-2">What are the tradeoffs?</a></li>
+				<li><a href="#toc-5-1">Converter</a></li>
+				<li><a href="#toc-5-2">Shell</a></li>
+			</ul>
+		</li>
+		<li>&darr; <a href="#toc-6">FAQ</a>
+			<ul>
+				<li><a href="#toc-6-1">Any general advice?</a></li>
+				<li><a href="#toc-6-2">What are the tradeoffs?</a></li>
 			</ul>
 		</li>
 	</ul>
@@ -96,7 +102,8 @@
 </pre>
 <p>
 	CSSP can save you a lot of typing and time <em>and</em> allow you to concentrate on a website's design and functionality instead of
-	css's limitations and your least favourite browser's latest bugs. And, being fully extensible, you can customize it to your liking.
+	css's limitations and your least favourite browser's latest bugs. Think jQuery for CSS. Being fully extensible, you can customize CSSP
+	to your liking.
 </p>
 <h2 id="toc-1-1">Goals and Features</h2><div>
 <p>
@@ -135,7 +142,10 @@
 	To use CSSP, embed <code>css.php</code> in your HTML like a normal css file and add the <code>files</code> argument containing
 	a list of cssp files sepperated by semicolons.
 </p>
-<pre>&lt;link rel="stylesheet" href="path/to/cssp/css.php?files=file1.cssp;file2.cssp"&gt;</pre>
+<pre>&lt;link
+	rel="stylesheet"
+	href="path/to/cssp/css.php?files=file1.cssp;file2.cssp"
+/&gt;</pre>
 <p>
 	You can also include regular css files.
 </p>
@@ -248,9 +258,9 @@
 	a:link, a:visited
 		text-decoration:underline
 	a:hover, a:active
-		text-decoration:none;
+		text-decoration:none
 	a:focus
-		outline:1px dotted #CCC;</pre>
+		outline:1px dotted #CCC</pre>
 <p>
 	The nested code above compiles to the following css:
 </p>
@@ -361,6 +371,10 @@ $mainNavigation
 #bar {
     background: #F00
 }</pre>
+<p>
+	This works with aliases too. If you want to copy the <code>color</code> value from $foo to #bar, you can simple use
+	<code>copy($foo color)</code>.
+</p>
 <h3>Extending other elements</h3>
 <p>
 	TODO
@@ -377,7 +391,7 @@ $mainNavigation
 
 
 
-<h1 id="toc-3">Plugins</h1><div id="plugins">
+<h1 id="toc-3">Core plugins</h1><div id="plugins">
 
 
 
@@ -806,10 +820,33 @@ register_plugin('before_compile', 0, 'mypluginfunction');
 
 
 
-<h1 id="toc-5">FAQ</h1><div id="faq">
+<h1 id="toc-5">Tools</h1><div id="tools">
 
 
-<h2 id="toc-5-1">Any general advice?</h2><div>
+<h2 id="toc-5-1">CSS to CSSP converter</h2><div>
+<p>
+	TODO
+</p>
+</div>
+
+
+
+<h2 id="toc-5-2">CSSP shell</h2><div>
+<p>
+	TODO
+</p>
+</div>
+
+
+
+</div>
+
+
+
+<h1 id="toc-6">FAQ</h1><div id="faq">
+
+
+<h2 id="toc-6-1">Any general advice?</h2><div>
 <ul>
 	<li>
 		<strong>Don't ever mess up your indention!</strong> Seriously. CSSP is (at the moment) not very good at catching incorrectly
@@ -820,15 +857,12 @@ register_plugin('before_compile', 0, 'mypluginfunction');
 		Don't use constants only for colors! If you use them for font stacks and paths, you can save yourself a lot of typing&nbsp;&ndash;
 		<code>font-family:$serif</code> is so much shorter than <code>font-family:Georgia, "Times New Roman", serif</code>.
 	</li>
-	<li>
-		Don't overuse nested selectors as they can get quite confusing.
-	</li>
 </ul>
 </div>
 
 
 
-<h2 id="toc-5-2">What are the tradeoffs?</h2><div>
+<h2 id="toc-6-2">What are the tradeoffs?</h2><div>
 <ul>
 	<li>
 		CSSP uses the input css files to generate <em>completely</em> new CSS code that won't necessarily look very much like it's source.
