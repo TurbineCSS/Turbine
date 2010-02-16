@@ -23,6 +23,10 @@
 					$parsed[$block][$selector]['-moz-border-radius'] = $value;
 					$parsed[$block][$selector]['-khtml-border-radius'] = $value;
 					$parsed[$block][$selector]['-webkit-border-radius'] = $value;
+					// Fix for IEs found on http://www.htmlremix.com/css/curved-corner-border-radius-cross-browser/
+					$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/borderradius/border-radius.htc';
+					if(!isset($parsed[$block][$selector]['behaviour'])) $parsed[$block]['body']['behaviour'] = 'url("'.$htc_path.'")';
+					else if(!strpos($parsed[$block][$selector]['behaviour'],'url("'.$htc_path.'")')) $parsed[$block][$selector]['behaviour'] .= ', url("'.$htc_path.'")';
 				}
 				// Top only
 				if(isset($parsed[$block][$selector]['border-top-radius'])){
