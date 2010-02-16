@@ -72,10 +72,12 @@ public $global_constants = array(
  * @return void
  */
 public function __construct(){
-	// Load config
-	include('config.php');
-	foreach($config as $key => $setting){
-		$this->config[$key] = $setting;
+	// Try to load config
+	@include('config.php');
+	if(isset($config)){
+		foreach($config as $key => $setting){
+			$this->config[$key] = $setting;
+		}
 	}
 	// Set error output
 	if($this->config['debug_level'] == 2){
