@@ -51,7 +51,7 @@
 	/**
 	 * Register the plugin
 	 */
-	$cssp->register_plugin('before_compile', 0, 'sprites');
+	$cssp->register_plugin('before_glue', 0, 'sprites');
 
 
 ?>

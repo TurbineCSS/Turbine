@@ -34,7 +34,7 @@
 	/**
 	 * Register the plugin
 	 */
-	$cssp->register_plugin('before_compile', 0, 'inlineblock');
+	$cssp->register_plugin('before_glue', 0, 'inlineblock');
 
 
 ?>

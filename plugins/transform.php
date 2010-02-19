@@ -168,7 +168,7 @@
 	/**
 	 * Register the plugin, needs be the last one
 	 */
-	$cssp->register_plugin('before_compile', 999, 'transform');
+	$cssp->register_plugin('before_glue', 999, 'transform');
 
 
 ?>
