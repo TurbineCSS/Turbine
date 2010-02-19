@@ -24,7 +24,7 @@
 					// Solid-color fallback
 					$fallback = 'rgb('.$values[1][0].','.$values[2][0].','.$values[3][0].')';
 					// PNG-Data-URI for modern browsers
-					if($browser->family != 'MSIE' || floatval($browser->familyversion) > 7){
+					if($browser->family != 'MSIE' || ($browser->family == 'MSIE' && floatval($browser->familyversion) >= 8)){
 						$alpha = 127 - 127 * $values[4][0];
 						$i = imagecreatetruecolor(1, 1);
 						$c = imagecolorallocatealpha($i, $values[1][0], $values[2][0], $values[3][0], $alpha);
@@ -36,16 +36,30 @@
 						$imagestring = ob_get_clean();
 						$imagestring = base64_encode($imagestring);
 						$alphabg = "url('data:image/png;base64,".$imagestring."')";
+						// Set as background
+						$parsed[$block][$selector]['background'] = array(
+							$fallback,
+							$alphabg
+						);
 					}
-					// TODO: Gradient filter for IE < 8
+					// Gradient filter for IE < 8
 					else{
 						$alphabg = '';
+						$filteropacity = strtoupper(str_pad(dechex(round(floatval($values[4][0]) * 255)),2,'0',STR_PAD_LEFT));
+						$filtercolor_r = strtoupper(str_pad(dechex(floatval($values[1][0])),2,'0',STR_PAD_LEFT));
+						$filtercolor_g = strtoupper(str_pad(dechex(floatval($values[2][0])),2,'0',STR_PAD_LEFT));
+						$filtercolor_b = strtoupper(str_pad(dechex(floatval($values[3][0])),2,'0',STR_PAD_LEFT));
+						$filter = 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#'.$filteropacity.$filtercolor_r.$filtercolor_g.$filtercolor_b.',endColorstr=#'.$filteropacity.$filtercolor_r.$filtercolor_g.$filtercolor_b.')';
+						if(!isset($parsed[$block][$selector]['filter'])) 
+						{
+							$parsed[$block][$selector]['filter'] = $filter;
+						}
+						else 
+						{
+							if(!strpos($parsed[$block][$selector]['filter'],$filter)) $parsed[$block][$selector]['filter'] .= ' '.$filter;
+						}
+						$parsed[$block][$selector]['zoom'] = 1;
 					}
-					// Set as background
-					$parsed[$block][$selector]['background'] = array(
-						$fallback,
-						$alphabg
-					);
 					// Unset original transparent-backgrounds-property
 					unset($parsed[$block][$selector]['alpha-background']);
 				}
