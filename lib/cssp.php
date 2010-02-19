@@ -199,7 +199,7 @@ class Cssp extends Parser2 {
 				// Selective copying via "copy(selector property)"
 				$inheritance_pattern = '/copy\((.*)[\s]+(.*)\)/';
 				foreach($styles as $property => $value){
-					// Properties that have multiple values as an array are possible too.. this may be slow, but it's simple
+					// Properties that have multiple values as an array are possible too...
 					if(!is_array($value)){
 						$value = array($value);
 					}
@@ -208,6 +208,16 @@ class Cssp extends Parser2 {
 							preg_match_all($inheritance_pattern, $val, $matches);
 							if(isset($this->parsed[$block][$matches[1][0]][$matches[2][0]])){
 								$this->parsed[$block][$selector][$property] = $this->parsed[$block][$matches[1][0]][$matches[2][0]];
+							}
+							else{ // Search for partial matches
+								foreach($this->parsed[$block] as $full_selectors => $v){
+									$tokenized_selectors = $this->tokenize($full_selectors, ',');
+									if(in_array($matches[1][0], $tokenized_selectors)){
+										if(isset($this->parsed[$block][$full_selectors][$matches[2][0]])){
+											$this->parsed[$block][$selector][$matches[2][0]] = $this->parsed[$block][$full_selectors][$matches[2][0]];
+										}
+									}
+								}
 							}
 						}
 					}
