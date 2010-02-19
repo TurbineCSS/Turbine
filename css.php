@@ -70,16 +70,8 @@ $browser = new Browser();
 $cssp->global_constants['CSSPPATH'] = dirname($_SERVER['SCRIPT_NAME']);
 
 
-// Load plugins
-$plugindir = 'plugins';
-if($handle = opendir($plugindir)){
-	while(false !== ($pluginfile = readdir($handle))){
-		if($pluginfile != '.' && $pluginfile != '..' && is_file($plugindir.'/'.$pluginfile) && pathinfo($plugindir.'/'.$pluginfile,PATHINFO_EXTENSION) == 'php' && !function_exists(substr($pluginfile, 0, -4))){
-			include($plugindir.'/'.$pluginfile);
-		}
-	}
-	closedir($handle);
-}
+// Plugin state
+$plugins_loaded = false;
 
 
 // Precess files
@@ -163,6 +155,21 @@ if($_GET['files']){
 
 				// Server-side cache: Cached version of the file does not yet exist
 				if(!$incache){
+
+
+					// Load plugins (if not already loaded)
+					if(!$plugins_loaded){
+						$plugindir = 'plugins';
+						if($handle = opendir($plugindir)){
+							while(false !== ($pluginfile = readdir($handle))){
+								if($pluginfile != '.' && $pluginfile != '..' && is_file($plugindir.'/'.$pluginfile) && pathinfo($plugindir.'/'.$pluginfile,PATHINFO_EXTENSION) == 'php' && !function_exists(substr($pluginfile, 0, -4))){
+									include($plugindir.'/'.$pluginfile);
+								}
+							}
+							closedir($handle);
+						}
+						$plugins_loaded = true;
+					}
 
 
 					// Load the file into cssp
