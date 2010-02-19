@@ -81,14 +81,19 @@ if($_GET['files']){
 	// Split multiple semicolon-separated files into an array
 	$files = explode(';', $_GET['files']);
 
-	
+	// Complete the paths
+	$num_files = count($files);
+	for($i=0; $i<$num_files; $i++){
+		$files[$i] = $cssp->config['css_base_dir'].$files[$i];
+	}
+
+
 	// Client-side cache: Preparing caching-mechanism using eTags by creating fingerprint of CSS-files
 	$fingerprint = '';
 	foreach($files as $file){
 		$fingerprint .= $file.filemtime($file);
 	}
 	$etag = md5($fingerprint);
-
 
 	// Client-side cache: now check if client sends eTag, and compare it with our eTag-fingerprint
 	if($cssp->config['debug_level'] == 0 && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag){
