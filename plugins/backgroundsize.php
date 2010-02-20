@@ -17,6 +17,7 @@
 	 * @return void
 	 */
 	function backgroundsize(&$parsed){
+		global $browser;
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				// Everywhere
@@ -33,12 +34,12 @@
 					$parsed[$block][$selector]['-webkit-background-size'] = $value;
 					$parsed[$block][$selector]['-o-background-size'] = $value;
 					// Fix for IEs for certain commands found via comment in http://requiem4adream.wordpress.com/2006/09/29/css-stretch-background-image/
-					$regex = '/url\([\'"]*([^\'"\)]+)[\'"]*\)/i';
-					if(isset($parsed[$block][$selector]['background'])) preg_match($regex,$parsed[$block][$selector]['background'],$matches);
-					elseif(isset($parsed[$block][$selector]['background-image'])) preg_match($regex,$parsed[$block][$selector]['background-image'],$matches);
-					$backgroundimage = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/'.$matches[1];
-					if(trim($value) == '100% 100%')
+					if($browser->family == 'MSIE' && floatval($browser->familyversion) <= 8 && trim($value) == '100% 100%')
 					{
+						$regex = '/url\([\'"]*([^\'"\)]+)[\'"]*\)/i';
+						if(isset($parsed[$block][$selector]['background'])) preg_match($regex,$parsed[$block][$selector]['background'],$matches);
+						elseif(isset($parsed[$block][$selector]['background-image'])) preg_match($regex,$parsed[$block][$selector]['background-image'],$matches);
+						$backgroundimage = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/'.$matches[1];
 						$filter = 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\''.$backgroundimage.'\', sizingMethod=\'scale\')';
 						//IE8-compliance (note: value inside apostrophes!)
 						if(!isset($parsed[$block][$selector]['-ms-filter'])) 
