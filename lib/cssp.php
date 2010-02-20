@@ -45,12 +45,13 @@ class Cssp extends Parser2 {
 
 	/**
 	 * compile
-	 * This is where the magic happens :)
+	 * This is where the magic happens
 	 * @return void
 	 */
 	public function compile(){
 		$this->apply_aliases();
 		$this->apply_inheritance();
+		$this->apply_copying();
 		$this->apply_constants();
 		$this->cleanup();
 	}
@@ -171,7 +172,7 @@ class Cssp extends Parser2 {
 
 	/**
 	 * apply_inheritance
-	 * Applies inheritance and property copying to the stylesheet
+	 * Applies inheritance to the stylesheet
 	 * @return void
 	 */
 	public function apply_inheritance(){
@@ -196,7 +197,19 @@ class Cssp extends Parser2 {
 					}
 					unset($this->parsed[$block][$selector]['extends']);
 				}
-				// Selective copying via "copy(selector property)"
+			}
+		}
+	}
+
+
+	/**
+	 * apply_copying
+	 * Applies property copying to the stylesheet
+	 * @return void
+	 */
+	public function apply_copying(){
+		foreach($this->parsed as $block => $css){
+			foreach($this->parsed[$block] as $selector => $styles){
 				$inheritance_pattern = '/copy\((.*)[\s]+(.*)\)/';
 				foreach($styles as $property => $value){
 					// Properties that have multiple values as an array are possible too...
