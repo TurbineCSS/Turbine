@@ -32,7 +32,7 @@ class Base {
  */
 public $config = array(
 	'debug_level' => 1,
-	'css_base_dir' => '', // TODO: Do something with this
+	'css_base_dir' => '',
 	'minify_css' => true
 );
 
