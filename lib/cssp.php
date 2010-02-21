@@ -179,7 +179,8 @@ class Cssp extends Parser2 {
 		foreach($this->parsed as $block => $css){
 			foreach($this->parsed[$block] as $selector => $styles){
 				// Full inheritance
-				if(isset($this->parsed[$block][$selector]['extends'])){
+				if(isset($this->parsed[$block][$selector]['extends']) && !empty($this->parsed[$block][$selector]['extends'])){
+					$found = false;
 					// Parse ancestors
 					$ancestors =  $this->tokenize($this->parsed[$block][$selector]['extends'], array('"', "'", ','));
 					foreach($ancestors as $ancestor){
@@ -193,9 +194,17 @@ class Cssp extends Parser2 {
 								array(),
 								false
 							);
+							$found = true;
 						}
 					}
-					unset($this->parsed[$block][$selector]['extends']);
+					// Report error if no ancestor was found
+					if(!$found){
+						$this->report_error($selector.' could not find '.$this->parsed[$block][$selector]['extends'].' to inherit properties from.');
+					}
+					else{
+						// Unset the extends property
+						unset($this->parsed[$block][$selector]['extends']);
+					}
 				}
 			}
 		}
@@ -218,9 +227,11 @@ class Cssp extends Parser2 {
 					}
 					foreach($value as $val){
 						if(preg_match($inheritance_pattern, $val)){
+							$found = false;
 							preg_match_all($inheritance_pattern, $val, $matches);
 							if(isset($this->parsed[$block][$matches[1][0]][$matches[2][0]])){
 								$this->parsed[$block][$selector][$property] = $this->parsed[$block][$matches[1][0]][$matches[2][0]];
+								$found = true;
 							}
 							else{ // Search for partial matches
 								foreach($this->parsed[$block] as $full_selectors => $v){
@@ -228,9 +239,14 @@ class Cssp extends Parser2 {
 									if(in_array($matches[1][0], $tokenized_selectors)){
 										if(isset($this->parsed[$block][$full_selectors][$matches[2][0]])){
 											$this->parsed[$block][$selector][$matches[2][0]] = $this->parsed[$block][$full_selectors][$matches[2][0]];
+											$found = true;
 										}
 									}
 								}
+							}
+							// Report error if no source was found
+							if(!$found){
+								$this->report_error($selector.' could not find '.$matches[1][0].' to copy '.$matches[2][0].' from.');
 							}
 						}
 					}
