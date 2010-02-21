@@ -255,7 +255,7 @@ if($_GET['files']){
 		$error_message = implode('\\00000A', $cssp->errors);
 		$css = $css.'body:before { content:"'.$error_message.'" !important; font-family:Verdana, Arial, sans-serif !important;
 			font-weight:bold !important; color:#000 !important; background:#F4EA9F !important; display:block !important;
-			border-bottom:1px solid #D5CA6E; padding:8px !important; }';
+			border-bottom:1px solid #D5CA6E; padding:8px !important; white-space:pre; }';
 	}
 
 
