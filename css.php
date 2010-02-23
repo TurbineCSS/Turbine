@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * CSSP - CSS Preprocessor - http://github.com/SirPepe/CSSP
  * Constants and inheritance for CSS
