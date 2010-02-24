@@ -1,8 +1,8 @@
 <?php
 
 /**
- * CSSP - CSS Preprocessor - http://github.com/SirPepe/CSSP
- * Constants and inheritance for CSS
+ * Turbine
+ * http://github.com/SirPepe/Turbine
  * 
  * Copyright (C) 2009 Peter Kröner, Christian Schaefer
  * 

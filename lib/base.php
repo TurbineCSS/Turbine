@@ -1,8 +1,8 @@
 <?php
 
 /**
- * CSSP - CSS Preprocessor - http://github.com/SirPepe/CSSP
- * Constants and inheritance for CSS
+ * Turbine
+ * http://github.com/SirPepe/Turbine
  * 
  * Copyright (C) 2009 Peter Kröner, Christian Schaefer
  * 
@@ -22,7 +22,7 @@
 
 /**
  * Base
- * CSSP Base Clasc
+ * Turbine base class
  */
 class Base {
 
@@ -62,7 +62,7 @@ public $plugins = array(
  * @var array $global_constants
  */
 public $global_constants = array(
-	'CSSPPATH' => '',
+	'SCRIPTPATH' => '',
 	'FILEPATH' => ''
 );
 

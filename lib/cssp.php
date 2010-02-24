@@ -1,9 +1,8 @@
 <?php
 
-
 /**
- * CSSP - CSS Preprocessor
- * A new way to write CSS
+ * Turbine
+ * http://github.com/SirPepe/Turbine
  * 
  * Copyright (C) 2009 Peter Kröner, Christian Schaefer
  * 
@@ -23,7 +22,7 @@
 
 
 /**
- * CSSP
+ * Turbine
  * CSS Preprocessor
  */
 class Cssp extends Parser2 {
@@ -31,7 +30,7 @@ class Cssp extends Parser2 {
 
 	/**
 	 * Constructor
-	 * @param string $query String of Files to load, sepperated by ;
+	 * @param string $query String of Files to load, separated by ;
 	 * @return void
 	 */
 	public function __construct($query = NULL){

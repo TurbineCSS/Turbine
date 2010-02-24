@@ -1,12 +1,12 @@
 // STYLE.CSSP
-// This an example cssp file for use as a starting point in your next project!
-// How to include this file in HTML: <link rel="stylesheet" href="path/to/cssp/css.php?files=path/to/stylesheets/style.cssp">
+// This an example Turbine file for use as a starting point in your next project!
+// How to include this file in HTML: <link rel="stylesheet" href="path/to/turbine/css.php?files=path/to/stylesheets/style.cssp">
 
 
-// CSSP options
+// Turbine options
 @cssp
 	compress:0                                   // Set to "1" to enable minified output
-	plugins:boxshadow, borderradius, backgroundsize, html5elements              // Add more plugins here
+	plugins:boxshadow, borderradius              // Add more plugins here
 
 @constants                                       // Why would you have to remember (and type) font stacks? Use constants!
 	font_sans:Verdana, Arial, sans-serif
@@ -16,23 +16,14 @@
 
 @media screen                                    // Begins "@media screen" section
 
-body
-	font-family:$font_sans
 
-.blubb
-	width: 600px
-	height: 600px
-	padding: 50px
-	background: url("tools/startkit/background.gif")
-	background-size: 100% 100%
-
-section
+#foo
 	display: block
 	padding: 50px
 	background-color: #CCC
+	p.bar
+		color: #F00
 
-section p
-	color: #F00
 
 @media print                                     // Begins "@media print" section
 

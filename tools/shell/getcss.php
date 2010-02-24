@@ -1,5 +1,25 @@
 <?php
 
+/**
+ * Turbine
+ * http://github.com/SirPepe/Turbine
+ * 
+ * Copyright (C) 2009 Peter Kröner, Christian Schaefer
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Library General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 // Load libraries
 include('../../lib/base.php');
 include('../../lib/browser.php');
@@ -8,7 +28,7 @@ include('../../lib/cssp.php');
 include('../../lib/cssmin.php');
 
 
-// New CSSP instance
+// New Turbine instance
 $cssp = new CSSP();
 
 
@@ -16,8 +36,8 @@ $cssp = new CSSP();
 $browser = new Browser();
 
 
-// Set global path constant CSSPPATH
-$cssp->global_constants['CSSPPATH'] = dirname($_SERVER['SCRIPT_NAME']);
+// Set global path constant SCRIPTPATH
+$cssp->global_constants['SCRIPTPATH'] = dirname($_SERVER['SCRIPT_NAME']);
 
 
 // Load plugins
@@ -69,9 +89,9 @@ if($_POST['css']){
 
 	// Apply plugins
 	$cssp->apply_plugins('before_parse', $plugin_list, $cssp->css);      // Apply plugins for before parse
-	$cssp->parse();                                                       // Parse the code
+	$cssp->parse();                                                      // Parse the code
 	$cssp->apply_plugins('before_compile', $plugin_list, $cssp->parsed); // Apply plugins for before compile
-	$cssp->compile();                                                     // Do the cssp magic
+	$cssp->compile();                                                    // Do the Turbine magic
 	$cssp->apply_plugins('before_glue', $plugin_list, $cssp->parsed);    // Apply plugins for before glue
 
 

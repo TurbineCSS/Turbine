@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>CSS to CSSP Converter</title>
+	<title>CSS to Turbine converter</title>
 	<style type="text/css">
 		html, body, table { margin:0; padding:0; height:100%; }
 		textarea { display:block; }
@@ -26,7 +26,7 @@
 		</td>
 		<td align="center"><input type="submit" value="&nbsp;&rarr;&nbsp;"></input></td>
 		<td valign="top">
-			<h2>CSSP</h2>
+			<h2>Turbine</h2>
 <textarea cols="120" rows="50" name="cssp">
 <?php if(isset($_POST['css'])){ CsspConverter::factory()->load_string(stripslashes($_POST['css']))->parse()->convert(); } ?>
 </textarea>

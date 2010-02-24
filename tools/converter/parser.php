@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CSS Parser
  * A tool for parsing and manipulating stylesheets.

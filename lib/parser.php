@@ -1,11 +1,10 @@
 <?php
 
-
 /**
- * CSSP - CSS Preprocessor
- * A new way to write CSS
+ * Turbine
+ * http://github.com/SirPepe/Turbine
  * 
- * Copyright (C) 2009 Peter Kröner
+ * Copyright (C) 2009 Peter Kröner, Christian Schaefer
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,7 +23,7 @@
 
 /**
  * Parser2
- * CSSP syntax parser
+ * Turbine syntax parser
  */
 class Parser2 extends Base{
 
