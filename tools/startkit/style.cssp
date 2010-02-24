@@ -6,7 +6,7 @@
 // CSSP options
 @cssp
 	compress:0                                   // Set to "1" to enable minified output
-	plugins:boxshadow, borderradius              // Add more plugins here
+	plugins:boxshadow, borderradius, backgroundsize, html5elements              // Add more plugins here
 
 @constants                                       // Why would you have to remember (and type) font stacks? Use constants!
 	font_sans:Verdana, Arial, sans-serif
@@ -18,10 +18,21 @@
 
 body
 	font-family:$font_sans
-	div
-		border-radius:4px
 
+.blubb
+	width: 600px
+	height: 600px
+	padding: 50px
+	background: url("tools/startkit/background.gif")
+	background-size: 100% 100%
 
+section
+	display: block
+	padding: 50px
+	background-color: #CCC
+
+section p
+	color: #F00
 
 @media print                                     // Begins "@media print" section
 
