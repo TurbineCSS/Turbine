@@ -79,8 +79,8 @@
 
 <h1 id="toc-1">Introduction</h1><div id="introduction">
 <p>
-	CSSP (CSS Preprocessor) is a PHP-powered tool that introduces a new way for writing CSS. It's syntax and features are designed to
-	decrease css devolopment time and web developer headache. CSSP takes something like this&nbsp;&hellip;
+	Turbine is a PHP-powered tool that introduces a new way for writing CSS. It's syntax and features are designed to
+	decrease css devolopment time and web developer headache. Turbine takes something like this&nbsp;&hellip;
 </p>
 <pre class="cssp">// This is a comment!
 #foo
@@ -101,13 +101,13 @@
 }
 </pre>
 <p>
-	CSSP can save you a lot of typing and time <em>and</em> allow you to concentrate on a website's design and functionality instead of
-	css's limitations and your least favourite browser's latest bugs. Think jQuery for CSS. Being fully extensible, you can customize CSSP
+	Turbine can save you a lot of typing and time <em>and</em> allow you to concentrate on a website's design and functionality instead of
+	css's limitations and your least favourite browser's latest bugs. Think jQuery for CSS. Being fully extensible, you can customize Turbine
 	to your liking.
 </p>
 <h2 id="toc-1-1">Goals and Features</h2><div>
 <p>
-	CSSP basic features include:
+	Turbine's basic features include:
 </p>
 <ul>
 	<li>Minmal syntax&nbsp;&ndash; the less you have have to type, the more you get done</li>
@@ -119,7 +119,7 @@
 	<li>Fully exensible through a very simple plugin system</li>
 </ul>
 <p>
-	While CSSP's basic features may save you some keystrokes, it's plugins automate and simplify some of the more tedious and complicated
+	While Turbine's basic features may save you some keystrokes, it's plugins automate and simplify some of the more tedious and complicated
 	aspects of writing css. See the plugins section for details.
 </p>
 </div>
@@ -137,14 +137,15 @@
 <p>
 	TODO
 </p>
-<h3>Adding CSSP files to HTML documents</h3>
+<h3>Adding Turbine files to HTML documents</h3>
 <p>
-	To use CSSP, embed <code>css.php</code> in your HTML like a normal css file and add the <code>files</code> argument containing
-	a list of cssp files sepperated by semicolons.
+	Turbine files are simple text files with the extension <code>.cssp</code>.
+	To use Turbine, embed <code>css.php</code> in your HTML like a normal css file and add the <code>files</code> argument containing
+	a list of Turbine files sepperated by semicolons.
 </p>
 <pre>&lt;link
 	rel="stylesheet"
-	href="path/to/cssp/css.php?files=file1.cssp;file2.cssp"
+	href="path/to/turbine/css.php?files=file1.cssp;file2.cssp"
 /&gt;</pre>
 <p>
 	You can also include regular css files.
@@ -152,14 +153,14 @@
 
 <h2 id="toc-2-2">Syntax</h2><div>
 <p>
-	CSSP's syntax is a bit like <a href="#">Python</a>&nbsp;&ndash; the level of indention instead of curly braces decides what is
+	Turbine's syntax is a bit like <a href="#">Python</a>&nbsp;&ndash; the level of indention instead of curly braces decides what is
 	what. A simple rule looks like this:
 </p>
 <pre class="cssp">#foo div > p               // Selector
 	color:red              // Property and value
 	font-weight:bold       // Property and value</pre>
 <p>
-	The way CSSP determines if a given line is a selector or a property-value-pair is the indention level of the <em>following</em>
+	The way Turbine determines if a given line is a selector or a property-value-pair is the indention level of the <em>following</em>
 	line:
 </p>
 <pre class="cssp">#foo div > p               // Next line is indented = this is a selector
@@ -217,13 +218,13 @@
 
 <h2 id="toc-2-3">Configuration</h2><div>
 <p>
-	The configuration options of CSSP can be set in the stylesheets themselves&nbsp;&ndash a <code>@cssp</code> block (called
+	The configuration options of Turbine can be set in the stylesheets themselves&nbsp;&ndash a <code>@cssp</code> block (called
 	<strong>configuration block</strong>) allows for options to be set like properties and values in normal CSS code. There are
 	at the moment two things that can be controlled there: compression and plugins.
 </p>
 <h3>Compression</h3>
 <p>
-	CSSP can output CSS code in a compressed form.
+	Turbine can output CSS code in a minified form.
 </p>
 <pre class="cssp">@cssp
 	compress:1
@@ -249,7 +250,7 @@
 
 <h2 id="toc-2-4">Nested selectors</h2><div>
 <p>
-	CSSP implements nested css selectors using a simple principle: whenever the <em>next</em> line is indented, to current line
+	Turbine implements nested css selectors using a simple principle: whenever the <em>next</em> line is indented, to current line
 	is used as a selector and combined with it's parent selectors.
 </p>
 <pre class="cssp">#foo div > p
@@ -320,11 +321,11 @@
 </p>
 <h3>Special constants</h3>
 <p>
-	The constants defined in in an <code>@cssp</code> block only apply to the current cssp file. There are two special:
+	The constants defined in in an <code>@cssp</code> block only apply to the current .cssp file. There are two special:
 </p>
 <ol>
 	<li><code>$_SCRIPTATH</code>: The path to <code>css.php</code></li>
-	<li><code>$_FILEPATH</code>: The path to the current cssp file</li>
+	<li><code>$_FILEPATH</code>: The path to the current .cssp file</li>
 </ol>
 <h3>Aliases</h3>
 <p>
@@ -575,8 +576,8 @@ $mainNavigation
 	Loads another cssp file.
 </p>
 <p>
-	Loader loads the contents of another cssp file at the exact location where <code>@load</code> ist placed. It inserts the actual
-	cssp code before parsing anything.
+	Loader loads the contents of another .cssp file at the exact location where <code>@load</code> ist placed. It inserts the
+	code of the loaded file before parsing anything.
 </p>
 <h3>Usage</h3>
 <p>
@@ -687,7 +688,7 @@ $mainNavigation
 
 <h2 id="toc-4-1">Contribute</h2><div>
 <p>
-	CSSP is free open source software (LGPL) and development takes place on <a href="http://github.com/">GitHub</a>,
+	Turbine is free open source software (LGPL) and development takes place on <a href="http://github.com/">GitHub</a>,
 	a hosting platform for the excellent distributed version control system <a href="http://git-scm.com/">Git</a>. 
 	Github membership is free and makes helping your favourite open source project really easy. See the following
 	video for details.
@@ -700,7 +701,7 @@ $mainNavigation
 	<a href="http://developer.yahoo.com/yui/theater/video.php?v=prestonwerner-github">Tom Preston-Werner, Chris Wanstrath and Scott Chacon — Git, GitHub and Social Coding</a>
 </p>
 <p>
-	Everybody is welcome to <a href="http://github.com/SirPepe/CSSP">fork CSSP</a> and start contributing!
+	Everybody is welcome to <a href="http://github.com/SirPepe/Turbine">fork Turbine</a> and start contributing!
 </p>
 </div>
 
@@ -708,7 +709,7 @@ $mainNavigation
 
 <h2 id="toc-4-2">Plugin development</h2><div>
 <p>
-	Plugin development for CSSP is rather simple. All you need is a file called <code>plugin_name.php</code> containing
+	Plugin development for Turbine is rather simple. All you need is a file called <code>plugin_name.php</code> containing
 	a function <code>plugin_name()</code>, located in the plugins directory. The function must accept only one argument, which
 	is passed as a reference. The contents of this argument depends on the hook the plugin is assigned to:
 </p>
@@ -723,29 +724,29 @@ $mainNavigation
 	<tbody>
 		<tr>
 			<td><code>before_parse</code></td>
-			<td>Before the original cssp files are parsed</td>
-			<td>An array containing the lines of the original cssp files</td>
+			<td>Before the original .cssp files are parsed</td>
+			<td>An array containing the lines of the original .cssp files</td>
 		</tr>
 		<tr>
 			<td><code>before_compile</code></td>
-			<td>After compilation, before applying cssp core features (inheritance and the like)</td>
-			<td>An array containing the parsed cssp code</td>
+			<td>After compilation, before applying Turbine core features (inheritance and the like)</td>
+			<td>An array containing the parsed Turbine code</td>
 		</tr>
 		<tr>
 			<td><code>before_glue</code></td>
 			<td>After compilation and cssp magic, just before the output ist generated</td>
-			<td>An array containing the parsed cssp code</td>
+			<td>An array containing the parsed Turbine code</td>
 		</tr>
 		<tr>
 			<td><code>before_output</code></td>
-			<td>After generating the output of one cssp file, before combining the output with other files</td>
-			<td>A string containing the final css output from the current cssp file</td>
+			<td>After generating the output of one .cssp file, before combining the output with other files</td>
+			<td>A string containing the final css output from the current .cssp file</td>
 		</tr>
 	</tbody>
 </table>
 <h3>Hooks</h3>
 <p>
-	Too hook into cssp you need to call the <code>register_plugin()</code> function using three arguments: the hook, an
+	Too hook into Turbine you need to call the <code>register_plugin()</code> function using three arguments: the hook, an
 	execution priority and your plugin function's name:
 </p>
 <pre class="php">
@@ -803,7 +804,7 @@ register_plugin('before_compile', 0, 'mypluginfunction');
         // No need to return anything
     }
 
-    // Hook into cssp
+    // Hook into Turbine
     $cssp->register_plugin('before_compile', 0, 'remove_background_image');
 ?&gt;</pre>
 <p>
@@ -823,7 +824,7 @@ register_plugin('before_compile', 0, 'mypluginfunction');
 <h1 id="toc-5">Tools</h1><div id="tools">
 
 
-<h2 id="toc-5-1">CSS to CSSP converter</h2><div>
+<h2 id="toc-5-1">CSS to Turbine converter</h2><div>
 <p>
 	TODO
 </p>
@@ -831,7 +832,7 @@ register_plugin('before_compile', 0, 'mypluginfunction');
 
 
 
-<h2 id="toc-5-2">CSSP shell</h2><div>
+<h2 id="toc-5-2">Turbine shell</h2><div>
 <p>
 	TODO
 </p>
@@ -849,7 +850,7 @@ register_plugin('before_compile', 0, 'mypluginfunction');
 <h2 id="toc-6-1">Any general advice?</h2><div>
 <ul>
 	<li>
-		<strong>Don't ever mess up your indention!</strong> Seriously. CSSP is (at the moment) not very good at catching incorrectly
+		<strong>Don't ever mess up your indention!</strong> Seriously. Turbine is (at the moment) not very good at catching incorrectly
 		indented lines and they <em>will</em> destroy your css in places you'll never expect. So just pay attention to your whitespace
 		or wait for the parser to become/help us to make the parser more tolerant towards indention errors.
 	</li>
@@ -865,12 +866,12 @@ register_plugin('before_compile', 0, 'mypluginfunction');
 <h2 id="toc-6-2">What are the tradeoffs?</h2><div>
 <ul>
 	<li>
-		CSSP uses the input css files to generate <em>completely</em> new CSS code that won't necessarily look very much like it's source.
-		That means that css debugging tools like Firebug may not be very useful anymore, depending on how many of CSSP's
+		Turbine uses the input css files to generate <em>completely</em> new CSS code that won't necessarily look very much like it's source.
+		That means that css debugging tools like Firebug may not be very useful anymore, depending on how many of Turbine's
 		features and plugins you actually use.
 	</li>
 	<li>
-		The CSS selectors generated by CSSP are usually not as efficent as human-written CSS would be.
+		The CSS selectors generated by Turbine are usually not as efficent as human-written CSS would be.
 	</li>
 </ul>
 </div>
