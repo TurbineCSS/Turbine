@@ -3,12 +3,17 @@
 <head>
 	<meta charset="utf-8">
 	<title>CSS to Turbine converter</title>
-	<style type="text/css">
-		html, body, table { margin:0; padding:0; height:100%; }
-		textarea { display:block; }
-	</style>
+	<!--<link rel="stylesheet" href="../../css.php?files=docs/docs.cssp">-->
+	<link rel="stylesheet" href="../../docs/docs.css">
 </head>
-<body>
+<body class="converter">
+
+<div id="header">
+	<h1><span>CSS to Turbine converter</span></h1>
+</div>
+
+
+<div id="wrapper" class="converterwrapper">
 
 <?php
 	require('parser.php');
@@ -16,24 +21,20 @@
 ?>
 
 <form action="index.php" method="post">
-<table>
-	<tr>
-		<td valign="top">
-			<h2>CSS</h2>
-<textarea cols="120" rows="50" name="css"><?php if(isset($_POST['css'])){
-	echo stripslashes($_POST['css']);
-}?></textarea>
-		</td>
-		<td align="center"><input type="submit" value="&nbsp;&rarr;&nbsp;"></input></td>
-		<td valign="top">
-			<h2>Turbine</h2>
-<textarea cols="120" rows="50" name="cssp">
-<?php if(isset($_POST['css'])){ CsspConverter::factory()->load_string(stripslashes($_POST['css']))->parse()->convert(); } ?>
-</textarea>
-		</td>
-	</tr>
-</table>
+<div class="cell" id="converterIn">
+	<h2>CSS</h2>
+	<textarea cols="120" rows="20" name="css"><?php if(isset($_POST['css'])){echo stripslashes($_POST['css']);}?></textarea>
+</div>
+<div class="cell" id="converterout">
+	<h2>Turbine</h2>
+	<textarea cols="120" rows="20" name="cssp"><?php if(isset($_POST['css'])){ CsspConverter::factory()->load_string(stripslashes($_POST['css']))->parse()->convert(); } ?></textarea>
+</div>
+<p>
+<input type="submit" value="Convert!" id="convert" />
+</p>
 </form>
+
+</div>
 
 </body>
 </html>

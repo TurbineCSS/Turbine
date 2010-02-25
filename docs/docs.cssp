@@ -1,19 +1,24 @@
 @cssp
 	compress:1
-	plugins:resetstyle, boxshadow, borderradius
+	plugins:resetstyle, borderradius
 
 
 @constants
-	bg:#F5F7FA
-	txt:#111
+	bg:#3d362d
+	codebg:#2e2923
+	txt:#FFF
+	darktxt:#666
 	white:#FFF
-	dark:#4C5761
-	link:#23507A
-	hoverlink:#1C74C7
-	shadow:#A3B1BF
-	border:#BEC4CF
-	lightborder:#DADEE3
-	lighterborder:#E8EAED
+	dark:#c0cc49
+	link:#81ba1c
+	border:#4d463d
+	selector:#ebd375
+	comment:$dark
+	tab:#666
+	char:#666
+	at:$selector
+	str:#94c2d1
+	important:#CC5042
 
 
 @media screen, projection
@@ -22,16 +27,17 @@
 // Basics
 body
 	font-family:Verdana, Arial, sans-serif
-	font-size:80%
-	line-height:1.6
+	font-size:85%
+	line-height:1.65
 	color:$txt
 	background:$bg
+	text-shadow:1px 1px 1px #000
 a:link, a:visited
 	color:$link
-	text-decoration:underline
+	border-bottom:1px solid $link
 a:hover, a:active
-	color:$hoverlink
-	text-decoration:none
+	color:$link
+	border-bottom:none
 strong, b
 	font-weight:bold
 em, i
@@ -42,42 +48,26 @@ em, i
 	float:right
 
 
-// Header
-#header
-	background:$dark
-	border-bottom:2px solid $white
-	box-shadow:0 3px 8px $shadow
-	position:fixed
-	top:0
-	left:0
-	right:0
-	z-index:1337
-	h1
-		color:$white;
-		font-weight:bold;
-		padding:1em;
-
-
 // Main content
 #wrapper
 	width:45em
 	margin:0 auto
-	padding:2em 25em 0 0
+	padding:0 25em 0 0
 	h1
-		border-bottom:1px solid $lightborder
+		font-family:"Trebuchet MS", Verdana, Arial, sans-serif
+		border-bottom:1px solid $border
 		color:$dark
 		font-size:2em
-		margin:-1em 0 0 0
-		padding:2.5em 0 0.5em 0
+		margin:0
+		padding:1em 0 0.5em 0
 	h2
-		font-size:1.4em
-		font-weight:bold
+		font-size:1.45em
 		margin:-2em 0 -0.5em 0
 		padding:3.5em 0 0.5em 0
 		span
-			color:$shadow;
+			color:$darktxt
 	h3
-		color:#CC5042
+		color:$important
 		font-size:1.3em
 		margin:1.55em 0 0 0
 	h4
@@ -99,9 +89,8 @@ em, i
 		font-style:italic
 	table
 		margin:1em 0
-		box-shadow:3px 3px 8px $shadow
 		td
-			background:$white
+			background:$codebg
 			text-align:left
 			border:1px solid $border
 			padding:0.5em
@@ -117,38 +106,32 @@ em, i
 	code
 		font-family:monospace
 		font-size:125%
-		border:1px solid $lighterborder
-		background:$white
-		padding:1px
 	pre
-		font-family:Consolas, Courier, monospace;
+		font-family:Consolas, Courier, monospace
 		font-size:100%
-		background:$white
-		color:#000;
+		background:$codebg
 		border:1px solid $border
-		box-shadow:3px 3px 8px $shadow
 		line-height:1.5em
 		margin:1em 0
 		padding:1em
 		.se
-			color:#247; font-weight:bold; font-style:normal
+			color:$selector; font-weight:bold; font-style:normal
 		.co
-			color:#070; font-weight:normal; font-style:italic
+			color:$comment; font-weight:normal; font-style:italic
 		.at
-			color:#247; font-weight:bold; font-style:normal
+			color:$at; font-weight:bold; font-style:normal
 		.st
-			color:#00F; font-weight:normal; font-style:normal
+			color:$string; font-weight:normal; font-style:normal
 		.ch
-			color:#479; font-weight:normal; font-style:normal
+			color:$char; font-weight:normal; font-style:normal
 		.im
-			color:#D00; font-weight:normal; font-style:normal
+			color:$import; font-weight:normal; font-style:normal
 		.tab
-			color:#999; font-weight:normal; font-style:normal
+			color:$tab; font-weight:normal; font-style:normal
 	.embed
 		width:576px
 		height:324px
 		border:1px solid $border
-		box-shadow:3px 3px 8px $shadow
 		margin:1em 0
 
 
@@ -158,7 +141,22 @@ em, i
 	width:17.5em
 	margin:6.5em 0 0 50em
 	padding:0 0 0 2.5em
-	border-left:1px solid $lightborder
+	border-left:1px solid $border
+	h1
+		position:absolute
+		top:-72px
+		left:8px
+		height:60px
+		width:214px
+		background:url(docs/logo.png) top left no-repeat
+		border:none
+		margin:0
+		padding:0
+		span
+			display:block
+			height:0
+			width:0
+			overflow:hidden
 	ul, li
 		line-height:1.7
 		margin:0
@@ -182,28 +180,73 @@ em, i
 // Shell
 .shell
 	height:100%
+	#header h1
+		extends:#toc h1
+		position:static
+		float:right
+		margin:8px 2% -32px 2%
+		span
+			extends:#toc h1 span
 .shellwrapper
-	width:auto !important
-	padding-right:1em !important
-	padding-left:1em !important
+	width:99% !important
 	height:100%
+	padding:0 !important
+	clear:both
 	p
 		clear:both
 		text-align:right
-		padding:2% 1% !important
+		padding:0 1% !important
 	#go
 		extends:#wrapper table
 		font-weight:bold
 		background:$dark
 		color:$white
-		border:2px solid $white
+		border:1px solid $border
 		padding:0.5em 1em
 		cursor:pointer
 .shellcell
-	margin-top:1em
-	width:49%
-	height:43%
+	position:relative
+	width:48%
+	height:40%
+	padding:1%
+	h2
+		margin:0 !important
+		padding:0 !important
 	textarea, iframe
-		extends:#wrapper pre
-		width:95%
-		height:75%
+		border:copy(#wrapper pre border)
+		display:block
+		height:90%
+		width:100%
+	textarea
+		background:$codebg
+		font-family:copy(#wrapper pre font-family)
+		font-size:copy(#wrapper pre font-size)
+		line-height:copy(#wrapper pre line-height)
+
+
+// Converter
+.converter
+	#header h1
+		extends:.shell #header h1
+		margin:8px 2%
+		span
+			extends:.shell #header h1 span
+.converterwrapper
+	extends:.shellwrapper
+	.cell
+		width:48%
+		float:left
+		padding:1%
+		margin-top:-4%
+		textarea
+			width:100%
+			height:10%
+			background:$codebg
+			border:copy(#wrapper pre border)
+			font-family:copy(#wrapper pre font-family)
+			font-size:copy(#wrapper pre font-size)
+			line-height:copy(#wrapper pre line-height)
+	p
+		extends:.shellwrapper p
+	#convert
+		extends:.shellwrapper #go
