@@ -41,12 +41,13 @@
 				<li><a href="#toc-3-3">Bullet proof @font-face</a></li>
 				<li><a href="#toc-3-4">Browser detection</a></li>
 				<li><a href="#toc-3-5">Data-URIs</a></li>
-				<li><a href="#toc-3-6">Hexcrusher</a></li>
+				<li><a href="#toc-3-6">Minifier</a></li>
 				<li><a href="#toc-3-7">Loader</a></li>
 				<li><a href="#toc-3-8">OS detection</a></li>
 				<li><a href="#toc-3-9">Quote style</a></li>
 				<li><a href="#toc-3-10">Reset stylesheet</a></li>
 				<li><a href="#toc-3-11">Transparent background</a></li>
+				<li><a href="#toc-3-12">Meta plugins</a></li>
 			</ul>
 		</li>
 		<li>&darr; <a href="#toc-4">Development</a>
@@ -594,7 +595,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-9">Quotes <span>[ Typography, Lazy ]</span></h2><div>
+<h2 id="toc-3-9">Quotes <span>[ Utility ]</span></h2><div>
 <p class="abstract">
 	Inserts language- and country-specific quotation marks.
 </p>
@@ -670,6 +671,58 @@ $mainNavigation
 <p>
 	TODO
 </p>
+</div>
+
+
+
+<h2 id="toc-3-12">Meta plugins</h2><div>
+<p class="abstract">
+	Meta plugins enable a group of other plugins.
+</p>
+<p>
+	Meta plugins enable a group of related plugins. If, for expample, you wanted to use lots of CSS3 properties, you don't have to
+	write <code>plugins:boxshadow, borderradius, transform, transistion</code> and simply use <code>plugins:css3</code>, which will
+	enable all plugins from the previous list. There are four core meta plugins available: CSS3, Performance, Legacy and Utility.
+</p>
+<h3>CSS3</h3>
+<p>
+	Activates all other plugins that enable CSS3 properties:
+</p>
+<ul>
+	<li>AlphaBG</li>
+	<li>Background size</li>
+	<li>Border radius</li>
+	<li>Box shadow</li>
+	<li>Multicolumn layout</li>
+	<li>Transform</li>
+	<li>Transistion</li>
+</ul>
+<h3>Performance</h3>
+<p>
+	Activates all other plugins that improve performance:
+</p>
+<ul>
+	<li>DataURI</li>
+	<li>Minifier</li>
+</ul>
+<h3>Legacy</h3>
+<p>
+	Activates all other plugins that help you to support older browsers:
+</p>
+<ul>
+	<li>IE6 enhancements</li>
+	<li>IE Bugfixes</li>
+	<li>Inline block</li>
+</ul>
+<h3>Utility</h3>
+<p>
+	Activates all other plugins that add helpful utilities:
+</p>
+<ul>
+	<li>Colortools</li>
+	<li>Bullet proof @font-face</li>
+	<li>Quote style</li>
+</ul>
 </div>
 
 

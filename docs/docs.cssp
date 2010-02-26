@@ -1,6 +1,6 @@
-@cssp
+@turbine
 	compress:1
-	plugins:resetstyle, borderradius
+	plugins:resetstyle
 
 
 @constants
@@ -46,6 +46,17 @@ em, i
 	float:left
 .fr
 	float:right
+label
+	padding-left:1em
+input[type=text]
+	font-family:Consolas, Courier, monospace
+	font-size:100%
+	background:$codebg
+	border:1px solid $border
+	padding:0.5em
+	width:10em
+input[type=text].version
+	width:4em
 
 
 // Main content
@@ -86,7 +97,8 @@ em, i
 		list-style:inherit
 		margin-left:2em
 	p.abstract
-		font-style:italic
+		font-weight:bold
+		color:$dark
 	table
 		margin:1em 0
 		td
@@ -207,7 +219,7 @@ em, i
 .shellcell
 	position:relative
 	width:48%
-	height:40%
+	height:35%
 	padding:1%
 	h2
 		margin:0 !important
