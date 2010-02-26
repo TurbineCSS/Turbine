@@ -1,6 +1,6 @@
 @turbine
 	compress:1
-	plugins:resetstyle
+	plugins:resetstyle, minifier
 
 
 @constants
@@ -124,6 +124,7 @@ input[type=text].version
 		background:$codebg
 		border:1px solid $border
 		line-height:1.5em
+		overflow:auto
 		margin:1em 0
 		padding:1em
 		.se

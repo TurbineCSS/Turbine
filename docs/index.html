@@ -79,24 +79,29 @@
 	Turbine is a PHP-powered tool that introduces a new way for writing CSS. It's syntax and features are designed to
 	decrease css devolopment time and web developer headache. Turbine takes something like this&nbsp;&hellip;
 </p>
-<pre class="cssp">// This is a comment!
-#foo
-	color:red
+<pre class="cssp">
+// This is a comment!
+#foo, #bar
+	color:#FF0000
 	div.alpha, div.beta
 		font-weight:bold
 		border-radius:4px</pre>
-&hellip; and turns it into this:
-<pre class="css">#foo {
-    color: red;
+&hellip; and turns it into this&nbsp;&hellip;
+<pre class="css">#foo, #bar {
+    color: #FF0000;
 }
-#foo div.alpha, #foo div.beta {
+#foo div.alpha, #foo div.beta, #bar div.alpha, #bar div.beta {
     font-weight: bold;
     border-radius: 4px;
     -moz-border-radius: 4px;
     -khtml-border-radius: 4px;
     -webkit-border-radius: 4px;
-}
-</pre>
+    behavior: url("/plugins/borderradius/border-radius.htc");
+}</pre>
+<p>
+	&hellip;or, if you like great performance, directly into this (which is automatically cached, gezipped and served with the correct expires headers):
+</p>
+<pre>#foo,#bar{color: #F00}#foo div.alpha,#foo div.beta,#bar div.alpha,#bar div.beta{font-weight:bold;border-radius:4px;-moz-border-radius:4px;-khtml-border-radius:4px;-webkit-border-radius:4px;behavior:url("/plugins/borderradius/border-radius.htc")}</pre>
 <p>
 	Turbine can save you a lot of typing and time <em>and</em> allow you to concentrate on a website's design and functionality instead of
 	css's limitations and your least favourite browser's latest bugs. Think jQuery for CSS. Being fully extensible, you can customize Turbine
@@ -136,7 +141,7 @@
 </p>
 <h3>Adding Turbine files to HTML documents</h3>
 <p>
-	Turbine files are simple text files with the extension <code>.cssp</code>.
+	Turbine files are simple text files with the extension <abbr title="CSS Preprocessor"><code>.cssp</code></abbr>.
 	To use Turbine, embed <code>css.php</code> in your HTML like a normal css file and add the <code>files</code> argument containing
 	a list of Turbine files sepperated by semicolons.
 </p>
@@ -145,7 +150,7 @@
 	href="path/to/turbine/css.php?files=file1.cssp;file2.cssp"
 /&gt;</pre>
 <p>
-	You can also include regular css files.
+	You can also include regular css files, which will be added to the output unchanged.
 </p>
 
 <h2 id="toc-2-2">Syntax</h2><div>
