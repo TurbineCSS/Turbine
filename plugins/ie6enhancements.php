@@ -2,7 +2,7 @@
 
 
 	/**
-	 * A bunch of general browser ie6_enhancements
+	 * A bunch of general IE6 enhancements
 	 * 
 	 * Usage: Nobrainer, just switch it on
 	 * Example: -
@@ -11,7 +11,7 @@
 	 * @param mixed &$parsed
 	 * @return void
 	 */
-	function ie6_enhancements(&$parsed){
+	function ie6enhancements(&$parsed){
 		global $browser;
 		foreach($parsed as $block => $css){
 			// IE 6 enhancements
@@ -38,7 +38,7 @@
 	/**
 	 * Register the plugin
 	 */
-	$cssp->register_plugin('before_compile', 0, 'ie6_enhancements');
+	$cssp->register_plugin('before_compile', 0, 'ie6enhancements');
 
 
 ?>
