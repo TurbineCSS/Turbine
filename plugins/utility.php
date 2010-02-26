@@ -2,7 +2,7 @@
 
 	/**
 	 * Utility
-	 * Meta plugin, activates all other plugins that enable helpful utilities
+	 * Meta plugin, activates all other plugins that add helpful utilities
 	 * 
 	 * Usage: See the individual plugins' descriptions
 	 * Example: -
