@@ -55,6 +55,18 @@ if($handle = opendir($plugindir)){
 // Precess input
 if($_POST['css']){
 
+	// Set browser properties
+	$browser->name = $_POST['browser'];
+	$browser->version = $_POST['browserversion'];
+	$browser->family = $_POST['family'];
+	$browser->familyversion = $_POST['familyversion'];
+	$browser->engine = $_POST['engine'];
+	$browser->engineversion = $_POST['engineversion'];
+	$browser->platform = $_POST['platform'];
+	$browser->platformversion = $_POST['platformversion'];
+	$browser->platformtype = $_POST['platformtype'];
+
+
 	// Load string
 	$cssp->load_string($_POST['css'], true);
 
