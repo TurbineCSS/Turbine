@@ -215,7 +215,7 @@
 
 <h2 id="toc-2-3">Configuration</h2><div>
 <p>
-	The configuration options of Turbine can be set in the stylesheets themselves&nbsp;&ndash a <code>@cssp</code> block (called
+	The configuration options of Turbine can be set in the stylesheets themselves&nbsp;&ndash a <code>@turbine</code> block (called
 	<strong>configuration block</strong>) allows for options to be set like properties and values in normal CSS code. There are
 	at the moment two things that can be controlled there: compression and plugins.
 </p>
@@ -223,7 +223,7 @@
 <p>
 	Turbine can output CSS code in a minified form.
 </p>
-<pre class="cssp">@cssp
+<pre class="cssp">@turbine
 	compress:1
 #foo
 	color:red
@@ -240,7 +240,7 @@
 <p>
 	To active a plugin, simply add it's name to the <code>plugins</code> property (the order doesn't matter):
 </p>
-<pre class="cssp">@cssp
+<pre class="cssp">@turbine
 	plugins:resetstyle, datauri, borderradius</pre>
 </div>
 
@@ -318,7 +318,7 @@
 </p>
 <h3>Special constants</h3>
 <p>
-	The constants defined in in an <code>@cssp</code> block only apply to the current .cssp file. There are two special:
+	The constants defined in in an <code>@turbine</code> block only apply to the current .cssp file. There are two special:
 </p>
 <ol>
 	<li><code>$_SCRIPTATH</code>: The path to <code>css.php</code></li>
@@ -405,7 +405,7 @@ $mainNavigation
 </p>
 <h3>Usage</h3>
 <p>
-	Add <code>borderradius</code> to your <code>@cssp</code> plugins rule and start using <code>border-radius</code> like the
+	Add <code>borderradius</code> to your <code>@turbine</code> plugins rule and start using <code>border-radius</code> like the
 	standard <code>border-radius</code> CSS3 property.
 </p>
 <h3>Examples</h3>
@@ -451,7 +451,7 @@ $mainNavigation
 </p>
 <h3>Usage</h3>
 <p>
-	Add <code>boxshadow</code> to your <code>@cssp</code> plugins rule and start using <code>box-shadow</code> like the
+	Add <code>boxshadow</code> to your <code>@turbine</code> plugins rule and start using <code>box-shadow</code> like the
 	standard <code>box-shadow</code> CSS3 property.
 </p>
 <h3>Example</h3>
@@ -489,7 +489,7 @@ $mainNavigation
 </p>
 <h3>Usage</h3>
 <ol>
-	<li>Add <code>fontface</code> to your <code>@cssp</code> plugins rule</li>
+	<li>Add <code>fontface</code> to your <code>@turbine</code> plugins rule</li>
 	<li>Build a normal <code>@font-face</code>-rule</li>
 	<li>Omit the <code>src</code>-attribute</li>
 	<li>Add properties <code>eot</code>, <code>local</code> and <code>ttf</code> or <code>otf</code></li>
@@ -546,7 +546,7 @@ $mainNavigation
 }</pre>
 <h3>Usage</h3>
 <p>
-	Just add <code>datauri</code> to your <code>@cssp</code> plugins rule. Done!
+	Just add <code>datauri</code> to your <code>@turbine</code> plugins rule. Done!
 </p>
 </div>
 
@@ -562,7 +562,7 @@ $mainNavigation
 </p>
 <h3>Usage</h3>
 <p>
-	Just add <code>minifier</code> to your <code>@cssp</code> plugins rule. Done!
+	Just add <code>minifier</code> to your <code>@turbine</code> plugins rule. Done!
 </p>
 </div>
 
@@ -605,7 +605,7 @@ $mainNavigation
 </p>
 <h3>Usage</h3>
 <p>
-	Include <code>quotes</code> in your <code>@cssp</code> plugins rule and start using the <code>quotes</code> property with
+	Include <code>quotes</code> in your <code>@turbine</code> plugins rule and start using the <code>quotes</code> property with
 	the values listed below.
 </p>
 <h3>Possible <code>quotes</code> values</h3>
@@ -658,7 +658,7 @@ $mainNavigation
 </p>
 <h3>Usage</h3>
 <p>
-	Just add <code>resetstyle</code> to your <code>@cssp</code> plugins rule. Done!
+	Just add <code>resetstyle</code> to your <code>@turbine</code> plugins rule. Done!
 </p>
 </div>
 
@@ -759,8 +759,9 @@ $mainNavigation
 <h2 id="toc-4-2">Plugin development</h2><div>
 <p>
 	Plugin development for Turbine is rather simple. All you need is a file called <code>plugin_name.php</code> containing
-	a function <code>plugin_name()</code>, located in the plugins directory. The function must accept only one argument, which
-	is passed as a reference. The contents of this argument depends on the hook the plugin is assigned to:
+	a function of some sort (usually named <code>plugin_name()</code>), located in the plugins directory. The function must
+	accept only one argument, which is passed <strong>as a reference</strong> (<a href="http://php.net/manual/en/language.references.pass.php">References Explained</a>).
+	The contents of this argument depends on the hook the plugin is assigned to:
 </p>
 <table>
 	<thead>
@@ -773,23 +774,23 @@ $mainNavigation
 	<tbody>
 		<tr>
 			<td><code>before_parse</code></td>
-			<td>Before the original .cssp files are parsed</td>
-			<td>An array containing the lines of the original .cssp files</td>
+			<td>Before the .cssp files are parsed</td>
+			<td>Reference to an array containing the lines of the original .cssp files</td>
 		</tr>
 		<tr>
 			<td><code>before_compile</code></td>
 			<td>After compilation, before applying Turbine core features (inheritance and the like)</td>
-			<td>An array containing the parsed Turbine code</td>
+			<td>Reference to an array containing the parsed Turbine code</td>
 		</tr>
 		<tr>
 			<td><code>before_glue</code></td>
 			<td>After compilation and cssp magic, just before the output ist generated</td>
-			<td>An array containing the parsed Turbine code</td>
+			<td>Reference to an array containing the parsed Turbine code</td>
 		</tr>
 		<tr>
 			<td><code>before_output</code></td>
 			<td>After generating the output of one .cssp file, before combining the output with other files</td>
-			<td>A string containing the final css output from the current .cssp file</td>
+			<td>Reference to a string containing the final css output from the current .cssp file</td>
 		</tr>
 	</tbody>
 </table>
@@ -801,6 +802,10 @@ $mainNavigation
 <pre class="php">
 register_plugin('before_compile', 0, 'mypluginfunction');
 </pre>
+<p>
+	It's recommended to leave the execution priority at 0 unless its <strong>really</strong> important. A higher priority means
+	earlier execution.
+</p>
 <h3>Array structure</h3>
 <p>
 	When using <code>before_compile</code> or <code>before_glue</code> the array recieved as the argument for the plugin
@@ -826,7 +831,8 @@ register_plugin('before_compile', 0, 'mypluginfunction');
     )
 )</pre>
 <p>
-	CSS rules that a not part of any <code>@media</code> block a stored in the <code>global</code> block.
+	CSS rules that a not part of any <code>@media</code> block a stored in the <code>global</code> block. A properties values may
+	be in an array if there is more than one value for a given property.
 </p>
 <h3>Plugin example</h3>
 <p>
@@ -836,7 +842,7 @@ register_plugin('before_compile', 0, 'mypluginfunction');
 <pre class="php">&lt;?php
     /**
      * remove_background_image.php
-     * Remove all occurences of background-image (a nonsensical example)
+     * Remove all occurences of background-image
      */
     function remove_background_image(&$parsed){
         // Loop through the blocks
@@ -857,8 +863,8 @@ register_plugin('before_compile', 0, 'mypluginfunction');
     $cssp->register_plugin('before_compile', 0, 'remove_background_image');
 ?&gt;</pre>
 <p>
-	Don't be afraid to do anything CPU- or memory consuming in your plugins - in the end, everything will be calculated
-	only once and is cached afterwards.
+	Don't be afraid to do anything CPU- or memory consuming in your plugins - in production mode, everything is calculated
+	only once and is served from the cache afterwards.
 </p>
 
 
