@@ -86,7 +86,7 @@ if($_POST['css']){
 	$found = false;
 	foreach($cssp->css as $line){
 		if(!$found){
-			if(preg_match('/^[\s\t]*@cssp/i',$line) == 1){
+			if(preg_match('/^[\s\t]*@turbine/i',$line) == 1){
 				$found = true;
 			}
 		}
@@ -108,15 +108,15 @@ if($_POST['css']){
 
 
 	// Set compression mode
-	if(isset($cssp->parsed['global']['@cssp']['compress'])){
-		$compress = (bool) $cssp->parsed['global']['@cssp']['compress'];
+	if(isset($cssp->parsed['global']['@turbine']['compress'])){
+		$compress = (bool) $cssp->parsed['global']['@turbine']['compress'];
 	}
 	else{
 		$compress = false;
 	}
 
 	// Cleanup
-	unset($cssp->parsed['global']['@cssp']);                      // Remove configuration @-rule
+	unset($cssp->parsed['global']['@turbine']);                      // Remove configuration @-rule
 	$output = $cssp->glue($compress);                             // Glue css output
 	$cssp->apply_plugins('before_output', $plugin_list, $output); // Apply plugins for before output
 
