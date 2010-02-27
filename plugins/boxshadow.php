@@ -23,6 +23,7 @@
 					$parsed[$block][$selector]['-webkit-box-shadow'] = $value;
 					CSSP::comment($parsed[$block][$selector], '-webkit-box-shadow', 'Added by box shadow plugin');
 					if(preg_match('/([0-9]+)\D+([0-9]+)\D+([0-9]+)\D+#([0-9A-F]{3,6})+/i', trim($value), $matches) == 1
+						// Ist das nicht großer Käse? Was wenn der Hintergrund geerbt wird, klappt der Filter dann nicht auch?
 						&& (isset($parsed[$block][$selector]['background']) || isset($parsed[$block][$selector]['background-color']))
 					){
 						$xoffset = intval($matches[1]);
