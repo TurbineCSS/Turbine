@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>CSSP Documentation</title>
+		<title>Turbine Documentation</title>
 		<!--<link rel="stylesheet" href="../css.php?files=docs/docs.cssp">-->
 		<link rel="stylesheet" href="docs.css">
 	</head>
@@ -46,7 +46,7 @@
 				<li><a href="#toc-3-8">OS detection</a></li>
 				<li><a href="#toc-3-9">Quote style</a></li>
 				<li><a href="#toc-3-10">Reset stylesheet</a></li>
-				<li><a href="#toc-3-11">Transparent background</a></li>
+				<li><a href="#toc-3-11">Colormodels</a></li>
 				<li><a href="#toc-3-12">Meta plugins</a></li>
 			</ul>
 		</li>
@@ -101,7 +101,7 @@
 <p>
 	&hellip;or, if you like great performance, directly into this (which is automatically cached, gezipped and served with the correct expires headers):
 </p>
-<pre>#foo,#bar{color: #F00}#foo div.alpha,#foo div.beta,#bar div.alpha,#bar div.beta{font-weight:bold;border-radius:4px;-moz-border-radius:4px;-khtml-border-radius:4px;-webkit-border-radius:4px;behavior:url("/plugins/borderradius/border-radius.htc")}</pre>
+<pre class="css">#foo,#bar{color: #F00}#foo div.alpha,#foo div.beta,#bar div.alpha,#bar div.beta{font-weight:bold;border-radius:4px;-moz-border-radius:4px;-khtml-border-radius:4px;-webkit-border-radius:4px;behavior:url("/plugins/borderradius/border-radius.htc")}</pre>
 <p>
 	Turbine can save you a lot of typing and time <em>and</em> allow you to concentrate on a website's design and functionality instead of
 	css's limitations and your least favourite browser's latest bugs. Think jQuery for CSS. Being fully extensible, you can customize Turbine
@@ -133,12 +133,42 @@
 <h2 id="toc-2-1">Installation and setup</h2><div>
 <h3>Installation</h3>
 <p>
-	TODO
+	Simply download the latest release from <a href="http://github.com/SirPepe/Turbine">Github</a> and unpack it to a directory on your
+	web server. PHP 5.2 is required.
 </p>
-<h3>Base configuration</h3>
+<h3>Global configuration</h3>
 <p>
-	TODO
+	Turbine has two sets of configuration options - one on a per-file-basis and one on a global level. These global configuration options
+	are set in the file <code>config.php</code>. The following settings are availiable:
 </p>
+<table>
+	<thead>
+		<tr>
+			<th>Option</th>
+			<th>Effect</th>
+			<th>Default</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><code>debug_level</code></td>
+			<td>Disable all error messages (<code>0</code>), enable web developer debugging messages (<code>1</code>) or enable all error messages (<code>2</code>)</td>
+			<td><code>1</code></td>
+		</tr>
+		<tr>
+			<td><code>css_base_dir</code></td>
+			<td>Sets the base directory for the style files</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><code>minify_css</code></td>
+			<td>Leave css files unchanged by Turbine (<code>false</code>) or minify them (<code>true</code>)</td>
+			<td><code>true</code></td>
+		</tr>
+	</tbody>
+</table>
+
+
 <h3>Adding Turbine files to HTML documents</h3>
 <p>
 	Turbine files are simple text files with the extension <abbr title="CSS Preprocessor"><code>.cssp</code></abbr>.
@@ -150,10 +180,12 @@
 	href="path/to/turbine/css.php?files=file1.cssp;file2.cssp"
 /&gt;</pre>
 <p>
-	You can also include regular css files, which will be added to the output unchanged.
+	You can also include regular css files, which will be added to the output unchanged (or minified, if the <code>minify_css</code>
+	configuration option ist set to <code>true</code>).
 </p>
 
 <h2 id="toc-2-2">Syntax</h2><div>
+<h3>Basics</h3>
 <p>
 	Turbine's syntax is a bit like <a href="#">Python</a>&nbsp;&ndash; the level of indention instead of curly braces decides what is
 	what. A simple rule looks like this:
@@ -171,10 +203,52 @@
 	span                   // Next line is indented = this is a selector
 		color:red</pre>
 <p>
-	This behaviour allows nested selectors, which can be quite powerful (see <a href="#toc-2-3">nested selectors</a>).
+	This behaviour allows nested selectors, which can be quite powerful (see <a class="smoothscroll" href="#toc-2-4">nested selectors</a>).
 </p>
+<h3>@media rules</h3>
 <p>
-	<code>@media</code> TODO
+	<code>@media</code>-rules in Turbine a simple switches. Each <code>@media</code> line ends the previous <code>@media</code> block
+	and opens a new one.
+<pre class="cssp">@media screen // Open screen block
+#foo
+	background:red
+
+@media print // Close screen block, open print block
+#foo
+	background:green
+
+@media projection // Close print block, open projection block
+#foo
+	background:blue
+
+@media screen // Close projection block, open screen block
+#bar
+	font.weight:bold</pre>
+<p>
+	<code>@media</code> block of the same type are merged, so the resulting css looks like the following:
+</p>
+<pre class="css">@media screen {
+    #foo {
+        background: red;
+    }
+    #bar {
+        font.weight: bold;
+    }
+}
+
+@media print {
+    #foo {
+        background: green;
+    }
+}
+
+@media projection {
+    #foo {
+        background: blue;
+    }
+}
+
+</pre>
 </p>
 <h3>Prefixes</h3>
 <p>
@@ -192,11 +266,11 @@
 		<tr>
 			<th rowspan="2">$</th>
 			<td>Selector</td>
-			<td>Selector alias</td>
+			<td>Selector alias, will be replaced by the selector defined in <code>@aliases</code> (see <a class="smoothscroll" href="#toc-2-5">Constants and aliases</a>)</td>
 		</tr>
 		<tr>
 			<td>Value</td>
-			<td>Constant</td>
+			<td>Constant, will be replaced by the value defined in <code>@constants</code> (see <a class="smoothscroll" href="#toc-2-5">Constants and aliases</a>)</td>
 		</tr>
 		<tr>
 			<th>$_</th>
@@ -206,7 +280,7 @@
 		<tr>
 			<th>?</th>
 			<td>Selector</td>
-			<td>Prototype - whole element will be removed before output</td>
+			<td>Prototype - whole element will be removed before output but properties can be inherited from it (see <a class="smoothscroll" href="#toc-2-6-templating">Templating</a>)</td>
 		</tr>
 		<tr>
 			<th>&amp;</th>
@@ -313,7 +387,7 @@
 
 
 
-<h2 id="toc-2-5">Constants and Aliases</h2><div>
+<h2 id="toc-2-5">Constants and aliases</h2><div>
 <p>
 	TODO
 </p>
@@ -321,6 +395,20 @@
 <p>
 	TODO
 </p>
+<p>
+	Constants are case-sensitive.
+</p>
+<pre class="cssp">@constants
+	myRed:#C02222
+	imagePath:/assets/images
+
+#foo
+	color:$myRed
+	background:url($imagePath/foo.png) top left no-repeat</pre>
+<pre class="css">#foo {
+    color: #C02222;
+    background: url(/assets/images/foo.png) top left no-repeat;
+}</pre>
 <h3>Special constants</h3>
 <p>
 	The constants defined in in an <code>@turbine</code> block only apply to the current .cssp file. There are two special:
@@ -347,6 +435,9 @@ $mainNavigation
     list-style: none
 }
 </pre>
+<p>
+	Aliases, like constants, are case-sensitive.
+</p>
 </div>
 
 
@@ -382,7 +473,7 @@ $mainNavigation
 <p>
 	TODO
 </p>
-<h3>Templating</h3>
+<h3 id="toc-2-6-templating">Templating</h3>
 <p>
 	TODO
 </p>
@@ -398,13 +489,14 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-1">Border radius <span>[ Lazy ]</span></h2><div>
+<h2 id="toc-3-1">Border radius</h2><div>
 <p class="abstract">
 	Automatically adds vendor-specific versions of <code>border-radius</code> and implements some shortcuts.
 </p>
 <p>
 	Webkit and Mozilla browsers require vendor-specific prefixes for the CSS3 property <code>border-radius</code>. This plugin automatically
-	inserts all of them wherever a <code>border-radius</code> property is found. Additionally, it provides shortcuts for adding rounded
+	inserts all of them wherever a <code>border-radius</code> property is found and also adds a HTC-Hack for Internet Explorer (only for
+	simple <code>border-radius</code>, not <code>border-left-radius</code> etc). Additionally, the plugin provides shortcuts for adding rounded
 	corners only on the left, right, top or bottom side of an element: <code>border-left-radius</code>, <code>border-right-radius</code>,
 	<code>border-top-radius</code>, <code>border-bottom-radius</code>
 </p>
@@ -415,8 +507,11 @@ $mainNavigation
 </p>
 <h3>Examples</h3>
 <h4>Automatic vendor-specific versions</h4>
-<pre class="cssp">#foo
-	border-radius:4px;</pre>
+<pre class="cssp">@turbine
+	plugins:borderradius
+
+#foo
+	border-radius:4px</pre>
 <p>
 	Result:
 </p>
@@ -425,14 +520,16 @@ $mainNavigation
     -khtml-border-radius: 4px;
     -webkit-border-radius: 4px;
     border-radius: 4px;
-}</pre>
+    behavior: url("/plugins/borderradius/border-radius.htc");
+}
+</pre>
 <h4>Left side only shortcut</h4>
 <pre class="cssp">#foo
 	border-left-radius:4px;</pre>
 <p>
 	Result:
 </p>
-<pre>#foo {
+<pre class="css">#foo {
     -moz-border-radius-topleft: 4px;
     -moz-border-radius-bottomleft: 4px;
     -khtml-border-top-left-radius: 4px;
@@ -446,13 +543,13 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-2">Box shadow <span>[ Lazy ]</span></h2><div>
+<h2 id="toc-3-2">Box shadow</h2><div>
 <p class="abstract">
 	Automatically adds vendor-specific versions of <code>box-shadow</code>.
 </p>
 <p>
 	Webkit and Mozilla browsers require vendor-specific prefixes for the CSS3 property <code>box-shadow</code>. This plugin automatically
-	inserts them wherever a <code>box-shadow</code> property is found.
+	inserts them wherever a <code>box-shadow</code> property is found and also adds proprietary filters for Internet Explorer.
 </p>
 <h3>Usage</h3>
 <p>
@@ -460,21 +557,27 @@ $mainNavigation
 	standard <code>box-shadow</code> CSS3 property.
 </p>
 <h3>Example</h3>
-<pre class="cssp">#foo
-	box-shadow:4px 4px 4px #666;</pre>
+<pre class="cssp">@turbine
+	plugins:boxshadow
+
+#foo
+	box-shadow:2px 2px 8px #000</pre>
 <p>
 	Result:
 </p>
-<pre>#foo {
-    -moz-box-shadow: 4px 4px 4px #666;
-    -webkit-box-shadow: 4px 4px 4px #666;
-    box-shadow: 4px 4px 4px #666;
-}</pre>
+<pre class="css">#foo {
+    box-shadow: 2px 2px 8px #000;
+    -moz-box-shadow: 2px 2px 8px #000;
+    -webkit-box-shadow: 2px 2px 8px #000;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Color='#000000',Direction=135,Strength=2)";
+    filter: progid:DXImageTransform.Microsoft.Shadow(Color='#000000',Direction=135,Strength=2);
+}
+</pre>
 </div>
 
 
 
-<h2 id="toc-3-3">Bullet proof @font-face syntax <span>[ Optimization, Lazy ]</span></h2><div>
+<h2 id="toc-3-3">Bullet proof @font-face syntax</h2><div>
 <p class="abstract">
 	Generates bullet proof @font-face declarations from a simplified syntax.
 </p>
@@ -500,7 +603,10 @@ $mainNavigation
 	<li>Add properties <code>eot</code>, <code>local</code> and <code>ttf</code> or <code>otf</code></li>
 </ol>
 <h3>Example</h3>
-<pre class="cssp">@font-face
+<pre class="cssp">@turbine
+	plugins:fontface
+
+@font-face
 	font-family:'Graublau Web';
 	local:'Graublau Web Regular';
 	otf:url('GraublauWeb.otf');
@@ -533,21 +639,25 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-5">Data-URIs <span>[ Performance ]</span></h2><div>
+<h2 id="toc-3-5">Data URIs</h2><div>
 <p class="abstract">
-	Injects all images smaller than 24kb right inside the CSS for all dataURI-capable browsers
+	Inlines images into the css output.
+</p>
+<p>
+	The Data URI plugin inlines all images smaller than 24kb as base64 encoded as a data URI or, for Internet Explorer, as MHTML. This
+	reduces the number of HTTP requests.
 </p>
 <h3>Example</h3>
-<pre class="cssp">#foo
+<pre class="cssp">@turbine
+	plugins:datauri
+
+#foo
 	background:#FFF url(test.png) top left;</pre>
 <p>
 	Result:
 </p>
 <pre>#foo {
-    background: #FFF url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUg
-    AAAAYAAAAGCAMAAADXEh96AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUA
-    QWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAGUExURf///8zjYPWWfS0AAAARSURBVHjaYm
-    AAAUYiSIAAAwAAqAAH4ng45wAAAABJRU5ErkJggg==') top left;
+    background: #FFF url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAMAAADXEh96AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAGUExURf///8zjYPWWfS0AAAARSURBVHjaYmAAAUYiSIAAAwAAqAAH4ng45wAAAABJRU5ErkJggg==') top left;
 }</pre>
 <h3>Usage</h3>
 <p>
@@ -557,13 +667,12 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-6">Minifier <span>[ Performance, Optimization ]</span></h2><div>
+<h2 id="toc-3-6">Minifier</h2><div>
 <p class="abstract">
 	Performs a number of micro-optimizations.
 </p>
 <p>
-	Minifier finds hex color definition and shortens them whenever possible. A color definition like
-	<code>#FFEE44</code> would be shortend to <code>#FE4</code>, saving a (tiny) bit of space and loading time.
+	The minifier plugins optimizes and shortens hex color definitions and tokenized strings, saving a (tiny) bit of space and loading time.
 </p>
 <h3>Usage</h3>
 <p>
@@ -575,7 +684,7 @@ $mainNavigation
 
 <h2 id="toc-3-7">Loader</h2><div>
 <p class="abstract">
-	Loads another cssp file.
+	Loads another .cssp file.
 </p>
 <p>
 	Loader loads the contents of another .cssp file at the exact location where <code>@load</code> ist placed. It inserts the
@@ -600,13 +709,13 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-9">Quotes <span>[ Utility ]</span></h2><div>
+<h2 id="toc-3-9">Quotes</h2><div>
 <p class="abstract">
 	Inserts language- and country-specific quotation marks.
 </p>
 <p>
 	Different languages and countries use different quotation marks. The quote style plugin allows you to set
-	the contents for the <code>quotes</code> property by language and/or country. No more need to remember all the glyphs.
+	the contents for the <code>quotes</code> property by language and/or country.
 </p>
 <h3>Usage</h3>
 <p>
@@ -654,7 +763,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-10">Reset stylesheet <span>[ Lazy ]</span></h2><div>
+<h2 id="toc-3-10">Reset stylesheet</h2><div>
 <p class="abstract">
 	Includes a reset stylesheet.
 </p>
@@ -669,7 +778,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-11">Transparent background</h2><div>
+<h2 id="toc-3-11">Colormodels</h2><div>
 <p class="abstract">
 	TODO
 </p>
@@ -765,7 +874,7 @@ $mainNavigation
 <p>
 	Plugin development for Turbine is rather simple. All you need is a file called <code>plugin_name.php</code> containing
 	a function of some sort (usually named <code>plugin_name()</code>), located in the plugins directory. The function must
-	accept only one argument, which is passed <strong>as a reference</strong> (<a href="http://php.net/manual/en/language.references.pass.php">References Explained</a>).
+	accept only one argument, which is passed <strong>as a reference</strong> (see <a href="http://php.net/manual/en/language.references.pass.php">the PHP manual on references</a>).
 	The contents of this argument depends on the hook the plugin is assigned to:
 </p>
 <table>
@@ -804,9 +913,9 @@ $mainNavigation
 	Too hook into Turbine you need to call the <code>register_plugin()</code> function using three arguments: the hook, an
 	execution priority and your plugin function's name:
 </p>
-<pre class="php">
-register_plugin('before_compile', 0, 'mypluginfunction');
-</pre>
+<pre class="php">&lt;?php
+    register_plugin('before_compile', 0, 'mypluginfunction');
+?&gt;</pre>
 <p>
 	It's recommended to leave the execution priority at 0 unless its <strong>really</strong> important. A higher priority means
 	earlier execution.
@@ -910,7 +1019,10 @@ register_plugin('before_compile', 0, 'mypluginfunction');
 <h2 id="toc-6-1">Any general advice?</h2><div>
 <ul>
 	<li>
-		<strong>Don't ever mess up your indention!</strong> Seriously. Turbine is (at the moment) not very good at catching incorrectly
+		Turbine is beta software. Expect stuff to break everywhere, all the time. If you encounter bugs, <a href="http://github.com/SirPepe/Turbine/issues">report them</a>!
+	</li>
+	<li>
+		Try not to mess up your indention! Seriously. Turbine is (at the moment) not very good at catching incorrectly
 		indented lines and they <em>will</em> destroy your css in places you'll never expect. So just pay attention to your whitespace
 		or wait for the parser to become/help us to make the parser more tolerant towards indention errors.
 	</li>

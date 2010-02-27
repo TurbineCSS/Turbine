@@ -5,9 +5,9 @@ window.addEvent('domready', function(){
 
 
 	// Smooth scroll
-	var tocLinks = toc.getElements('a');
+	var smoothLinks = $$('#toc > ul a, a.smoothscroll');
 	var tocScroll = new Fx.SmoothScroll({
-		links: tocLinks
+		links: smoothLinks
 	});
 
 
