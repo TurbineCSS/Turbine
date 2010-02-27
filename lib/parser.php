@@ -484,10 +484,10 @@ class Parser2 extends Base{
 			$output = NULL;
 			// Whitspace characters
 			$s = ' ';
-			$n = "\n";
 			$t = "\t";
+			$n = "\n";
 			if($compressed){
-				$s = $n = $t = NULL;
+				$s = $t = $n = NULL;
 			}
 			foreach($this->parsed as $block => $content){
 				$prefix = NULL;
