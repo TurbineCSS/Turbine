@@ -453,6 +453,27 @@ class Parser2 extends Base{
 
 
 	/**
+	 * comment
+	 * Adds a comment
+	 * @param array &$item
+	 * @param mixed $property
+	 * @param string $comment
+	 * @return void
+	 */
+	public static function comment(&$item, $property = null, $comment){
+		if(!$property){
+			$property = 'selector';
+		}
+		if(!isset($item['_comments'][$property])){
+			$item['_comments'][$property] = $comment;
+		}
+		else{
+			$item['_comments'][$property] .= ' | '.$comment;
+		}
+	}
+
+
+	/**
 	 * glue
 	 * Turn the current array back into CSS code
 	 * @param bool $compressed Compress CSS? (removes whitespace)
@@ -519,12 +540,18 @@ class Parser2 extends Base{
 			}
 		}
 		else{ // Normal elements
-			if($compressed){// Strip whitespace from selectors
+			// Strip whitespace from selectors
+			if($compressed){
 				$selector = implode(',', $this->tokenize($selector, ','));
+			}
+			// Get comments
+			$comments = array();
+			if(isset($rules['_comments'])){
+				$comments = $rules['_comments'];
 			}
 			$output .= $prefix . $selector . $s;
 			$output .= '{' . $n;
-			$output .= $this->glue_properties($rules, $prefix, $s, $t, $n, $compressed);
+			$output .= $this->glue_properties($rules, $prefix, $s, $t, $n, $compressed, $comments);
 			$output .= $prefix.'}'.$n;
 		}
 		return $output;
@@ -540,9 +567,10 @@ class Parser2 extends Base{
 	 * @param string $t Whitespace character
 	 * @param string $n Whitespace character
 	 * @param bool $compressed Compress CSS? (removes whitespace)
+	 * 
 	 * @return string $output Formatted CSS
 	 */
-	public function glue_properties($values, $prefix, $s, $t, $n, $compressed){
+	public function glue_properties($values, $prefix, $s, $t, $n, $compressed, $comments){
 		$output = '';
 		$i = 0;
 		$values_num = count($values);
@@ -555,22 +583,33 @@ class Parser2 extends Base{
 			$values_num = $values_num + $valcount - 1; // Increases $rule_num for multi-value-arrays
 		}
 		foreach($values as $property => $val){
-			$i++;
-			if(!is_array($val)){
-				$val = array($val);
-			}
-			else{
-				$valcount = count($values);
-				$values_num = $values_num + $valcount - 1; // Increases $rule_num for multi-value-arrays
-			}
-			foreach($val as $value){
-				$output .= $prefix.$t;
-				$output .= $property.':'.$s;
-				$output .= trim($value);
-				if(!$compressed || $i != $values_num){ // Remove semicolon this for the last rule
-					$output .= ';';
+			if($property != '_comments'){ // Ignore comments
+				$i++;
+				if(!is_array($val)){
+					$val = array($val);
 				}
-				$output .= $n;
+				else{
+					$valcount = count($values);
+					$values_num = $values_num + $valcount - 1; // Increases $rule_num for multi-value-arrays
+				}
+				foreach($val as $value){
+					$output .= $prefix.$t;
+					$output .= $property.':'.$s;
+					$output .= trim($value);
+					// Don't add semicolon this for the last rule
+					if(!$compressed || $i != $values_num){
+						$output .= ';';
+					}
+					// Add comments
+					if(!$compressed){
+						if(isset($comments[$property])){
+							$output .= ' /* ';
+							$output .= $comments[$property];
+							$output .=' */';
+						}
+					}
+					$output .= $n;
+				}
 			}
 		}
 		return $output;
