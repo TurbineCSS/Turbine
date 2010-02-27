@@ -121,7 +121,7 @@ if($_POST['css']){
 	$cssp->apply_plugins('before_output', $plugin_list, $output); // Apply plugins for before output
 
 	// Outpu
-	echo $output;
+	echo stripslashes($output);
 
 }
 
