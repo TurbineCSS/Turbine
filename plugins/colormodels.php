@@ -74,6 +74,7 @@
 					$filtercolor_g = strtoupper(str_pad(dechex(floatval($rgba['g'])),2,'0',STR_PAD_LEFT));
 					$filtercolor_b = strtoupper(str_pad(dechex(floatval($rgba['b'])),2,'0',STR_PAD_LEFT));
 					$filter = 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#'.$filteropacity.$filtercolor_r.$filtercolor_g.$filtercolor_b.',endColorstr=#'.$filteropacity.$filtercolor_r.$filtercolor_g.$filtercolor_b.')';
+					$recalculated['background'] = '';
 					$recalculated['filter'] = $filter;
 					$recalculated['zoom'] = '1';
 				}
@@ -133,8 +134,10 @@
 		}
 		elseif($browser->engine == 'Opera'){
 			$capabilities['rgba'] = true;
-			$capabilities['hsl'] = true;
-			$capabilities['hsla'] = true;
+			if($browser->engineversion >= 10){
+				$capabilities['hsl'] = true;
+				$capabilities['hsla'] = true;
+			}
 		}
 		return $capabilities;
 	}
