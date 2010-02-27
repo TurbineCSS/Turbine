@@ -21,94 +21,113 @@
 			foreach($parsed[$block] as $selector => $styles){
 				// Everywhere
 				if(isset($parsed[$block][$selector]['border-radius'])){
+					$properties = array('-moz-border-radius', '-khtml-border-radius', '-webkit-border-radius', 'border-radius');
 					$value = $parsed[$block][$selector]['border-radius'];
-					$parsed[$block][$selector]['-moz-border-radius'] = $value;
-					$parsed[$block][$selector]['-khtml-border-radius'] = $value;
-					$parsed[$block][$selector]['-webkit-border-radius'] = $value;
+					unset($parsed[$block][$selector]['border-radius']);
+					foreach($properties as $property){
+						$parsed[$block][$selector][$property] = $value;
+						CSSP::comment($parsed[$block][$selector], $property, 'Added by border radius plugin');
+					}
 					// Fix for IEs found on http://www.htmlremix.com/css/curved-corner-border-radius-cross-browser/
 					$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/borderradius/border-radius.htc';
-					if(!isset($parsed[$block][$selector]['behavior'])) $parsed[$block][$selector]['behavior'] = 'url("'.$htc_path.'")';
-					else if(!strpos($parsed[$block][$selector]['behavior'],'url("'.$htc_path.'")')) $parsed[$block][$selector]['behavior'] .= ', url("'.$htc_path.'")';
+					if(!isset($parsed[$block][$selector]['behavior'])){
+						$parsed[$block][$selector]['behavior'] = 'url("'.$htc_path.'")';
+						CSSP::comment($parsed[$block][$selector], 'behavior', 'Added by border radius plugin');
+					}
+					else{
+						if(!strpos($parsed[$block][$selector]['behavior'],'url("'.$htc_path.'")')){
+							$parsed[$block][$selector]['behavior'] .= ', url("'.$htc_path.'")';
+							CSSP::comment($parsed[$block][$selector], 'behavior', 'Added by border radius plugin');
+						}
+					}
 				}
 				// Top only
 				if(isset($parsed[$block][$selector]['border-top-radius'])){
+					$properties = array('-moz-border-radius-topleft', '-moz-border-radius-topright', '-khtml-border-top-left-radius',
+						'-khtml-border-top-right-radius', '-webkit-border-top-left-radius', '-webkit-border-top-right-radius',
+						'border-top-left-radius', 'border-top-right-radius');
 					$value = $parsed[$block][$selector]['border-top-radius'];
-					$parsed[$block][$selector]['-moz-border-radius-topleft'] = $value;
-					$parsed[$block][$selector]['-moz-border-radius-topright'] = $value;
-					$parsed[$block][$selector]['-khtml-border-top-left-radius'] = $value;
-					$parsed[$block][$selector]['-khtml-border-top-right-radius'] = $value;
-					$parsed[$block][$selector]['-webkit-border-top-left-radius'] = $value;
-					$parsed[$block][$selector]['-webkit-border-top-right-radius'] = $value;
-					$parsed[$block][$selector]['border-top-left-radius'] = $value;
-					$parsed[$block][$selector]['border-top-right-radius'] = $value;
 					unset($parsed[$block][$selector]['border-top-radius']);
+					foreach($properties as $property){
+						$parsed[$block][$selector][$property] = $value;
+						CSSP::comment($parsed[$block][$selector], $property, 'Added by border radius plugin');
+					}
 				}
 				// Bottom only
 				if(isset($parsed[$block][$selector]['border-bottom-radius'])){
+					$properties = array('-moz-border-radius-bottomleft', '-moz-border-radius-bottomright', '-khtml-border-bottom-left-radius',
+						'-khtml-border-bottom-right-radius', '-webkit-border-bottom-left-radius', '-webkit-border-bottom-right-radius',
+						'border-bottom-left-radius', 'border-bottom-right-radius');
 					$value = $parsed[$block][$selector]['border-bottom-radius'];
-					$parsed[$block][$selector]['-moz-border-radius-bottomleft'] = $value;
-					$parsed[$block][$selector]['-moz-border-radius-bottomright'] = $value;
-					$parsed[$block][$selector]['-khtml-border-bottom-left-radius'] = $value;
-					$parsed[$block][$selector]['-khtml-border-bottom-right-radius'] = $value;
-					$parsed[$block][$selector]['-webkit-border-bottom-left-radius'] = $value;
-					$parsed[$block][$selector]['-webkit-border-bottom-right-radius'] = $value;
-					$parsed[$block][$selector]['border-bottom-left-radius'] = $value;
-					$parsed[$block][$selector]['border-bottom-right-radius'] = $value;
 					unset($parsed[$block][$selector]['border-bottom-radius']);
+					foreach($properties as $property){
+						$parsed[$block][$selector][$property] = $value;
+						CSSP::comment($parsed[$block][$selector], $property, 'Added by border radius plugin');
+					}
 				}
 				// Left only
 				if(isset($parsed[$block][$selector]['border-left-radius'])){
+					$properties = array('-moz-border-radius-topleft', '-moz-border-radius-bottomleft', '-khtml-border-top-left-radius',
+						'-khtml-border-bottom-left-radius', '-webkit-border-top-left-radius', '-webkit-border-bottom-left-radius',
+						'border-top-left-radius', 'border-bottom-left-radius');
 					$value = $parsed[$block][$selector]['border-left-radius'];
-					$parsed[$block][$selector]['-moz-border-radius-topleft'] = $value;
-					$parsed[$block][$selector]['-moz-border-radius-bottomleft'] = $value;
-					$parsed[$block][$selector]['-khtml-border-top-left-radius'] = $value;
-					$parsed[$block][$selector]['-khtml-border-bottom-left-radius'] = $value;
-					$parsed[$block][$selector]['-webkit-border-top-left-radius'] = $value;
-					$parsed[$block][$selector]['-webkit-border-bottom-left-radius'] = $value;
-					$parsed[$block][$selector]['border-top-left-radius'] = $value;
-					$parsed[$block][$selector]['border-bottom-left-radius'] = $value;
 					unset($parsed[$block][$selector]['border-left-radius']);
+					foreach($properties as $property){
+						$parsed[$block][$selector][$property] = $value;
+						CSSP::comment($parsed[$block][$selector], $property, 'Added by border radius plugin');
+					}
 				}
 				// Right only
 				if(isset($parsed[$block][$selector]['border-right-radius'])){
+					$properties = array('-moz-border-radius-topright', '-moz-border-radius-bottomright', '-khtml-border-top-right-radius',
+						'-khtml-border-bottom-right-radius', '-webkit-border-top-right-radius', '-webkit-border-bottom-right-radius',
+						'border-top-right-radius', 'border-bottom-right-radius');
 					$value = $parsed[$block][$selector]['border-right-radius'];
-					$parsed[$block][$selector]['-moz-border-radius-topright'] = $value;
-					$parsed[$block][$selector]['-moz-border-radius-bottomright'] = $value;
-					$parsed[$block][$selector]['-khtml-border-top-right-radius'] = $value;
-					$parsed[$block][$selector]['-khtml-border-bottom-right-radius'] = $value;
-					$parsed[$block][$selector]['-webkit-border-top-right-radius'] = $value;
-					$parsed[$block][$selector]['-webkit-border-bottom-right-radius'] = $value;
-					$parsed[$block][$selector]['border-top-right-radius'] = $value;
-					$parsed[$block][$selector]['border-bottom-right-radius'] = $value;
 					unset($parsed[$block][$selector]['border-right-radius']);
+					foreach($properties as $property){
+						$parsed[$block][$selector][$property] = $value;
+						CSSP::comment($parsed[$block][$selector], $property, 'Added by border radius plugin');
+					}
 				}
 				// Top left only
 				if(isset($parsed[$block][$selector]['border-top-left-radius'])){
 					$value = $parsed[$block][$selector]['border-top-left-radius'];
-					$parsed[$block][$selector]['-moz-border-radius-topleft'] = $value;
-					$parsed[$block][$selector]['-khtml-border-top-left-radius'] = $value;
-					$parsed[$block][$selector]['-webkit-border-top-left-radius'] = $value;
+					$properties = array('-moz-border-radius-topleft', '-khtml-border-top-left-radius', '-webkit-border-top-left-radius', 'border-top-left-radius');
+					unset($parsed[$block][$selector]['border-top-left-radius']);
+					foreach($properties as $property){
+						$parsed[$block][$selector][$property] = $value;
+						CSSP::comment($parsed[$block][$selector], $property, 'Added by border radius plugin');
+					}
 				}
 				// Top right only
 				if(isset($parsed[$block][$selector]['border-top-right-radius'])){
 					$value = $parsed[$block][$selector]['border-top-right-radius'];
-					$parsed[$block][$selector]['-moz-border-radius-topright'] = $value;
-					$parsed[$block][$selector]['-khtml-border-top-right-radius'] = $value;
-					$parsed[$block][$selector]['-webkit-border-top-right-radius'] = $value;
+					$properties = array('-moz-border-radius-topright', '-khtml-border-top-right-radius', '-webkit-border-top-right-radius', 'border-top-right-radius');
+					unset($parsed[$block][$selector]['border-top-right-radius']);
+					foreach($properties as $property){
+						$parsed[$block][$selector][$property] = $value;
+						CSSP::comment($parsed[$block][$selector], $property, 'Added by border radius plugin');
+					}
 				}
 				// Bottom left only
 				if(isset($parsed[$block][$selector]['border-bottom-left-radius'])){
 					$value = $parsed[$block][$selector]['border-bottom-left-radius'];
-					$parsed[$block][$selector]['-moz-border-radius-bottomleft'] = $value;
-					$parsed[$block][$selector]['-khtml-border-bottom-left-radius'] = $value;
-					$parsed[$block][$selector]['-webkit-border-bottom-left-radius'] = $value;
+					$properties = array('-moz-border-radius-bottomleft', '-khtml-border-bottom-left-radius', '-webkit-border-bottom-left-radius', 'border-bottom-left-radius');
+					unset($parsed[$block][$selector]['border-bottom-left-radius']);
+					foreach($properties as $property){
+						$parsed[$block][$selector][$property] = $value;
+						CSSP::comment($parsed[$block][$selector], $property, 'Added by border radius plugin');
+					}
 				}
 				// Bottom right only
 				if(isset($parsed[$block][$selector]['border-bottom-right-radius'])){
 					$value = $parsed[$block][$selector]['border-bottom-right-radius'];
-					$parsed[$block][$selector]['-moz-border-radius-bottomright'] = $value;
-					$parsed[$block][$selector]['-khtml-border-bottom-right-radius'] = $value;
-					$parsed[$block][$selector]['-webkit-border-bottom-right-radius'] = $value;
+					$properties = array('-moz-border-radius-bottomright', '-khtml-border-bottom-right-radius', '-webkit-border-bottom-right-radius', 'border-bottom-right-radius');
+					unset($parsed[$block][$selector]['border-bottom-right-radius']);
+					foreach($properties as $property){
+						$parsed[$block][$selector][$property] = $value;
+						CSSP::comment($parsed[$block][$selector], $property, 'Added by border radius plugin');
+					}
 				}
 			}
 		}
