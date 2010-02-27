@@ -3,7 +3,7 @@
 
 	/**
 	 * Colormodels
-	 * HSL(A) support for most older browsers
+	 * HSL(A) and RGBA support for most older browsers
 	 * 
 	 * Usage:   Nobrainer, just switch it on
 	 * Example: -
@@ -33,8 +33,15 @@
 										if(!$capabilities[$model]){
 											$recalculated = colormodels_recalculate($model, $rgba, $capabilities, $search);
 											if(!empty($recalculated)){
-												// TODO: Smart merge for midex properties like background, border etc
-												$parsed[$block][$selector] = array_merge($parsed[$block][$selector], $recalculated);
+												// Apply the recalculated properties and values to $parsed
+												foreach($recalculated as $property => $value){
+													if(!isset($parsed[$block][$selector][$property])){
+														$parsed[$block][$selector][$property] = $value;
+													}
+													else{
+														$parsed[$block][$selector][$property] = str_replace($matches[0], $value, $parsed[$block][$selector][$property]);
+													}
+												}
 											}
 										}
 									}
