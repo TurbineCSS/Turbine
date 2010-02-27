@@ -19,67 +19,83 @@
 				if(isset($parsed[$block][$selector]['box-shadow'])){
 					$value = $parsed[$block][$selector]['box-shadow'];
 					$parsed[$block][$selector]['-moz-box-shadow'] = $value;
+					CSSP::comment($parsed[$block][$selector], '-moz-box-shadow', 'Added by box shadow plugin');
 					$parsed[$block][$selector]['-webkit-box-shadow'] = $value;
-					if(preg_match('/([0-9]+)\D+([0-9]+)\D+([0-9]+)\D+#([0-9A-F]{3,6})+/i',trim($value),$matches) == 1 && (isset($parsed[$block][$selector]['background']) || isset($parsed[$block][$selector]['background-color'])))
-					{
+					CSSP::comment($parsed[$block][$selector], '-webkit-box-shadow', 'Added by box shadow plugin');
+					if(preg_match('/([0-9]+)\D+([0-9]+)\D+([0-9]+)\D+#([0-9A-F]{3,6})+/i',trim($value),$matches) == 1
+						&& (isset($parsed[$block][$selector]['background'])
+						|| isset($parsed[$block][$selector]['background-color']))
+					){
 						$xoffset = intval($matches[1]);
 						$yoffset = intval($matches[2]);
 						$blur = intval($matches[3]);
 						$color = $matches[4];
-						if(strlen($color) == 3) $color = substr($color,0,1).substr($color,0,1).substr($color,1,1).substr($color,1,1).substr($color,2,1).substr($color,2,1);
-
+						if(strlen($color) == 3){
+							$color = substr($color,0,1).substr($color,0,1).substr($color,1,1).substr($color,1,1).substr($color,2,1).substr($color,2,1);
+						}
 						$median_offset = round(($xoffset + $yoffset) / 2);
 						$opacity = (($median_offset - $blur) > 0) ? (($median_offset - $blur) / $median_offset) : 0.05;
 						$color_opacity = strtoupper(str_pad(dechex(round(hexdec(substr($color,0,2)) * $opacity)),2,'0',STR_PAD_LEFT).str_pad(dechex(round(hexdec(substr($color,2,2)) * $opacity)),2,'0',STR_PAD_LEFT).str_pad(dechex(round(hexdec(substr($color,4,2)) * $opacity)),2,'0',STR_PAD_LEFT));
 						$direction = 135;
 						$direction_factor = abs($xoffset) / abs($yoffset);
-						if($direction_factor == 1)
-						{
-							if($xoffset > 0 && $yoffset > 0) $direction = 135;
-							elseif($xoffset > 0 && $yoffset < 0) $direction = 45;
-							elseif($xoffset < 0 && $yoffset > 0) $direction = 315;
-							else $direction = 225;
+						if($direction_factor == 1){
+							if($xoffset > 0 && $yoffset > 0){
+								$direction = 135;
+							}
+							elseif($xoffset > 0 && $yoffset < 0){
+								$direction = 45;
+							}
+							elseif($xoffset < 0 && $yoffset > 0){
+								$direction = 315;
+							}
+							else{
+								$direction = 225;
+							}
 						}
-						elseif($direction_factor > 1)
-						{
-							if($xoffset > 0) $direction = 90;
-							else $direction = 270;
+						elseif($direction_factor > 1){
+							if($xoffset > 0){
+								$direction = 90;
+							}
+							else{
+								$direction = 270;
+							}
 						}
-						else
-						{
-							if($yoffset > 0) $direction = 180;
-							else $direction = 0;
+						else{
+							if($yoffset > 0){
+								$direction = 180;
+							}
+							else{
+								$direction = 0;
+							}
 						}
-						
-						if($blur == 0)
-						{
+						if($blur == 0){
 							// Hard Shadow
 							$filter = 'progid:DXImageTransform.Microsoft.dropshadow(OffX='.$xoffset.',OffY='.$yoffset.',Color=\'#'.strtoupper(str_pad(dechex(round($opacity * 255)),2,'0',STR_PAD_LEFT)).$color.'\',Positive=\'true\')';
 						}
-						else
-						{
+						else{
 							// Soft Shadow
 							$filter = 'progid:DXImageTransform.Microsoft.Shadow(Color=\'#'.$color.'\',Direction='.$direction.',Strength='.$median_offset.')';
 						}
 						
 						//IE8-compliance (note: value inside apostrophes!)
-						if(!isset($parsed[$block][$selector]['-ms-filter'])) 
-						{
+						if(!isset($parsed[$block][$selector]['-ms-filter'])){
 							$parsed[$block][$selector]['-ms-filter'] = '"'.$filter.'"';
+							CSSP::comment($parsed[$block][$selector], '-ms-filter', 'Added by box shadow plugin');
 						}
-						else 
-						{
+						else{
 							$parsed[$block][$selector]['-ms-filter'] = '"'.trim($parsed[$block][$selector]['-ms-filter'],'"').' '.$filter.'"';
+							CSSP::comment($parsed[$block][$selector], '-ms-filter', 'Added by box shadow plugin');
 						}
 						//Legacy IE-compliance
-						if(!isset($parsed[$block][$selector]['filter'])) 
-						{	
+						if(!isset($parsed[$block][$selector]['filter'])) {
 							$parsed[$block][$selector]['filter'] = $filter;
+							CSSP::comment($parsed[$block][$selector], 'filter', 'Added by box shadow plugin');
 						}
-						else 
-						{
+						else{
 							$parsed[$block][$selector]['filter'] .= ' '.$filter;
 							$parsed[$block][$selector]['zoom'] = 1;
+							CSSP::comment($parsed[$block][$selector], 'filter', 'Added by box shadow plugin');
+							CSSP::comment($parsed[$block][$selector], 'zoom', 'Added by box shadow plugin');
 						}
 					}
 				}
