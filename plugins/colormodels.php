@@ -21,10 +21,13 @@
 		$capabilities = colormodels_get_browser_capabilities();
 		// Only continue if we can be sure to know anything about the browser's capabilities
 		if(!empty($capabilities)){
+			// For every possible property...
 			foreach($properties as $search){
+				// ... loop through the css 
 				foreach($parsed as $block => $css){
 					foreach($parsed[$block] as $selector => $styles){
 						if(isset($parsed[$block][$selector][$search])){
+							// Found something that we may have to replace?
 							if(preg_match($hslapattern, $parsed[$block][$selector][$search], $matches) || preg_match($rgbapattern, $parsed[$block][$selector][$search], $matches)){
 								// See if the browser supports the color model, convert if not
 								$rgba = colormodels_to_rgba($matches);
@@ -37,9 +40,11 @@
 												foreach($recalculated as $property => $value){
 													if(!isset($parsed[$block][$selector][$property])){
 														$parsed[$block][$selector][$property] = $value;
+														CSSP::comment($parsed[$block][$selector], $property, 'Added by colormodels plugin');
 													}
 													else{
 														$parsed[$block][$selector][$property] = str_replace($matches[0], $value, $parsed[$block][$selector][$property]);
+														CSSP::comment($parsed[$block][$selector], $property, 'Modified by colormodels plugin');
 													}
 												}
 											}
