@@ -50,7 +50,6 @@
 					unset($parsed[$block][$selector]['border-top-radius']);
 					foreach($properties as $property){
 						$parsed[$block][$selector][$property] = $value;
-						CSSP::comment($parsed[$block][$selector], $property, 'Added by border radius plugin');
 					}
 				}
 				// Bottom only
@@ -62,7 +61,6 @@
 					unset($parsed[$block][$selector]['border-bottom-radius']);
 					foreach($properties as $property){
 						$parsed[$block][$selector][$property] = $value;
-						CSSP::comment($parsed[$block][$selector], $property, 'Added by border radius plugin');
 					}
 				}
 				// Left only
@@ -74,7 +72,6 @@
 					unset($parsed[$block][$selector]['border-left-radius']);
 					foreach($properties as $property){
 						$parsed[$block][$selector][$property] = $value;
-						CSSP::comment($parsed[$block][$selector], $property, 'Added by border radius plugin');
 					}
 				}
 				// Right only
@@ -86,7 +83,6 @@
 					unset($parsed[$block][$selector]['border-right-radius']);
 					foreach($properties as $property){
 						$parsed[$block][$selector][$property] = $value;
-						CSSP::comment($parsed[$block][$selector], $property, 'Added by border radius plugin');
 					}
 				}
 				// Top left only
