@@ -24,6 +24,7 @@ $config = array(
 
 
 	// Sets debugging off (0), on (1), or in developer mode (2)
+	// TODO: Set this to 1 on release
 	'debug_level' => 2,
 
 

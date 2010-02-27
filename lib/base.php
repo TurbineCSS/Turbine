@@ -31,7 +31,7 @@ class Base {
  * @var array $config The (default) configuration
  */
 public $config = array(
-	'debug_level' => 1,
+	'debug_level' => 0,
 	'css_base_dir' => '',
 	'minify_css' => true
 );
