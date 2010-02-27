@@ -27,7 +27,7 @@
 
 <div class="shellcell fl">
 	<h2>Paste Turbine code here</h2>
-	<textarea id="cssp">@cssp
+	<textarea id="cssp">@turbine
 	compress:0
 	plugins:borderradius
 
