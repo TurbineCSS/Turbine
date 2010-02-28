@@ -194,12 +194,18 @@ class Parser2 extends Base{
 	 */
 	public function parse(){
 		$this->get_indention_char();
+		$this->preprocess();
 		$linecount = count($this->css);
+
+		// Loop through the lines
 		for($i = 0; $i < $linecount; $i++){
+			$line = $newline = null;
 			$this->token = '';
+
+			// Get current line
 			$line = $this->css[$i];
-			
-			// Setup next line. Must always be present, must not contain whitespace when empty
+
+			// Get next line. Must always be present, must not contain whitespace when empty, must not be a comment
 			if(isset($this->css[1+$i])){
 				if(trim($this->css[1+$i]) == ''){
 					$this->css[1+$i] = '';
@@ -210,24 +216,40 @@ class Parser2 extends Base{
 				$nextline = '';
 			}
 
-			// Ignore comment lines
-			if(substr(trim($line), 0, 2) != '//'){
+			// Parse @media switch
+			if(substr(trim($line), 0, 6) == '@media'){
+				$this->parse_media_line($line);
+			}
 
-				if(substr(trim($line), 0, 6) == '@media'){ // Parse @media switch
-					$this->parse_media_line($line);
-				}
-				elseif(substr(trim($line), 0, 7) == '@import'){
-					$this->parse_import_line($line);
-				}
-				else{
-					$level = $this->get_indention_level($line); // TODO: Level should be always 0 when there's no line before this line
-					$nextlevel = $this->get_indention_level($nextline);
-					if($nextlevel > $level){ // Parse as selector when the next line is indented
-						$this->parse_selector_line($line, $level); // New selector
+			// Parse @import rule
+			elseif(substr(trim($line), 0, 7) == '@import'){
+				$this->parse_import_line($line);
+			}
+
+			// Parse normal style line
+			else{
+
+				// Ignore comment lines
+				if(!preg_match('~^[\s]*//.*?$~', $line)){
+					// Get the current and next indention level
+					if(trim($this->css[$i-1]) == ''){
+						$level = 0;
+						$this->nesting = array();
 					}
 					else{
-						$this->parse_property_line($line); // Else parse as property/value pair
-						if($nextlevel < $level){ // When the next line is less indented, revert to the matching selector according to the level
+						$level = $this->get_indention_level($line);
+					}
+					$nextlevel = $this->get_indention_level($nextline);
+	
+					// Parse as selector when the next line is indented
+					if($nextlevel > $level){
+						$this->parse_selector_line($line, $level, $nextlevel);
+					}
+	
+					// Else parse as property/value pair
+					else{
+						$this->parse_property_line($line);
+						if($nextlevel < $level){
 							if(isset($this->nesting[count($this->nesting) - $nextlevel])){
 								$this->current['se'] = $this->nesting[count($this->nesting) - $nextlevel];
 							}
@@ -236,6 +258,7 @@ class Parser2 extends Base{
 				}
 
 			}
+
 		}
 		return $this;
 	}
@@ -259,6 +282,36 @@ class Parser2 extends Base{
 				}
 			}
 		}
+	}
+
+
+	protected function preprocess(){
+		$processed = array();
+		$linecount = count($this->css);
+		for($i = 0; $i < $linecount; $i++){
+			if(!preg_match('~^[\s]*//.*?$~', $this->css[$i])){
+				$processed[] = $this->css[$i];
+			}
+		}
+		echo '<pre>';
+		print_r($processed);
+		echo '</pre>';
+		$this->css = $processed;
+	}
+
+
+	/**
+	 * get_indention_level
+	 * Returns the indention level for a line
+	 * @param string $line The line to get the indention level for
+	 * @return int $level The indention level
+	 */
+	protected function get_indention_level($line){
+		$level = 0;
+		if(substr($line, 0, strlen($this->options['indention_char'])) == $this->options['indention_char']){
+			$level = 1 + $this->get_indention_level(substr($line, strlen($this->options['indention_char'])));
+		}
+		return $level;
 	}
 
 
@@ -337,6 +390,10 @@ class Parser2 extends Base{
 			$this->current['se'] = $selector; // Use as current selector
 			$this->nesting[(int)$level] = $selector; // Add to the nesting stack
 		}
+		echo '<pre>';
+		echo $line.'<br>';
+		print_r($this->nesting);
+		echo '</pre>';
 	}
 
 
@@ -429,21 +486,6 @@ class Parser2 extends Base{
 				$this->state = $this->prev_state;
 			}
 		}
-	}
-
-
-	/**
-	 * get_indention_level
-	 * Returns the indention level for a line
-	 * @param string $line The line to get the indention level for
-	 * @return int $level The indention level
-	 */
-	protected function get_indention_level($line){
-		$level = 0;
-		if(substr($line, 0, strlen($this->options['indention_char'])) == $this->options['indention_char']){
-			$level = 1 + $this->get_indention_level(substr($line, strlen($this->options['indention_char'])));
-		}
-		return $level;
 	}
 
 
