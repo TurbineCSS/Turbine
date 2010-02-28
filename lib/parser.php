@@ -193,6 +193,7 @@ class Parser2 extends Base{
 	 * @return object $this The CSS Parser object
 	 */
 	public function parse(){
+		$this->get_indention_char();
 		$linecount = count($this->css);
 		for($i = 0; $i < $linecount; $i++){
 			$this->token = '';
@@ -237,6 +238,27 @@ class Parser2 extends Base{
 			}
 		}
 		return $this;
+	}
+
+
+	/**
+	 * get_indention_char
+	 * Find out which whitespace char(s) are used for indention
+	 * @return void
+	 */
+	protected function get_indention_char(){
+		$linecount = count($this->css);
+		for($i = 0; $i < $linecount; $i++){ // For each line...
+			$line = $this->css[$i];
+			$nextline = $this->css[1+$i];
+			if(trim($line) != '' && trim($nextline) != ''){ // ...if the line and the following line are not empty..
+				preg_match('/^([\s]+).*?$/', $nextline, $matches); // ...find the whitespace used for indention
+				if(count($matches) == 2 && strlen($matches[1]) > 0){
+					$this->options['indention_char'] = $matches[1];
+					return;
+				}
+			}
+		}
 	}
 
 
