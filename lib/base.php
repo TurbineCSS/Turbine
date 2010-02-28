@@ -133,6 +133,25 @@ public function report_error($error){
 }
 
 
+/**
+ * array_get_previous
+ * Searches the array $array for the value befor the key $search
+ * @param array $array The array to search in
+ * @param mixed $search The key before the searched value
+ * @return mixed $previous The search result
+ */
+public function array_get_previous($array, $search){
+	$previous = null;
+	foreach($array as $key => $value){
+		if($key == $search){
+			return $previous;
+		}
+		$previous = $value;
+	}
+	return $previous;
+}
+
+
 }
 
 

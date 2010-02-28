@@ -243,7 +243,7 @@ class Parser2 extends Base{
 	
 					// Parse as selector when the next line is indented
 					if($nextlevel > $level){
-						$this->parse_selector_line($line, $level, $nextlevel);
+						$this->parse_selector_line($line, $level);
 					}
 	
 					// Else parse as property/value pair
@@ -255,6 +255,7 @@ class Parser2 extends Base{
 							}
 						}
 					}
+
 				}
 
 			}
@@ -285,6 +286,11 @@ class Parser2 extends Base{
 	}
 
 
+	/**
+	 * preprocess
+	 * Strip comment lines
+	 * @return void
+	 */
 	protected function preprocess(){
 		$processed = array();
 		$linecount = count($this->css);
@@ -293,9 +299,6 @@ class Parser2 extends Base{
 				$processed[] = $this->css[$i];
 			}
 		}
-		echo '<pre>';
-		print_r($processed);
-		echo '</pre>';
 		$this->css = $processed;
 	}
 
@@ -363,7 +366,7 @@ class Parser2 extends Base{
 	 * parse_selector_line
 	 * Parses a selector line
 	 * @param string $line A line containing a selector
-	 * @param
+	 * @param int $level The lines indention level
 	 * @return void
 	 */
 	protected function parse_selector_line($line, $level){
@@ -381,19 +384,15 @@ class Parser2 extends Base{
 			$selector = trim(preg_replace('/[\s]+/', ' ', $this->token));
 			// Combine selector with the nesting stack
 			if($level > 0){
-				$selector = $this->merge_selectors($this->nesting[$level-1], $selector);
+				$selector = $this->merge_selectors($this->array_get_previous($this->nesting, $level), $selector);
 			}
 			// Increase font-face index
 			if($selector == '@font-face'){
 				$this->current['fi']++;
 			}
 			$this->current['se'] = $selector; // Use as current selector
-			$this->nesting[(int)$level] = $selector; // Add to the nesting stack
+			$this->nesting[$level] = $selector; // Add to the nesting stack
 		}
-		echo '<pre>';
-		echo $line.'<br>';
-		print_r($this->nesting);
-		echo '</pre>';
 	}
 
 
