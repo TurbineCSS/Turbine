@@ -29,18 +29,6 @@
 						$parsed[$block][$selector][$property] = $value;
 						CSSP::comment($parsed[$block][$selector], $property, 'Added by border radius plugin');
 					}
-					// Fix for IEs found on http://www.htmlremix.com/css/curved-corner-border-radius-cross-browser/
-					$htc_path = $cssp->global_constants['SCRIPTPATH'].'/plugins/borderradius/border-radius.htc';
-					if(!isset($parsed[$block][$selector]['behavior'])){
-						$parsed[$block][$selector]['behavior'] = 'url("'.$htc_path.'")';
-						CSSP::comment($parsed[$block][$selector], 'behavior', 'Added by border radius plugin');
-					}
-					else{
-						if(!strpos($parsed[$block][$selector]['behavior'],'url("'.$htc_path.'")')){
-							$parsed[$block][$selector]['behavior'] .= ', url("'.$htc_path.'")';
-							CSSP::comment($parsed[$block][$selector], 'behavior', 'Added by border radius plugin');
-						}
-					}
 				}
 				// Top only
 				if(isset($parsed[$block][$selector]['border-top-radius'])){
