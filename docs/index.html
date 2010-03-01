@@ -19,54 +19,54 @@
 	<h1><span>Turbine Documentation</span></h1>
 	<h2><span>Table of contents</span></h2>
 	<ul>
-		<li>&darr; <a href="#toc-1">Introduction</a>
+		<li>&darr; <a href="#intro">Introduction</a>
 			<ul>
-				<li><a href="#toc-1-1">Goals and Features</a></li>
+				<li><a href="#intro-goalsandfeatures">Goals and Features</a></li>
 			</ul>
 		</li>
-		<li>&darr; <a href="#toc-2">Usage</a>
+		<li>&darr; <a href="#usage">Usage</a>
 			<ul>
-				<li><a href="#toc-2-1">Installation and setup</a></li>
-				<li><a href="#toc-2-2">Syntax</a></li>
-				<li><a href="#toc-2-3">Configuration</a></li>
-				<li><a href="#toc-2-4">Nested selectors</a></li>
-				<li><a href="#toc-2-5">Constants and aliases</a></li>
-				<li><a href="#toc-2-6">Inheritance and templating</a></li>
+				<li><a href="#usage-setup">Installation and setup</a></li>
+				<li><a href="#usage-syntax">Syntax</a></li>
+				<li><a href="#usage-config">Configuration</a></li>
+				<li><a href="#usage-nested">Nested selectors</a></li>
+				<li><a href="#usage-constantsaliases">Constants and aliases</a></li>
+				<li><a href="#usage-inheritancetemplating">Inheritance and templating</a></li>
 			</ul>
 		</li>
-		<li>&darr; <a href="#toc-3">Core Plugins</a>
+		<li>&darr; <a href="#plugins">Core Plugins</a>
 			<ul>
-				<li><a href="#toc-3-1">Border radius</a></li>
-				<li><a href="#toc-3-2">Box shadow</a></li>
-				<li><a href="#toc-3-3">Bullet proof @font-face</a></li>
-				<li><a href="#toc-3-4">Browser detection</a></li>
-				<li><a href="#toc-3-5">Data-URIs</a></li>
-				<li><a href="#toc-3-6">Minifier</a></li>
-				<li><a href="#toc-3-7">Loader</a></li>
-				<li><a href="#toc-3-8">OS detection</a></li>
-				<li><a href="#toc-3-9">Quote style</a></li>
-				<li><a href="#toc-3-10">Reset stylesheet</a></li>
-				<li><a href="#toc-3-11">Colormodels</a></li>
-				<li><a href="#toc-3-12">Meta plugins</a></li>
+				<li><a href="#plugins-borderradius">Border radius</a></li>
+				<li><a href="#plugins-boxshadow">Box shadow</a></li>
+				<li><a href="#plugins-fontface">Bullet proof @font-face</a></li>
+				<li><a href="#plugins-browser">Browser detection</a></li>
+				<li><a href="#plugins-datauri">Data-URIs</a></li>
+				<li><a href="#plugins-minifier">Minifier</a></li>
+				<li><a href="#plugins-loader">Loader</a></li>
+				<li><a href="#plugins-os">OS detection</a></li>
+				<li><a href="#plugins-quote">Quote style</a></li>
+				<li><a href="#plugins-reset">Reset stylesheet</a></li>
+				<li><a href="#plugins-colormodels">Colormodels</a></li>
+				<li><a href="#plugins-meta">Meta plugins</a></li>
+				<li><a href="#plugins-experimental">Experimental plugins</a></li>
 			</ul>
 		</li>
-		<li>&darr; <a href="#toc-4">Development</a>
+		<li>&darr; <a href="#dev">Development</a>
 			<ul>
-				<li><a href="#toc-4-1">Contribute</a></li>
-				<li><a href="#toc-4-2">Plugin development</a></li>
-				<!--<li><a href="#toc-4-3">API reference</a></li>-->
+				<li><a href="#dev-contribute">Contribute</a></li>
+				<li><a href="#dev-plugins">Plugin development</a></li>
 			</ul>
 		</li>
-		<li>&darr; <a href="#toc-5">Tools</a>
+		<li>&darr; <a href="#tools">Tools</a>
 			<ul>
-				<li><a href="#toc-5-1">Converter</a></li>
-				<li><a href="#toc-5-2">Shell</a></li>
+				<li><a href="#tools-converter">Converter</a></li>
+				<li><a href="#tools-shell">Shell</a></li>
 			</ul>
 		</li>
-		<li>&darr; <a href="#toc-6">FAQ</a>
+		<li>&darr; <a href="#faq">FAQ</a>
 			<ul>
-				<li><a href="#toc-6-1">Any general advice?</a></li>
-				<li><a href="#toc-6-2">What are the tradeoffs?</a></li>
+				<li><a href="#faq-advice">Any general advice?</a></li>
+				<li><a href="#faq-tradeoffs">What are the tradeoffs?</a></li>
 			</ul>
 		</li>
 	</ul>
@@ -74,7 +74,7 @@
 
 
 
-<h1 id="toc-1">Introduction</h1><div id="introduction">
+<h1 id="intro">Introduction</h1><div>
 <p>
 	Turbine is a PHP-powered tool that introduces a new way for writing CSS. It's syntax and features are designed to
 	decrease css devolopment time and web developer headache. Turbine takes something like this&nbsp;&hellip;
@@ -107,7 +107,7 @@
 	css's limitations and your least favourite browser's latest bugs. Think jQuery for CSS. Being fully extensible, you can customize Turbine
 	to your liking.
 </p>
-<h2 id="toc-1-1">Goals and Features</h2><div>
+<h2 id="intro-goalsandfeatures">Goals and Features</h2><div>
 <p>
 	Turbine's basic features include:
 </p>
@@ -128,9 +128,9 @@
 </div>
 
 
-<h1 id="toc-2">Usage</h1><div id="usage">
+<h1 id="usage">Usage</h1><div>
 
-<h2 id="toc-2-1">Installation and setup</h2><div>
+<h2 id="usage-setup">Installation and setup</h2><div>
 <h3>Installation</h3>
 <p>
 	Simply download the latest release from <a href="http://github.com/SirPepe/Turbine">Github</a> and unpack it to a directory on your
@@ -184,7 +184,7 @@
 	configuration option ist set to <code>true</code>).
 </p>
 
-<h2 id="toc-2-2">Syntax</h2><div>
+<h2 id="usage-syntax">Syntax</h2><div>
 <h3>Basics</h3>
 <p>
 	Turbine's syntax is a bit like <a href="#">Python</a>&nbsp;&ndash; <strong>the level of indention </strong>instead of curly braces
@@ -203,7 +203,7 @@
 	span                   // Next line is indented = this is a selector
 		color:red</pre>
 <p>
-	This behaviour allows nested selectors, which can be quite powerful (see <a class="smoothscroll" href="#toc-2-4">nested selectors</a>).
+	This behaviour allows nested selectors, which can be quite powerful (see <a class="smoothscroll" href="#usage-nested">nested selectors</a>).
 	You can use any number or combination of spaces and tabs for indention, but be careful to keep your indention constistent in the whole
 	file.
 </p>
@@ -268,11 +268,11 @@
 		<tr>
 			<th rowspan="2">$</th>
 			<td>Selector</td>
-			<td>Selector alias, will be replaced by the selector defined in <code>@aliases</code> (see <a class="smoothscroll" href="#toc-2-5">Constants and aliases</a>)</td>
+			<td>Selector alias, will be replaced by the selector defined in <code>@aliases</code> (see <a class="smoothscroll" href="#usage-constantsaliases">Constants and aliases</a>)</td>
 		</tr>
 		<tr>
 			<td>Value</td>
-			<td>Constant, will be replaced by the value defined in <code>@constants</code> (see <a class="smoothscroll" href="#toc-2-5">Constants and aliases</a>)</td>
+			<td>Constant, will be replaced by the value defined in <code>@constants</code> (see <a class="smoothscroll" href="#usage-constantsaliases">Constants and aliases</a>)</td>
 		</tr>
 		<tr>
 			<th>$_</th>
@@ -282,7 +282,7 @@
 		<tr>
 			<th>?</th>
 			<td>Selector</td>
-			<td>Prototype - whole element will be removed before output but properties can be inherited from it (see <a class="smoothscroll" href="#toc-2-6-templating">Templating</a>)</td>
+			<td>Prototype - whole element will be removed before output but properties can be inherited from it (see <a class="smoothscroll" href="#usage-inheritancetemplating-templating">Templating</a>)</td>
 		</tr>
 		<tr>
 			<th>&amp;</th>
@@ -294,7 +294,7 @@
 </div>
 
 
-<h2 id="toc-2-3">Configuration</h2><div>
+<h2 id="usage-config">Configuration</h2><div>
 <p>
 	The configuration options of Turbine can be set in the stylesheets themselves&nbsp;&ndash a <code>@turbine</code> block (called
 	<strong>configuration block</strong>) allows for options to be set like properties and values in normal CSS code. There are
@@ -326,7 +326,7 @@
 </div>
 
 
-<h2 id="toc-2-4">Nested selectors</h2><div>
+<h2 id="usage-nested">Nested selectors</h2><div>
 <p>
 	Turbine implements nested css selectors using a simple principle: whenever the <em>next</em> line is indented, to current line
 	is used as a selector and combined with it's parent selectors.
@@ -389,7 +389,7 @@
 
 
 
-<h2 id="toc-2-5">Constants and aliases</h2><div>
+<h2 id="usage-constantsaliases">Constants and aliases</h2><div>
 <p>
 	TODO
 </p>
@@ -444,7 +444,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-2-6">Inheritance and Templating</h2><div>
+<h2 id="usage-inheritancetemplating">Inheritance and Templating</h2><div>
 <p>
 	TODO
 </p>
@@ -475,7 +475,7 @@ $mainNavigation
 <p>
 	TODO
 </p>
-<h3 id="toc-2-6-templating">Templating</h3>
+<h3 id="usage-inheritancetemplating-templating">Templating</h3>
 <p>
 	TODO
 </p>
@@ -487,11 +487,11 @@ $mainNavigation
 
 
 
-<h1 id="toc-3">Core plugins</h1><div id="plugins">
+<h1 id="plugins">Core plugins</h1><div>
 
 
 
-<h2 id="toc-3-1">Border radius</h2><div>
+<h2 id="plugins-borderradius">Border radius</h2><div>
 <p class="abstract">
 	Automatically adds vendor-specific versions of <code>border-radius</code> and implements some shortcuts.
 </p>
@@ -522,7 +522,6 @@ $mainNavigation
     -khtml-border-radius: 4px;
     -webkit-border-radius: 4px;
     border-radius: 4px;
-    behavior: url("/plugins/borderradius/border-radius.htc");
 }
 </pre>
 <h4>Left side only shortcut</h4>
@@ -545,7 +544,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-2">Box shadow</h2><div>
+<h2 id="plugins-boxshadow">Box shadow</h2><div>
 <p class="abstract">
 	Automatically adds vendor-specific versions of <code>box-shadow</code>.
 </p>
@@ -579,7 +578,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-3">Bullet proof @font-face syntax</h2><div>
+<h2 id="plugins-fontface">Bullet proof @font-face syntax</h2><div>
 <p class="abstract">
 	Generates bullet proof @font-face declarations from a simplified syntax.
 </p>
@@ -630,7 +629,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-4">Browser detection</h2><div>
+<h2 id="plugins-browser">Browser detection</h2><div>
 <p class="abstract">
 	TODO
 </p>
@@ -641,7 +640,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-5">Data URIs</h2><div>
+<h2 id="plugins-datauri">Data URIs</h2><div>
 <p class="abstract">
 	Inlines images into the css output.
 </p>
@@ -669,7 +668,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-6">Minifier</h2><div>
+<h2 id="plugins-minifier">Minifier</h2><div>
 <p class="abstract">
 	Performs a number of micro-optimizations.
 </p>
@@ -684,7 +683,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-7">Loader</h2><div>
+<h2 id="plugins-loader">Loader</h2><div>
 <p class="abstract">
 	Loads another .cssp file.
 </p>
@@ -700,7 +699,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-8">OS detection</h2><div>
+<h2 id="plugins-os">OS detection</h2><div>
 <p class="abstract">
 	TODO
 </p>
@@ -711,7 +710,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-9">Quotes</h2><div>
+<h2 id="plugins-quote">Quotes</h2><div>
 <p class="abstract">
 	Inserts language- and country-specific quotation marks.
 </p>
@@ -765,7 +764,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-10">Reset stylesheet</h2><div>
+<h2 id="plugins-reset">Reset stylesheet</h2><div>
 <p class="abstract">
 	Includes a reset stylesheet.
 </p>
@@ -780,7 +779,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-11">Colormodels</h2><div>
+<h2 id="plugins-colormodels">Colormodels</h2><div>
 <p class="abstract">
 	TODO
 </p>
@@ -791,7 +790,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-3-12">Meta plugins</h2><div>
+<h2 id="plugins-meta">Meta plugins</h2><div>
 <p class="abstract">
 	Meta plugins enable a group of other plugins.
 </p>
@@ -805,13 +804,10 @@ $mainNavigation
 	Activates all other plugins that enable CSS3 properties:
 </p>
 <ul>
-	<li>AlphaBG</li>
-	<li>Background size</li>
 	<li>Border radius</li>
 	<li>Box shadow</li>
-	<li>Multicolumn layout</li>
+	<li>Colormodels</li>
 	<li>Transform</li>
-	<li>Transistion</li>
 </ul>
 <h3>Performance</h3>
 <p>
@@ -835,9 +831,24 @@ $mainNavigation
 	Activates all other plugins that add helpful utilities:
 </p>
 <ul>
-	<li>Colortools</li>
 	<li>Bullet proof @font-face</li>
 	<li>Quote style</li>
+</ul>
+</div>
+
+
+
+<h2 id="plugins-experimental">Experimental plugins</h2><div>
+<p>
+	Some experimental plugins are not yet officially part of Turbine but you can play with them (or improve them) if you like. They
+	are available via the <a href="http://github.com/SirPepe/Turbine/tree/experimental">experimental development branch</a> on Github.
+</p>
+<ul>
+	<li><strong>borderradius</strong>: <code>border-radius</code> with support for IE</li>
+	<li><strong>multicolumn</strong>: CSS3 multi column layouts</li>
+	<li><strong>backgroundsize</strong>: CSS3 background sizing</li>
+	<li><strong>colortools</strong>: Functions to manipulate color in cssp files</li>
+	<li><strong>transition</strong>: CSS3 transitions</li>
 </ul>
 </div>
 
@@ -847,11 +858,11 @@ $mainNavigation
 
 
 
-<h1 id="toc-4">Development</h1><div id="development">
+<h1 id="dev">Development</h1><div id="development">
 
 
 
-<h2 id="toc-4-1">Contribute</h2><div>
+<h2 id="dev-contribute">Contribute</h2><div>
 <p>
 	Turbine is free open source software (LGPL) and development takes place on <a href="http://github.com/">GitHub</a>,
 	a hosting platform for the excellent distributed version control system <a href="http://git-scm.com/">Git</a>. 
@@ -872,7 +883,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-4-2">Plugin development</h2><div>
+<h2 id="dev-plugins">Plugin development</h2><div>
 <p>
 	Plugin development for Turbine is rather simple. All you need is a file called <code>plugin_name.php</code> containing
 	a function of some sort (usually named <code>plugin_name()</code>), located in the plugins directory. The function must
@@ -992,10 +1003,10 @@ $mainNavigation
 
 
 
-<h1 id="toc-5">Tools</h1><div id="tools">
+<h1 id="tools">Tools</h1><div>
 
 
-<h2 id="toc-5-1">CSS to Turbine converter</h2><div>
+<h2 id="tools-converter">CSS to Turbine converter</h2><div>
 <p>
 	TODO
 </p>
@@ -1003,7 +1014,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-5-2">Turbine shell</h2><div>
+<h2 id="tools-shell">Turbine shell</h2><div>
 <p>
 	TODO
 </p>
@@ -1015,10 +1026,10 @@ $mainNavigation
 
 
 
-<h1 id="toc-6">FAQ</h1><div id="faq">
+<h1 id="faq">FAQ</h1><div>
 
 
-<h2 id="toc-6-1">Any general advice?</h2><div>
+<h2 id="faq-advice">Any general advice?</h2><div>
 <ul>
 	<li>
 		Turbine is beta software. Expect stuff to break everywhere, all the time. If you encounter bugs, <a href="http://github.com/SirPepe/Turbine/issues">report them</a>!
@@ -1037,7 +1048,7 @@ $mainNavigation
 
 
 
-<h2 id="toc-6-2">What are the tradeoffs?</h2><div>
+<h2 id="faq-tradeoffs">What are the tradeoffs?</h2><div>
 <ul>
 	<li>
 		Turbine uses the input css files to generate <em>completely</em> new CSS code that won't necessarily look very much like it's source.
