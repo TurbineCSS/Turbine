@@ -17,6 +17,7 @@
 	 * @return void
 	 */
 	function borderradius(&$parsed){
+		global $cssp;
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				// Everywhere
@@ -29,7 +30,7 @@
 						CSSP::comment($parsed[$block][$selector], $property, 'Added by border radius plugin');
 					}
 					// Fix for IEs found on http://www.htmlremix.com/css/curved-corner-border-radius-cross-browser/
-					$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/borderradius/border-radius.htc';
+					$htc_path = $cssp->global_constants['SCRIPTPATH'].'/plugins/borderradius/border-radius.htc';
 					if(!isset($parsed[$block][$selector]['behavior'])){
 						$parsed[$block][$selector]['behavior'] = 'url("'.$htc_path.'")';
 						CSSP::comment($parsed[$block][$selector], 'behavior', 'Added by border radius plugin');

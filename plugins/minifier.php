@@ -5,7 +5,7 @@
 	 * Performs a number of micro-optimizations
 	 * 
 	 * Usage: Nobrainer, just switch it on
-	 * Status: Beta
+	 * Status: Stable
 	 * 
 	 * @todo: Optimize stuff like margin: 4px 4px 4px 4px;
 	 * @todo: Remove units from zero-values like 0em
