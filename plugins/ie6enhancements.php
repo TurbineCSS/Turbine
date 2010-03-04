@@ -30,7 +30,7 @@
 						$parsed[$block]['body']['behavior'] .= ', url("'.$htc_path.'")';
 					}
 				}
-				// Missing :hover-property on every tag except link-tag
+				// Fix transparent PNGs
 				// Fix found on http://www.twinhelix.com/css/iepngfix/
 				$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/ie6_enhancements/iepngfix.htc';
 				if(!isset($parsed[$block]['img'])){

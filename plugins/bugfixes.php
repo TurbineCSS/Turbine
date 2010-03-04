@@ -41,7 +41,9 @@
 			{
 				// Ghost margin around buttons
 				// See http://www.sitepoint.com/forums/showthread.php?t=547059
-				if(!isset($parsed[$block]['button::-moz-focus-inner'])) $parsed[$block]['button::-moz-focus-inner'] = array();	
+				if(!isset($parsed[$block]['button::-moz-focus-inner'])){
+					$parsed[$block]['button::-moz-focus-inner'] = array();
+				}
 				$parsed[$block]['button::-moz-focus-inner']['padding'] = '0';
 				$parsed[$block]['button::-moz-focus-inner']['border'] = 'none';
 			}
