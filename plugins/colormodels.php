@@ -79,7 +79,7 @@
 					$filtercolor_g = strtoupper(str_pad(dechex(floatval($rgba['g'])),2,'0',STR_PAD_LEFT));
 					$filtercolor_b = strtoupper(str_pad(dechex(floatval($rgba['b'])),2,'0',STR_PAD_LEFT));
 					$filter = 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#'.$filteropacity.$filtercolor_r.$filtercolor_g.$filtercolor_b.',endColorstr=#'.$filteropacity.$filtercolor_r.$filtercolor_g.$filtercolor_b.')';
-					$recalculated['background'] = '';
+					$recalculated['background'] = 'none';
 					$recalculated['filter'] = $filter;
 					$recalculated['zoom'] = '1';
 				}

@@ -39,7 +39,7 @@ a:hover, a:active
 	color:$link
 	border-bottom:none
 strong, b
-	font-weight:bold
+	font-weight:bold !important
 em, i
 	font-style:italic
 .fl
@@ -118,6 +118,7 @@ input[type=text].version
 	code
 		font-family:monospace
 		font-size:125%
+		font-weight:inherit
 	pre
 		font-family:Consolas, Courier, monospace
 		font-size:100%

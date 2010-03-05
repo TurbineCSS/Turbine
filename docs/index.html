@@ -657,11 +657,70 @@ $mainNavigation
 
 <h2 id="plugins-colormodels">Colormodels</h2><div>
 <p class="abstract">
-	TODO
+	Smart color models for older browsers
 </p>
 <p>
-	TODO
+	The colormodels plugin enables the CSS color declarations <code>rgba()</code>, </code>hsl()</code> and <code>hsla()</code> for browsers
+	that usually don't support them. It works by transforming the original declarations to somthing the current browser can understand.
 </p>
+<h3>Usage</h3>
+<p>
+	Just add <code>colormodels</code> to your <code>@turbine</code> plugins rule. Done!
+</p>
+<h3>Examples</h3>
+<p>
+	The following turbine code&nbsp;&hellip;
+</p>
+<pre class="cssp">p
+	background:hsla(200, 20%, 20%, 0.5)</pre>
+<p>
+	&hellip; is recalculated to RGBA for Opera 9:
+</p>
+<pre class="css">p {
+    background: rgba(40, 54, 61, 0.5);
+}</pre>
+<p>
+	For IE, the HSLA declaration is transformed into a proprietary filter:
+</p>
+<pre class="css">p {
+    background: none;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#8028363D,endColorstr=#8028363D);
+    zoom: 1;
+}</pre>
+<p>
+	If neither filters nor anything else would work, a solid color is used:
+</p>
+<pre class="css">p {
+    background: rgb(40, 54, 61);
+}</pre>
+<h3>Troubleshooting</h3>
+<p>
+	Background transparency in IE works with Microsoft's proprietary <code>filter</code> property which may cause unwanted effects
+	in some scenarios. Consider the following:
+</p>
+<pre class="cssp">p
+	background:rgba(200, 0, 0, 0.5)
+p.foo
+	background:rgb(200, 0, 0)</pre>
+<p>
+	Turbine will insert <code>filter</code> property for <code>p</code>:
+</p>
+<pre class="css">p {
+    background:none;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#80C80000,endColorstr=#80C80000);
+}
+p.foo {
+    background: rgb(200, 0, 0);
+}</pre>
+<p>
+	The problem is that in the browser <strong>the filter will also affect <code>p.foobar</code></strong> because the <code>p</code>
+	selector of course also matches <code>p.foobar</code>. The solution is to explicitly remove any filters from <code>p.foobar</code>:
+</p>
+<pre class="cssp">p
+	background:rgba(200, 0, 0, 0.5)
+p.foobar
+	background:rgb(200, 0, 0)
+	filter:none</pre>
 </div>
 
 
@@ -673,6 +732,10 @@ $mainNavigation
 <p>
 	The Data URI plugin inlines all images smaller than 24kb as base64 encoded as a data URI or, for Internet Explorer, as MHTML. This
 	reduces the number of HTTP requests.
+</p>
+<h3>Usage</h3>
+<p>
+	Just add <code>datauri</code> to your <code>@turbine</code> plugins rule. Done!
 </p>
 <h3>Example</h3>
 <pre class="cssp">@turbine
@@ -686,10 +749,6 @@ $mainNavigation
 <pre>#foo {
     background: #FFF url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAMAAADXEh96AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAGUExURf///8zjYPWWfS0AAAARSURBVHjaYmAAAUYiSIAAAwAAqAAH4ng45wAAAABJRU5ErkJggg==') top left;
 }</pre>
-<h3>Usage</h3>
-<p>
-	Just add <code>datauri</code> to your <code>@turbine</code> plugins rule. Done!
-</p>
 </div>
 
 
