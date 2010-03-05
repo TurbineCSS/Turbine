@@ -26,7 +26,7 @@
 				// ... loop through the css 
 				foreach($parsed as $block => $css){
 					foreach($parsed[$block] as $selector => $styles){
-						if(isset($parsed[$block][$selector][$search])){
+						if($selector != '@turbine' && isset($parsed[$block][$selector][$search])){
 							// Found something that we may have to replace?
 							if(preg_match($hslapattern, $parsed[$block][$selector][$search], $matches) || preg_match($rgbapattern, $parsed[$block][$selector][$search], $matches)){
 								// See if the browser supports the color model, convert if not
@@ -237,7 +237,7 @@
 	/**
 	 * Register the plugin
 	 */
-	$cssp->register_plugin('before_compile', 0, 'colormodels');
+	$cssp->register_plugin('before_glue', -100, 'colormodels');
 
 
 ?>
