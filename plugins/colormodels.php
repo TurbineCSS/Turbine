@@ -72,7 +72,7 @@
 		$recalculated = array();
 		switch($model){
 			case 'rgba':
-				// If this is a background and we can use filters, do this. Foll back to solid RGB otherwise
+				// If this is a background and we can use filters, do this. Fall back to solid RGB otherwise
 				if(($property == 'background' || $property == 'background-color') && $capabilities['filter']){
 					$filteropacity = strtoupper(str_pad(dechex(round(floatval($rgba['a']) * 255)),2,'0',STR_PAD_LEFT));
 					$filtercolor_r = strtoupper(str_pad(dechex(floatval($rgba['r'])),2,'0',STR_PAD_LEFT));
@@ -114,12 +114,7 @@
 		global $browser;
 		$capabilities = array();
 		if($browser->engine == 'MSIE'){
-			if($browser->engineversion >= 8){
-				$capabilities['rgba'] = true;
-			}
-			else{
-				$capabilities['filter'] = true;
-			}
+			$capabilities['filter'] = true;
 		}
 		elseif($browser->engine == 'Gecko'){
 			$capabilities['rgba'] = true;
