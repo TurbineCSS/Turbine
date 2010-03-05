@@ -142,7 +142,7 @@ class Parser2 extends Base{
 
 	/**
 	 * load_string
-	 * Loads a css string line by line and appends it to the unparsed css code if $overwirite is false
+	 * Loads a css string line by line and appends it to the unparsed css code if $overwrite is false
 	 * @param string $string the css to load
 	 * @param bool $overwrite overwrite already loaded css or append the new string?
 	 * @return object $this The CSS Parser object
@@ -548,7 +548,7 @@ class Parser2 extends Base{
 			// Whitspace characters
 			$s = ' ';
 			$t = "\t";
-			$n = "\n";
+			$n = "\r\n";
 			if($compressed){
 				$s = $t = $n = NULL;
 			}
