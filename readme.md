@@ -32,7 +32,6 @@ and turns it into:
         -moz-border-radius: 4px;
         -khtml-border-radius: 4px;
         -webkit-border-radius: 4px;
-        behavior: url("/plugins/borderradius/border-radius.htc");
     }
 
 It is somewhat compareable to [Sass][1] and [Scaffold][2], but more radically geared towards getting as much done as possible in as few keystrokes as possible.
