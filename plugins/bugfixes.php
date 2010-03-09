@@ -14,31 +14,48 @@
 	function bugfixes(&$parsed){
 		global $browser;
 		foreach($parsed as $block => $css){
-			// IE 6 global bugfixes
-			if($browser->family == 'MSIE' && floatval($browser->familyversion) < 7)
-			{
-				// Image margin bottom bug
-				if(!isset($parsed[$block]['img'])) $parsed[$block]['img'] = array();	
-				$parsed[$block]['img']['vertical-align'] = 'bottom';
 
+			// IE 6 global bugfixes
+			if($browser->family == 'MSIE' && floatval($browser->familyversion) < 7){
+				// Image margin bottom bug
+				if(!isset($parsed[$block]['img'])){
+					$parsed[$block]['img'] = array();
+				}
+				$parsed[$block]['img']['vertical-align'] = 'bottom';
+				CSSP::comment($parsed[$block]['img'], 'vertical-align', 'Added by bugfix plugin');
 				// Background image flickers on hover
-				if(!isset($parsed[$block]['html'])) $parsed[$block]['html'] = array();	
-				if(!isset($parsed[$block]['html']['filter'])) $parsed[$block]['html']['filter'] = 'expression(document.execCommand("BackgroundImageCache",false,true))';
-				else if(!strpos($parsed[$block]['html']['filter'],'expression(document.execCommand("BackgroundImageCache",false,true))')) $parsed[$block]['html']['filter'] .= ' expression(document.execCommand("BackgroundImageCache",false,true))';
+				if(!isset($parsed[$block]['html'])){
+					$parsed[$block]['html'] = array();
+				}
+				if(!isset($parsed[$block]['html']['filter'])){
+					$parsed[$block]['html']['filter'] = 'expression(document.execCommand("BackgroundImageCache",false,true))';
+					CSSP::comment($parsed[$block]['html'], 'filter', 'Added by bugfix plugin');
+				}
+				else{
+					if(!strpos($parsed[$block]['html']['filter'], 'expression(document.execCommand("BackgroundImageCache",false,true))')){
+						$parsed[$block]['html']['filter'] .= ' expression(document.execCommand("BackgroundImageCache",false,true))';
+						CSSP::comment($parsed[$block]['html'], 'filter', 'Modified by bugfix plugin');
+					}
+				}
 			}
+
 			// IE 6 + 7 global bugfixes
-			if($browser->family == 'MSIE' && floatval($browser->familyversion) < 8)
-			{
+			if($browser->family == 'MSIE' && floatval($browser->familyversion) < 8){
 				// Enable full styleability for IE-buttons
 				// See http://www.sitepoint.com/forums/showthread.php?t=547059
-				if(!isset($parsed[$block]['button'])) $parsed[$block]['button'] = array();	
+				if(!isset($parsed[$block]['button'])){
+					$parsed[$block]['button'] = array();
+				}
 				$parsed[$block]['button']['overflow'] = 'visible';
 				$parsed[$block]['button']['width'] = 'auto';
 				$parsed[$block]['button']['white-space'] = 'nowrap';
+				CSSP::comment($parsed[$block]['button'], 'overflow', 'Added by bugfix plugin');
+				CSSP::comment($parsed[$block]['button'], 'width', 'Added by bugfix plugin');
+				CSSP::comment($parsed[$block]['button'], 'white-space', 'Added by bugfix plugin');
 			}
+
 			// Firefox global bugfixes
-			if($browser->engine == 'Gecko')
-			{
+			if($browser->engine == 'Gecko'){
 				// Ghost margin around buttons
 				// See http://www.sitepoint.com/forums/showthread.php?t=547059
 				if(!isset($parsed[$block]['button::-moz-focus-inner'])){
@@ -46,23 +63,29 @@
 				}
 				$parsed[$block]['button::-moz-focus-inner']['padding'] = '0';
 				$parsed[$block]['button::-moz-focus-inner']['border'] = 'none';
+				CSSP::comment($parsed[$block]['button::-moz-focus-inner'], 'padding', 'Added by bugfix plugin');
+				CSSP::comment($parsed[$block]['button::-moz-focus-inner'], 'border', 'Added by bugfix plugin');
 			}
+
 			foreach($parsed[$block] as $selector => $styles){
+
 				// IE 6 local bugfixes
-				if($browser->family == 'MSIE' && floatval($browser->familyversion) < 7)
-				{
+				if($browser->family == 'MSIE' && floatval($browser->familyversion) < 7){
 					// Float double margin bug
-					if(isset($parsed[$block][$selector]['float']) && (isset($parsed[$block][$selector]['margin']) || isset($parsed[$block][$selector]['margin-left']) || isset($parsed[$block][$selector]['margin-right']))) $parsed[$block][$selector]['display'] = 'inline';
+					if(isset($parsed[$block][$selector]['float'])
+						&& (isset($parsed[$block][$selector]['margin'])
+							|| isset($parsed[$block][$selector]['margin-left'])
+							|| isset($parsed[$block][$selector]['margin-right']))
+					){
+						$parsed[$block][$selector]['display'] = 'inline';
+						CSSP::comment($parsed[$block][$selector], 'display', 'Added by bugfix plugin');
+					}
 				}
-				// IE 6 + 7 bugfixes
-				if($browser->family == 'MSIE' && floatval($browser->familyversion) < 8)
-				{
-				}
-				// Firefox bugfixes
-				if($browser->engine == 'Gecko')
-				{
-				}
+			
+				// IE 6 + 7 local bugfixes
+				// if($browser->family == 'MSIE' && floatval($browser->familyversion) < 8){}
 			}
+
 		}
 	}
 

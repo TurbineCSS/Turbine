@@ -646,10 +646,23 @@ $mainNavigation
 
 <h2 id="plugins-bugfix">Automatic browser bugfixes</h2><div>
 <p class="abstract">
-	TODO
+	Tries to fix some common browser rendering bugs automatically.
 </p>
+<h3>Bugs fixed by this plugin</h3>
+<ul>
+	<li>IE6: Image margin bottom bug</li>
+	<li>IE6: Background image flickers on hover</li>
+	<li>IE6: Float double margin bug</li>
+	<li>IE6 and 7: <code>&lt;button&gt;</code> styleability (<a href="http://www.sitepoint.com/forums/showthread.php?t=547059">Source</a>)</li>
+	<li>Firefox: Ghost margin around buttons (<a href="http://www.sitepoint.com/forums/showthread.php?t=547059">Source</a>)</li>
+</ul>
 <p>
-	TODO
+	Note: there is no guarantee that the plugin will catch all cases in which a bug from the above list will occour. The goal is
+	to <em>reduce</em> the time spent on fixing css, not to do away with manual bugfixing completly.
+</p>
+<h3>Usage</h3>
+<p>
+	Just add <code>bugfixes</code> to your <code>@turbine</code> plugins rule. Done!
 </p>
 </div>
 
