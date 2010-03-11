@@ -16,7 +16,7 @@
 	function html5(&$css){
 		global $browser, $cssp, $plugin_list;
 		$plugin_list[] = 'html5styles';
-		$cssp->register_plugin('before_output', 0, 'html5styles');
+		$cssp->register_plugin('before_output', 1000, 'html5styles');
 		if($browser->family == 'MSIE' && floatval($browser->familyversion) < 9){
 			$plugin_list[] = 'html5elements';
 			$cssp->register_plugin('before_compile', 0, 'html5elements');
@@ -40,10 +40,12 @@
 			}
 			if(!isset($parsed[$block]['body']['behavior'])){
 				$parsed[$block]['body']['behavior'] = 'url("'.$htc_path.'")';
+				CSSP::comment($parsed[$block][$selector], 'behavior', 'Added by html5 plugin');
 			}
 			else{
 				if(!strpos($parsed[$block]['body']['behavior'],'url("'.$htc_path.'")')){
 					$parsed[$block]['body']['behavior'] .= ', url("'.$htc_path.'")';
+					CSSP::comment($parsed[$block][$selector], 'behavior', 'Modified by html5 plugin');
 				}
 			}
 		}
