@@ -1,6 +1,6 @@
 /**
- * To change the reset stylesheet, rename _custom.css to custom.css and fill in
- * your own reset styles there
+ * To use a custom reset stylesheet, rename _custom.css to custom.css and put
+ * your own reset rules there
  */
 
 html, body, div, span, applet, object, iframe,
@@ -23,37 +23,29 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 	font-weight: normal;
 	text-decoration: none;
 }
-
 body {
 	line-height: 1;
 }
-
 ol, ul {
 	list-style: none;
 }
-
 blockquote, q {
 	quotes: none;
 }
-
 blockquote:before, blockquote:after,
 q:before, q:after {
 	content: '';
 	content: none;
 }
-
 :focus {
 	outline: 0;
 }
-
 ins {
 	text-decoration: none;
 }
-
 del {
 	text-decoration: line-through;
 }
-
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
