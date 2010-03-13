@@ -27,8 +27,9 @@
 		<li>&darr; <a href="#usage">Usage</a>
 			<ul>
 				<li><a href="#usage-setup">Installation and setup</a></li>
-				<li><a href="#usage-syntax">Syntax</a></li>
-				<li><a href="#usage-config">Configuration</a></li>
+				<li><a href="#usage-syntax">Basic syntax</a></li>
+				<li><a href="#usage-configuration">Configuration</a></li>
+				<li><a href="#usage-expanding">Expanding properties</a></li>
 				<li><a href="#usage-nested">Nested selectors</a></li>
 				<li><a href="#usage-constantsaliases">Constants and aliases</a></li>
 				<li><a href="#usage-inheritancetemplating">Inheritance and templating</a></li>
@@ -108,7 +109,7 @@
 <p>
 	&hellip;or, if you like great performance, directly into this (which is automatically cached, gezipped and served with the correct expires headers):
 </p>
-<pre class="css">#foo,#bar{color: #F00}#foo div.alpha,#foo div.beta,#bar div.alpha,#bar div.beta{font-weight:bold;border-radius:4px;-moz-border-radius:4px;-khtml-border-radius:4px;-webkit-border-radius:4px;behavior:url("/plugins/borderradius/border-radius.htc")}</pre>
+<pre class="css">#foo,#bar{color:#FF0000;margin-left:4px;margin-right:4px;}#foo div.alpha,#foo div.beta,#bar div.alpha,#bar div.beta{font-weight:bold;-moz-border-radius:4px;-khtml-border-radius:4px;-webkit-border-radius:4px;border-radius:4px;}</pre>
 <p>
 	Turbine can save you a lot of typing and time <em>and</em> allow you to concentrate on a website's design and functionality instead of
 	css's limitations and your least favourite browser's latest bugs. Think jQuery for CSS. Being fully extensible, you can customize Turbine
@@ -191,7 +192,7 @@
 	configuration option ist set to <code>true</code>).
 </p>
 
-<h2 id="usage-syntax">Syntax</h2><div>
+<h2 id="usage-syntax">Basic syntax</h2><div>
 <h3>Basics</h3>
 <p>
 	Turbine's syntax is a bit like <a href="#">Python</a>&nbsp;&ndash; <strong>the level of indention </strong>instead of curly braces
@@ -301,7 +302,7 @@
 </div>
 
 
-<h2 id="usage-config">Configuration</h2><div>
+<h2 id="usage-configuration">Configuration</h2><div>
 <p>
 	The configuration options of Turbine can be set in the stylesheets themselves&nbsp;&ndash a <code>@turbine</code> block (called
 	<strong>configuration block</strong>) allows for options to be set like properties and values in normal CSS code. There are
@@ -333,7 +334,25 @@
 </div>
 
 
-<h2 id="usage-nested">Nested selectors</h2><div>
+<h2 id="usage-expanding">Advanced syntax: Expanding properties</h2><div>
+<p>
+	if you want to use multiple properties with the same value inside a selector, you can take advantage of expanding properties. This
+	allows you to use properties as a comma-sepperated list&nbsp;&hellip;
+</p>
+<pre class="cssp">#foo
+	margin-left, margin-right, border-width:4px</pre>
+<p>
+	which Turbine expands into single css rules:
+</p>
+<pre class="css">#foo {
+	margin-left: 4px;
+	margin-right: 4px;
+	border-width: 4px;
+}</pre>
+</div>
+
+
+<h2 id="usage-nested">Advanced syntax: Nested selectors</h2><div>
 <p>
 	Turbine implements nested css selectors using a simple principle: whenever the <em>next</em> line is indented, to current line
 	is used as a selector and combined with it's parent selectors.
