@@ -49,6 +49,7 @@ class Cssp extends Parser2 {
 	 */
 	public function compile(){
 		$this->apply_aliases();
+		$this->apply_property_expansion();
 		$this->apply_inheritance();
 		$this->apply_copying();
 		$this->apply_constants();
@@ -247,6 +248,41 @@ class Cssp extends Parser2 {
 							if(!$found){
 								$this->report_error($selector.' could not find '.$matches[1][0].' to copy '.$matches[2][0].' from.');
 							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * apply_property_expansion
+	 * Expands comma-sepperated properties
+	 * @return void
+	 */
+	public function apply_property_expansion(){
+		foreach($this->parsed as $block => $css){
+			foreach($this->parsed[$block] as $selector => $styles){
+				foreach($styles as $property => $value){
+					// Find possivle expandable properties
+					if(strpos($property, ',') !== false){
+						$properties = $this->tokenize($property, ',');
+						if(count($properties) > 1){
+							// Rebuild the selector's contents with the expanded selectors
+							$newcontents = array();
+							foreach($this->parsed[$block][$selector] as $p => $v){
+								if($p == $property){
+									foreach($properties as $expanded){
+										$newcontents[$expanded] = $v;
+									}
+								}
+								else{
+									$newcontents[$p] = $v;
+								}
+							}
+							// Set the selector's contents to the new array with the expanded selectors
+							$this->parsed[$block][$selector] = $newcontents;
 						}
 					}
 				}
