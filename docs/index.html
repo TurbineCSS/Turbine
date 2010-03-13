@@ -439,7 +439,8 @@
 }</pre>
 <h3>Special constants</h3>
 <p>
-	The constants defined in in an <code>@turbine</code> block only apply to the current .cssp file. There are two special:
+	The constants defined in in an <code>@turbine</code> block only apply to the current .cssp file. There are two special constants
+	that apply globally and that are always made availiable by Turbine:
 </p>
 <ol>
 	<li><code>$_SCRIPTATH</code>: The path to <code>css.php</code></li>
@@ -476,27 +477,61 @@ $mainNavigation
 </p>
 <h3>Copying values from other elements</h3>
 <p>
-	TODO
+	To simply copy a value from a property in another selector, you can use the <code>copy(selector property)</code> syntax:
 </p>
-<pre class="cssp">
-#foo
-	color:copy(#bar background)
+<pre class="cssp">#foo
+	color:#F00
 #bar
-	background:#F00</pre>
+	color:copy(#bar color)</pre>
 <p>
 	Result:
 </p>
-<pre class="css">
-#foo {
+<pre class="css">#foo {
+    color: #F00
+}
+#bar {
+    color: #F00
+}</pre>
+<h4>Copying from other properties</h4>
+<p>
+	The copied and copying properties don't have to be the same:
+</p>
+<pre class="cssp">#foo
+	background:#F00
+#bar
+	color:copy(#bar background)</pre>
+<p>
+	Result:
+</p>
+<pre class="css">#foo {
     color: #F00
 }
 #bar {
     background: #F00
 }</pre>
+<h4>Copying with aliases</h4>
 <p>
-	This works with aliases too. If you want to copy the <code>color</code> value from $foo to #bar, you can simple use
-	<code>copy($foo color)</code>.
+	Copying works with aliases too. If you want to copy the <code>color</code> value from $foo to #bar, you can simple use
+	<code>copy($foo color)</code>:
 </p>
+<pre class="cssp">@aliases
+	foo: #header > div.foobar
+
+$foo
+	color:blue
+
+#bar
+	background:copy($foo color)</pre>
+<p>
+	Result:
+</p>
+<pre class="css">#header > div.foobar {
+    color: blue;
+}
+#bar {
+    background: blue;
+}</pre>
+
 <h3>Extending other elements</h3>
 <p>
 	TODO
