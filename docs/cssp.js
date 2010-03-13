@@ -25,7 +25,7 @@ window.addEvent('domready', function(){
 
 
 	// Hightlighting
-	var indention_char = "\t";
+	var indention_char = "    ";
 	// Get a line's indention level
 	function get_indention_level(line){
 		var level = 1;
@@ -67,8 +67,6 @@ window.addEvent('domready', function(){
 			newlines.push(line);
 		}
 		var code = newlines.join("\n")
-		// Use spaces instead of tabs
-		code = code.replace(/\t/g, '<span class="tab">&raquo;   </span>');
 		// Highlight !important
 		code = code.replace(/!important/g, '<span class="im">!important</span>');
 		area.set('html', code);

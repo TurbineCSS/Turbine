@@ -87,11 +87,11 @@
 <pre class="cssp">
 // Welcome to Turbine!
 #foo, #bar
-	color:#FF0000
-	margin-left, margin-right: 4px
-	div.alpha, div.beta
-		font-weight:bold
-		border-radius:4px</pre>
+    color:#FF0000
+    margin-left, margin-right: 4px
+    div.alpha, div.beta
+        font-weight:bold
+        border-radius:4px</pre>
 &hellip; and turns it into this&nbsp;&hellip;
 <pre class="css">#foo, #bar {
     color: #FF0000;
@@ -192,48 +192,57 @@
 	configuration option ist set to <code>true</code>).
 </p>
 
+
 <h2 id="usage-syntax">Basic syntax</h2><div>
-<h3>Basics</h3>
+<h3>Selectors and rules</h3>
 <p>
 	Turbine's syntax is a bit like <a href="#">Python</a>&nbsp;&ndash; <strong>the level of indention </strong>instead of curly braces
 	decides what is what. A simple rule looks like this:
 </p>
 <pre class="cssp">#foo div > p               // Selector
-	color:red              // Property and value
-	font-weight:bold       // Property and value</pre>
+    color:red              // Property and value
+    font-weight:bold       // Property and value</pre>
 <p>
 	The way Turbine determines if a given line is a selector or a property-value-pair is the indention level of the <em>following</em>
 	line:
 </p>
 <pre class="cssp">#foo div > p               // Next line is indented = this is a selector
-	color:red
-	font-weight:bold
-	span                   // Next line is indented = this is a selector
-		color:red</pre>
+    color:red
+    font-weight:bold
+    span                   // Next line is indented = this is a selector
+        color:blue</pre>
 <p>
 	This behaviour allows nested selectors, which can be quite powerful (see <a class="smoothscroll" href="#usage-nested">nested selectors</a>).
 	You can use any number or combination of spaces and tabs for indention, but be careful to keep your indention constistent in the whole
 	file.
 </p>
+<h3>Multiple declarations in one line</h3>
+<p>
+	While semicolons at the end of values are not required, you can use them to put multiple declarations in one line:
+</p>
+<pre class="cssp">#foo div > p
+    color:red; font-weight:bold
+    span
+        color:blue; font-style:italic</pre>
 <h3>@media rules</h3>
 <p>
 	<code>@media</code>-rules in Turbine a simple switches. Each <code>@media</code> line ends the previous <code>@media</code> block
 	and opens a new one.
 <pre class="cssp">@media screen // Open screen block
 #foo
-	background:red
+    background:red
 
 @media print // Close screen block, open print block
 #foo
-	background:green
+    background:green
 
 @media projection // Close print block, open projection block
 #foo
-	background:blue
+    background:blue
 
 @media screen // Close projection block, open screen block
 #bar
-	font.weight:bold</pre>
+    font.weight:bold</pre>
 <p>
 	<code>@media</code> block of the same type are merged, so the resulting css looks like the following:
 </p>
@@ -313,10 +322,10 @@
 	Turbine can output CSS code in a minified form.
 </p>
 <pre class="cssp">@turbine
-	compress:1
+    compress:1
 #foo
-	color:red
-	background:blue</pre>
+    color:red
+    background:blue</pre>
 <p>
 	Becomes
 </p>
@@ -330,7 +339,7 @@
 	To active a plugin, simply add it's name to the <code>plugins</code> property (the order doesn't matter):
 </p>
 <pre class="cssp">@turbine
-	plugins:resetstyle, datauri, borderradius</pre>
+    plugins:resetstyle, datauri, borderradius</pre>
 </div>
 
 
@@ -340,7 +349,7 @@
 	allows you to use properties as a comma-sepperated list&nbsp;&hellip;
 </p>
 <pre class="cssp">#foo
-	margin-left, margin-right, border-width:4px</pre>
+    margin-left, margin-right, border-width:4px</pre>
 <p>
 	which Turbine expands into single css rules:
 </p>
@@ -358,14 +367,14 @@
 	is used as a selector and combined with it's parent selectors.
 </p>
 <pre class="cssp">#foo div > p
-	color:red
-	font-weight:bold
-	a:link, a:visited
-		text-decoration:underline
-	a:hover, a:active
-		text-decoration:none
-	a:focus
-		outline:1px dotted #CCC</pre>
+    color:red
+    font-weight:bold
+    a:link, a:visited
+        text-decoration:underline
+    a:hover, a:active
+        text-decoration:none
+    a:focus
+        outline:1px dotted #CCC</pre>
 <p>
 	The nested code above compiles to the following css:
 </p>
@@ -387,11 +396,11 @@
 	bit confusing if you overuse them, but with a bit of moderation they can save quite a bit of typing. Consider this example:
 </p>
 <pre class="cssp">#header, #footer
-	ul, ol, p
-		a:link, a:visited
-			text-decoration:underline
-		a:active, a:hover
-			text-decoration:none</pre>
+    ul, ol, p
+        a:link, a:visited
+            text-decoration:underline
+        a:active, a:hover
+            text-decoration:none</pre>
 <p>
 	Result:
 </p>
@@ -427,12 +436,12 @@
 	Constants are case-sensitive.
 </p>
 <pre class="cssp">@constants
-	myRed:#C02222
-	imagePath:/assets/images
+    myRed:#C02222
+    imagePath:/assets/images
 
 #foo
-	color:$myRed
-	background:url($imagePath/foo.png) top left no-repeat</pre>
+    color:$myRed
+    background:url($imagePath/foo.png) top left no-repeat</pre>
 <pre class="css">#foo {
     color: #C02222;
     background: url(/assets/images/foo.png) top left no-repeat;
@@ -452,10 +461,10 @@
 	You don't have to:
 </p>
 <pre class="cssp">@aliases
-	mainNavigation: #wrapper #header > div ul
+    mainNavigation: #wrapper #header > div ul
 
 $mainNavigation
-	list-style:none</pre>
+    list-style:none</pre>
 <p>
 	The <code>@aliases</code> block defines <code>mainNavigation</code> as an alias of <code>#wrapper #header > div ul</code>, which
 	results us to the following css code:
@@ -466,6 +475,10 @@ $mainNavigation
 </pre>
 <p>
 	Aliases, like constants, are case-sensitive.
+</p>
+<h3>Scope</h3>
+<p>
+	TODO
 </p>
 </div>
 
@@ -480,9 +493,10 @@ $mainNavigation
 	To simply copy a value from a property in another selector, you can use the <code>copy(selector property)</code> syntax:
 </p>
 <pre class="cssp">#foo
-	color:#F00
+    color:#F00
+
 #bar
-	color:copy(#bar color)</pre>
+    color:copy(#bar color)</pre>
 <p>
 	Result:
 </p>
@@ -497,9 +511,10 @@ $mainNavigation
 	The copied and copying properties don't have to be the same:
 </p>
 <pre class="cssp">#foo
-	background:#F00
+    background:#F00
+
 #bar
-	color:copy(#bar background)</pre>
+    color:copy(#bar background)</pre>
 <p>
 	Result:
 </p>
@@ -515,13 +530,13 @@ $mainNavigation
 	<code>copy($foo color)</code>:
 </p>
 <pre class="cssp">@aliases
-	foo: #header > div.foobar
+    foo: #header > div.foobar
 
 $foo
-	color:blue
+    color:blue
 
 #bar
-	background:copy($foo color)</pre>
+    background:copy($foo color)</pre>
 <p>
 	Result:
 </p>
@@ -571,10 +586,10 @@ $foo
 <h3>Examples</h3>
 <h4>Automatic vendor-specific versions</h4>
 <pre class="cssp">@turbine
-	plugins:borderradius
+    plugins:borderradius
 
 #foo
-	border-radius:4px</pre>
+    border-radius:4px</pre>
 <p>
 	Result:
 </p>
@@ -587,7 +602,7 @@ $foo
 </pre>
 <h4>Left side only shortcut</h4>
 <pre class="cssp">#foo
-	border-left-radius:4px;</pre>
+    border-left-radius:4px;</pre>
 <p>
 	Result:
 </p>
@@ -620,10 +635,10 @@ $foo
 </p>
 <h3>Example</h3>
 <pre class="cssp">@turbine
-	plugins:boxshadow
+    plugins:boxshadow
 
 #foo
-	box-shadow:2px 2px 8px #000</pre>
+    box-shadow:2px 2px 8px #000</pre>
 <p>
 	Result:
 </p>
@@ -666,15 +681,15 @@ $foo
 </ol>
 <h3>Example</h3>
 <pre class="cssp">@turbine
-	plugins:fontface
+    plugins:fontface
 
 @font-face
-	font-family:'Graublau Web';
-	local:'Graublau Web Regular';
-	otf:url('GraublauWeb.otf');
-	eot:url('GraublauWeb.eot');
-	font-weight:bold;
-	font-style:italic;</pre>
+    font-family:'Graublau Web';
+    local:'Graublau Web Regular';
+    otf:url('GraublauWeb.otf');
+    eot:url('GraublauWeb.eot');
+    font-weight:bold;
+    font-style:italic;</pre>
 <p>
 	Result:
 </p>
@@ -742,7 +757,7 @@ $foo
 	The following turbine code&nbsp;&hellip;
 </p>
 <pre class="cssp">p
-	background:hsla(200, 20%, 20%, 0.5)</pre>
+    background:hsla(200, 20%, 20%, 0.5)</pre>
 <p>
 	&hellip; is recalculated to RGBA for Opera 9:
 </p>
@@ -769,9 +784,10 @@ $foo
 	in some scenarios. Consider the following:
 </p>
 <pre class="cssp">p
-	background:rgba(200, 0, 0, 0.5)
+    background:rgba(200, 0, 0, 0.5)
+
 p.foo
-	background:rgb(200, 0, 0)</pre>
+    background:rgb(200, 0, 0)</pre>
 <p>
 	Turbine will insert <code>filter</code> property for <code>p</code>:
 </p>
@@ -787,10 +803,11 @@ p.foo {
 	selector of course also matches <code>p.foobar</code>. The solution is to explicitly remove any filters from <code>p.foobar</code>:
 </p>
 <pre class="cssp">p
-	background:rgba(200, 0, 0, 0.5)
+    background:rgba(200, 0, 0, 0.5)
+
 p.foobar
-	background:rgb(200, 0, 0)
-	filter:none</pre>
+    background:rgb(200, 0, 0)
+    filter:none</pre>
 </div>
 
 
@@ -809,10 +826,10 @@ p.foobar
 </p>
 <h3>Example</h3>
 <pre class="cssp">@turbine
-	plugins:datauri
+    plugins:datauri
 
 #foo
-	background:#FFF url(test.png) top left;</pre>
+    background:#FFF url(test.png) top left;</pre>
 <p>
 	Result:
 </p>
@@ -1230,6 +1247,10 @@ table {
 <p>
 	Don't be afraid to do anything CPU- or memory consuming in your plugins - in production mode, everything is calculated
 	only once and is served from the cache afterwards.
+</p>
+<h3>The browser class</h3>
+<p>
+	TODO
 </p>
 
 
