@@ -84,24 +84,27 @@
 	decrease css devolopment time and web developer headache. Turbine takes something like this&nbsp;&hellip;
 </p>
 <pre class="cssp">
-// This is a comment!
+// Welcome to Turbine!
 #foo, #bar
 	color:#FF0000
+	margin-left, margin-right: 4px
 	div.alpha, div.beta
 		font-weight:bold
 		border-radius:4px</pre>
 &hellip; and turns it into this&nbsp;&hellip;
 <pre class="css">#foo, #bar {
     color: #FF0000;
+    margin-left: 4px;
+    margin-right: 4px;
 }
 #foo div.alpha, #foo div.beta, #bar div.alpha, #bar div.beta {
     font-weight: bold;
-    border-radius: 4px;
     -moz-border-radius: 4px;
     -khtml-border-radius: 4px;
     -webkit-border-radius: 4px;
-    behavior: url("/plugins/borderradius/border-radius.htc");
-}</pre>
+    border-radius: 4px;
+}
+</pre>
 <p>
 	&hellip;or, if you like great performance, directly into this (which is automatically cached, gezipped and served with the correct expires headers):
 </p>
