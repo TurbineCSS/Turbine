@@ -251,6 +251,14 @@ if($_GET['files']){
 			// Add to final css
 			$css .= $output;
 		}
+
+
+		// File not found, report error
+		else{
+			$cssp->report_error('Style file '.$file.' not found. Is the base path in config.php configured correctly?');
+		}
+
+
 	}
 
 	// Show errors
