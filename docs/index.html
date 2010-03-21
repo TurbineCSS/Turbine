@@ -189,7 +189,12 @@
 /&gt;</pre>
 <p>
 	You can also include regular css files, which will be added to the output unchanged (or minified, if the <code>minify_css</code>
-	configuration option ist set to <code>true</code>).
+	configuration option is set to <code>true</code>).
+</p>
+<p>
+	The files as processed in sequence and do <strong>not</strong> influence each other in any way. For example,
+	<a href="#usage-constantsaliases">constants</a> defined in <code>file1</code> won't apply to code in <code>file2</code>. If
+	you want share code between files, use the <a href="#plugins-loader">loader plugin</a>.
 </p>
 
 
@@ -349,14 +354,15 @@
 	allows you to use properties as a comma-sepperated list&nbsp;&hellip;
 </p>
 <pre class="cssp">#foo
-    margin-left, margin-right, border-width:4px</pre>
+    position:absolute
+    top, left:4px</pre>
 <p>
-	which Turbine expands into single css rules:
+	which Turbine expands into multiple css rules:
 </p>
 <pre class="css">#foo {
-	margin-left: 4px;
-	margin-right: 4px;
-	border-width: 4px;
+    position: absolute;
+    top: 4px;
+    left: 4px;
 }</pre>
 </div>
 
@@ -425,15 +431,12 @@
 
 
 <h2 id="usage-constantsaliases">Constants and aliases</h2><div>
-<p>
-	TODO
-</p>
+
+
 <h3>Constants</h3>
 <p>
-	TODO
-</p>
-<p>
-	Constants are case-sensitive.
+	Constants (also known as "css variables") allow you to define your own easy-to-remember shortcuts for complicated hex colors
+	or long font stacks. They can be used for any css property and are <strong>case-sensitive</strong>.
 </p>
 <pre class="cssp">@constants
     myRed:#C02222
@@ -474,12 +477,46 @@ $mainNavigation
 }
 </pre>
 <p>
-	Aliases, like constants, are case-sensitive.
+	Aliases, like constants, are <strong>case-sensitive</strong>.
 </p>
 <h3>Scope</h3>
 <p>
-	TODO
+	Constants and aliases apply only to the <code>@media</code>-block they are defined in. The exception is the set of constents defined
+	outside of any block&nbsp;&ndash; they apply to the whole file.
 </p>
+<pre class="cssp">@constants
+    mycolor:#F00 // Defined outside of any @media block = applies _globally_
+
+@media screen
+
+@constants
+    myothercolor:#00F // Defined in @media block = applies _only_ in the screen block
+
+#foo
+    color:$mycolor
+    background:$myothercolor
+
+@media print
+
+#foo
+    color:$mycolor
+    background:$myothercolor // Won't work as "myothercolor" is only defined for the "screen" block, but not for "print"</pre>
+<p>
+	Result:
+</p>
+<pre class="css">@media screen {
+    #foo {
+        color: #F00;
+        background: #00F;
+    }
+}
+
+@media print {
+    #foo {
+        color: #F00;
+        background: $myothercolor;
+    }
+}</pre>
 </div>
 
 
