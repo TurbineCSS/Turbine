@@ -1,6 +1,6 @@
 @turbine
 	compress:1
-	plugins:resetstyle, minifier
+	plugins:resetstyle, minifier, datauri
 
 
 @constants
@@ -48,8 +48,9 @@ em, i
 	float:right
 label
 	padding-left:1em
-input[type=text]
+input[type=text], select
 	font-family:Consolas, Courier, monospace
+	color:$txt
 	font-size:100%
 	background:$codebg
 	border:1px solid $border
@@ -232,6 +233,7 @@ input[type=text].version
 		height:90%
 		width:100%
 	textarea
+		color:$txt
 		background:$codebg
 		font-family:copy(#wrapper pre font-family)
 		font-size:copy(#wrapper pre font-size)
@@ -253,6 +255,7 @@ input[type=text].version
 		padding:1%
 		margin-top:-4%
 		textarea
+			color:$txt
 			width:100%
 			height:10%
 			background:$codebg
