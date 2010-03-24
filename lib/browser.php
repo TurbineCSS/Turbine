@@ -73,10 +73,14 @@ class Browser extends Base{
 	 * Class constructor
 	 * @return void
 	 */
-	function __construct()
-	{
-		//set the useragent property
-		$this->useragent = $_SERVER['HTTP_USER_AGENT'];
+	function __construct($useragent = false){
+		// Set the useragent property
+		if($useragent !== false){
+			$this->useragent = $useragent;
+		}
+		else{
+			$this->useragent = $_SERVER['HTTP_USER_AGENT'];
+		}
 		$this->getPlatform();
 		$this->getBrowser();
 	}
