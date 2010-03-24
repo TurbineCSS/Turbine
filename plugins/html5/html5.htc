@@ -1,7 +1,0 @@
-<public:component lightweight="true">
-<script type="text/javascript">
-// Fix inspired by http://code.google.com/p/html5shiv/ and http://r.je/html5-htc.html
-'abbr article aside audio canvas details figcaption figure footer header hgroup mark menu meter nav output progress section summary time video'.replace(/\w+/g,function(n){window.document.createElement(n)});
-window.document.body.innerHTML = window.document.body.innerHTML;
-</script>
-</public:component>
