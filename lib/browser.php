@@ -454,6 +454,7 @@ class Browser extends Base{
 		}
 	}
 
+
 	/**
 	 * floatvalVersion
 	 * Method to transform version numbers like 1.2.3 to a float of 1.23

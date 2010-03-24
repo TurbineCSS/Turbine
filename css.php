@@ -18,10 +18,9 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-
-/**
+ * 
+ * 
+ * 
  * css.php
  * Loads Turbine
  * @var string $_GET['files'] A list of css files, separated by ;
@@ -29,12 +28,13 @@
  */
 
 
+// Benchmark start time
+$start = microtime(true);
+
+
+// Constants
 define('TURBINEVERSION', 0.01);
 define('TURBINEPATH', dirname($_SERVER['SCRIPT_NAME']));
-
-
-// Start time
-$start = microtime(true);
 
 
 // Gzip output for faster transfer to client
@@ -61,7 +61,7 @@ include('lib/cssp.php');
 include('lib/cssmin.php');
 
 
-// New Turbine instance
+// Create the Turbine instance
 $cssp = new CSSP();
 
 
@@ -69,21 +69,20 @@ $cssp = new CSSP();
 $browser = new Browser();
 
 
-// Set global path constant SCRIPTPATH
+// Set global path constant SCRIPTPATH for use in the special constant $_SCRIPTPATH
 $cssp->global_constants['SCRIPTPATH'] = TURBINEPATH;
 
 
-// Plugin state
+// Plugin loading state
 $plugins_loaded = false;
 
 
-// Precess files
+// Process files
 if($_GET['files']){
 
 
 	// Split multiple semicolon-separated files into an array
 	$files = explode(';', $_GET['files']);
-
 	// Complete the paths
 	$num_files = count($files);
 	for($i=0; $i<$num_files; $i++){
@@ -91,26 +90,28 @@ if($_GET['files']){
 	}
 
 
-	// Client-side cache: Preparing caching-mechanism using eTags by creating fingerprint of CSS-files
+	// Client-side cache: Preparing caching-mechanism using eTags by creating a combined fingerprint of the files involved...
 	$fingerprint = '';
 	foreach($files as $file){
 		$fingerprint .= $file.filemtime($file);
 	}
 	$etag = md5($fingerprint);
-
-	// Client-side cache: now check if client sends eTag, and compare it with our eTag-fingerprint
+	// ...and check if client sends eTag to compare it with our eTag-fingerprint
 	if($cssp->config['debug_level'] == 0 && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag){
-		header('HTTP/1.1 304 Not Modified'); // Client-side cache: Browser already has the file so we tell him nothing changed and exit
+		// Browser already has the file so we tell him nothing changed and exit
+		header('HTTP/1.1 304 Not Modified');
 		exit();
 	}
 
-	// Else: parse files
+
+	// Else parse the files and add the rusulting CSS code to $css
 	$css = '';
 
 
 	foreach($files as $file){
 		if(file_exists($file)){
 
+			
 			// CSSP or CSS?
 			$fileinfo = pathinfo($file);
 			if($fileinfo['extension'] == 'css'){
@@ -124,8 +125,10 @@ if($_GET['files']){
 			}
 			else{
 
+
 				$incache = false;    // Server-side cache: Has file already been parsed?
 				$cachedir = 'cache'; // Cache directory
+
 
 				// Server-side cache: Check if cache-directory has been created
 				if(!is_dir($cachedir)){
@@ -283,7 +286,7 @@ if($_GET['files']){
 	}
 
 
-	// End time
+	// End benchmark
 	$end = microtime(true);
 
 
