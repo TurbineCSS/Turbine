@@ -65,7 +65,7 @@ class Cssp extends Parser2 {
 	public function apply_constants(){
 		// Apply special constants to all blocks
 		$this->apply_special_constants();
-		// Apply constants, if present, to the global block
+		// Apply constants, if present, from the global block
 		if(isset($this->parsed['global']['@constants'])){
 			foreach($this->parsed as $block => $css){
 				$this->apply_block_constants($this->parsed['global']['@constants'], $block);
@@ -73,7 +73,7 @@ class Cssp extends Parser2 {
 		}
 		// Apply constants for @media blocks
 		foreach($this->parsed as $block => $css){
-			if(isset($this->parsed[$block]['@constants'])){
+			if(isset($this->parsed[$block]['@constants']) && $block != 'global'){
 				$this->apply_block_constants($this->parsed[$block]['@constants'], $block);
 			}
 		}
@@ -130,7 +130,7 @@ class Cssp extends Parser2 {
 		}
 		// Apply aliases for @media blocks
 		foreach($this->parsed as $block => $css){
-			if(isset($this->parsed[$block]['@aliases'])){
+			if(isset($this->parsed[$block]['@aliases']) && $block != 'global'){
 				$this->apply_block_aliases($this->parsed[$block]['@aliases'], $block);
 			}
 		}
