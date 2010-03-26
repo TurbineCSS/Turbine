@@ -25,11 +25,16 @@
 						$filepath = preg_replace('/(\$_'.$g_constant.')\b/', $g_value, $filepath);
 					}
 					// Import the new lines
-					$import = file($filepath);
-					foreach($import as $imported){
-						$new[] = $imported;
+					if(file_exists($filepath)){
+						$import = file($filepath);
+						foreach($import as $imported){
+							$new[] = $imported;
+						}
+						$matches = array();
 					}
-					$matches = array();
+					else{
+						$cssp->report_error('Loader plugin could not find '.$filepath.'.');
+					}
 				}
 			}
 			else{
