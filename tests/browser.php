@@ -138,7 +138,7 @@ $ua_tests = array(
 		'ua' => 'Mozilla/5.0 (Windows; U; Windows NT 6.0; ru; rv:1.9.2) Gecko/20100115 Firefox/3.6',
 		'test' => array(
 			'name' => 'gecko',
-			'version' => '1.923',
+			'version' => '1.92',
 			'engine' => 'gecko',
 			'engineversion' => '1.92',
 			'platform' => 'windows',
@@ -150,7 +150,7 @@ $ua_tests = array(
 		'ua' => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; pt-BR; rv:1.9.2) Gecko/20100115 Firefox/3.6',
 		'test' => array(
 			'name' => 'gecko',
-			'version' => '1.923',
+			'version' => '1.92',
 			'engine' => 'gecko',
 			'engineversion' => '1.92',
 			'platform' => 'windows',
@@ -161,6 +161,16 @@ $ua_tests = array(
 	'Firefox 3.6 on OS X' => array(
 	),
 	'Firefox 3.6 on Linux' => array(
+		'ua' => 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2) Gecko/20100222 Ubuntu/10.04 (lucid) Firefox/3.6',
+		'test' => array(
+			'name' => 'gecko',
+			'version' => '1.92',
+			'engine' => 'gecko',
+			'engineversion' => '1.92',
+			'platform' => 'linux',
+			'platformversion' => '0',
+			'platformtype' => 'desktop'
+		)
 	),
 
 
@@ -198,6 +208,18 @@ $ua_tests = array(
 			'engineversion' => '1.9014',
 			'platform' => 'linux',
 			'platformversion' => '0',
+			'platformtype' => 'desktop'
+		)
+	),
+	'Flock 2.5.6 on WinXP' => array(
+		'ua' => '# Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.1.7) Gecko/20091221 Firefox/3.5.7 Flock/2.5.6 (.NET CLR 3.5.30729)',
+		'test' => array(
+			'name' => 'gecko',
+			'version' => '1.9014',
+			'engine' => 'gecko',
+			'engineversion' => '1.9014',
+			'platform' => 'windows',
+			'platformversion' => '5.1',
 			'platformtype' => 'desktop'
 		)
 	),
@@ -257,6 +279,66 @@ $ua_tests = array(
 
 
 	// Chrome
+	'Chrome 4 on Win 7' => array(
+		'ua' => 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/532.5 (KHTML, like Gecko) Chrome/4.1.249.1025 Safari/532.5',
+		'test' => array(
+			'name' => 'chrome',
+			'version' => '4.0',
+			'engine' => 'webkit',
+			'engineversion' => '532.5',
+			'platform' => 'windows',
+			'platformversion' => '6.1',
+			'platformtype' => 'desktop'
+		)
+	),
+	'Chrome 4 on Vista' => array(
+		'ua' => 'Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/532.3 (KHTML, like Gecko) Chrome/4.0.224.2 Safari/532.3',
+		'test' => array(
+			'name' => 'chrome',
+			'version' => '4.0',
+			'engine' => 'webkit',
+			'engineversion' => '532.3',
+			'platform' => 'windows',
+			'platformversion' => '6.0',
+			'platformtype' => 'desktop'
+		)
+	),
+	'Chrome 4 on WinXP' => array(
+		'ua' => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/532.8 (KHTML, like Gecko) Chrome/4.0.288.1 Safari/532.8',
+		'test' => array(
+			'name' => 'chrome',
+			'version' => '4.0',
+			'engine' => 'webkit',
+			'engineversion' => '532.8',
+			'platform' => 'windows',
+			'platformversion' => '5.1',
+			'platformtype' => 'desktop'
+		)
+	),
+	'Chrome 4 on OS X' => array(
+		'ua' => 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_8; en-US) AppleWebKit/532.8 (KHTML, like Gecko) Chrome/4.0.302.2 Safari/532.8',
+		'test' => array(
+			'name' => 'chrome',
+			'version' => '4.0',
+			'engine' => 'webkit',
+			'engineversion' => '532.8',
+			'platform' => 'macintosh',
+			'platformversion' => '0',
+			'platformtype' => 'desktop'
+		)
+	),
+	'Chrome 4 on Linux' => array(
+		'ua' => 'Mozilla/5.0 (X11; U; Slackware Linux x86_64; en-US) AppleWebKit/532.5 (KHTML, like Gecko) Chrome/4.0.249.30 Safari/532.5',
+		'test' => array(
+			'name' => 'chrome',
+			'version' => '4.0',
+			'engine' => 'webkit',
+			'engineversion' => '532.5',
+			'platform' => 'linux',
+			'platformversion' => '0',
+			'platformtype' => 'desktop'
+		)
+	),
 	'Chrome 5 on Win 7' => array(
 		'ua' => 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/533.3 (KHTML, like Gecko) Chrome/5.0.354.0 Safari/533.3',
 		'test' => array(
@@ -343,11 +425,38 @@ $ua_tests = array(
 			'platformversion' => '0',
 			'platformtype' => 'desktop'
 		)
+	),
+	'Epiphany >= 2.28' => array(
+		'ua' => 'Mozilla/5.0 (X11; U; Linux x86_64; nl-nl) AppleWebKit/531.2+ (KHTML, like Gecko) Safari/531.2+ Epiphany/2.29.91',
+		'test' => array(
+			'name' => 'epiphany',
+			'version' => '2.2991',
+			'engine' => 'webkit',
+			'engineversion' => '531.2',
+			'platform' => 'Linux',
+			'platformversion' => '0',
+			'platformtype' => 'desktop'
+		)
+	),
+	'Epiphany <= 2.22' => array(
+		'ua' => 'Mozilla/5.0 (X11; U; Linux x86_64; en; rv:1.9.0.8) Gecko/20080528 Fedora/2.24.3-4.fc10 Epiphany/2.22 Firefox/3.0',
+		'test' => array(
+			'name' => 'epiphany',
+			'version' => '2.22',
+			'engine' => 'gecko',
+			'engineversion' => '1.908',
+			'platform' => 'Linux',
+			'platformversion' => '0',
+			'platformtype' => 'desktop'
+		)
 	)
 
 
 	// Mobile browsers
-	
+
+
+	// TV browsers
+
 
 );
 
@@ -361,6 +470,9 @@ $ua_tests = array(
 	</head>
 	<body>
 		<h1>Test results</h1>
+		<p>
+			<a href="http://www.useragentstring.com/pages/useragentstring.php">Add more tests!</a>
+		</p>
 		<table border="1">
 			<tr>
 				<th rowspan="2">Subject</th>
