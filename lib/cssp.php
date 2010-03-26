@@ -91,7 +91,35 @@ class Cssp extends Parser2 {
 		foreach($constants as $constant => $value){
 			foreach($this->parsed[$block] as $selector => $styles){
 				foreach($styles as $css_property => $css_value){
-					$this->parsed[$block][$selector][$css_property] = preg_replace('/(\$'.$constant.')\b/', $value, $css_value);
+					$replacement = $this->get_constant_replacement($block, $value);
+					$this->parsed[$block][$selector][$css_property] = preg_replace('/(\$'.$constant.')\b/', $replacement, $css_value);
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * get_constant_replacement
+	 * Finds the real replacement for constants that reference other constants
+	 * @param string $block The block where the constant or alias is coming from
+	 * @param string $value The value to find a replacement for
+	 * @return string The Replacement
+	 */
+	protected function get_constant_replacement($block, $value){
+		// If not a constant, simply return value
+		if(!preg_match('/^\$(.*)$/', $value, $matches)){
+			return $value;
+		}
+		// Else search the true replacement
+		else{
+			$blocks = array('global');
+			if($block != 'global'){
+				$blocks[] = $block;
+			}
+			foreach($blocks as $block){
+				if(isset($this->parsed[$block]['@constants'][$matches[1][0]])){
+					return $this->get_constant_replacement($block, $this->parsed[$block]['@constants'][$matches[1][0]]);
 				}
 			}
 		}

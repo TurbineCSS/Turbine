@@ -88,7 +88,7 @@ class Parser2 extends Base{
 	/**
 	 * @var string $token The current token
 	 */
-	public $token;
+	public $token = '';
 
 
 	/**
@@ -739,6 +739,37 @@ class Parser2 extends Base{
 			}
 		}
 		return $tokens;
+	}
+
+
+	/**
+	 * reset
+	 * Resets the parser
+	 * @return void
+	 */
+	public function reset(){
+		$this->css = array();
+		$this->parsed = array('global' =>
+			array(
+				'@import' => array(),
+				'@font-face' => array()
+			)
+		);
+		$this->state = null;
+		$this->prev_state = null;
+		$this->string_state = null;
+		$this->token = '';
+		$this->nesting = array();
+		$this->current = array(
+			'se' => null,
+			'pr' => null,
+			'va' => null,
+			'at' => 'global',
+			'fi' => -1
+		);
+		$this->options = array(
+			'indention_char' => "	"
+		);
 	}
 
 

@@ -20,6 +20,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+// Constants
+define('TURBINEVERSION', 0.01);
+define('TURBINEPATH', dirname($_SERVER['SCRIPT_NAME']));
+
+
 // Load libraries
 include('../../lib/base.php');
 include('../../lib/browser.php');
@@ -28,28 +34,24 @@ include('../../lib/cssp.php');
 include('../../lib/cssmin.php');
 
 
-// New Turbine instance
+// Create the Turbine instance
 $cssp = new CSSP();
+
+
+// Set debugging level
+$cssp->config['debug_level'] = 0;
 
 
 // Get and store browser properties
 $browser = new Browser();
 
 
-// Set global path constant SCRIPTPATH
-$cssp->global_constants['SCRIPTPATH'] = dirname($_SERVER['SCRIPT_NAME']);
+// Set global path constant SCRIPTPATH for use in the special constant $_SCRIPTPATH
+$cssp->global_constants['SCRIPTPATH'] = TURBINEPATH;
 
 
-// Load plugins
-$plugindir = '../../plugins';
-if($handle = opendir($plugindir)){
-	while(false !== ($pluginfile = readdir($handle))){
-		if($pluginfile != '.' && $pluginfile != '..' && is_file($plugindir.'/'.$pluginfile) && pathinfo($plugindir.'/'.$pluginfile,PATHINFO_EXTENSION) == 'php' && !function_exists(substr($pluginfile, 0, -4))){
-			include($plugindir.'/'.$pluginfile);
-		}
-	}
-	closedir($handle);
-}
+// Plugin loading state
+$plugins_loaded = false;
 
 
 // Precess input
@@ -65,6 +67,21 @@ if($_POST['css']){
 	$browser->platform = $_POST['platform'];
 	$browser->platformversion = $_POST['platformversion'];
 	$browser->platformtype = $_POST['platformtype'];
+
+
+	// Load plugins (if not already loaded)
+	if(!$plugins_loaded){
+		$plugindir = 'plugins';
+		if($handle = opendir($plugindir)){
+			while(false !== ($pluginfile = readdir($handle))){
+				if($pluginfile != '.' && $pluginfile != '..' && is_file($plugindir.'/'.$pluginfile) && pathinfo($plugindir.'/'.$pluginfile,PATHINFO_EXTENSION) == 'php' && !function_exists(substr($pluginfile, 0, -4))){
+					include($plugindir.'/'.$pluginfile);
+				}
+			}
+			closedir($handle);
+		}
+		$plugins_loaded = true;
+	}
 
 
 	// Load string
@@ -99,6 +116,7 @@ if($_POST['css']){
 		}
 	}
 
+
 	// Apply plugins
 	$cssp->apply_plugins('before_parse', $plugin_list, $cssp->css);      // Apply plugins for before parse
 	$cssp->parse();                                                      // Parse the code
@@ -115,12 +133,22 @@ if($_POST['css']){
 		$compress = false;
 	}
 
-	// Cleanup
+
 	unset($cssp->parsed['global']['@turbine']);                      // Remove configuration @-rule
 	$output = $cssp->glue($compress);                             // Glue css output
 	$cssp->apply_plugins('before_output', $plugin_list, $output); // Apply plugins for before output
 
-	// Outpu
+
+	// Show errors
+	if($cssp->config['debug_level'] > 0 && !empty($cssp->errors)){
+		$error_message = implode('\\00000A', $cssp->errors);
+		$css = $css.'body:before { content:"'.$error_message.'" !important; font-family:Verdana, Arial, sans-serif !important;
+			font-weight:bold !important; color:#000 !important; background:#F4EA9F !important; display:block !important;
+			border-bottom:1px solid #D5CA6E; padding:8px !important; white-space:pre; }';
+	}
+
+
+	// Output
 	echo stripslashes($output);
 
 }

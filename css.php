@@ -235,6 +235,7 @@ if($_GET['files']){
 					unset($cssp->parsed['global']['@turbine']);                   // Remove configuration @-rule
 					$output = $cssp->glue($compress);                             // Glue css output
 					$cssp->apply_plugins('before_output', $plugin_list, $output); // Apply plugins for before output
+					$cssp->reset();                                               // Reset the parser
 
 
 					// Add output to cache

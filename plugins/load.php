@@ -33,7 +33,7 @@
 						$matches = array();
 					}
 					else{
-						$cssp->report_error('Loader plugin could not find '.$filepath.'.');
+						$cssp->report_error('Loader plugin could not find file '.$filepath.'.');
 					}
 				}
 			}
