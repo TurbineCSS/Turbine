@@ -83,9 +83,45 @@ $ua_tests = array(
 	),
 
 	// Safari
+	'Safari 3.1 on Win7' => array(
+	),
+	'Safari 3.1 on Vista' => array(
+	),
+	'Safari 3.1 on WinXP' => array(
+	),
+	'Safari 3.1 on OS X' => array(
+	),
+	'Safari 4.0 on Win7' => array(
+	),
+	'Safari 4.0 on Vista' => array(
+	),
+	'Safari 4.0 on WinXP' => array(
+	),
+	'Safari 4.0 on OS X' => array(
+	),
 
 
 	// Gecko/Mozilla
+	'Firefox 3.0 on Win7' => array(
+	),
+	'Firefox 3.0 on Vista' => array(
+	),
+	'Firefox 3.0 on WinXP' => array(
+	),
+	'Firefox 3.0 on OS X' => array(
+	),
+	'Firefox 3.0 on Linux' => array(
+	),
+	'Firefox 3.5 on Win7' => array(
+	),
+	'Firefox 3.5 on Vista' => array(
+	),
+	'Firefox 3.5 on WinXP' => array(
+	),
+	'Firefox 3.5 on OS X' => array(
+	),
+	'Firefox 3.5 on Linux' => array(
+	),
 	'Firefox 3.6 on Win7' => array(
 		'ua' => '# Mozilla/5.0 (Windows; U; Windows NT 6.1; lt; rv:1.9.2) Gecko/20100115 Firefox/3.6',
 		'test' => array(
@@ -121,6 +157,10 @@ $ua_tests = array(
 			'platformversion' => '5.1',
 			'platformtype' => 'desktop'
 		)
+	),
+	'Firefox 3.6 on OS X' => array(
+	),
+	'Firefox 3.6 on Linux' => array(
 	),
 
 
