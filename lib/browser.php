@@ -226,8 +226,7 @@ class Browser extends Base{
 			$this->family = "WebKit";
 			$this->engine = $this->family;
 		}
-		elseif(preg_match("/chrome/i", $this->useragent) == 1)
-		{
+		elseif(preg_match("/chrome/i", $this->useragent) == 1){
 			$this->name = "Chrome";
 			if(preg_match('/Chrome\/([0-9\.]+)/i',$this->useragent,$match) > 0){
 				$this->version = $this->floatvalVersion($match[1]);
@@ -400,13 +399,16 @@ class Browser extends Base{
 			$this->engine = "Gecko";
 			if(preg_match('/rv:([0-9\.]+)/i',$this->useragent,$match) > 0) $this->engineversion = $this->floatvalVersion($match[1]);
 		}
-		elseif(preg_match("/gecko/i", $this->useragent) == 1)
-		{
+		elseif(preg_match("/gecko/i", $this->useragent) == 1 && preg_match("/chrome/i", $this->useragent) == 0){
 			$this->name = "Gecko";
-			if(preg_match('/rv:([0-9\.]+)/i',$this->useragent,$match) > 0) $this->version = $this->floatvalVersion($match[1]);
+			if(preg_match('/rv:([0-9\.]+)/i',$this->useragent,$match) > 0){
+				$this->version = $this->floatvalVersion($match[1]);
+			}
 			$this->family = "Firefox";
 			$this->engine = "Gecko";
-			if(preg_match('/rv:([0-9\.]+)/i',$this->useragent,$match) > 0) $this->engineversion = $this->version;
+			if(preg_match('/rv:([0-9\.]+)/i',$this->useragent,$match) > 0){
+				$this->engineversion = $this->version;
+			}
 		}
 
 		// Check for KHTML-family
