@@ -219,7 +219,7 @@ class Browser extends Base{
 		}
 
 		// Check for WebKit-family
-	elseif(preg_match("/chromeframe/i", $this->useragent) == 1)
+		elseif(preg_match("/chromeframe/i", $this->useragent) == 1)
 		{
 			$this->name = "Chromeframe";
 			if(preg_match('/chromeframe\/([0-9\.]+)/i',$this->useragent,$match) > 0) $this->version = $this->floatvalVersion($match[1]);
@@ -284,23 +284,24 @@ class Browser extends Base{
 			$this->engine = $this->family;
 			$this->engineversion = $this->familyversion;
 		}
-		elseif(preg_match("/icab/i", $this->useragent) == 1)
-		{
+		elseif(preg_match("/icab/i", $this->useragent) == 1){
 			$this->name = "iCab";
-			if(preg_match('/iCab\/([0-9\.]+)/i',$this->useragent,$match) > 0) $this->version = $this->floatvalVersion($match[1]);
-			if($this->version >= 4) $this->family = "WebKit";
-			else
-			{
-				$this->family = "iCab";
-				$this->familyversion = $this->version;
+			if(preg_match('/iCab\/([0-9\.]+)/i',$this->useragent, $match) > 0){
+				$this->version = $this->floatvalVersion($match[1]);
+				$this->engine = "WebKit";
+				$this->engineversion = $this->familyversion;
 			}
-			$this->engine = $this->family;
-			$this->engineversion = $this->familyversion;
+			elseif(preg_match('/iCab ([0-9\.]+)/i',$this->useragent, $match) > 0){
+				$this->version = $this->floatvalVersion($match[1]);
+				$this->engine = "iCab";
+				$this->engineversion = $this->version;
+			}
 		}
-		elseif(preg_match("/webkit/i", $this->useragent) == 1)
-		{
+		elseif(preg_match("/webkit/i", $this->useragent) == 1){
 			$this->name = "WebKit";
-			if(preg_match('/WebKit\/([0-9\.]+)/i',$this->useragent,$match) > 0) $this->version = $this->floatvalVersion($match[1]);
+			if(preg_match('/WebKit\/([0-9\.]+)/i',$this->useragent,$match) > 0){
+				$this->version = $this->floatvalVersion($match[1]);
+			}
 			$this->family = $this->name;
 			$this->familyversion = $this->version;
 			$this->engine = $this->family;
