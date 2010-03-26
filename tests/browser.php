@@ -64,10 +64,40 @@ $ua_tests = array(
 		)
 	),
 	'IE7 on Win7' => array(
+		'ua' => 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0)',
+		'test' => array(
+			'name' => 'msie',
+			'version' => '7',
+			'engine' => 'msie',
+			'engineversion' => '7',
+			'platform' => 'windows',
+			'platformversion' => '6.1',
+			'platformtype' => 'desktop'
+		)
 	),
 	'IE7 on Vista' => array(
+		'ua' => 'Mozilla/5.0 (compatible; MSIE 7.0; Windows NT 6.0; WOW64; SLCC1; .NET CLR 2.0.50727; Media Center PC 5.0; c .NET CLR 3.0.04506; .NET CLR 3.5.30707; InfoPath.1; el-GR)',
+		'test' => array(
+			'name' => 'msie',
+			'version' => '7',
+			'engine' => 'msie',
+			'engineversion' => '7',
+			'platform' => 'windows',
+			'platformversion' => '6.0',
+			'platformtype' => 'desktop'
+		)
 	),
 	'IE7 on WinXP' => array(
+		'ua' => 'Mozilla/4.0 (Windows; MSIE 7.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)',
+		'test' => array(
+			'name' => 'msie',
+			'version' => '7',
+			'engine' => 'msie',
+			'engineversion' => '7',
+			'platform' => 'windows',
+			'platformversion' => '5.1',
+			'platformtype' => 'desktop'
+		)
 	),
 	'IE6 on WinXP' => array(
 		'ua' => 'Mozilla/5.0 (compatible; MSIE 6.0; Windows NT 5.1)',
@@ -102,16 +132,6 @@ $ua_tests = array(
 
 
 	// Gecko/Mozilla
-	'Firefox 3.0 on Win7' => array(
-	),
-	'Firefox 3.0 on Vista' => array(
-	),
-	'Firefox 3.0 on WinXP' => array(
-	),
-	'Firefox 3.0 on OS X' => array(
-	),
-	'Firefox 3.0 on Linux' => array(
-	),
 	'Firefox 3.5 on Win7' => array(
 	),
 	'Firefox 3.5 on Vista' => array(
@@ -123,7 +143,7 @@ $ua_tests = array(
 	'Firefox 3.5 on Linux' => array(
 	),
 	'Firefox 3.6 on Win7' => array(
-		'ua' => '# Mozilla/5.0 (Windows; U; Windows NT 6.1; lt; rv:1.9.2) Gecko/20100115 Firefox/3.6',
+		'ua' => 'Mozilla/5.0 (Windows; U; Windows NT 6.1; lt; rv:1.9.2) Gecko/20100115 Firefox/3.6',
 		'test' => array(
 			'name' => 'gecko',
 			'version' => '1.923',
