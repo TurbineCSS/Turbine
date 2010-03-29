@@ -14,13 +14,10 @@
 	function css3(&$css){
 		global $plugin_list;
 		$css3plugins = array(
-			'alphabg',
-			'backgroundsize',
 			'borderradius',
 			'boxshadow',
-			'multicolumn',
-			'transform',
-			'transistion'
+			'colormodels',
+			'transform'
 		);
 		$plugin_list = array_merge($plugin_list, $css3plugins);
 	}

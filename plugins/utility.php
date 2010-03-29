@@ -14,7 +14,6 @@
 	function utility(&$css){
 		global $plugin_list;
 		$utilityplugins = array(
-			'colortools',
 			'fontface',
 			'quotes'
 		);
