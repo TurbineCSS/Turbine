@@ -85,7 +85,8 @@ if($_POST['css']){
 
 
 	// Load string
-	$cssp->load_string($_POST['css'], true);
+	$source = stripslashes($_POST['css']);
+	$cssp->load_string($source, true);
 
 
 	// Set global filepath constant for the current file
