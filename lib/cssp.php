@@ -379,9 +379,9 @@ class Cssp extends Parser2 {
 			if(isset($this->parsed[$block]['@aliases'])){
 				unset($this->parsed[$block]['@aliases']);
 			}
-			// Remove empty elements and templates
+			// Remove empty elements, templates and alias ruins
 			foreach($this->parsed[$block] as $selector => $styles){
-				if(empty($styles) || $selector{0} == '?'){
+				if(empty($styles) || $selector{0} == '?' || $selector{0} == '$'){
 					unset($this->parsed[$block][$selector]);
 				}
 			}
