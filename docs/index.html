@@ -32,7 +32,7 @@
 				<li><a href="#usage-expanding">Expanding properties</a></li>
 				<li><a href="#usage-nested">Nested selectors</a></li>
 				<li><a href="#usage-constantsaliases">Constants and aliases</a></li>
-				<li><a href="#usage-inheritancetemplating">Inheritance and templating</a></li>
+				<li><a href="#usage-inheritancetemplating">Inheritance and prototyping</a></li>
 			</ul>
 		</li>
 		<li>&darr; <a href="#plugins">Core Plugins</a>
@@ -48,7 +48,7 @@
 				<li><a href="#plugins-ie6">IE6 enhancements</a></li>
 				<li><a href="#plugins-minifier">Minifier</a></li>
 				<li><a href="#plugins-loader">Loader</a></li>
-				<li><a href="#plugins-os">OS detection</a></li>
+				<li><a href="#plugins-os">OS and Device detection</a></li>
 				<li><a href="#plugins-quote">Quote style</a></li>
 				<li><a href="#plugins-reset">Reset stylesheet</a></li>
 				<li><a href="#plugins-transforms">Transforms</a></li>
@@ -274,7 +274,7 @@
 
 </pre>
 </p>
-<h3>Prefixes</h3>
+<h3 id="usage-syntax-prefixes">Prefixes</h3>
 <p>
 	There a a few reserved profixes for properties, values and selectors:
 </p>
@@ -521,9 +521,10 @@ $mainNavigation
 
 
 
-<h2 id="usage-inheritancetemplating">Inheritance and Templating</h2><div>
+<h2 id="usage-inheritancetemplating">Inheritance and Prototyping</h2><div>
 <p>
-	TODO
+	Turbine's inheritance, prototyping and copying features allow you to pass around chunks of properties and values between elements in
+	your code.
 </p>
 <h3>Copying values from other elements</h3>
 <p>
@@ -586,12 +587,136 @@ $foo
 
 <h3>Extending other elements</h3>
 <p>
-	TODO
+	Turbine's <code>extends</code> let elements inherit complete sets of properties from other elements, which are merged with the
+	element's own properties:
 </p>
-<h3 id="usage-inheritancetemplating-templating">Templating</h3>
+<pre class="cssp">#parent
+    color:red
+    font-weight:bold
+
+div.child
+    extends:#parent
+    margin:4px</pre>
 <p>
-	TODO
+	Result:
 </p>
+<pre class="css">#parent {
+	color: red;
+	font-weight: bold;
+}
+div.child {
+	margin: 4px;
+	color: red;
+	font-weight: bold;
+}</pre>
+<p>
+	If a property is already defined in a element <code>extends</code> will <strong>not</strong> overwrite it:
+</p>
+<pre class="cssp">#parent
+    color:red
+    font-weight:bold
+
+div.child
+    extends:#parent
+    font-weight:normal</pre>
+<p>
+	Result:
+</p>
+<pre class="css">#parent {
+	color: red;
+	font-weight: bold;
+}
+div.child {
+	font-weight: normal;
+	color: red;
+}</pre>
+<p>
+	For inheritance from multiple sources, the parent elements <strong>must</strong> be quoted because of the comma character (which
+	otherwise might be part of a selector as well as a list sepperator):
+</p>
+<pre class="cssp">#parent1
+    color:red
+
+#parent2
+    font-weight:bold
+
+div.child
+    extends:"#parent1", "#parent2"</pre>
+<p>
+	Result:
+</p>
+<pre class="css">#parent1 {
+	color: red;
+}
+#parent2 {
+	font-weight: bold;
+}
+div.child {
+	color: red;
+	font-weight: bold;
+}
+</pre>
+<h3 id="usage-inheritancetemplating-prototyping">Prototyping</h3>
+<h4>Using prototypes</h4>
+<p>
+	The <code>?</code> prefix allows you to define elements that will be removed before output but from which properties can be inherited
+	or copied from (see <a class="smoothscroll" href="#usage-syntax-prefixes">prefixes</a>). These elements can be used to declare complete
+	building blocks for your real css elements:
+</p>
+<pre class="cssp">// Prototypes
+
+?box
+    margin, padding:4px
+
+?blackBox
+    background:#000
+
+?whiteBox
+    background:#FFF
+
+?roundedBox
+    border-radius:8px
+
+// "Real" elements
+
+div.whiteSqare
+    extends:"?box", "?whiteBox"
+
+div.blackRound
+    extends:"?box", "?blackBox", "?roundedBox"</pre>
+<p>
+	Result:
+</p>
+<pre class="css">div.whiteSqare {
+	margin: 4px;
+	padding: 4px;
+	background: #FFF;
+}
+div.blackRound {
+	margin: 4px;
+	padding: 4px;
+	background: #000;
+	border-radius: 8px;
+}</pre>
+
+
+<h4 id="usage-inheritancetemplating-prototyping-recycling">Recycling prototypes</h4>
+<p>
+	The <a href="#plugins-loader" class="smoothscroll">loader plugin</a> allows you (among other things) to build a library of prototypes,
+	store them in an external file and include them when you need them. The code for the black and white boxes above could then be shortend
+	to the following:
+</p>
+<pre class="cssp">@load url(myBoxTemplates.cssp)
+
+div.whiteSqare
+    extends:"?box", "?whiteBox"
+
+div.blackRound
+    extends:"?box", "?blackBox", "?roundedBox"</pre>
+<p>
+	An additional bonus of building external libraries is that you can re-use them in all of your coming projects.
+</p>
+
 </div>
 
 
@@ -749,6 +874,14 @@ $foo
 <p>
 	TODO
 </p>
+<h3>Usage</h3>
+<p>
+	TODO
+</p>
+<h4>Use cases</h4>
+<ul>
+	<li>TODO</li>
+</ul>
 </div>
 
 
@@ -931,23 +1064,37 @@ p.foobar
 </p>
 <p>
 	Loader loads the contents of another .cssp file at the exact location where <code>@load</code> ist placed. It inserts the
-	code of the loaded file before parsing anything.
+	code of the loaded file before parsing anything, so the contents of the file is subject to all of Turbines operations in
+	the file it is inserted into.
 </p>
 <h3>Usage</h3>
 <p>
 	Add <code>@load url(path/to/file.cssp)</code> where you want a file to be included. Done!
 </p>
+<h4>Use cases</h4>
+<ul>
+	<li>Building protype libraries (see <a href="#usage-inheritancetemplating-prototyping-recycling">Recycling prototypes</a>)</li>
+	<li>Using the same set of constants in multiple files</li>
+</ul>
 </div>
 
 
 
-<h2 id="plugins-os">OS detection</h2><div>
+<h2 id="plugins-os">OS and device detection</h2><div>
 <p class="abstract">
 	TODO
 </p>
 <p>
 	TODO
 </p>
+<h3>Usage</h3>
+<p>
+	TODO
+</p>
+<h4>Use cases</h4>
+<ul>
+	<li>TODO</li>
+</ul>
 </div>
 
 
