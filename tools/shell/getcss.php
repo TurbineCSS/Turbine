@@ -71,7 +71,7 @@ if($_POST['css']){
 
 	// Load plugins (if not already loaded)
 	if(!$plugins_loaded){
-		$plugindir = 'plugins';
+		$plugindir = '../../plugins';
 		if($handle = opendir($plugindir)){
 			while(false !== ($pluginfile = readdir($handle))){
 				if($pluginfile != '.' && $pluginfile != '..' && is_file($plugindir.'/'.$pluginfile) && pathinfo($plugindir.'/'.$pluginfile,PATHINFO_EXTENSION) == 'php' && !function_exists(substr($pluginfile, 0, -4))){
