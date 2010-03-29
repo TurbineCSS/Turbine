@@ -1,6 +1,8 @@
 Turbine
 =======
 
+[Online documentation][3] (incomplete)
+
 Turbine is a collection of PHP-powered tools that are designed to decrease css devolopment time and web developer headache. This includes:
 
   - A new, minmal syntax – the less you have have to type, the more you get done
@@ -43,3 +45,4 @@ It is somewhat compareable to [Sass][1] and [Scaffold][2], but more radically ge
 
   [1]: http://sass-lang.com/
   [2]: http://github.com/anthonyshort/csscaffold
+  [3]: http://turbine.peterkroener.de/
