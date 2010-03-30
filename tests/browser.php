@@ -121,13 +121,53 @@ $ua_tests = array(
 	),
 	'Safari 3.1 on OS X' => array(
 	),
-	'Safari 4.0 on Win7' => array(
+	'Safari 4 on Win7' => array(
+		'ua' => 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/532+ (KHTML, like Gecko) Version/4.0.2 Safari/530.19.1',
+		'test' => array(
+			'name' => 'safari',
+			'version' => '4.02',
+			'engine' => 'webkit',
+			'engineversion' => '532',
+			'platform' => 'windows',
+			'platformversion' => '6.1',
+			'platformtype' => 'desktop'
+		)
 	),
-	'Safari 4.0 on Vista' => array(
+	'Safari 4 on Vista' => array(
+		'ua' => 'Mozilla/5.0 (Windows; U; Windows NT 6.0; pl-PL) AppleWebKit/530.19.2 (KHTML, like Gecko) Version/4.0.2 Safari/530.19.1',
+		'test' => array(
+			'name' => 'safari',
+			'version' => '4.02',
+			'engine' => 'webkit',
+			'engineversion' => '530.192',
+			'platform' => 'windows',
+			'platformversion' => '6.0',
+			'platformtype' => 'desktop'
+		)
 	),
-	'Safari 4.0 on WinXP' => array(
+	'Safari 4 on WinXP' => array(
+		'ua' => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/530.19.2 (KHTML, like Gecko) Version/4.0.2 Safari/530.19.1',
+		'test' => array(
+			'name' => 'safari',
+			'version' => '4.02',
+			'engine' => 'webkit',
+			'engineversion' => '530.192',
+			'platform' => 'windows',
+			'platformversion' => '5.1',
+			'platformtype' => 'desktop'
+		)
 	),
-	'Safari 4.0 on OS X' => array(
+	'Safari 4 on OS X' => array(
+		'ua' => 'Mozilla/5.0 (Macintosh; U; PPC Mac OS X 10_5_7; en-us) AppleWebKit/530.19.2 (KHTML, like Gecko) Version/4.0.2 Safari/530.19',
+		'test' => array(
+			'name' => 'safari',
+			'version' => '4.02',
+			'engine' => 'webkit',
+			'engineversion' => '530.192',
+			'platform' => 'macintosh',
+			'platformversion' => '0',
+			'platformtype' => 'desktop'
+		)
 	),
 
 
@@ -179,6 +219,16 @@ $ua_tests = array(
 		)
 	),
 	'Firefox 3.6 on OS X' => array(
+		'ua' => 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.2) Gecko/20091218 Firefox 3.6',
+		'test' => array(
+			'name' => 'firefox',
+			'version' => '1.92',
+			'engine' => 'gecko',
+			'engineversion' => '1.92',
+			'platform' => 'macintosh',
+			'platformversion' => '0',
+			'platformtype' => 'desktop'
+		)
 	),
 	'Firefox 3.6 on Linux' => array(
 		'ua' => 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2) Gecko/20100222 Ubuntu/10.04 (lucid) Firefox/3.6',
@@ -232,12 +282,12 @@ $ua_tests = array(
 		)
 	),
 	'Flock 2.5.6 on WinXP' => array(
-		'ua' => '# Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.1.7) Gecko/20091221 Firefox/3.5.7 Flock/2.5.6 (.NET CLR 3.5.30729)',
+		'ua' => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.1.7) Gecko/20091221 Firefox/3.5.7 Flock/2.5.6 (.NET CLR 3.5.30729)',
 		'test' => array(
 			'name' => 'gecko',
 			'version' => '1.9014',
 			'engine' => 'gecko',
-			'engineversion' => '1.9014',
+			'engineversion' => '1.917',
 			'platform' => 'windows',
 			'platformversion' => '5.1',
 			'platformtype' => 'desktop'
@@ -465,14 +515,39 @@ $ua_tests = array(
 			'version' => '2.22',
 			'engine' => 'gecko',
 			'engineversion' => '1.908',
-			'platform' => 'Linux',
+			'platform' => 'linux',
 			'platformversion' => '0',
 			'platformtype' => 'desktop'
 		)
-	)
+	),
 
 
 	// Mobile browsers
+	'Safari 3 (iPhone)' => array(
+		'ua' => 'Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3',
+		'test' => array(
+			'name' => 'safari',
+			'version' => '3',
+			'engine' => 'webkit',
+			'engineversion' => '420',
+			'platform' => 'macintosh',
+			'platformversion' => '0',
+			'platformtype' => 'mobile'
+		)
+	),
+	'Safari 4 (iPhone)' => array(
+		'ua' => 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us) AppleWebKit/528.18 (KHTML, like Gecko) Version/4.0 Mobile/7A341 Safari/528.16
+		',
+		'test' => array(
+			'name' => 'safari',
+			'version' => '4',
+			'engine' => 'webkit',
+			'engineversion' => '528.18',
+			'platform' => 'macintosh',
+			'platformversion' => '0',
+			'platformtype' => 'mobile'
+		)
+	)
 
 
 	// TV browsers
