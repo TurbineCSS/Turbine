@@ -25,8 +25,13 @@
 				$before = null;
 				foreach($styles as $property => $value){
 					if(preg_match('/border(?:-(top|right|bottom|left)(?:-(right|left))*)*-radius/', $property, $matches)){
+						// Create the new rules and insert them
 						$borderradius_rules = borderradius_glue_rules($matches, $value);
 						$cssp->insert_rules($borderradius_rules, $block, $selector, $before);
+						// Comment the newly inserted properties
+						foreach($borderradius_rules as $border_property => $border_value){
+							CSSP::comment($parsed[$block][$selector], $border_property, 'Added by border radius plugin');
+						}
 						$before = array_pop(array_keys($borderradius_rules));
 					}
 					else{
