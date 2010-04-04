@@ -392,22 +392,52 @@ class Cssp extends Parser2 {
 	/**
 	 * insert
 	 * Inserts an element at a specific position in the block
-	 * @param mixed $element The element to insert
+	 * @param array $elements The element to insert
 	 * @param string $block The block to insert into
 	 * @param string $before The element after which the new element is inserted
 	 * @return void
 	 */
-	protected function insert($elements, $block, $before){
+	public function insert($elements, $block, $before){
 		$newblock = array();
 		foreach($this->parsed[$block] as $selector => $styles){
 			$newblock[$selector] = $styles;
 			if($selector == $before){
-				foreach($elements as $element_selector => $element_styles){
-					$newblock[$element_selector] = $element_styles;
+				foreach($elements as $newselector => $newstyles){
+					$newblock[$newselector] = $newstyles;
 				}
 			}
 		}
 		$this->parsed[$block] = $newblock;
+	}
+
+
+	/**
+	 * insert_rules
+	 * Inserts an array of css rules (property => value) into an element at a specific position
+	 * @param array $rules The css rules to insert
+	 * @param string_type $block The block where the element $element is to be found
+	 * @param string $element The element to insert the rules into
+	 * @param string $before The property after which the rules are to be inserted
+	 * @return void
+	 */
+	public function insert_rules($rules, $block, $element, $before = null){
+		$newelement = array();
+		// If there's no $before, insert the new rules at the top
+		if(!$before){
+			$newelement = array_merge($rules, $this->parsed[$block][$element]);
+		}
+		// Else insert them after the property $before
+		else{
+			foreach($this->parsed[$block][$element] as $property => $value){
+				$newelement[$property] = $value;
+				if($property == $before){
+					foreach($rules as $newproperty => $newvalue){
+						$newelement[$newproperty] = $newvalue;
+					}
+				}
+			}
+		}
+		$this->parsed[$block][$element] = $newelement;
 	}
 
 
