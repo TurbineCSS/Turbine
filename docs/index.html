@@ -47,7 +47,7 @@
 				<li><a href="#plugins-html5">HTML5</a></li>
 				<li><a href="#plugins-ie6">IE6 enhancements</a></li>
 				<li><a href="#plugins-minifier">Minifier</a></li>
-				<li><a href="#plugins-loader">Loader</a></li>
+				<li><a href="#plugins-load">Load</a></li>
 				<li><a href="#plugins-os">OS and Device detection</a></li>
 				<li><a href="#plugins-quote">Quote style</a></li>
 				<li><a href="#plugins-reset">Reset stylesheet</a></li>
@@ -194,7 +194,7 @@
 <p>
 	The files as processed in sequence and do <strong>not</strong> influence each other in any way. For example,
 	<a href="#usage-constantsaliases">constants</a> defined in <code>file1</code> won't apply to code in <code>file2</code>. If
-	you want share code between files, use the <a href="#plugins-loader">loader plugin</a>.
+	you want share code between files, use the <a href="#plugins-load">loader plugin</a>.
 </p>
 
 
@@ -702,7 +702,7 @@ div.blackRound {
 
 <h4 id="usage-inheritancetemplating-prototyping-recycling">Recycling prototypes</h4>
 <p>
-	The <a href="#plugins-loader" class="smoothscroll">loader plugin</a> allows you (among other things) to build a library of prototypes,
+	The <a href="#plugins-load" class="smoothscroll">loader plugin</a> allows you (among other things) to build a library of prototypes,
 	store them in an external file and include them when you need them. The code for the black and white boxes above could then be shortend
 	to the following:
 </p>
@@ -1058,7 +1058,7 @@ p.foobar
 
 
 
-<h2 id="plugins-loader">Loader</h2><div>
+<h2 id="plugins-load">Load</h2><div>
 <p class="abstract">
 	Loads another .cssp file.
 </p>
@@ -1067,15 +1067,45 @@ p.foobar
 	code of the loaded file before parsing anything, so the contents of the file is subject to all of Turbines operations in
 	the file it is inserted into.
 </p>
+<p>
+	The plugin will automatically take care of any differences in indention style between the loaded code and the code it is
+	loaded into.
+</p>
 <h3>Usage</h3>
 <p>
-	Add <code>@load url(path/to/file.cssp)</code> where you want a file to be included. Done!
+	Pdd <code>load</code> to your <code>@turbine</code> plugins rule and add a <code>@load url(path/to/file.cssp)</code> line
+	where you want a file to be included. Done!
 </p>
 <h4>Use cases</h4>
 <ul>
 	<li>Building protype libraries (see <a href="#usage-inheritancetemplating-prototyping-recycling">Recycling prototypes</a>)</li>
-	<li>Using the same set of constants in multiple files</li>
+	<li>Share the same set of constants between multiple files (eg. a mobile, print and screen stylesheet)</li>
 </ul>
+<h3>Example</h3>
+<p>
+	This is an example of using the loader plugin to create a module to create a module that contains all the colors used in a project.
+</p>
+<p>
+	File <code>style.cssp</code>:
+</p>
+<pre class="cssp">@load url(/modules/colors.cssp)
+
+#foo
+    color:$textcolor
+    background:$bgcolor</pre>
+<p>
+	File <code>/modules/colors.cssp</code>:
+</p>
+<pre class="cssp">@constants
+    textcolor:#C00000
+    bgcolor:#EEE</pre>
+<p>
+	Result:
+</p>
+<pre>#foo {
+	color: #C00000;
+	background: #EEE;
+}</pre>
 </div>
 
 
