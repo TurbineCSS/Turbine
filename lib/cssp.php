@@ -424,20 +424,44 @@ class Cssp extends Parser2 {
 		$newelement = array();
 		// If there's no $before, insert the new rules at the top
 		if(!$before){
-			$newelement = array_merge($rules, $this->parsed[$block][$element]);
+			foreach($rules as $newproperty => $newvalue){
+				$newelement = $this->insert_property($newelement, $newproperty, $newvalue);
+			}
 		}
-		// Else insert them after the property $before
-		else{
-			foreach($this->parsed[$block][$element] as $property => $value){
-				$newelement[$property] = $value;
-				if($property == $before){
-					foreach($rules as $newproperty => $newvalue){
-						$newelement[$newproperty] = $newvalue;
-					}
+		// Add the properties one after another, insert new ones after $before
+		foreach($this->parsed[$block][$element] as $property => $value){
+			$newelement[$property] = $value;
+			if($property == $before){
+				foreach($rules as $newproperty => $newvalue){
+					$newelement = $this->insert_property($newelement, $newproperty, $newvalue);
 				}
 			}
 		}
 		$this->parsed[$block][$element] = $newelement;
+	}
+
+
+	/**
+	 * insert_property
+	 * Inserts a new property into an array without overwriting any other properties
+	 * @param array $set The array to insert into
+	 * @param string $property The property name
+	 * @param string $value The propertie's value
+	 * @return array $set The set with the new property inserted
+	 */
+	private function insert_property($set, $property, $value){
+		if(isset($set[$property])){
+			if(is_array($set[$property])){
+				$set[$property][] = $value;
+			}
+			else{
+				$set[$property] = array($set[$property], $value);
+			}
+		}
+		else{
+			$set[$property] = $value;
+		}
+		return $set;
 	}
 
 
