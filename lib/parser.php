@@ -193,7 +193,6 @@ class Parser2 extends Base{
 	 * @return object $this The CSS Parser object
 	 */
 	public function parse(){
-		$this->get_indention_char();
 		$this->preprocess();
 		$linecount = count($this->css);
 
@@ -232,7 +231,7 @@ class Parser2 extends Base{
 				// Ignore comment lines
 				if(!preg_match('~^[\s]*//.*?$~', $line)){
 					// Get the current and next indention level
-					if(trim($this->css[$i-1]) == ''){
+					if(isset($this->css[$i-1]) && trim($this->css[$i-1]) == ''){
 						$level = 0;
 						$this->nesting = array();
 					}
@@ -266,20 +265,34 @@ class Parser2 extends Base{
 
 
 	/**
+	 * set_indention_char
+	 * Sets the indention char
+	 * @param string $char The whitespace char(s) used for indention
+	 * @param unknown_type $char
+	 */
+	public function set_indention_char($char = null){
+		if(!$char){
+			$char = Parser2::get_indention_char($this->css);
+		}
+		$this->options['indention_char'] = $char;
+	}
+
+
+	/**
 	 * get_indention_char
 	 * Find out which whitespace char(s) are used for indention
+	 * @param array $lines The code in question
 	 * @return void
 	 */
-	protected function get_indention_char(){
-		$linecount = count($this->css);
+	public static function get_indention_char($lines){
+		$linecount = count($lines);
 		for($i = 0; $i < $linecount; $i++){ // For each line...
-			$line = $this->css[$i];
-			$nextline = $this->css[1+$i];
+			$line = $lines[$i];
+			$nextline = $lines[1+$i];
 			if(trim($line) != '' && trim($nextline) != ''){ // ...if the line and the following line are not empty..
 				preg_match('/^([\s]+).*?$/', $nextline, $matches); // ...find the whitespace used for indention
 				if(count($matches) == 2 && strlen($matches[1]) > 0){
-					$this->options['indention_char'] = $matches[1];
-					return;
+					return $matches[1];
 				}
 			}
 		}

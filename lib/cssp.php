@@ -185,10 +185,10 @@ class Cssp extends Parser2 {
 				// Replace in values
 				foreach($styles as $property => $value){
 					$matches = array();
-					if($property == 'extends'){
+					if($property == 'extends' && isset($this->parsed[$block][$selector]['extends'])){
 						$this->parsed[$block][$selector]['extends'] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $this->parsed[$block][$selector]['extends']);
 					}
-					elseif(preg_match('/copy\((.*)[\s]+(.*)\)/', $this->parsed[$block][$selector][$property], $matches)){
+					elseif(isset($this->parsed[$block][$selector][$property]) && preg_match('/copy\((.*)[\s]+(.*)\)/', $this->parsed[$block][$selector][$property], $matches)){
 						$matches[1] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $matches[1]);
 						$this->parsed[$block][$selector][$property] = 'copy('.$matches[1].' '.$matches[2].')';
 					}

@@ -216,6 +216,7 @@ if($_GET['files']){
 					}
 
 
+					$cssp->set_indention_char();                                         // Set the character(s) used for code indention
 					$cssp->apply_plugins('before_parse', $plugin_list, $cssp->css);      // Apply plugins for before parse
 					$cssp->parse();                                                      // Parse the code
 					$cssp->apply_plugins('before_compile', $plugin_list, $cssp->parsed); // Apply plugins for before compile
