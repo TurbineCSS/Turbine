@@ -167,7 +167,8 @@ class Browser extends Base{
 			'Smartphone',
 			'SonyEricsson',
 			'Symbian',
-			'WAP'
+			'WAP',
+			'HTC'
 			);
 			for($i=0;$i<count($mobileAgents);$i++)
 			{
