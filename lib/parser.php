@@ -609,8 +609,12 @@ class Parser2 extends Base{
 					$output .= $prefix . $selector . ' ' . $rule.';' . $n;
 				}
 				elseif($selector == '@font-face'){ // @font-face rule
+					$comments = array();
+					if(isset($rule['_comments'])){
+						$comments = $rule['_comments'];
+					}
 					$output .= $prefix . $selector . $s .'{' . $n;
-					$output .= $this->glue_properties($rule, $prefix, $s, $t, $n, $compressed);
+					$output .= $this->glue_properties($rule, $prefix, $s, $t, $n, $compressed, $comments);
 					$output .= '}' .$n;
 				}
 			}
