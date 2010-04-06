@@ -790,19 +790,6 @@ class Parser2 extends Base{
 	}
 
 
-	/**
-	 * dump
-	 * print_r()s $this->parsed
-	 * @return object $this The CSS Parser object
-	 */
-	public function dump(){
-		echo '<pre>';
-		print_r($this->parsed);
-		echo '</pre>';
-		return $this;
-	}
-
-
 }
 
 ?>
