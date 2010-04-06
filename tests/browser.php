@@ -75,6 +75,18 @@ $ua_tests = array(
 			'platformtype' => 'desktop'
 		)
 	),
+	'IE7 (IE Tester) on Win7' => array(
+		'ua' => 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; WOW64; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0)',
+		'test' => array(
+			'name' => 'msie',
+			'version' => '7',
+			'engine' => 'msie',
+			'engineversion' => '7',
+			'platform' => 'windows',
+			'platformversion' => '6.1',
+			'platformtype' => 'desktop'
+		)
+	),
 	'IE7 on Vista' => array(
 		'ua' => 'Mozilla/5.0 (compatible; MSIE 7.0; Windows NT 6.0; WOW64; SLCC1; .NET CLR 2.0.50727; Media Center PC 5.0; c .NET CLR 3.0.04506; .NET CLR 3.5.30707; InfoPath.1; el-GR)',
 		'test' => array(
@@ -96,6 +108,18 @@ $ua_tests = array(
 			'engineversion' => '7',
 			'platform' => 'windows',
 			'platformversion' => '5.1',
+			'platformtype' => 'desktop'
+		)
+	),
+	'IE6 (IE Tester) on Win 7' => array(
+		'ua' => 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 6.1; WOW64; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0)',
+		'test' => array(
+			'name' => 'msie',
+			'version' => '6',
+			'engine' => 'msie',
+			'engineversion' => '6',
+			'platform' => 'windows',
+			'platformversion' => '6.1',
 			'platformtype' => 'desktop'
 		)
 	),
@@ -722,6 +746,9 @@ include('../lib/browser.php');
 $properties = array('name', 'version', 'engine', 'engineversion', 'platform', 'platformversion', 'platformtype');
 
 foreach($ua_tests as $title => $test){
+	if(!isset($test['ua'])){
+		$test['ua'] = '';
+	}
 	$uas = (is_array($test['ua'])) ? $test['ua'] : array($test['ua']);
 	echo '<tr>';
 	echo '<th rowspan="'.count($uas).'" id="'.preg_replace('/[^(\x20-\x7F)\x0A]*/','', $title).'"><a href="#'.preg_replace('/[^(\x20-\x7F)\x0A]*/','', $title).'">'.$title.'</a></th>';
