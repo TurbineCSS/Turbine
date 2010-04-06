@@ -74,8 +74,8 @@ input[type=text].version
 		padding:1em 0 0.5em 0
 	h2
 		font-size:1.45em
-		margin:-2em 0 -0.5em 0
-		padding:3.5em 0 0.5em 0
+		margin:1.5em 0 -0.5em 0
+		padding:0.5em 0
 		span
 			color:$darktxt
 	h3

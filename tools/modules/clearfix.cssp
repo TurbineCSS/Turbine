@@ -1,0 +1,11 @@
+// Clear & Clearfix
+// Use the extends property with these classes instead of adding them to your html
+.clear
+	clear: both
+.clearfix:after
+	content: "."
+	display: block
+	width: 100%
+	clear: both
+	height: 0
+	visibility: hidden

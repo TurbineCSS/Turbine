@@ -81,10 +81,10 @@ public function __construct(){
 	}
 	// Set error output
 	if($this->config['debug_level'] == 2){
-		error_reporting('E_ALL');
+		error_reporting(E_ALL);
 	}
 	else{
-		error_reporting('E_NONE');
+		error_reporting(0);
 	}
 }
 

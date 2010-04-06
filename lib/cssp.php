@@ -185,10 +185,10 @@ class Cssp extends Parser2 {
 				// Replace in values
 				foreach($styles as $property => $value){
 					$matches = array();
-					if($property == 'extends'){
+					if($property == 'extends' && isset($this->parsed[$block][$selector]['extends'])){
 						$this->parsed[$block][$selector]['extends'] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $this->parsed[$block][$selector]['extends']);
 					}
-					elseif(preg_match('/copy\((.*)[\s]+(.*)\)/', $this->parsed[$block][$selector][$property], $matches)){
+					elseif(isset($this->parsed[$block][$selector][$property]) && preg_match('/copy\((.*)[\s]+(.*)\)/', $this->parsed[$block][$selector][$property], $matches)){
 						$matches[1] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $matches[1]);
 						$this->parsed[$block][$selector][$property] = 'copy('.$matches[1].' '.$matches[2].')';
 					}
@@ -392,22 +392,76 @@ class Cssp extends Parser2 {
 	/**
 	 * insert
 	 * Inserts an element at a specific position in the block
-	 * @param mixed $element The element to insert
+	 * @param array $elements The element to insert
 	 * @param string $block The block to insert into
 	 * @param string $before The element after which the new element is inserted
 	 * @return void
 	 */
-	protected function insert($elements, $block, $before){
+	public function insert($elements, $block, $before){
 		$newblock = array();
 		foreach($this->parsed[$block] as $selector => $styles){
 			$newblock[$selector] = $styles;
 			if($selector == $before){
-				foreach($elements as $element_selector => $element_styles){
-					$newblock[$element_selector] = $element_styles;
+				foreach($elements as $newselector => $newstyles){
+					$newblock[$newselector] = $newstyles;
 				}
 			}
 		}
 		$this->parsed[$block] = $newblock;
+	}
+
+
+	/**
+	 * insert_rules
+	 * Inserts an array of css rules (property => value) into an element at a specific position
+	 * @param array $rules The css rules to insert
+	 * @param string_type $block The block where the element $element is to be found
+	 * @param string $element The element to insert the rules into
+	 * @param string $before The property after which the rules are to be inserted
+	 * @return void
+	 */
+	public function insert_rules($rules, $block, $element, $before = null){
+		$newelement = array();
+		// If there's no $before, insert the new rules at the top
+		if(!$before){
+			foreach($rules as $newproperty => $newvalue){
+				$newelement = $this->insert_property($newelement, $newproperty, $newvalue);
+			}
+		}
+		// Add the properties one after another, insert new ones after $before
+		foreach($this->parsed[$block][$element] as $property => $value){
+			$newelement[$property] = $value;
+			if($property == $before){
+				foreach($rules as $newproperty => $newvalue){
+					$newelement = $this->insert_property($newelement, $newproperty, $newvalue);
+				}
+			}
+		}
+		$this->parsed[$block][$element] = $newelement;
+	}
+
+
+	/**
+	 * insert_property
+	 * Inserts a new property into an array without overwriting any other properties
+	 * @param array $set The array to insert into
+	 * @param string $property The property name
+	 * @param string $value The propertie's value
+	 * @return array $set The set with the new property inserted
+	 */
+	private function insert_property($set, $property, $value){
+		if(isset($set[$property])){
+			if(is_array($set[$property])){
+				$set[$property][] = $value;
+			}
+			else{
+				$set[$property] = array($set[$property], $value);
+			}
+		}
+		else{
+			$set[$property] = $value;
+		}
+		return $set;
 	}
 
 

@@ -15,7 +15,6 @@
 	function load(&$css){
 		global $cssp;
 		$new = array();
-		$matches = array();
 		foreach($css as $line){
 			if(preg_match('/^[\s]*@load[\s]+url\((.*?)\)/', $line, $matches)){
 				if(count($matches) == 2){
@@ -24,13 +23,18 @@
 					foreach($cssp->global_constants as $g_constant => $g_value){
 						$filepath = preg_replace('/(\$_'.$g_constant.')\b/', $g_value, $filepath);
 					}
-					// Import the new lines
+					// Load the file
 					if(file_exists($filepath)){
-						$import = file($filepath);
-						foreach($import as $imported){
+						$newlines = file($filepath);
+						$newlines_indention_char = Parser2::get_indention_char($newlines);
+						// Fix the indention of the new lines
+						if($cssp->options['indention_char'] != $newlines_indention_char){
+							$newlines = load_fix_indention($newlines, $cssp->options['indention_char'], $newlines_indention_char);
+						}
+						// Import the new lines
+						foreach($newlines as $imported){
 							$new[] = $imported;
 						}
-						$matches = array();
 					}
 					else{
 						$cssp->report_error('Loader plugin could not find file '.$filepath.'.');
@@ -42,6 +46,26 @@
 			}
 		}
 		$css = $new;
+	}
+
+
+	/**
+	 * load_fix_indention
+	 * Fix the indention of the new lines
+	 * @param array $lines The lines to fix
+	 * @param $newchar The new indention char
+	 * @param $oldchar The old indention char
+	 * @return array $newlines The fixed lines
+	 */
+	function load_fix_indention($lines, $newchar, $oldchar){
+		$newlines = array();
+		foreach($lines as $line){
+			if(preg_match('/^([\s]+)(.+)$/', $line, $parts)){
+				$line = str_replace($oldchar, $newchar, $parts[1]).$parts[2];
+			}
+			$newlines[] = $line;
+		}
+		return $newlines;
 	}
 
 

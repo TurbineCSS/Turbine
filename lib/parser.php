@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Turbine
  * http://github.com/SirPepe/Turbine
@@ -144,44 +145,46 @@ class Parser2 extends Base{
 	public function parse(){
 		// Preprocess the code and get the indention char(s)
 		$this->preprocess();
-		$this->get_indention_char();
+		$this->get_indention_char($this->code);
 		// Loop through the lines
 		$loc = count($this->code);
 		for($i = 0; $i < $loc; $i++){
-			$this->token = '';
 			$line = $this->code[$i];
-			// If the current line is empty, ignore it and reset the previous line and the selector stack
+			if(isset($this->code[$i + 1])){
+				$nextline = $this->code[$i + 1];
+			}
+			// If the current line is empty, ignore it and reset the previous line plus the selector stack
 			if($line == ''){
 				$this->prev_line = array(
 					'type' => false,
 					'indention' => null
 				);
 				$this->selector_stack = array();
-				echo "RE<br>";
+				// echo "RE<br>";
 			}
 			// Else parse the line
 			else{
 				// Line begins with "@media" = parse this as a @media-line
 				if(substr(trim($line), 0, 6) == '@media'){
-					echo "ME | $line<br>";
+					// echo "ME | $line<br>";
 				}
 				// Line begins with "@import" = Parse @import rule
 				elseif(substr(trim($line), 0, 7) == '@import'){
-					echo "IM | $line<br>";
+					// echo "IM | $line<br>";
 				}
 				// Else parse normal line
 				else{
 					// Get the next line's indention level
-					if($this->code[1+$i] != ''){
-						$nextlevel = $this->get_indention_level($this->code[1+$i]);
+					if($nextline != ''){
+						$nextlevel = $this->get_indention_level($nextline);
 					}
 					// Next line is indented = parse this as a selector
-					if($this->code[1+$i] != '' && $nextlevel > $this->get_indention_level($this->code[$i])){
-						echo "SE | $line<br>";
+					if($nextline != '' && $nextlevel > $this->get_indention_level($line)){
+						// echo "SE | $line<br>";
 					}
 					// Else parse as a property-value-pair
 					else{
-						echo "KV | $line<br>";
+						// echo "KV | $line<br>";
 					}
 				}
 			}
@@ -191,20 +194,34 @@ class Parser2 extends Base{
 
 
 	/**
+	 * set_indention_char
+	 * Sets the indention char
+	 * @param string $char The whitespace char(s) used for indention
+	 * @param unknown_type $char
+	 */
+	public function set_indention_char($char = null){
+		if(!$char){
+			$char = Parser2::get_indention_char($this->css);
+		}
+		$this->options['indention_char'] = $char;
+	}
+
+
+	/**
 	 * get_indention_char
 	 * Find out which whitespace char(s) are used for indention
+	 * @param array $lines The code in question
 	 * @return void
 	 */
-	protected function get_indention_char(){
-		$loc = count($this->code);
-		for($i = 0; $i < $loc; $i++){ // For each line...
-			$line = $this->code[$i];
-			$nextline = $this->code[1+$i];
-			if($line != '' && $nextline != ''){ // ...if the line and the following line are not empty..
+	public static function get_indention_char($lines){
+		$linecount = count($lines);
+		for($i = 0; $i < $linecount; $i++){ // For each line...
+			$line = $lines[$i];
+			$nextline = $lines[$i + 1];
+			if(trim($line) != '' && trim($nextline) != ''){ // ...if the line and the following line are not empty..
 				preg_match('/^([\s]+).*?$/', $nextline, $matches); // ...find the whitespace used for indention
 				if(count($matches) == 2 && strlen($matches[1]) > 0){
-					$this->indention_char = $matches[1];
-					return;
+					return $matches[1];
 				}
 			}
 		}
@@ -213,10 +230,20 @@ class Parser2 extends Base{
 
 	/**
 	 * preprocess
-	 * Strip whitespace from empty lines and remove comment lines
+	 * Clean up the inital code
 	 * @return void
 	 */
 	protected function preprocess(){
+		$this->preprocess_clean();
+		$this->preprocess_concatenate_selectors();
+	}
+
+
+	/**
+	 * 
+	 * 
+	 */
+	private function preprocess_clean(){
 		$processed = array();
 		$loc = count($this->code);
 		for($i = 0; $i < $loc; $i++){
@@ -234,20 +261,41 @@ class Parser2 extends Base{
 
 
 	/**
+	 * 
+	 * 
+	 */
+	private function preprocess_concatenate_selectors(){
+		$processed = array();
+		$loc = count($this->code);
+		for($i = 0; $i < $loc; $i++){
+			$line = $this->code[$i];
+			if($line != ''){
+				while(substr($line, -1) == ','){
+					$line .= ' '.$this->code[++$i];
+				}
+			}
+			$processed[] = $line;
+		}
+		$this->code = $processed;
+	}
+
+
+	/**
 	 * get_indention_level
 	 * Returns the indention level for a line
 	 * @param string $line The line to get the indention level for
 	 * @return int $level The indention level
 	 */
-	protected function get_indention_level($line){
+	public function get_indention_level($line){
 		$level = 0;
 		if(substr($line, 0, strlen($this->indention_char)) == $this->indention_char){
-			$level = 1 + $this->get_indention_level(substr($line, strlen($this->indention_char)));
+			// $level = 1 + $this->get_indention_level(substr($line, strlen($this->indention_char)));
 		}
 		return $level;
 	}
 
 
 }
+
 
 ?>
