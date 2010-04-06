@@ -39,7 +39,7 @@
 			<ul>
 				<li><a href="#plugins-borderradius">Border radius</a></li>
 				<li><a href="#plugins-boxshadow">Box shadow</a></li>
-				<li><a href="#plugins-fontface">Bullet proof @font-face</a></li>
+				<li><a href="#plugins-fontface">@font-face</a></li>
 				<li><a href="#plugins-browser">Browser detection</a></li>
 				<li><a href="#plugins-bugfix">Browser bugfixes</a></li>
 				<li><a href="#plugins-colormodels">Colormodels</a></li>
@@ -816,52 +816,76 @@ div.blackRound
 
 
 
-<h2 id="plugins-fontface">Bullet proof @font-face syntax</h2><div>
+<h2 id="plugins-fontface">@font-face syntax</h2><div>
 <p class="abstract">
-	Generates bullet proof @font-face declarations from a simplified syntax.
+	Generates @font-face declarations from a simplified syntax.
 </p>
 <p>
 	<a href="http://paulirish.com/2009/bulletproof-font-face-implementation-syntax/">Bulletproof @font-face syntax</a> is a syntax
-	for embedding web fonts in a manner that works for all browsers and takes care of numerous IE quirks. Its only downside is that
+	for embedding web fonts in a manner that works for all browsers and takes care of numerous browser quirks. Its only downside is that
 	it's rather complicated:
 </p>
 <pre class="css">@font-face {
-    font-family: 'Graublau Web';
-    src: url('GraublauWeb.eot');
-    src: local('Graublau Web Regular'), local('Graublau Web'),
-        url('GraublauWeb.otf') format('opentype')
+	font-family: 'Graublau Web';
+	src: url('GraublauWeb.eot');
+	src: local('Graublau Web Regular'), local('Graublau Web'),
+		url("GraublauWeb.woff") format("woff"),
+		url("GraublauWeb.otf") format("opentype"),
+		url("GraublauWeb.svg#grablau") format("svg");
 }</pre>
 <p>
-	The bullet proof @font-face syntax plugin generates bullet proof @font-face declarations from a simplified syntax.
+	The @font-face syntax plugin generates browser-specific @font-face declarations from a very simplified syntax.
 </p>
 <h3>Usage</h3>
 <ol>
-	<li>Add <code>fontface</code> to your <code>@turbine</code> plugins rule</li>
-	<li>Build a normal <code>@font-face</code>-rule</li>
-	<li>Omit the <code>src</code>-attribute</li>
-	<li>Add properties <code>eot</code>, <code>local</code> and <code>ttf</code> or <code>otf</code></li>
+	<li>Add <code>fontface</code> to <code>@turbine</code> plugin list</li>
+	<li>Put all different font-files into one directory and give them the same basename, e.g. "<code>SaginaMedium</code>":
+		<ul>
+			<li>SaginawMedium.eot</li>
+			<li>SaginawMedium.woff</li>
+			<li>SaginawMedium.otf</li>
+			<li>SaginawMedium.ttf</li>
+			<li>SaginawMedium.svg</li>
+		</ul>
+	</li>
+	<li>Build a special <code>@font-face</code>-rule with a single <code>src</code>-property pointing not to a real
+	file but to that common basename, e.g. "<code>src:url('fonts/SaginawMedium')</code>"</li>
+	<li>The plugin will look after any known fontfile format by appending the suffixes
+	<code>.eot, .woff, .otf, .ttf</code> and <code>.svg</code>.<br />
+	<ul>
+		<li>For IE &lt;= 8 it will serve the .eot-file if there is one named <code>fonts/SaginawMedium.eot</code>.</li>
+		<li>For the other browser it will serve as many of the other flavors as available.<br />
+		A truetype-file will only be served when there is no opentype-file available.</li>
+	</ul>
 </ol>
 <h3>Example</h3>
 <pre class="cssp">@turbine
-    plugins:fontface
+	plugins:fontface
 
 @font-face
-    font-family:'Graublau Web';
-    local:'Graublau Web Regular';
-    otf:url('GraublauWeb.otf');
-    eot:url('GraublauWeb.eot');
-    font-weight:bold;
-    font-style:italic;</pre>
+	font-family:'SaginawMedium'
+	src:url('fonts/SaginawMedium')
+	font-weight:bold
+	font-style:italic</pre>
 <p>
-	Result:
+	Result for IE &lt;= 8:
 </p>
 <pre class="css">@font-face {
-    font-family: 'Graublau Web';
-    font-weight: bold;
-    font-style: italic;
-    src: url('GraublauWeb.eot');
-    src: local('Graublau Web Regular'), local('Graublau Web'),
-        url('GraublauWeb.otf') format(opentype);
+	font-family: 'SaginawMedium';
+	src: url("fonts/SaginawMedium.eot");
+	font-weight: bold;
+	font-style: italic;
+}</pre>
+<p>
+	Result for all other browsers:
+</p>
+<pre class="css">@font-face {
+	font-family: 'SaginawMedium';
+	src: url("fonts/SaginawMedium.woff") format("woff"),
+	   url("fonts/SaginawMedium.ttf") format("truetype"),
+	   url("fonts/SaginawMedium.svg#SaginawMedium") format("svg");
+	font-weight: bold;
+	font-style: italic;
 }</pre>
 </div>
 

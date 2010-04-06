@@ -2,31 +2,46 @@
 
 
 	/**
-	 * Automatic bulletproof @font-face syntax
-	 * Source: http://paulirish.com/2009/bulletproof-font-face-implementation-syntax/
+	 * Automatic @font-face syntax
 	 * 
 	 * Usage:
-	 * 1) Add bp_font_face to @cssp plugin list
-	 * 2) Build a normal @font-face-rule
-	 * 3) Omit "src"-attribute
-	 * 4) Add properties "eot", "local" and "ttf" or "otf"
+	 * 1) Add fontface to @turbine plugin list
+	 * 2) Put all different font-files into one directory and give them the same basename,
+	 *    e.g. "SaginaMedium": 
+	 *      SaginawMedium.eot
+	 *      SaginawMedium.woff
+	 *      SaginawMedium.otf
+	 *      SaginawMedium.ttf
+	 *      SaginawMedium.svg
+	 * 3) Build a special @font-face-rule with a single src-property pointing not to a real
+	 *    file but to that common basename, e.g. "src:url('fonts/SaginawMedium')"
+	 * 4) The plugin will look after any known fontfile format by appending the suffixes
+	 *    .eot, .woff, .otf, .ttf and .svg.
+	 *    For IE <= 8 it will serve the .eot if there is a corresponding file.
+	 *    For the other browser it will serve as many of the other flavors as available.
+	 *    A truetype-file will only be served when there is no opentype-file available.
 	 * 
 	 * Example:
+	 * @font-face
+	 *     font-family:'SaginawMedium'
+	 *     src:url('fonts/SaginawMedium')
+	 *     font-weight:bold
+	 *     font-style:italic
+	 * 
+	 * Result for IE <= 8:
 	 * @font-face {
-	 *     font-family:'Graublau Web';
-	 *     local:'Graublau Web Regular';
-	 *     otf:url('GraublauWeb.otf');
-	 *     eot:url('GraublauWeb.eot');
-	 *     font-weight:bold;
-	 *     font-style:italic;
-	 * }
-	 * Result:
-	 * @font-face {
-	 *     font-family: 'Graublau Web';
+	 *     font-family: 'SaginawMedium';
+	 *     src: url("fonts/SaginawMedium.eot");
 	 *     font-weight: bold;
 	 *     font-style: italic;
-	 *     src: url('GraublauWeb.eot');
-	 *     src: local('Graublau Web Regular'), local('Graublau Web'), url('GraublauWeb.otf') format(opentype);
+	 * }
+	 * 
+	 * Result for all other browsers:
+	 * @font-face {
+	 *     font-family: 'SaginawMedium';
+	 *     src: url("fonts/SaginawMedium.woff") format("woff"),url("fonts/SaginawMedium.ttf") format("truetype"),url("fonts/SaginawMedium.svg#SaginawMedium") format("svg");
+	 *     font-weight: bold;
+	 *     font-style: italic;
 	 * }
 	 * 
 	 * Status:  Stable
@@ -37,38 +52,65 @@
 	 * @return void
 	 */
 	function fontface(&$parsed){
-		foreach($parsed as $block => $css){
-			if(isset($parsed[$block]['@font-face'])){
-				foreach($parsed[$block]['@font-face'] as $key => $font){
-					// Properties present?
-					if(isset($font['local']) && isset($font['eot']) && (isset($font['ttf']) || isset($font['otf']))){
-						// New font array
-						$newfont = array();
-						// Default format and url
-						$main_format = NULL;
-						$main_url = NULL;
-						// Copy all properties that are not plugin specific to the new font array
-						$plugin_specific = array('eot', 'local', 'ttf', 'otf');
-						foreach($font as $property => $value){
-							if(!in_array($property, $plugin_specific)){
-								$newfont[$property] = $value;
+		global $browser;
+		$basedirectory = str_replace('\\','/',dirname(realpath($_SERVER['SCRIPT_FILENAME'])));
+		foreach($parsed as $block => $css)
+		{
+			if(isset($parsed[$block]['@font-face']))
+			{
+				foreach($parsed[$block]['@font-face'] as $key => $font)
+				{
+					// Check if user has set required src-property
+					if(isset($font['src'])) 
+					{
+						// Extract common basename for all files
+						$fontfile_base = preg_replace('/url\([\'"]*([^\'"]+)[\'"]*\)/i','$1',$font['src']);
+						// Create new src-property storage
+						$newfont = '';
+						// If we are dealing with IE <= 8 then check for EOT only
+						if($browser->family == 'MSIE' && floatval($browser->familyversion) <= 8)
+						{
+							$fontfile_eot = $fontfile_base.'.eot';
+							// If there exists an EOT-file point to it
+							if(file_exists($basedirectory.'/'.$fontfile_eot)) 
+							{
+								$newfont .= 'url("'.$fontfile_eot.'")';
 							}
 						}
-						// Select main font format
-						if(isset($font['ttf'])){
-							$main_format = 'truetype';
-							$main_url = $font['ttf'];
+						// If we have another browser, check for all other file formats
+						else
+						{
+							$fontfile_woff = $fontfile_base.'.woff';
+							$fontfile_otf = $fontfile_base.'.otf';
+							$fontfile_ttf = $fontfile_base.'.ttf';
+							$fontfile_svg = $fontfile_base.'.svg';
+							// If there exists an WOFF-file enqueue it
+							if(file_exists($basedirectory.'/'.$fontfile_woff)) 
+							{
+								$newfont .= 'url("'.$fontfile_woff.'") format("woff"),';
+							}
+							// If there exists an OTF-file enqueue it
+							if(file_exists($basedirectory.'/'.$fontfile_otf)) 
+							{
+								$newfont .= 'url("'.$fontfile_otf.'") format("opentype"),';
+							}
+							// If there is no OTF-file, but it exists an TTF-file enqueue that
+							elseif(file_exists($basedirectory.'/'.$fontfile_ttf)) 
+							{
+								$newfont .= 'url("'.$fontfile_ttf.'") format("truetype"),';
+							}
+							// If there exists an SVG-file enqueue it
+							if(file_exists($basedirectory.'/'.$fontfile_svg)) 
+							{
+								$newfont .= 'url("'.$fontfile_svg.'#'.basename($fontfile_base).'") format("svg"),';
+							}
 						}
-						elseif(isset($font['otf'])){
-							$main_format = 'opentype';
-							$main_url = $font['otf'];
+						// If we found at least one font replace old src-property with new one
+						if($newfont != '')
+						{
+							$parsed[$block]['@font-face'][$key]['src'] = trim($newfont,', ');
 						}
-						// Create eot src string
-						$newfont['src'][] = $font['eot'];
-						// Create main src string
-						$newfont['src'][] = 'local('.$font['local'].'), local('.$font['font-family'].'), '.$main_url.' format('.$main_format.')';
-						// Replace the old @font-face definition
-						$parsed[$block]['@font-face'][$key] = $newfont;
+						CSSP::comment($parsed[$block]['@font-face'][$key], 'src', 'Blabb');
 					}
 				}
 			}
