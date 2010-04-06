@@ -67,6 +67,7 @@
 						$fontfile_base = preg_replace('/url\([\'"]*([^\'"]+)[\'"]*\)/i','$1',$font['src']);
 						// Create new src-property storage
 						$newfont = '';
+						$message = '';
 						// If we are dealing with IE <= 8 then check for EOT only
 						if($browser->family == 'MSIE' && floatval($browser->familyversion) <= 8)
 						{
@@ -76,6 +77,7 @@
 							{
 								$newfont .= 'url("'.$fontfile_eot.'")';
 							}
+							else $message .= 'Missing '.$fontfile_eot.'-file,';
 						}
 						// If we have another browser, check for all other file formats
 						else
@@ -89,6 +91,7 @@
 							{
 								$newfont .= 'url("'.$fontfile_woff.'") format("woff"),';
 							}
+							else $message .= 'Missing '.$fontfile_woff.'-file,';
 							// If there exists an OTF-file enqueue it
 							if(file_exists($basedirectory.'/'.$fontfile_otf)) 
 							{
@@ -98,19 +101,25 @@
 							elseif(file_exists($basedirectory.'/'.$fontfile_ttf)) 
 							{
 								$newfont .= 'url("'.$fontfile_ttf.'") format("truetype"),';
+								$message .= 'Missing '.$fontfile_otf.'-file,';
 							}
+							else $message .= 'Missing '.$fontfile_otf.'-file,Missing '.$fontfile_ttf.'-file,';
 							// If there exists an SVG-file enqueue it
 							if(file_exists($basedirectory.'/'.$fontfile_svg)) 
 							{
 								$newfont .= 'url("'.$fontfile_svg.'#'.basename($fontfile_base).'") format("svg"),';
 							}
+							else $message .= 'Missing '.$fontfile_svg.'-file,';
 						}
 						// If we found at least one font replace old src-property with new one
 						if($newfont != '')
 						{
 							$parsed[$block]['@font-face'][$key]['src'] = trim($newfont,', ');
 						}
-						CSSP::comment($parsed[$block]['@font-face'][$key], 'src', 'Blabb');
+						if($message != '')
+						{
+							CSSP::comment($parsed[$block]['@font-face'][$key], 'src', trim($message,', '));
+						}
 					}
 				}
 			}
