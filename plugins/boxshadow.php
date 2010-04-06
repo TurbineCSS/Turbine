@@ -17,29 +17,31 @@
 		global $cssp;
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
-				// $before keeps track of the prevoius property in the loop, which is the position we want the new
-				// box-shadow properties to be inserted
-				$before = null;
-				foreach($styles as $property => $value){
-					if($property == 'box-shadow'){
-						$shadow_properties = array();
-						// Build prefixed properties
-						$prefixes = array('-moz-', '-webkit-', '');
-						foreach($prefixes as $prefix){
-							$shadow_properties[$prefix.'box-shadow'] = $parsed[$block][$selector]['box-shadow'];
+				if(isset($parsed[$block][$selector]['box-shadow'])){
+					// $before keeps track of the prevoius property in the loop, which is the position we want the new
+					// box-shadow properties to be inserted
+					$before = null;
+					foreach($styles as $property => $value){
+						if($property == 'box-shadow'){
+							$shadow_properties = array();
+							// Build prefixed properties
+							$prefixes = array('-moz-', '-webkit-', '');
+							foreach($prefixes as $prefix){
+								$shadow_properties[$prefix.'box-shadow'] = $parsed[$block][$selector]['box-shadow'];
+							}
+							// Get IE filters, merge them with the other new properties and insert everything
+							$filter_properties = boxshadow_filters($value);
+							$shadow_properties = array_merge($shadow_properties, $filter_properties);
+							$cssp->insert_rules($shadow_properties, $block, $selector, $before);
+							// Comment the newly inserted properties
+							foreach($shadow_properties as $shadow_property => $shadow_value){
+								CSSP::comment($parsed[$block][$selector], $shadow_property, 'Added by box shadow plugin');
+							}
+							$before = array_pop(array_keys($shadow_properties));
 						}
-						// Get IE filters, merge them with the other new properties and insert everything
-						$filter_properties = boxshadow_filters($value);
-						$shadow_properties = array_merge($shadow_properties, $filter_properties);
-						$cssp->insert_rules($shadow_properties, $block, $selector, $before);
-						// Comment the newly inserted properties
-						foreach($shadow_properties as $shadow_property => $shadow_value){
-							CSSP::comment($parsed[$block][$selector], $shadow_property, 'Added by box shadow plugin');
+						else{
+							$before = $property;
 						}
-						$before = array_pop(array_keys($shadow_properties));
-					}
-					else{
-						$before = $property;
 					}
 				}
 			}

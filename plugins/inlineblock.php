@@ -17,7 +17,7 @@
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				// Everywhere
-				if($parsed[$block][$selector]['display'] && $parsed[$block][$selector]['display'] == 'inline-block'){
+				if(isset($parsed[$block][$selector]['display']) && $parsed[$block][$selector]['display'] == 'inline-block'){
 					if($browser->family == 'MSIE' && floatval($browser->familyversion) < 8){
 						$parsed[$block][$selector]['display'] = 'inline';
 						$parsed[$block][$selector]['zoom'] = '1';
