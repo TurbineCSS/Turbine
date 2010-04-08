@@ -48,9 +48,46 @@ class Parser2 extends Base{
 
 
 	/**
-	 * @var string $token The current token
+	 * @var array $state The parser state
+	 * st = in string
 	 */
-	private $token = '';
+	public $state = null;
+
+
+	/**
+	 * @var array $prev_state The previous parser state
+	 * st = in string
+	 */
+	public $prev_state = null;
+
+
+	/**
+	* @var string $string_state The current string character (", ' or paranthesis)
+	*/
+	public $string_state = null;
+
+
+	/**
+	* @var string $token The current token
+	*/
+	public $token = '';
+
+
+	/**
+	 * @var array $current Holds the current values
+	 * se = Selector
+	 * pr = Property
+	 * va = Value
+	 * me = @media block
+	 * fi = @font-face index
+	 */
+	public $current = array(
+		'se' => null,
+		'pr' => null,
+		'va' => null,
+		'me' => 'global',
+		'fi' => -1
+	);
 
 
 	/**
@@ -148,6 +185,7 @@ class Parser2 extends Base{
 		$loc = count($this->code);
 		for($i = 0; $i < $loc; $i++){
 			$debug = array();
+			$this->token = '';
 			$line = $this->code[$i];
 			$debug['line'] = $line;
 			if(isset($this->code[$i + 1])){
@@ -156,7 +194,7 @@ class Parser2 extends Base{
 			// If the current line is empty, ignore it and reset the selector stack
 			if($line == ''){
 				$this->selector_stack = array();
-				$debug['type'] = 'RE';
+				$debug['type'] = 'Reset';
 				$debug['stack'] = 'Reset';
 			}
 			// Else parse the line
@@ -164,13 +202,21 @@ class Parser2 extends Base{
 				// Line begins with "@media" = parse this as a @media-line
 				if(substr(trim($line), 0, 6) == '@media'){
 					$this->selector_stack = array();
-					$debug['type'] = 'ME';
+					$debug['type'] = 'Media';
 					$debug['stack'] = 'Reset';
 				}
 				// Line begins with "@import" = Parse @import rule
 				elseif(substr(trim($line), 0, 7) == '@import'){
+					$this->parse_import_line($line);
 					$this->selector_stack = array();
-					$debug['type'] = 'IM';
+					$debug['type'] = 'Import';
+					$debug['stack'] = 'Reset';
+				}
+				// Line begins with "@css" = Parse as literal css
+				elseif(substr(trim($line), 0, 4) == '@css'){
+					$this->parse_css_line($line);
+					$this->selector_stack = array();
+					$debug['type'] = 'CSS';
 					$debug['stack'] = 'Reset';
 				}
 				// Else parse normal line
@@ -181,12 +227,12 @@ class Parser2 extends Base{
 					}
 					// Next line is indented = parse this as a selector
 					if($nextline != '' && $nextlevel > $this->get_indention_level($line)){
-						$debug['type'] = 'SE';
+						$debug['type'] = 'Selector';
 						$debug['stack'] = $this->selector_stack;
 					}
 					// Else parse as a property-value-pair
 					else{
-						$debug['type'] = 'PR';
+						$debug['type'] = 'Rule';
 						$debug['stack'] = $this->selector_stack;
 					}
 				}
@@ -223,9 +269,9 @@ class Parser2 extends Base{
 		for($i = 0; $i < $linecount; $i++){
 			$line = $lines[$i];
 			$nextline = $lines[$i + 1];
-			// If the line and the following line are not empty, find the whitespace used for indention
-			if($line != '' && trim($nextline) != '' && preg_match('/^([\s]+).*?$/', $nextline, $matches)){
-				if(count($matches) == 2 && strlen($matches[1]) > 0){
+			// If the line and the following line are not empty and not @rules, find the whitespace used for indention
+			if($line != '' && trim($nextline) != '' && preg_match('/^([\s]+)(.*?)$/', $nextline, $matches)){
+				if(count($matches) == 3 && strlen($matches[1]) > 0 && $matches[2]{0} != '@'){
 					return $matches[1];
 				}
 			}
@@ -299,6 +345,82 @@ class Parser2 extends Base{
 			$level = 1 + $this->get_indention_level(substr($line, strlen($this->indention_char)));
 		}
 		return $level;
+	}
+
+
+	/**
+	 * switch_string_state
+	 * Manages the string state
+	 * @param string $char A single char
+	 * @return void
+	 */
+	protected function switch_string_state($char){
+		$strings = array('"', "'", '(');
+		if($this->state != 'st'){ // Enter string state
+			if(in_array($char, $strings)){
+				$this->prev_state = $this->state;
+				$this->string_state = $char;
+				$this->state = 'st';
+			}
+		}
+		else{ // Leave string state
+			if($char == $this->string_state || ($char == ')' && $this->string_state == '(')){
+				$this->string_state = null;
+				$this->state = $this->prev_state;
+			}
+		}
+	}
+
+
+	/**
+	 * parse_import_line
+	 * Parses an @import line
+	 * @param string $line A line containing @import
+	 * @return void
+	 */
+	protected function parse_import_line($line){
+		$line = trim($line);
+		$line = substr($line, 7); // Strip "@import"
+		$len = strlen($line);
+		for($i = 0; $i < $len; $i++){
+			$this->switch_string_state($line{$i});
+			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){ // Break on comment
+				break;
+			}
+			$this->token .= $line{$i};
+		}
+		$this->parsed['global']['@import'][] = $this->token;
+	}
+
+
+	/**
+	 * Parse a line of literal css
+	 * @param string $line
+	 * @return void
+	 */
+	protected function parse_css_line($line){
+		$line = trim($line);
+		$line = substr($line, 4); // Strip "@css"
+		if(preg_match('/^(.*?)\{/', $line, $css_selector) && preg_match('/\{(.*)\}$/', $line, $css_rules)){
+			$selector = trim($css_selector[1]);
+			$rules = trim($css_rules[1]);
+			// Add the new element...
+			if(!isset($this->parsed[$this->current['me']][$selector])){
+				$this->parsed[$this->current['me']][$selector]['_css'] = $rules;
+			}
+			// Or add the css rules
+			else{
+				if(is_array($this->parsed[$this->current['me']][$selector])){
+					$this->parsed[$this->current['me']][$selector][] = $rules;
+				}
+				else{
+					$this->parsed[$this->current['me']][$selector] = array(
+						$this->parsed[$this->current['me']][$selector],
+						$rules
+					);
+				}
+			}
+		}
 	}
 
 
