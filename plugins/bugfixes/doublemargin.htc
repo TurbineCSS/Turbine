@@ -1,0 +1,8 @@
+<public:component lightweight="true">
+<script type="text/javascript">
+if(element.currentStyle.styleFloat == 'left' || element.currentStyle.styleFloat == 'right')
+{
+	element.style.display = 'inline';
+}
+</script>
+</public:component>
