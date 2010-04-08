@@ -36,6 +36,12 @@ class Parser2 extends Base{
 
 
 	/**
+	 * @var array $debuginfo Parser debugging information
+	 */
+	public $debuginfo = array();
+
+
+	/**
 	 * @var string $indention_char The Whitespace character(s) used for indention
 	 */
 	public $indention_char = false;
@@ -46,17 +52,9 @@ class Parser2 extends Base{
 	 */
 	private $token = '';
 
-	/**
-	 * @var unknown_type
-	 */
-	private $prev_line = array(
-		'type' => false,
-		'indention' => null
-	);
-
 
 	/**
-	 * 
+	 * @var array $selector_stack The selectors the current line is nested in
 	 */
 	private $selector_stack = array();
 
@@ -145,32 +143,35 @@ class Parser2 extends Base{
 	public function parse(){
 		// Preprocess the code and get the indention char(s)
 		$this->preprocess();
-		$this->get_indention_char($this->code);
+		$this->set_indention_char();
 		// Loop through the lines
 		$loc = count($this->code);
 		for($i = 0; $i < $loc; $i++){
+			$debug = array();
 			$line = $this->code[$i];
+			$debug['line'] = $line;
 			if(isset($this->code[$i + 1])){
 				$nextline = $this->code[$i + 1];
 			}
-			// If the current line is empty, ignore it and reset the previous line plus the selector stack
+			// If the current line is empty, ignore it and reset the selector stack
 			if($line == ''){
-				$this->prev_line = array(
-					'type' => false,
-					'indention' => null
-				);
 				$this->selector_stack = array();
-				// echo "RE<br>";
+				$debug['type'] = 'RE';
+				$debug['stack'] = 'Reset';
 			}
 			// Else parse the line
 			else{
 				// Line begins with "@media" = parse this as a @media-line
 				if(substr(trim($line), 0, 6) == '@media'){
-					// echo "ME | $line<br>";
+					$this->selector_stack = array();
+					$debug['type'] = 'ME';
+					$debug['stack'] = 'Reset';
 				}
 				// Line begins with "@import" = Parse @import rule
 				elseif(substr(trim($line), 0, 7) == '@import'){
-					// echo "IM | $line<br>";
+					$this->selector_stack = array();
+					$debug['type'] = 'IM';
+					$debug['stack'] = 'Reset';
 				}
 				// Else parse normal line
 				else{
@@ -180,14 +181,18 @@ class Parser2 extends Base{
 					}
 					// Next line is indented = parse this as a selector
 					if($nextline != '' && $nextlevel > $this->get_indention_level($line)){
-						// echo "SE | $line<br>";
+						$debug['type'] = 'SE';
+						$debug['stack'] = $this->selector_stack;
 					}
 					// Else parse as a property-value-pair
 					else{
-						// echo "KV | $line<br>";
+						$debug['type'] = 'PR';
+						$debug['stack'] = $this->selector_stack;
 					}
 				}
 			}
+			$this->debuginfo[] = $debug;
+			unset($debug);
 		}
 		return $this;
 	}
@@ -197,13 +202,13 @@ class Parser2 extends Base{
 	 * set_indention_char
 	 * Sets the indention char
 	 * @param string $char The whitespace char(s) used for indention
-	 * @param unknown_type $char
+	 * @return void
 	 */
 	public function set_indention_char($char = null){
 		if(!$char){
-			$char = Parser2::get_indention_char($this->css);
+			$char = Parser2::get_indention_char($this->code);
 		}
-		$this->options['indention_char'] = $char;
+		$this->indention_char = $char;
 	}
 
 
@@ -211,15 +216,15 @@ class Parser2 extends Base{
 	 * get_indention_char
 	 * Find out which whitespace char(s) are used for indention
 	 * @param array $lines The code in question
-	 * @return void
+	 * @return string $matches[1] The whitespace char(s) used for indention
 	 */
 	public static function get_indention_char($lines){
 		$linecount = count($lines);
-		for($i = 0; $i < $linecount; $i++){ // For each line...
+		for($i = 0; $i < $linecount; $i++){
 			$line = $lines[$i];
 			$nextline = $lines[$i + 1];
-			if(trim($line) != '' && trim($nextline) != ''){ // ...if the line and the following line are not empty..
-				preg_match('/^([\s]+).*?$/', $nextline, $matches); // ...find the whitespace used for indention
+			// If the line and the following line are not empty, find the whitespace used for indention
+			if($line != '' && trim($nextline) != '' && preg_match('/^([\s]+).*?$/', $nextline, $matches)){
 				if(count($matches) == 2 && strlen($matches[1]) > 0){
 					return $matches[1];
 				}
@@ -230,7 +235,7 @@ class Parser2 extends Base{
 
 	/**
 	 * preprocess
-	 * Clean up the inital code
+	 * Clean up the code
 	 * @return void
 	 */
 	protected function preprocess(){
@@ -240,8 +245,9 @@ class Parser2 extends Base{
 
 
 	/**
-	 * 
-	 * 
+	 * preprocess_clean
+	 * Strip comment lines and whitespace
+	 * @return void
 	 */
 	private function preprocess_clean(){
 		$processed = array();
@@ -261,8 +267,9 @@ class Parser2 extends Base{
 
 
 	/**
-	 * 
-	 * 
+	 * preprocess_concatenate_selectors
+	 * Concatenates multiline selectors
+	 * @return void
 	 */
 	private function preprocess_concatenate_selectors(){
 		$processed = array();
@@ -289,7 +296,7 @@ class Parser2 extends Base{
 	public function get_indention_level($line){
 		$level = 0;
 		if(substr($line, 0, strlen($this->indention_char)) == $this->indention_char){
-			// $level = 1 + $this->get_indention_level(substr($line, strlen($this->indention_char)));
+			$level = 1 + $this->get_indention_level(substr($line, strlen($this->indention_char)));
 		}
 		return $level;
 	}
