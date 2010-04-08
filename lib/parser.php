@@ -25,6 +25,8 @@
 /**
  * Parser2
  * Turbine syntax parser
+ * @todo document schepp-style selectors
+ * @todo document inline css
  */
 class Parser2 extends Base{
 
@@ -349,22 +351,22 @@ class Parser2 extends Base{
 
 
 	/**
-	 * switch_string_state
-	 * Manages the string state
+	 * switch_state
+	 * Manages the string and block comment state
 	 * @param string $char A single char
 	 * @return void
 	 */
-	protected function switch_string_state($char){
+	protected function switch_state($char){
 		$strings = array('"', "'", '(');
-		if($this->state != 'st'){ // Enter string state
-			if(in_array($char, $strings)){
+		if($this->state != 'st'){
+			if(in_array($char, $strings)){ // Enter string state
 				$this->prev_state = $this->state;
 				$this->string_state = $char;
 				$this->state = 'st';
 			}
 		}
-		else{ // Leave string state
-			if($char == $this->string_state || ($char == ')' && $this->string_state == '(')){
+		else{
+			if($char == $this->string_state || ($char == ')' && $this->string_state == '(')){ // Leave string state
 				$this->string_state = null;
 				$this->state = $this->prev_state;
 			}
@@ -383,7 +385,7 @@ class Parser2 extends Base{
 		$line = substr($line, 7); // Strip "@import"
 		$len = strlen($line);
 		for($i = 0; $i < $len; $i++){
-			$this->switch_string_state($line{$i});
+			$this->switch_state($line{$i});
 			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){ // Break on comment
 				break;
 			}
