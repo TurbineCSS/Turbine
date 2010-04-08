@@ -71,14 +71,17 @@
 
 				// IE 6 local bugfixes
 				if($browser->family == 'MSIE' && floatval($browser->familyversion) < 7){
-					// Float double margin bug
-					if(isset($parsed[$block][$selector]['float'])
-						&& (isset($parsed[$block][$selector]['margin'])
-							|| isset($parsed[$block][$selector]['margin-left'])
-							|| isset($parsed[$block][$selector]['margin-right']))
-					){
-						$parsed[$block][$selector]['display'] = 'inline';
-						CSSP::comment($parsed[$block][$selector], 'display', 'Added by bugfix plugin');
+					// Float double margin bug, fixed with a behavior as this only affects the floating object and no descendant of it
+					if(isset($parsed[$block][$selector]['float']) && $parsed[$block][$selector]['float'] != 'none'){
+						$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/bugfixes/doublemargin.htc';
+						if(!isset($parsed[$block][$selector]['behavior'])){
+							$parsed[$block][$selector]['behavior'] = 'url("'.$htc_path.'")';
+						}
+						else{
+							if(!strpos($parsed[$block][$selector]['behavior'],'url("'.$htc_path.'")')){
+								$parsed[$block][$selector]['behavior'] .= ', url("'.$htc_path.'")';
+							}
+						}
 					}
 				}
 			
