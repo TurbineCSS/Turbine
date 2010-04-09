@@ -1097,7 +1097,7 @@ p.foobar
 </p>
 <h3>Usage</h3>
 <p>
-	Pdd <code>load</code> to your <code>@turbine</code> plugins rule and add a <code>@load url(path/to/file.cssp)</code> line
+	Add <code>load</code> to your <code>@turbine</code> plugins rule and add a <code>@load url(path/to/file.cssp)</code> line
 	where you want a file to be included. Done!
 </p>
 <h4>Use cases</h4>
@@ -1419,15 +1419,15 @@ table {
 </table>
 <h3>Hooks</h3>
 <p>
-	Too hook into Turbine you need to call the <code>register_plugin()</code> function using three arguments: the hook, an
+	To hook into Turbine you need to call the <code>register_plugin()</code> function using three arguments: the hook, an
 	execution priority and your plugin function's name:
 </p>
 <pre class="php">&lt;?php
     register_plugin('before_compile', 0, 'mypluginfunction');
 ?&gt;</pre>
 <p>
-	It's recommended to leave the execution priority at 0 unless its <strong>really</strong> important. A higher priority means
-	earlier execution.
+	It is recommended to leave the execution priority at 0 unless early oder late execution of the plugin is <strong>really</strong>
+	important. A higher priority means earlier execution.
 </p>
 <h3>Array structure</h3>
 <p>
@@ -1439,23 +1439,30 @@ table {
     [@media foo] => Array
     (
         [#bar] => Array
-            (
-                [property1] => valueA
-                [property2] => valueB
-            )
+        (
+            [property1] => valueA
+            [property2] => valueB
+        )
     )
     [@media bar] => Array
     (
         [#bar] => Array
+        (
+            [property1] => valueA
+            [property2] => valueB
+            [property3] => Array
             (
-                [property1] => valueA
-                [property2] => valueB
+                [0] => ValueC1
+                [1] => ValueC2
+                [2] => ValueC3
             )
+        )
     )
 )</pre>
 <p>
 	CSS rules that a not part of any <code>@media</code> block a stored in the <code>global</code> block. A properties values may
-	be in an array if there is more than one value for a given property.
+	be in an array if there is more than one value for a given property (as in <code>@media bar</code> &rarr; <code>#bar</code> &rarr;
+	<code>property3</code> in the example).
 </p>
 <h3>Plugin example</h3>
 <p>
@@ -1468,12 +1475,12 @@ table {
      * Remove all occurences of background-image
      */
     function remove_background_image(&$parsed){
-        // Loop through the blocks
+        // Loop through the @media blocks
         foreach($parsed as $block => $css){
             // Loop through the selectors
             foreach($parsed[$block] as $selector => $styles){
-                // Look for background-image
-                if($parsed[$block][$selector]['background-image']){
+                // Look for background-image in the styles
+                if(isset($parsed[$block][$selector]['background-image'])){
                     // Be gone!
                     unset($parsed[$block][$selector]['background-image']);
                 }
