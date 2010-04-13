@@ -8,6 +8,7 @@
 	 * Example: -
 	 * Status: Beta
 	 * 
+	 * @todo Only generate MHTML files for IE
 	 * @param mixed &$parsed
 	 * @return void
 	 */
@@ -80,7 +81,14 @@
 												else{
 													$protocol = 'http';
 												}
-												$parsed[$block][$selector][$property] = preg_replace($regex, '$1\'mhtml:'.$protocol.'://'.$_SERVER['HTTP_HOST'].rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/datauri/mhtml.php?cache='.$mhtmlmd5.'!'.$imagetag.'\'$3', $parsed[$block][$selector][$property]);
+												// Find host, even in strangen evironments (Strato)
+												if(isset($_SERVER['SCRIPT_URI'])){
+													$host = parse_url($_SERVER['SCRIPT_URI'], PHP_URL_HOST);
+												}
+												else{
+													$host = $_SERVER['HTTP_HOST'];
+												}
+												$parsed[$block][$selector][$property] = preg_replace($regex, '$1\'mhtml:'.$protocol.'://'.$host.rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/datauri/mhtml.php?cache='.$mhtmlmd5.'!'.$imagetag.'\'$3', $parsed[$block][$selector][$property]);
 											}
 										}
 									}
