@@ -235,6 +235,7 @@ class Parser2 extends Base{
 					}
 					// Next line is indented = parse this as a selector
 					if($nextline != '' && $nextlevel > $thislevel){
+						$this->parse_selector_line($line, $thislevel);
 						$debug['type'] = 'Selector';
 						$debug['stack'] = $this->selector_stack;
 					}
@@ -245,6 +246,7 @@ class Parser2 extends Base{
 					}
 				}
 			}
+			// Debugging stuff
 			$debug['media'] = $this->current['me'];
 			$this->debuginfo[] = $debug;
 			unset($debug);
@@ -422,6 +424,70 @@ class Parser2 extends Base{
 	}
 
 
+	 /**
+	 * parse_selector_line
+	 * Parses a selector line
+	 * @param string $line A line containing a selector
+	 * @param int $level The lines' indention level
+	 * @return void
+	 */
+	protected function parse_selector_line($line, $level){
+		$line = trim($line);
+		$len = strlen($line);
+		for($i = 0; $i < $len; $i++ ){
+			$this->switch_string_state($line{$i});
+			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){ // Break on comment
+				break;
+			}
+			$this->token .= $line{$i};
+		}
+		// Trim whitespace
+		$selector = trim(preg_replace('/[\s]+/', ' ', $this->token));
+		// Combine selector with the nesting stack
+		$selector = $this->merge_selectors($this->array_get_previous($this->selector_stack, $level), $selector);
+		// Use as current selector
+		$this->current['se'] = $selector;
+		// Add to the selector stack
+		$this->selector_stack[$level] = $selector;
+	}
+
+
+
+	/**
+	 * merge_selectors
+	 * Merges two selectors
+	 * @param array $parent
+	 * @param array $child
+	 * @return array $selectors
+	 */
+	protected function merge_selectors($parent, $child){
+		// If the parent is empty, don't do anything to the child
+		if(empty($parent)){
+			return $child;
+		}
+		// Else combine the selectors
+		else{
+			$parent = $this->tokenize($parent, ',');
+			$child = $this->tokenize($child, ',');
+			// Merge the split selectors
+			$selectors = array();
+			foreach($parent as $p){
+				$selector = array();
+				foreach($child as $c){
+					$selector[] = $p.' '.$c;
+				}
+				$selectors[] = $selector;
+			}
+			$num = count($selectors);
+			for($i = 0; $i < $num; $i++){
+				$selectors[$i] = implode(', ', $selectors[$i]);
+			}
+			return implode(', ', $selectors);
+		}
+	}
+
+
+
 	/**
 	 * parse_import_line
 	 * Parses an @import line
@@ -457,6 +523,89 @@ class Parser2 extends Base{
 		);
 	}
 
+
+	/**
+	 * tokenize
+	 * Tokenizes $str, respecting css string delimeters
+	 * @param string $str
+	 * @param mixed $separator
+	 * @return array $tokens
+	 */
+	public function tokenize($str, $separator = array(' ', '	')){
+		$tokens = array();
+		$current = '';
+		$string_delimeters = array('"', "'", '(');
+		$current_string_delimeter = null;
+		if(!is_array($separator)){
+			$separator = array($separator);
+		}
+		$strlen = strlen($str);
+		for($i = 0; $i < $strlen; $i++){
+			if($current_string_delimeter === null){
+				// End current token
+				if(in_array($str{$i}, $separator)){
+					$token = trim($current);
+					if(strlen($token) > 0 && !in_array($token, $separator)){
+						$tokens[] = $token;
+					}
+					$current = '';
+					$i++;
+				}
+				// Begin string state
+				elseif(in_array($str{$i}, $string_delimeters)){
+					$current_string_delimeter = $str{$i};
+				}
+			}
+			else{
+				// End string state
+				if($str{$i} === $current_string_delimeter || ($current_string_delimeter == '(' && $str{$i} === ')')){
+					$current_string_delimeter = null;
+				}
+			}
+			// Add to the current token
+			$current .= $str{$i};
+			// Handle the last token
+			if($i == $strlen - 1){
+				$lasttoken = trim($current);
+				if($lasttoken){
+					$tokens[] = $lasttoken;
+				}
+			}
+		}
+		return $tokens;
+	}
+
+
+	/**
+	 * reset
+	 * Resets the parser
+	 * @return void
+	 */
+	public function reset(){
+		$this->css = array();
+		$this->parsed = array('global' =>
+			array(
+				'@import' => array(),
+				'@font-face' => array()
+			)
+		);
+		$this->state = null;
+		$this->prev_state = null;
+		$this->string_state = null;
+		$this->token = '';
+		$this->selector_stack = array();
+		$this->current = array(
+			'se' => null,
+			'pr' => null,
+			'va' => null,
+			'me' => 'global',
+			'fi' => 0,
+			'ci' => 0
+		);
+		$this->options = array(
+			'indention_char' => "	"
+		);
+	}
 
 }
 
