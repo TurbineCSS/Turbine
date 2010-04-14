@@ -1,8 +1,8 @@
 <?php
-
 /**
  * CSS Parser
  * A tool for parsing and manipulating stylesheets.
+ * http://github.com/SirPepe/CSS-Parser
  * 
  * Copyright (C) 2009 Peter Kröner
  * 
@@ -211,7 +211,7 @@ class CssParser {
 
 				// End comment state
 				case 'co';
-					if($this->css{$i} == '/' && $this->css{$i-1} == '*'){
+					if($this->css{$i} == '/' && isset($this->css{$i-1}) && $this->css{$i-1} == '*'){
 						$this->state = $this->prev_state;
 					}
 				break;

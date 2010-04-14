@@ -86,7 +86,14 @@
 				}
 			
 				// IE 6 + 7 local bugfixes
-				// if($browser->family == 'MSIE' && floatval($browser->familyversion) < 8){}
+				if($browser->family == 'MSIE' && floatval($browser->familyversion) < 8){
+					// Enable overflow:hidden, if present
+					if(isset($parsed[$block][$selector]['overflow']) && $parsed[$block][$selector]['overflow'] == 'hidden' && !isset($parsed[$block][$selector]['position'])){
+						$parsed[$block][$selector]['position'] = 'relative';
+						CSSP::comment($parsed[$block][$selector], 'position', 'Added by bugfix plugin');
+					}
+				}
+
 			}
 
 		}

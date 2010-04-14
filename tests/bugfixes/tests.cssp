@@ -1,0 +1,12 @@
+// Overflow:hidden broken in IE<8
+$prefix .overflowhidden
+	background:red
+	width:100px
+	overflow:hidden
+	margin:100px
+	div
+		background:blue
+		height:10px
+		width:150px
+		position:relative
+		top,left:0

@@ -93,7 +93,9 @@ if($_GET['files']){
 	// Client-side cache: Preparing caching-mechanism using eTags by creating a combined fingerprint of the files involved...
 	$fingerprint = '';
 	foreach($files as $file){
-		$fingerprint .= $file.filemtime($file);
+		if(file_exists($file)){
+			$fingerprint .= $file.filemtime($file);
+		}
 	}
 	$etag = md5($fingerprint);
 	// ...and check if client sends eTag to compare it with our eTag-fingerprint

@@ -753,8 +753,8 @@ $ua_tests = array(
 
 <?php
 
-include('../lib/base.php');
-include('../lib/browser.php');
+include('../../lib/base.php');
+include('../../lib/browser.php');
 
 $properties = array('name', 'version', 'engine', 'engineversion', 'platform', 'platformversion', 'platformtype');
 
