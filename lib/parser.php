@@ -28,6 +28,7 @@
  * @todo document schepp-style selectors
  * @todo document inline css (@css)
  * @todo document block commenting
+ * @todo document the fact that the nesting system is smart about pseudo classes
  */
 class Parser2 extends Base{
 
@@ -469,21 +470,35 @@ class Parser2 extends Base{
 		else{
 			$parent = $this->tokenize($parent, ',');
 			$child = $this->tokenize($child, ',');
-			// Merge the split selectors
+			// Merge the tokenized selectors
 			$selectors = array();
 			foreach($parent as $p){
 				$selector = array();
 				foreach($child as $c){
-					$selector[] = $p.' '.$c;
+					$between = ($c{0} == ':') ? '' : ' '; // Space or no space (if the child is a pseudo class)
+					$selector[] = $p.$between.$c;
 				}
 				$selectors[] = $selector;
 			}
-			$num = count($selectors);
-			for($i = 0; $i < $num; $i++){
-				$selectors[$i] = implode(', ', $selectors[$i]);
-			}
-			return implode(', ', $selectors);
+			return $this->implode_selectors($selectors);
 		}
+	}
+
+
+	/**
+	 * implode_selectors
+	 * Recursivly combines selectors
+	 * @param array $selectors A list of selectors
+	 * @return string The combined selector
+	 */
+	protected function implode_selectors($selectors){
+		$num = count($selectors);
+		for($i = 0; $i < $num; $i++){
+			if(is_array($selectors[$i])){
+				$selectors[$i] = $this->implode_selectors($selectors[$i]);
+			}
+		}
+		return implode(', ', $selectors);
 	}
 
 
