@@ -298,15 +298,32 @@ class Parser2 extends Base{
 	 * @return void
 	 */
 	private function preprocess_clean(){
-		$processed = array();
+		$processed = array();   // The remaining, cleaned up lines
+		$comment_state = false; // The block comment state
+		$previous_line = '';    // The line before the line being processed
 		$loc = count($this->code);
 		for($i = 0; $i < $loc; $i++){
-			if(!preg_match('~^[\s]*//.*?$~', $this->code[$i])){
-				if(preg_match('[\S]', $this->code[$i])){
-					$processed[] = $this->code[$i];
-				}
-				else{
-					$processed[] = '';
+			// Handle block comment lines
+			if(trim($this->code[$i]) == '--'){
+				$comment_state = ($comment_state) ? false : true;
+			}
+			// Handle normal lines
+			elseif(!$comment_state){
+				// Ignore lines containing nothing but a comment
+				if(!preg_match('~^[\s]*//.*?$~', $this->code[$i])){
+					// Lines containing non-whitespace
+					if(preg_match('[\S]', $this->code[$i])){
+						$processed[] = $this->code[$i];
+						$previous_line = $this->code[$i];
+					}
+					// Lines with nothing but whitespace
+					else{
+						// Only add this line if the previous one had any non-whitespace
+						if($previous_line != ''){
+							$processed[] = '';
+							$previous_line = '';
+						}
+					}
 				}
 			}
 		}
