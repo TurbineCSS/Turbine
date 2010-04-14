@@ -82,13 +82,15 @@ class Parser2 extends Base{
 	 * va = Value
 	 * me = @media block
 	 * fi = @font-face index
+	 * ci = @css line index
 	 */
 	public $current = array(
 		'se' => null,
 		'pr' => null,
 		'va' => null,
 		'me' => 'global',
-		'fi' => -1
+		'fi' => 0,
+		'ci' => 0
 	);
 
 
@@ -420,26 +422,10 @@ class Parser2 extends Base{
 	protected function parse_css_line($line){
 		$line = trim($line);
 		$line = substr($line, 4); // Strip "@css"
-		if(preg_match('/^(.*?)\{/', $line, $css_selector) && preg_match('/\{(.*)\}$/', $line, $css_rules)){
-			$selector = trim($css_selector[1]);
-			$rules = trim($css_rules[1]);
-			// Add the new element...
-			if(!isset($this->parsed[$this->current['me']][$selector])){
-				$this->parsed[$this->current['me']][$selector]['_css'] = $rules;
-			}
-			// Or add the css rules
-			else{
-				if(is_array($this->parsed[$this->current['me']][$selector])){
-					$this->parsed[$this->current['me']][$selector][] = $rules;
-				}
-				else{
-					$this->parsed[$this->current['me']][$selector] = array(
-						$this->parsed[$this->current['me']][$selector],
-						$rules
-					);
-				}
-			}
-		}
+		$selector = '@css-'.$this->current['ci']++;
+		$this->parsed[$this->current['me']][$selector] = array(
+			'_value' => $line
+		);
 	}
 
 
