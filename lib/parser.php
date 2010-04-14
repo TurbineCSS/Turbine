@@ -205,6 +205,7 @@ class Parser2 extends Base{
 			else{
 				// Line begins with "@media" = parse this as a @media-line
 				if(substr(trim($line), 0, 6) == '@media'){
+					$this->parse_media_line($line);
 					$this->selector_stack = array();
 					$debug['type'] = 'Media';
 					$debug['stack'] = 'Reset';
@@ -241,6 +242,7 @@ class Parser2 extends Base{
 					}
 				}
 			}
+			$debug['media'] = $this->current['me'];
 			$this->debuginfo[] = $debug;
 			unset($debug);
 		}
@@ -370,12 +372,12 @@ class Parser2 extends Base{
 
 
 	/**
-	 * switch_state
-	 * Manages the string and block comment state
+	 * switch_string_state
+	 * Manages the string state
 	 * @param string $char A single char
 	 * @return void
 	 */
-	protected function switch_state($char){
+	protected function switch_string_state($char){
 		$strings = array('"', "'", '(');
 		if($this->state != 'st'){
 			if(in_array($char, $strings)){ // Enter string state
@@ -393,6 +395,30 @@ class Parser2 extends Base{
 	}
 
 
+	 /**
+	 * parse_media_line
+	 * Parses an @media line
+	 * @param string $line A line containing an @media switch
+	 * @return void
+	 */
+	protected function parse_media_line($line){
+		$this->current['me'] = '';
+		$this->current['se'] = '';
+		$this->current['pr'] = '';
+		$this->current['va'] = '';
+		$line = trim($line);
+		$len = strlen($line);
+		for($i = 0; $i < $len; $i++ ){
+			$this->switch_string_state($line{$i});
+			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){ // Break on comment
+				break;
+			}
+			$this->token .= $line{$i};
+		}
+		$this->current['me'] = trim(preg_replace('/[\s]+/', ' ', $this->token)); // Trim whitespace from token, use it as current @media
+	}
+
+
 	/**
 	 * parse_import_line
 	 * Parses an @import line
@@ -404,7 +430,7 @@ class Parser2 extends Base{
 		$line = substr($line, 7); // Strip "@import"
 		$len = strlen($line);
 		for($i = 0; $i < $len; $i++){
-			$this->switch_state($line{$i});
+			$this->switch_string_state($line{$i});
 			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){ // Break on comment
 				break;
 			}
@@ -421,8 +447,8 @@ class Parser2 extends Base{
 	 */
 	protected function parse_css_line($line){
 		$line = trim($line);
-		$line = substr($line, 4); // Strip "@css"
-		$selector = '@css-'.$this->current['ci']++;
+		$line = substr($line, 4);                   // Strip "@css"
+		$selector = '@css-'.$this->current['ci']++; // Build the selector using the @css-Index
 		$this->parsed[$this->current['me']][$selector] = array(
 			'_value' => $line
 		);
