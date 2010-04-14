@@ -26,7 +26,8 @@
  * Parser2
  * Turbine syntax parser
  * @todo document schepp-style selectors
- * @todo document inline css
+ * @todo document inline css (@css)
+ * @todo document block commenting
  */
 class Parser2 extends Base{
 
@@ -226,12 +227,14 @@ class Parser2 extends Base{
 				}
 				// Else parse normal line
 				else{
+					// Get this line's indention level
+					$thislevel = $this->get_indention_level($line);
 					// Get the next line's indention level
 					if($nextline != ''){
 						$nextlevel = $this->get_indention_level($nextline);
 					}
 					// Next line is indented = parse this as a selector
-					if($nextline != '' && $nextlevel > $this->get_indention_level($line)){
+					if($nextline != '' && $nextlevel > $thislevel){
 						$debug['type'] = 'Selector';
 						$debug['stack'] = $this->selector_stack;
 					}
