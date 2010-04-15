@@ -33,7 +33,7 @@
 								$rgba = colormodels_to_rgba($matches);
 								foreach($models as $model){
 									if($model == $matches[1]){
-										if(!$capabilities[$model]){
+										if(!isset($capabilities[$model])){
 											$recalculated = colormodels_recalculate($model, $rgba, $capabilities, $search);
 											if(!empty($recalculated)){
 												// Apply the recalculated properties and values to $parsed
@@ -73,7 +73,7 @@
 		switch($model){
 			case 'rgba':
 				// If this is a background and we can use filters, do this. Fall back to solid RGB otherwise
-				if(($property == 'background' || $property == 'background-color') && $capabilities['filter']){
+				if(($property == 'background' || $property == 'background-color') && isset($capabilities['filter'])){
 					$filteropacity = strtoupper(str_pad(dechex(round(floatval($rgba['a']) * 255)),2,'0',STR_PAD_LEFT));
 					$filtercolor_r = strtoupper(str_pad(dechex(floatval($rgba['r'])),2,'0',STR_PAD_LEFT));
 					$filtercolor_g = strtoupper(str_pad(dechex(floatval($rgba['g'])),2,'0',STR_PAD_LEFT));
@@ -89,7 +89,7 @@
 			break;
 			case 'hsla':
 				// No HSLA? Try RGBA instad
-				if($capabilities['rgba']){
+				if(isset($capabilities['rgba'])){
 					$recalculated[$property] = 'rgba('.$rgba['r'].', '.$rgba['g'].', '.$rgba['b'].', '.$rgba['a'].')';
 				}
 				else{

@@ -27,27 +27,13 @@
 
 <div class="shellcell fl">
 	<h2>Paste Turbine code here</h2>
-	<textarea id="cssp">@turbine
-	compress:0
-	plugins:borderradius
-
-@constants
-	radius:1em
-
-@aliases
-	foo:#foo
-
-body
-	background:#FFF
-
-$foo
-	border-radius:$radius
-	background:red</textarea>
+	<textarea id="cssp">#foo
+    color:red</textarea>
 </div>
 <div class="shellcell fr">
 	<h2>Paste HTML code here</h2>
 	<textarea id="html"><p id="foo">
-	Lorem Ipsum
+    Lorem Ipsum
 </p></textarea>
 </div>
 <div class="shellcell fl">
@@ -70,6 +56,7 @@ $foo
 	<label>Type: <input value="<?php echo $browser->platformtype ?>" id="platformtype" name="platformtype" class="type" type="text"></label>
 </p>
 <p>
+	<label><input type="checkbox" id="interactive">Interactive mode</label>
 	<button id="go">Go!</button>
 </p>
 
