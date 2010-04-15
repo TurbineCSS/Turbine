@@ -29,6 +29,7 @@
  * @todo document inline css (@css)
  * @todo document block commenting
  * @todo document the fact that the nesting system is smart about pseudo classes
+ * @todo document the comment() method
  */
 class Parser2 extends Base{
 
@@ -238,6 +239,7 @@ class Parser2 extends Base{
 					}
 					// Else parse as a property-value-pair
 					else{
+						
 						$debug['type'] = 'Rule';
 						$debug['stack'] = $this->selector_stack;
 					}
@@ -588,6 +590,27 @@ class Parser2 extends Base{
 			}
 		}
 		return $tokens;
+	}
+
+
+	 /**
+	 * comment
+	 * Adds a comment
+	 * @param array &$item
+	 * @param mixed $property
+	 * @param string $comment
+	 * @return void
+	 */
+	public static function comment(&$item, $property = null, $comment){
+		if(!$property){
+			$property = 'selector';
+		}
+		if(!isset($item['_comments'][$property])){
+			$item['_comments'][$property] = $comment;
+		}
+		else{
+			$item['_comments'][$property] .= ' | '.$comment;
+		}
 	}
 
 
