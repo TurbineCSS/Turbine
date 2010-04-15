@@ -193,9 +193,11 @@ class Parser2 extends Base{
 			$debug = array();
 			$this->token = '';
 			$line = $this->code[$i];
+			$level = $this->get_indention_level($line); // Get this line's indention level
 			$debug['line'] = $line;
 			if(isset($this->code[$i + 1])){
 				$nextline = $this->code[$i + 1];
+				$nextlevel = $this->get_indention_level($nextline); // Get the next line's indention level
 			}
 			// If the current line is empty, ignore it and reset the selector stack
 			if($line == ''){
@@ -228,15 +230,9 @@ class Parser2 extends Base{
 				}
 				// Else parse normal line
 				else{
-					// Get this line's indention level
-					$thislevel = $this->get_indention_level($line);
-					// Get the next line's indention level
-					if($nextline != ''){
-						$nextlevel = $this->get_indention_level($nextline);
-					}
 					// Next line is indented = parse this as a selector
-					if($nextline != '' && $nextlevel > $thislevel){
-						$this->parse_selector_line($line, $thislevel);
+					if($nextline != '' && $nextlevel > $level){
+						$this->parse_selector_line($line, $level);
 						$debug['type'] = 'Selector';
 						$debug['stack'] = $this->selector_stack;
 					}
@@ -246,6 +242,10 @@ class Parser2 extends Base{
 						$debug['stack'] = $this->selector_stack;
 					}
 				}
+			}
+			// If the next line is outdented, slice the selector stack accordingly
+			if($nextline != '' && $nextlevel < $level){
+				$this->selector_stack = array_slice($this->selector_stack, 0, $nextlevel);
 			}
 			// Debugging stuff
 			$debug['media'] = $this->current['me'];
