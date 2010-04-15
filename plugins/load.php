@@ -5,9 +5,14 @@
 	 * load
 	 * Loads the specified stylesheet the the exact position
 	 * 
-	 * Usage: @load path/relative/to/css.php/foo.cssp
+	 * Usage: @load url(path/relative/to/css.php/foo.cssp)
 	 * Example: -
 	 * Status: Stable
+	 * Version: 1.1
+	 * 
+	 * Version history:
+	 * 1.0 Initial Stable Version
+	 * 1.1 Added auto-indention-fixing
 	 * 
 	 * @param array &$css
 	 * @return void

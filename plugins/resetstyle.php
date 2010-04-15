@@ -6,22 +6,33 @@
 	 * 
 	 * Usage: Simply include the plugin in @cssp
 	 * Status: Stable
+	 * Version: 1.0
+	 * 
+	 * Version history:
+	 * 1.0 Initial Stable Version
+	 * 1.1 Added support for custom stylesheets
 	 * 
 	 * @param mixed &$output
 	 * @return void
 	 */
 	function resetstyle(&$output){
-		// Get the reset stylesheet. Use the custom one if it exists
+		// Get the reset stylesheet. Use the custom file if it exists
 		if(file_exists('plugins/resetstyle/custom.css')){
 			$reset_stylesheet = file_get_contents('plugins/resetstyle/custom.css');
 		}
-		else{
+		elseif(file_exists('plugins/resetstyle/default.css')){
 			$reset_stylesheet = file_get_contents('plugins/resetstyle/default.css');
 		}
-		// Compress the styles
-		$reset_stylesheet = cssmin::minify($reset_stylesheet);
-		// Add the reset stylesheet to the output. Done!
-		$output = $reset_stylesheet.$output;
+		if(!empty($reset_stylesheet)){
+			// Compress the styles
+			$reset_stylesheet = cssmin::minify($reset_stylesheet);
+			// Add the reset stylesheet to the output. Done!
+			$output = $reset_stylesheet.$output;
+		}
+		else{
+			global $cssp;
+			$cssp->report_error('Resetstyle plugin couldn\'t find a stylesheet to include');
+		}
 	}
 
 

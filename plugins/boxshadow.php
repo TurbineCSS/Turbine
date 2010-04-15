@@ -18,7 +18,7 @@
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				if(isset($parsed[$block][$selector]['box-shadow'])){
-					// $before keeps track of the prevoius property in the loop, which is the position we want the new
+					// $before keeps track of the previous property in the loop, which is the position we want the new
 					// box-shadow properties to be inserted
 					$before = null;
 					foreach($styles as $property => $value){
