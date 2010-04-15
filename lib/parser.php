@@ -239,8 +239,8 @@ class Parser2 extends Base{
 					}
 					// Else parse as a property-value-pair
 					else{
-						
-						$debug['type'] = 'Rule';
+						$this->parse_property_line($line);
+						$debug['type'] = 'Property/Value';
 						$debug['stack'] = $this->selector_stack;
 					}
 				}
@@ -248,6 +248,7 @@ class Parser2 extends Base{
 			// If the next line is outdented, slice the selector stack accordingly
 			if($nextline != '' && $nextlevel < $level){
 				$this->selector_stack = array_slice($this->selector_stack, 0, $nextlevel);
+				$this->current['se'] = end($this->selector_stack);
 			}
 			// Debugging stuff
 			$debug['media'] = $this->current['me'];
@@ -538,6 +539,74 @@ class Parser2 extends Base{
 		$this->parsed[$this->current['me']][$selector] = array(
 			'_value' => $line
 		);
+	}
+
+
+	/**
+	 * parse_property_line
+	 * Parses a property/value line
+	 * @param string $line A line containing one (or more) property-value-pairs
+	 * @return void
+	 */
+	protected function parse_property_line($line){
+		$line = trim($line);
+		$len = strlen($line);
+		$this->state = 'pr';
+		for($i = 0; $i < $len; $i++ ){
+			$this->switch_string_state($line{$i});
+			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){ // Break on comment
+				if(trim($this->token) != ''){
+					$this->current['va'] = trim($this->token);
+					$this->token = '';
+					$this->merge();
+				}
+				break;
+			}
+			elseif($this->state == 'pr' && $line{$i} == ':'){ // End property state on colon
+				$this->current['pr'] = trim($this->token);
+				$this->state = 'va';
+				$this->token = '';
+			}
+			elseif($i + 1 == $len || ($this->state != 'st' && $line{$i} == ';')){ // End pair on line end or semicolon
+				if($i + 1 == $len && $line{$i} != ';'){
+					$this->token .= $line{$i};
+				}
+				$this->current['va'] = trim($this->token);
+				$this->state = 'pr';
+				$this->token = '';
+				$this->merge();
+			}
+			else{
+				$this->token .= $line{$i};
+			}
+		}
+	}
+
+
+	/**
+	 * merge
+	 * Merges the current values into $this->parsed
+	 * @return void
+	 */
+	protected function merge(){
+		// The current values
+		$at = ($this->current['me'] !== 'global') ? '@media '.$this->current['me']: $this->current['me'];
+		$se = $this->current['se'];
+		$pr = $this->current['pr'];
+		$va = $this->current['va'];
+		$fi = $this->current['fi'];
+		// Special treatment for @font-face
+		if($se == '@font-face'){
+			$dest =& $this->parsed[$at][$se][$fi][$pr];
+		}
+		else{
+			$dest =& $this->parsed[$at][$se][$pr];
+		}
+		// Take care of !important on merge
+		$tokens = $this->tokenize($dest);
+		if(!in_array('!important', $tokens)){
+			$dest = $va;
+		}
 	}
 
 
