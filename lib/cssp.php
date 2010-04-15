@@ -189,12 +189,21 @@ class Cssp extends Parser2 {
 						$this->parsed[$block][$selector]['extends'] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $this->parsed[$block][$selector]['extends']);
 					}
 					elseif(isset($this->parsed[$block][$selector][$property])){
-						// Handle value arrays
-						$value_array = (is_array($this->parsed[$block][$selector][$property])) ? $this->parsed[$block][$selector][$property] : array($this->parsed[$block][$selector][$property]);
-						foreach($value_array as $val){
-							if(preg_match('/copy\((.*)[\s]+(.*)\)/', $val, $matches)){
+						// Single values
+						if(!is_array($this->parsed[$block][$selector][$property])){
+							if(preg_match('/copy\((.*)[\s]+(.*)\)/', $this->parsed[$block][$selector][$property], $matches)){
 								$matches[1] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $matches[1]);
-								$val = 'copy('.$matches[1].' '.$matches[2].')';
+								$this->parsed[$block][$selector][$property] = 'copy('.$matches[1].' '.$matches[2].')';
+							}
+						}
+						// Multiple values
+						else{
+							$num_values = count($this->parsed[$block][$selector][$property]);
+							for($i = 0; $i < $num_values; $i++){
+								if(preg_match('/copy\((.*)[\s]+(.*)\)/', $this->parsed[$block][$selector][$property][$i], $matches)){
+									$matches[1] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $matches[1]);
+									$this->parsed[$block][$selector][$property][$i] = 'copy('.$matches[1].' '.$matches[2].')';
+								}
 							}
 						}
 					}
