@@ -537,7 +537,7 @@ class Parser2 extends Base{
 		$line = substr($line, 4);                   // Strip "@css"
 		$selector = '@css-'.$this->current['ci']++; // Build the selector using the @css-Index
 		$this->parsed[$this->current['me']][$selector] = array(
-			'_value' => $line
+			'_value' => trim($line)
 		);
 	}
 
@@ -649,7 +649,7 @@ class Parser2 extends Base{
 					}
 					// @css line
 					elseif(preg_match('/@css-[0-9]+/', $selector)){
-						
+						$output .= $this->glue_css($rules, $indented, $compressed);
 					}
 					// Normal css rules
 					else{
@@ -703,7 +703,24 @@ class Parser2 extends Base{
 		$output .= $prefix.'}'.$n;
 		return $output;
 	}
-	
+
+
+	/**
+	 * glue_css
+	 * Turn a parsed @css line into output
+	 * @param mixed $contents @css line contents
+	 * @param string $indented Indent the rule? (forn use inside @media blocks)
+	 * @param bool $compressed Compress CSS? (removes whitespace)
+	 * @return string $output Formatted CSS
+	 */
+	public function glue_css($contents, $indented, $compressed){
+		$value = $contents['_value'];
+		// Set the indention prefix
+		$prefix = ($indented && !$compressed) ? "\t" : '';
+		// Construct and return the result
+		$output = $prefix.$value;
+		return $output;
+	}
 
 
 	/**
