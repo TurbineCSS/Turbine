@@ -202,7 +202,7 @@ if($_GET['files']){
 					// Get plugin settings for the before parse hook
 					$plugin_list = array();
 					$found = false;
-					foreach($cssp->css as $line){
+					foreach($cssp->code as $line){
 						if(!$found){
 							if(preg_match('/^[\s\t]*@turbine/i',$line) == 1){
 								$found = true;
@@ -219,7 +219,7 @@ if($_GET['files']){
 
 
 					$cssp->set_indention_char();                                         // Set the character(s) used for code indention
-					$cssp->apply_plugins('before_parse', $plugin_list, $cssp->css);      // Apply plugins for before parse
+					$cssp->apply_plugins('before_parse', $plugin_list, $cssp->code);     // Apply plugins for before parse
 					$cssp->parse();                                                      // Parse the code
 					$cssp->apply_plugins('before_compile', $plugin_list, $cssp->parsed); // Apply plugins for before compile
 					$cssp->compile();                                                    // Do the Turbine magic
