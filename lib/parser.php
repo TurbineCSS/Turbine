@@ -633,7 +633,7 @@ class Parser2 extends Base{
 				// Is current block an @media-block? If so, open the block
 				$media_block = (substr($block, 0, 6) === '@media');
 				if($media_block){
-					$output .= $n . $block . $s;
+					$output .= $block . $s;
 					$output .= '{' . $n;
 					$indented = true;
 				}
@@ -641,7 +641,7 @@ class Parser2 extends Base{
 				foreach($content as $selector => $rules){
 					// @import rules
 					if($selector == '@import'){
-						
+						$output .= $this->glue_import($rules, $compressed);
 					}
 					// @font-face rules
 					elseif($selector == '@font-face'){
@@ -667,6 +667,41 @@ class Parser2 extends Base{
 
 
 	/**
+	 * glue_import
+	 * Turn a parsed @import line into output
+	 * @param array $imports List of @import statements
+	 * @param bool $compressed Compress CSS? (removes whitespace)
+	 * @return string $output Formatted CSS
+	 */
+	private function glue_import($imports, $compressed){
+		$output = '';
+		$n = ($compressed) ? '' : "\r\n";
+		foreach($imports as $import){
+			$output .= '@import '.$import.$n;
+		}
+		return $output;
+	}
+
+
+	/**
+	 * glue_css
+	 * Turn a parsed @css line into output
+	 * @param mixed $contents @css line contents
+	 * @param string $indented Indent the rule? (forn use inside @media blocks)
+	 * @param bool $compressed Compress CSS? (removes whitespace)
+	 * @return string $output Formatted CSS
+	 */
+	private function glue_css($contents, $indented, $compressed){
+		$value = $contents['_value'];
+		// Set the indention prefix
+		$prefix = ($indented && !$compressed) ? "\t" : '';
+		// Construct and return the result
+		$output = $prefix.$value;
+		return $output;
+	}
+
+
+	/**
 	 * glue_rule
 	 * Turn rules into css output
 	 * @param string $selector Selector to use for this css rule
@@ -675,7 +710,7 @@ class Parser2 extends Base{
 	 * @param bool $compressed Compress CSS? (removes whitespace)
 	 * @return string $output Formatted CSS
 	 */
-	public function glue_rule($selector, $rules, $indented, $compressed){
+	private function glue_rule($selector, $rules, $indented, $compressed){
 		$output = '';
 		// Whitspace characters
 		$s = ' ';
@@ -701,24 +736,6 @@ class Parser2 extends Base{
 		$output .= '{' . $n;
 		// $output .= $this->glue_properties($rules, $prefix, $s, $t, $n, $compressed, $comments);
 		$output .= $prefix.'}'.$n;
-		return $output;
-	}
-
-
-	/**
-	 * glue_css
-	 * Turn a parsed @css line into output
-	 * @param mixed $contents @css line contents
-	 * @param string $indented Indent the rule? (forn use inside @media blocks)
-	 * @param bool $compressed Compress CSS? (removes whitespace)
-	 * @return string $output Formatted CSS
-	 */
-	public function glue_css($contents, $indented, $compressed){
-		$value = $contents['_value'];
-		// Set the indention prefix
-		$prefix = ($indented && !$compressed) ? "\t" : '';
-		// Construct and return the result
-		$output = $prefix.$value;
 		return $output;
 	}
 
