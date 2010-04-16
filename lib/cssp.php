@@ -88,11 +88,19 @@ class Cssp extends Parser2 {
 	 * @return void
 	 */
 	protected function apply_block_constants($constants, $block){
-		foreach($constants as $constant => $value){
+		foreach($constants as $constant => $constant_value){
+			// We will only ever need the last value out of the constant's value array
+			$constant_value = end($constant_value);
+			// Apply the value to the elements in the block
 			foreach($this->parsed[$block] as $selector => $styles){
-				foreach($styles as $css_property => $css_value){
-					$replacement = $this->get_constant_replacement($block, $value);
-					$this->parsed[$block][$selector][$css_property] = preg_replace('/(\$'.$constant.')\b/', $replacement, $css_value);
+				foreach($styles as $property => $values){
+					$num_values = count($values);
+					for($i = 0; $i < $num_values; $i++){
+						// Get the replacement value
+						$replacement = $this->get_constant_replacement($block, $constant_value);
+						// Replace the value with the constant's value
+						$this->parsed[$block][$selector][$property][$i] = preg_replace('/(\$'.$constant.')\b/', $replacement, $this->parsed[$block][$selector][$property][$i]);
+					}
 				}
 			}
 		}
@@ -113,17 +121,22 @@ class Cssp extends Parser2 {
 		}
 		// Else search the true replacement
 		else{
+			// Search in the given block AND in the global block
 			$blocks = array('global');
 			if($block != 'global'){
 				$blocks[] = $block;
 			}
 			foreach($blocks as $block){
-				if(isset($this->parsed[$block]['@constants'][$matches[1][0]])){
-					return $this->get_constant_replacement($block, $this->parsed[$block]['@constants'][$matches[1][0]]);
+				if(isset($this->parsed[$block]['@constants'][$matches[1]])){
+					// We will only ever need the last value out of the constant's value array
+					return $this->get_constant_replacement($block, end($this->parsed[$block]['@constants'][$matches[1]]));
 				}
 			}
 		}
 	}
+
+
+	/* NOT REALLY COMPATIBLE TO THE NEW PARSER BELOW THIS */
 
 
 	/**
