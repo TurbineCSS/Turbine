@@ -30,6 +30,8 @@
  * @todo document block commenting
  * @todo document the fact that the nesting system is smart about pseudo classes
  * @todo document the comment() method
+ * @todo Update the overwriting merge_rules method in cssp.php
+ * @todo document the fact that values are now always arrays
  */
 class Parser2 extends Base{
 
@@ -599,18 +601,19 @@ class Parser2 extends Base{
 		$pr = $this->current['pr'];
 		$va = $this->current['va'];
 		$fi = $this->current['fi'];
-		// Special treatment for @font-face
+		// Special destination for @font-face
 		if($se == '@font-face'){
 			$dest =& $this->parsed[$me][$se][$fi][$pr];
 		}
 		else{
 			$dest =& $this->parsed[$me][$se][$pr];
 		}
-		// Take care of !important on merge
-		$tokens = $this->tokenize($dest);
-		if(!in_array('!important', $tokens)){
-			$dest = $va;
+		// Set the value array if not aleady present
+		if(!isset($dest)){
+			$dest = array();
 		}
+		// Add the value to the destination
+		$dest[] = $va;
 	}
 
 
@@ -797,10 +800,8 @@ class Parser2 extends Base{
 			// Ignore empty properties (might happen because of errors in plugins) and non-content-properties
 			if(!empty($property) && $property{0} != '_'){
 				$count_properties++;
-				// Implode multiple values
-				if(is_array($value)){
-					$value = implode(','.$s, $value);
-				}
+				// Implode values
+				$value = implode(','.$s, $value);
 				$output .= $prefix . $t . $property . ':' . $s . $value;
 				// When compressing, omit the last semicolon
 				if(!$compressed || $num_properties != $count_properties){
