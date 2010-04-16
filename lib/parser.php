@@ -891,7 +891,7 @@ class Parser2 extends Base{
 	 * @return void
 	 */
 	public function reset(){
-		$this->css = array();
+		$this->code = array();
 		$this->parsed = array('global' =>
 			array(
 				'@import' => array(),
