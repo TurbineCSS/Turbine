@@ -699,16 +699,15 @@ class Parser2 extends Base{
 		$output = '';
 		// Whitspace characters
 		$s = ' ';
-		$t = "\t";
 		$n = "\r\n";
 		// Forget the whitespace if we're compressing
 		if($compressed){
-			$s = $t = $n = '';
+			$s = $n = '';
 		}
 		// Build the @font-face rules
 		foreach($fonts as $font => $styles){
 			$output .= '@font-face'.$s.'{'.$n;
-			
+			$output .= $this->glue_properties($styles, '', $compressed);
 			$output .= '}'.$n;
 		}
 		return $output;
@@ -766,10 +765,42 @@ class Parser2 extends Base{
 		// Constuct the output
 		$output .= $prefix . $selector . $s;
 		$output .= '{' . $n;
-		// $output .= $this->glue_properties($rules, $prefix, $s, $t, $n, $compressed, $comments);
+		$output .= $this->glue_properties($rules, $prefix, $compressed);
 		$output .= $prefix.'}'.$n;
 		return $output;
 	}
+
+
+
+
+
+	/**
+	 * glue_properties
+	 * Combine property sets
+	 * @param mixed $rules Property-value-pairs
+	 * @param string $prefix Prefix 
+	 * @param bool $compressed Compress CSS? (removes whitespace)
+	 * @return string $output Formatted CSS
+	 */
+	private function glue_properties($rules, $prefix, $compressed){
+		$output = '';
+		// Whitspace characters
+		$s = ' ';
+		$t = "\t";
+		$n = "\r\n";
+		// Forget the whitespace if we're compressing
+		if($compressed){
+			$s = $t = $n = '';
+		}
+		// Build output
+		foreach($rules as $property => $values){
+			$output .= $prefix . $t . $property . ':' . $n;
+		}
+		return $output;
+	}
+
+
+
 
 
 	/**
