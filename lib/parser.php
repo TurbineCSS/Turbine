@@ -618,36 +618,90 @@ class Parser2 extends Base{
 	 */
 	public function glue($compressed = false){
 		if($this->parsed){
-			$output = NULL;
+			$output = '';
 			// Whitspace characters
 			$s = ' ';
 			$t = "\t";
 			$n = "\r\n";
 			// Forget the whitespace if we're compressing
 			if($compressed){
-				$s = $t = $n = NULL;
+				$s = $t = $n = '';
 			}
 			// Loop through the blocks
 			foreach($this->parsed as $block => $content){
-				$prefix = NULL;
+				$indented = false;
 				// Is current block an @media-block? If so, open the block
 				$media_block = (substr($block, 0, 6) === '@media');
 				if($media_block){
-					$output .= $block.$s;
-					$output .= '{'.$n;
-					$prefix = $t;
+					$output .= $n . $block . $s;
+					$output .= '{' . $n;
+					$indented = true;
 				}
 				// Read contents
-				foreach($content as $index => $rule){
-					// $output .= $this->glue_rule($index, $rule, $prefix, $s, $t, $n, $compressed);
+				foreach($content as $selector => $rules){
+					// @import rules
+					if($selector == '@import'){
+						
+					}
+					// @font-face rules
+					elseif($selector == '@font-face'){
+						
+					}
+					// @css line
+					elseif(preg_match('/@css-[0-9]+/', $selector)){
+						
+					}
+					// Normal css rules
+					else{
+						$output .= $this->glue_rule($selector, $rules, $indented, $compressed);
+					}
 				}
 				// If @media-block, close block
 				if($media_block){
-					$output .= '}'.$n.$n;
+					$output .= '}' . $n;
 				}
 			}
 			return $output;
 		}
+	}
+
+
+	/**
+	 * glue_rule
+	 * Turn rules into css output
+	 * @param string $selector Selector to use for this css rule
+	 * @param mixed $rules Rule contents
+	 * @param string $indented Indent the rule? (forn use inside @media blocks)
+	 * @param bool $compressed Compress CSS? (removes whitespace)
+	 * @return string $output Formatted CSS
+	 */
+	public function glue_rule($selector, $rules, $indented, $compressed){
+		$output = '';
+		// Whitspace characters
+		$s = ' ';
+		$t = "\t";
+		$n = "\r\n";
+		// Forget the whitespace if we're compressing
+		if($compressed){
+			$s = $t = $n = '';
+		}
+		// Set the indention prefix
+		$prefix = ($indented && !$compressed) ? $t : '';
+		// Strip whitespace from selectors when compressing
+		if($compressed){
+			$selector = implode(',', $this->tokenize($selector, ','));
+		}
+		// Get comments
+		$comments = array();
+		if(isset($rules['_comments'])){
+			$comments = $rules['_comments'];
+		}
+		// Constuct the output
+		$output .= $prefix . $selector . $s;
+		$output .= '{' . $n;
+		// $output .= $this->glue_properties($rules, $prefix, $s, $t, $n, $compressed, $comments);
+		$output .= $prefix.'}'.$n;
+		return $output;
 	}
 	
 
