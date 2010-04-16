@@ -590,17 +590,17 @@ class Parser2 extends Base{
 	 */
 	protected function merge(){
 		// The current values
-		$at = ($this->current['me'] !== 'global') ? '@media '.$this->current['me']: $this->current['me'];
+		$me = $this->current['me'];
 		$se = $this->current['se'];
 		$pr = $this->current['pr'];
 		$va = $this->current['va'];
 		$fi = $this->current['fi'];
 		// Special treatment for @font-face
 		if($se == '@font-face'){
-			$dest =& $this->parsed[$at][$se][$fi][$pr];
+			$dest =& $this->parsed[$me][$se][$fi][$pr];
 		}
 		else{
-			$dest =& $this->parsed[$at][$se][$pr];
+			$dest =& $this->parsed[$me][$se][$pr];
 		}
 		// Take care of !important on merge
 		$tokens = $this->tokenize($dest);
@@ -608,6 +608,48 @@ class Parser2 extends Base{
 			$dest = $va;
 		}
 	}
+
+
+	/**
+	 * glue
+	 * Turn the current parsed array back into CSS code
+	 * @param bool $compressed Compress CSS? (removes whitespace)
+	 * @return string $output The final CSS code
+	 */
+	public function glue($compressed = false){
+		if($this->parsed){
+			$output = NULL;
+			// Whitspace characters
+			$s = ' ';
+			$t = "\t";
+			$n = "\r\n";
+			// Forget the whitespace if we're compressing
+			if($compressed){
+				$s = $t = $n = NULL;
+			}
+			// Loop through the blocks
+			foreach($this->parsed as $block => $content){
+				$prefix = NULL;
+				// Is current block an @media-block? If so, open the block
+				$media_block = (substr($block, 0, 6) === '@media');
+				if($media_block){
+					$output .= $block.$s;
+					$output .= '{'.$n;
+					$prefix = $t;
+				}
+				// Read contents
+				foreach($content as $index => $rule){
+					// $output .= $this->glue_rule($index, $rule, $prefix, $s, $t, $n, $compressed);
+				}
+				// If @media-block, close block
+				if($media_block){
+					$output .= '}'.$n.$n;
+				}
+			}
+			return $output;
+		}
+	}
+	
 
 
 	/**
