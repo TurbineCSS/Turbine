@@ -44,8 +44,8 @@
 						$newlines = file($filepath);
 						$newlines_indention_char = Parser2::get_indention_char($newlines);
 						// Fix the indention of the new lines
-						if($cssp->options['indention_char'] != $newlines_indention_char){
-							$newlines = load_fix_indention($newlines, $cssp->options['indention_char'], $newlines_indention_char);
+						if($cssp->indention_char != $newlines_indention_char){
+							$newlines = load_fix_indention($newlines, $cssp->indention_char, $newlines_indention_char);
 						}
 						// Apply the loader plugin to the loaded files
 						$newlines = load_apply($newlines);
