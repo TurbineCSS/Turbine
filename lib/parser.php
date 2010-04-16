@@ -449,6 +449,10 @@ class Parser2 extends Base{
 		$selector = trim(preg_replace('/[\s]+/', ' ', $this->token));
 		// Combine selector with the nesting stack
 		$selector = $this->merge_selectors($this->array_get_previous($this->selector_stack, $level), $selector);
+		// Increase font-face index if this is an @font-face element
+		if($selector == '@font-face'){
+			$this->current['fi']++;
+		}
 		// Use as current selector
 		$this->current['se'] = $selector;
 		// Add to the selector stack
@@ -523,7 +527,7 @@ class Parser2 extends Base{
 			}
 			$this->token .= $line{$i};
 		}
-		$this->parsed['global']['@import'][] = $this->token;
+		$this->parsed['global']['@import'][] = trim($this->token);
 	}
 
 
