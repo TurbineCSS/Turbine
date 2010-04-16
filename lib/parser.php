@@ -37,13 +37,19 @@ class Parser2 extends Base{
 
 
 	/**
+	 * @var bool $debug Print $this->parsed?
+	 */
+	public $debug = false;
+
+
+	/**
 	 * @var array $code The loaded turbine code (before parsing)
 	 */
 	public $code = array();
 
 
 	/**
-	 * @var array $debuginfo Parser debugging information
+	 * @var array $debuginfo Collects parser debugging information
 	 */
 	public $debuginfo = array();
 
@@ -256,6 +262,10 @@ class Parser2 extends Base{
 			$debug['media'] = $this->current['me'];
 			$this->debuginfo[] = $debug;
 			unset($debug);
+		}
+		// Dump $this->parsed when configured to do so
+		if($this->debug){
+			print_r($this->parsed);
 		}
 		return $this;
 	}
