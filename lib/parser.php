@@ -793,19 +793,23 @@ class Parser2 extends Base{
 			$s = $t = $n = '';
 		}
 		// Build output
-		foreach($rules as $property => $values){
-			$count_properties++;
-			$output .= $prefix . $t . $property . ':';
-			// When compressing, omit the last semicolon
-			if(!$compressed || $num_properties != $count_properties){
-				$output .= ';'. $n;
+		foreach($rules as $property => $value){
+			// Ignore non-content-properties
+			if($property{0} != '_'){
+				$count_properties++;
+				// Implode multiple values
+				if(is_array($value)){
+					$value = implode(','.$s, $value);
+				}
+				$output .= $prefix . $t . $property . ':' . $s . $value;
+				// When compressing, omit the last semicolon
+				if(!$compressed || $num_properties != $count_properties){
+					$output .= ';'. $n;
+				}
 			}
 		}
 		return $output;
 	}
-
-
-
 
 
 	/**
