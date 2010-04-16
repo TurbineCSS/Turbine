@@ -649,7 +649,7 @@ class Parser2 extends Base{
 					}
 					// @font-face rules
 					elseif($selector == '@font-face'){
-						
+						$output .= $this->glue_font_face($rules, $compressed);
 					}
 					// @css line
 					elseif(preg_match('/@css-[0-9]+/', $selector)){
@@ -672,7 +672,7 @@ class Parser2 extends Base{
 
 	/**
 	 * glue_import
-	 * Turn a parsed @import line into output
+	 * Turn parsed @import lines into output
 	 * @param array $imports List of @import statements
 	 * @param bool $compressed Compress CSS? (removes whitespace)
 	 * @return string $output Formatted CSS
@@ -681,7 +681,35 @@ class Parser2 extends Base{
 		$output = '';
 		$n = ($compressed) ? '' : "\r\n";
 		foreach($imports as $import){
-			$output .= '@import '.$import.$n;
+			$semicolon = (substr($import, -1) == ';') ? '' : ';';
+			$output .= '@import ' . $import . $semicolon . $n;
+		}
+		return $output;
+	}
+
+
+	/**
+	 * glue_font_face
+	 * Turn parsed @font-face elements into output
+	 * @param array $imports List of @import statements
+	 * @param bool $compressed Compress CSS? (removes whitespace)
+	 * @return string $output Formatted CSS
+	 */
+	private function glue_font_face($fonts, $compressed){
+		$output = '';
+		// Whitspace characters
+		$s = ' ';
+		$t = "\t";
+		$n = "\r\n";
+		// Forget the whitespace if we're compressing
+		if($compressed){
+			$s = $t = $n = '';
+		}
+		// Build the @font-face rules
+		foreach($fonts as $font => $styles){
+			$output .= '@font-face'.$s.'{'.$n;
+			
+			$output .= '}'.$n;
 		}
 		return $output;
 	}
