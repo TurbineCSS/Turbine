@@ -794,8 +794,8 @@ class Parser2 extends Base{
 		}
 		// Build output
 		foreach($rules as $property => $value){
-			// Ignore non-content-properties
-			if($property{0} != '_'){
+			// Ignore empty properties (might happen because of errors in plugins) and non-content-properties
+			if(!empty($property) && $property{0} != '_'){
 				$count_properties++;
 				// Implode multiple values
 				if(is_array($value)){
