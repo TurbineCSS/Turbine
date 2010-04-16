@@ -771,9 +771,6 @@ class Parser2 extends Base{
 	}
 
 
-
-
-
 	/**
 	 * glue_properties
 	 * Combine property sets
@@ -788,13 +785,21 @@ class Parser2 extends Base{
 		$s = ' ';
 		$t = "\t";
 		$n = "\r\n";
+		// Keep count of the properties
+		$num_properties = count($rules);
+		$count_properties = 0;
 		// Forget the whitespace if we're compressing
 		if($compressed){
 			$s = $t = $n = '';
 		}
 		// Build output
 		foreach($rules as $property => $values){
-			$output .= $prefix . $t . $property . ':' . $n;
+			$count_properties++;
+			$output .= $prefix . $t . $property . ':';
+			// When compressing, omit the last semicolon
+			if(!$compressed || $num_properties != $count_properties){
+				$output .= ';'. $n;
+			}
 		}
 		return $output;
 	}
