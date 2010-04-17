@@ -157,11 +157,6 @@ class Cssp extends Parser2 {
 	}
 
 
-
-	/* NOT REALLY COMPATIBLE TO THE NEW PARSER BELOW THIS */
-
-
-
 	/**
 	 * apply_aliases
 	 * Applies selector aliases
@@ -192,6 +187,8 @@ class Cssp extends Parser2 {
 	 */
 	protected function apply_block_aliases($aliases, $block){
 		foreach($aliases as $alias => $alias_value){
+			// We will only ever need the last value out of the constant's value array
+			$alias_value = end($alias_value);
 			foreach($this->parsed[$block] as $selector => $styles){
 				// Replace in selectors: add a new element with the full selector and delete the old one
 				$newselector = preg_replace('/(\$'.$alias.')\b/', $alias_value, $selector);
@@ -202,22 +199,14 @@ class Cssp extends Parser2 {
 				}
 				// Replace in values
 				foreach($styles as $property => $value){
-					$matches = array();
-					if($property == 'extends' && isset($this->parsed[$block][$selector]['extends'])){
-						$this->parsed[$block][$selector]['extends'] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $this->parsed[$block][$selector]['extends']);
-					}
-					elseif(isset($this->parsed[$block][$selector][$property])){
-						// Single values
-						if(!is_array($this->parsed[$block][$selector][$property])){
-							if(preg_match('/copy\((.*)[\s]+(.*)\)/', $this->parsed[$block][$selector][$property], $matches)){
-								$matches[1] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $matches[1]);
-								$this->parsed[$block][$selector][$property] = 'copy('.$matches[1].' '.$matches[2].')';
+					if(isset($this->parsed[$block][$selector][$property])){
+						$num_property_values = count($this->parsed[$block][$selector][$property]);
+						for($i = 0; $i < $num_property_values; $i++){
+							$matches = array();
+							if($property == 'extends' && isset($this->parsed[$block][$selector]['extends'][$i])){
+								$this->parsed[$block][$selector]['extends'][$i] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $this->parsed[$block][$selector]['extends'][$i]);
 							}
-						}
-						// Multiple values
-						else{
-							$num_values = count($this->parsed[$block][$selector][$property]);
-							for($i = 0; $i < $num_values; $i++){
+							else{
 								if(preg_match('/copy\((.*)[\s]+(.*)\)/', $this->parsed[$block][$selector][$property][$i], $matches)){
 									$matches[1] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $matches[1]);
 									$this->parsed[$block][$selector][$property][$i] = 'copy('.$matches[1].' '.$matches[2].')';
@@ -229,6 +218,9 @@ class Cssp extends Parser2 {
 			}
 		}
 	}
+
+
+	/* NOT REALLY COMPATIBLE TO THE NEW PARSER BELOW THIS */
 
 
 	/**
