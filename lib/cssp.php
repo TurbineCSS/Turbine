@@ -136,9 +136,6 @@ class Cssp extends Parser2 {
 	}
 
 
-	/* NOT REALLY COMPATIBLE TO THE NEW PARSER BELOW THIS */
-
-
 	/**
 	 * apply_special_constants
 	 * Applies special constants to all blocks
@@ -148,13 +145,21 @@ class Cssp extends Parser2 {
 		foreach($this->global_constants as $g_constant => $g_value){
 			foreach($this->parsed as $block => $css){
 				foreach($this->parsed[$block] as $selector => $styles){
-					foreach($styles as $property => $value){
-						$this->parsed[$block][$selector][$property] = preg_replace('/(\$_'.$g_constant.')\b/', $g_value, $value);
+					foreach($styles as $property => $values){
+						$num_values = count($values);
+						for($i = 0; $i < $num_values; $i++){
+							$this->parsed[$block][$selector][$property][$i] = preg_replace('/(\$_'.$g_constant.')\b/', $g_value, $this->parsed[$block][$selector][$property][$i]);
+						}
 					}
 				}
 			}
 		}
 	}
+
+
+
+	/* NOT REALLY COMPATIBLE TO THE NEW PARSER BELOW THIS */
+
 
 
 	/**
