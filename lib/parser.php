@@ -816,7 +816,7 @@ class Parser2 extends Base{
 			if(!empty($property) && $property{0} != '_'){
 				$count_properties++;
 				// Implode values
-				$value = $this->glue_values($values, $property, $compressed);
+				$value = $this->get_final_value($values, $property, $compressed);
 				// Output property line
 				$output .= $prefix . $t . $property . ':' . $s . $value;
 				// When compressing, omit the last semicolon
@@ -830,49 +830,42 @@ class Parser2 extends Base{
 
 
 	/**
-	 * glue_values
-	 * Turns an array of values into a string for output
-	 * @param unknown_type $values
-	 * @param unknown_type $property
-	 * @param unknown_type $compressed
-	 * @return string $value The final value
-	 */
-	private function glue_values($values, $property, $compressed){
-		// Whitspace characters
-		$s = ' ';
-		// Forget the whitespace if we're compressing
-		if($compressed){
-			$s = '';
-		}
-		// Build the value from the array
-		if(in_array($property, $this->combined_properties)){
-			$value = implode(','.$s, $values);
-		}
-		else{
-			$value = $this->get_final_value($values);
-		}
-		return $value;
-	}
-
-
-	/**
 	 * get_final_value
 	 * Returns the last and/or most !important value from a list of values
-	 * @param $values A list of values
+	 * @param string $values A list of values
+	 * @param string $property The property the values belong to
+	 * @param bool $compressed Compress CSS? (removes whitespace)
 	 * @return string $final The final value
 	 */
-	protected function get_final_value($values){
+	protected function get_final_value($values, $property, $compressed = false){
 		// If there's only one value, there's only one thing to return
 		if(count($values) == 1){
 			$final = end($values);
 		}
 		// Otherwise find the last and/or most !important value
 		else{
+			// Whitspace characters
+			$s = ' ';
+			// Forget the whitespace if we're compressing
+			if($compressed){
+				$s = '';
+			}
+			// The final value
 			$final = '';
 			$num_values = count($values);
 			for($i = 0; $i < $num_values; $i++){
-				if(strpos($values[$i], '!important') || !strpos($final, '!important')){
-					$final = $values[$i];
+				// Combined properties
+				if(in_array($property, $this->combined_properties)){
+					if($final != ''){
+						$final .= ','.$s;
+					}
+					$final .= $values[$i];
+				}
+				// Normal properties
+				else{
+					if(strpos($values[$i], '!important') || !strpos($final, '!important')){
+						$final = $values[$i];
+					}
 				}
 			}
 		}
