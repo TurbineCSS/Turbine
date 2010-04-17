@@ -235,20 +235,29 @@ class Cssp extends Parser2 {
 						$found = false;
 						// Parse ancestors
 						$ancestors = $this->tokenize($this->parsed[$block][$selector]['extends'][$i], array('"', "'", ','));
+						// First merge all the ancestor's rules into one...
+						$ancestors_rules = array();
 						foreach($ancestors as $ancestor){
 							// Find ancestor
 							$ancestor_key = $this->find_ancestor_key($ancestor, $block);
 							// Merge ancestor's rules with own rules
 							if($ancestor_key){
-								$this->parsed[$block][$selector] = $this->merge_rules(
-									$this->parsed[$block][$selector],
+								$ancestors_rules = $this->merge_rules(
+									$ancestors_rules,
 									$this->parsed[$block][$ancestor_key],
 									array(),
-									false
+									true
 								);
 								$found = true;
 							}
 						}
+						// ... then merge the combined ancestor's rules into $parsed
+						$this->parsed[$block][$selector] = $this->merge_rules(
+							$this->parsed[$block][$selector],
+							$ancestors_rules,
+							array(),
+							false
+						);
 						// Report error if no ancestor was found
 						if(!$found){
 							$this->report_error($selector.' could not find '.$this->parsed[$block][$selector]['extends'][$i].' to inherit properties from.');
