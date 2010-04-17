@@ -30,7 +30,6 @@
  * @todo document block commenting
  * @todo document the fact that the nesting system is smart about pseudo classes
  * @todo document the comment() method
- * @todo Update the overwriting merge_rules method in cssp.php
  * @todo document the fact that values are now always arrays
  */
 class Parser2 extends Base{
@@ -862,7 +861,9 @@ class Parser2 extends Base{
 				}
 			}
 			// Add to the current token
-			$current .= $str{$i};
+			if(isset($str{$i})){
+				$current .= $str{$i};
+			}
 			// Handle the last token
 			if($i == $strlen - 1){
 				$lasttoken = trim($current);

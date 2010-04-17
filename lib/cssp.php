@@ -220,9 +220,6 @@ class Cssp extends Parser2 {
 	}
 
 
-	/* NOT REALLY COMPATIBLE TO THE NEW PARSER BELOW THIS */
-
-
 	/**
 	 * apply_inheritance
 	 * Applies inheritance to the stylesheet
@@ -232,36 +229,40 @@ class Cssp extends Parser2 {
 		foreach($this->parsed as $block => $css){
 			foreach($this->parsed[$block] as $selector => $styles){
 				// Full inheritance
-				if(isset($this->parsed[$block][$selector]['extends']) && !empty($this->parsed[$block][$selector]['extends'])){
-					$found = false;
-					// Parse ancestors
-					$ancestors =  $this->tokenize($this->parsed[$block][$selector]['extends'], array('"', "'", ','));
-					foreach($ancestors as $ancestor){
-						// Find ancestor
-						$ancestor_key = $this->find_ancestor_key($ancestor, $block);
-						// Merge ancestor's rules with own rules
-						if($ancestor_key){
-							$this->parsed[$block][$selector] = $this->merge_rules(
-								$this->parsed[$block][$selector],
-								$this->parsed[$block][$ancestor_key],
-								array(),
-								false
-							);
-							$found = true;
+				if(isset($this->parsed[$block][$selector]['extends'])){
+					$num_extends = count($this->parsed[$block][$selector]['extends']);
+					for($i = 0; $i < $num_extends; $i++){
+						$found = false;
+						// Parse ancestors
+						$ancestors = $this->tokenize($this->parsed[$block][$selector]['extends'][$i], array('"', "'", ','));
+						foreach($ancestors as $ancestor){
+							// Find ancestor
+							$ancestor_key = $this->find_ancestor_key($ancestor, $block);
+							// Merge ancestor's rules with own rules
+							if($ancestor_key){
+								$this->parsed[$block][$selector] = $this->merge_rules(
+									$this->parsed[$block][$selector],
+									$this->parsed[$block][$ancestor_key],
+									array(),
+									false
+								);
+								$found = true;
+							}
+						}
+						// Report error if no ancestor was found
+						if(!$found){
+							$this->report_error($selector.' could not find '.$this->parsed[$block][$selector]['extends'][$i].' to inherit properties from.');
 						}
 					}
-					// Report error if no ancestor was found
-					if(!$found){
-						$this->report_error($selector.' could not find '.$this->parsed[$block][$selector]['extends'].' to inherit properties from.');
-					}
-					else{
-						// Unset the extends property
-						unset($this->parsed[$block][$selector]['extends']);
-					}
+					// Unset the extends property
+					unset($this->parsed[$block][$selector]['extends']);
 				}
 			}
 		}
 	}
+
+
+	/* NOT REALLY COMPATIBLE TO THE NEW PARSER BELOW THIS */
 
 
 	/**
@@ -318,7 +319,7 @@ class Cssp extends Parser2 {
 		foreach($this->parsed as $block => $css){
 			foreach($this->parsed[$block] as $selector => $styles){
 				foreach($styles as $property => $value){
-					// Find possivle expandable properties
+					// Find possible expandable properties
 					if(strpos($property, ',') !== false){
 						$properties = $this->tokenize($property, ',');
 						if(count($properties) > 1){
@@ -346,8 +347,7 @@ class Cssp extends Parser2 {
 
 	/***
 	 * merge_rules
-	 * Merges possible conflicting css rules.
-	 * Overloads the parsers native merge_rules method to make exclusion of certain properties possible
+	 * Merges possible conflicting css rules
 	 * @param mixed $old The OLD rules (overridden by the new rules)
 	 * @param mixed $new The NEW rules (override the old rules)
 	 * @param array $exclude A list of properties NOT to merge
@@ -356,16 +356,20 @@ class Cssp extends Parser2 {
 	 */
 	public function merge_rules($old, $new, $exclude = array(), $allow_overwrite = true){
 		$rule = $old;
-		foreach($new as $property => $value){
+		foreach($new as $property => $values){
+			// If the property is not excluded...
 			if(!in_array($property, $exclude)){
+				// ... apply the values one by one...
 				if(isset($rule[$property])){
-					$tokens = $this->tokenize($rule[$property]);
-					if($allow_overwrite == true && !in_array('!important', $tokens)){
-						$rule[$property] = $value;
+					if($allow_overwrite){
+						foreach($values as $value){
+							$rule[$property][] = $value;
+						}
 					}
 				}
+				// ... or copy the whole set of values
 				else{
-					$rule[$property] = $value;
+					$rule[$property] = $values;
 				}
 			}
 		}
