@@ -271,9 +271,6 @@ class Cssp extends Parser2 {
 	}
 
 
-	/* NOT REALLY COMPATIBLE TO THE NEW PARSER BELOW THIS */
-
-
 	/**
 	 * apply_copying
 	 * Applies property copying to the stylesheet
@@ -283,25 +280,24 @@ class Cssp extends Parser2 {
 		foreach($this->parsed as $block => $css){
 			foreach($this->parsed[$block] as $selector => $styles){
 				$inheritance_pattern = '/copy\((.*)[\s]+(.*)\)/';
-				foreach($styles as $property => $value){
-					// Properties that have multiple values as an array are possible too...
-					if(!is_array($value)){
-						$value = array($value);
-					}
-					foreach($value as $val){
-						if(preg_match($inheritance_pattern, $val)){
+				foreach($styles as $property => $values){
+					$values_num = count($values);
+					for($i = 0; $i < $values_num; $i++){
+						if(preg_match($inheritance_pattern, $values[$i])){
 							$found = false;
-							preg_match_all($inheritance_pattern, $val, $matches);
+							preg_match_all($inheritance_pattern, $values[$i], $matches);
+							// Exact selector matches
 							if(isset($this->parsed[$block][$matches[1][0]][$matches[2][0]])){
-								$this->parsed[$block][$selector][$property] = $this->parsed[$block][$matches[1][0]][$matches[2][0]];
+								$this->parsed[$block][$selector][$property][$i] = $this->get_final_value($this->parsed[$block][$matches[1][0]][$matches[2][0]], $property);
 								$found = true;
 							}
-							else{ // Search for partial matches
+							// Search for partial selector matches, ie. "#foo" in "#bar, #foo, #blah"
+							else{
 								foreach($this->parsed[$block] as $full_selectors => $v){
 									$tokenized_selectors = $this->tokenize($full_selectors, ',');
 									if(in_array($matches[1][0], $tokenized_selectors)){
 										if(isset($this->parsed[$block][$full_selectors][$matches[2][0]])){
-											$this->parsed[$block][$selector][$matches[2][0]] = $this->parsed[$block][$full_selectors][$matches[2][0]];
+											$this->parsed[$block][$selector][$property][$i] = $this->get_final_value($this->parsed[$block][$full_selectors][$matches[2][0]], $property);
 											$found = true;
 										}
 									}
@@ -317,6 +313,9 @@ class Cssp extends Parser2 {
 			}
 		}
 	}
+
+
+	/* NOT REALLY COMPATIBLE TO THE NEW PARSER BELOW THIS */
 
 
 	/**
