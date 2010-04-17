@@ -42,15 +42,21 @@ class Parser2 extends Base{
 
 
 	/**
+	 * @var array $debuginfo Collects parser debugging information
+	 */
+	public $debuginfo = array();
+
+
+	/**
 	 * @var array $code The loaded turbine code (before parsing)
 	 */
 	public $code = array();
 
 
 	/**
-	 * @var array $debuginfo Collects parser debugging information
+	 * @var array $combined_properties The list properties where multiple valiues are to be combined on output
 	 */
-	public $debuginfo = array();
+	public $combined_properties = array('behavior', 'filter', '-ms-filter');
 
 
 	/**
@@ -797,20 +803,21 @@ class Parser2 extends Base{
 		$s = ' ';
 		$t = "\t";
 		$n = "\r\n";
-		// Keep count of the properties
-		$num_properties = count($rules);
-		$count_properties = 0;
 		// Forget the whitespace if we're compressing
 		if($compressed){
 			$s = $t = $n = '';
 		}
+		// Keep count of the properties
+		$num_properties = count($rules);
+		$count_properties = 0;
 		// Build output
-		foreach($rules as $property => $value){
+		foreach($rules as $property => $values){
 			// Ignore empty properties (might happen because of errors in plugins) and non-content-properties
 			if(!empty($property) && $property{0} != '_'){
 				$count_properties++;
 				// Implode values
-				$value = implode(','.$s, $value);
+				$value = $this->glue_values($values, $property, $compressed);
+				// Output property line
 				$output .= $prefix . $t . $property . ':' . $s . $value;
 				// When compressing, omit the last semicolon
 				if(!$compressed || $num_properties != $count_properties){
@@ -819,6 +826,57 @@ class Parser2 extends Base{
 			}
 		}
 		return $output;
+	}
+
+
+	/**
+	 * glue_values
+	 * Turns an array of values into a string for output
+	 * @param unknown_type $values
+	 * @param unknown_type $property
+	 * @param unknown_type $compressed
+	 * @return string $value The final value
+	 */
+	private function glue_values($values, $property, $compressed){
+		// Whitspace characters
+		$s = ' ';
+		// Forget the whitespace if we're compressing
+		if($compressed){
+			$s = '';
+		}
+		// Build the value from the array
+		if(in_array($property, $this->combined_properties)){
+			$value = implode(','.$s, $values);
+		}
+		else{
+			$value = $this->get_final_value($values);
+		}
+		return $value;
+	}
+
+
+	/**
+	 * get_final_value
+	 * Returns the last and/or most !important value from a list of values
+	 * @param $values A list of values
+	 * @return string $final The final value
+	 */
+	protected function get_final_value($values){
+		// If there's only one value, there's only one thing to return
+		if(count($values) == 1){
+			$final = end($values);
+		}
+		// Otherwise find the last and/or most !important value
+		else{
+			$final = '';
+			$num_values = count($values);
+			for($i = 0; $i < $num_values; $i++){
+				if(strpos($values[$i], '!important') || !strpos($final, '!important')){
+					$final = $values[$i];
+				}
+			}
+		}
+		return $final;
 	}
 
 
@@ -876,7 +934,7 @@ class Parser2 extends Base{
 	}
 
 
-	 /**
+	/**
 	 * comment
 	 * Adds a comment
 	 * @param array &$item
