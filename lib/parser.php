@@ -640,7 +640,6 @@ class Parser2 extends Base{
 	 * @return string $output The final CSS code
 	 */
 	public function glue($compressed = false){
-		print_r($this->parsed);
 		$output = '';
 		// Whitspace characters
 		$s = ' ';
