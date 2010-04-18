@@ -24,6 +24,7 @@
 /**
  * Turbine
  * CSS Preprocessor
+ * @todo Handle @font-face in apply_copying()
  */
 class Cssp extends Parser2 {
 
@@ -93,13 +94,30 @@ class Cssp extends Parser2 {
 			$constant_value = end($constant_value);
 			// Apply the value to the elements in the block
 			foreach($this->parsed[$block] as $selector => $styles){
-				foreach($styles as $property => $values){
-					$num_values = count($values);
-					for($i = 0; $i < $num_values; $i++){
-						// Get the replacement value
-						$replacement = $this->get_constant_replacement($block, $constant_value);
-						// Replace the value with the constant's value
-						$this->parsed[$block][$selector][$property][$i] = preg_replace('/(\$'.$constant.')\b/', $replacement, $this->parsed[$block][$selector][$property][$i]);
+				// Handle everything but @font-face
+				if($selector != '@font-face'){
+					foreach($styles as $property => $values){
+						$num_values = count($values);
+						for($i = 0; $i < $num_values; $i++){
+							// Get the replacement value
+							$replacement = $this->get_constant_replacement($block, $constant_value);
+							// Replace the value with the constant's value
+							$this->parsed[$block][$selector][$property][$i] = preg_replace('/(\$'.$constant.')\b/', $replacement, $this->parsed[$block][$selector][$property][$i]);
+						}
+					}
+				}
+				// Handle @font-face
+				else{
+					foreach($styles as $key => $properties){
+						foreach($properties as $property => $values){
+							$num_values = count($values);
+							for($i = 0; $i < $num_values; $i++){
+								// Get the replacement value
+								$replacement = $this->get_constant_replacement($block, $constant_value);
+								// Replace the value with the constant's value
+								$this->parsed[$block][$selector][$key][$property][$i] = preg_replace('/(\$'.$constant.')\b/', $replacement, $this->parsed[$block][$selector][$key][$property][$i]);
+							}
+						}
 					}
 				}
 			}
@@ -145,10 +163,24 @@ class Cssp extends Parser2 {
 		foreach($this->global_constants as $g_constant => $g_value){
 			foreach($this->parsed as $block => $css){
 				foreach($this->parsed[$block] as $selector => $styles){
-					foreach($styles as $property => $values){
-						$num_values = count($values);
-						for($i = 0; $i < $num_values; $i++){
-							$this->parsed[$block][$selector][$property][$i] = preg_replace('/(\$_'.$g_constant.')\b/', $g_value, $this->parsed[$block][$selector][$property][$i]);
+					// Handle everything but @font-face
+					if($selector != '@font-face'){
+						foreach($styles as $property => $values){
+							$num_values = count($values);
+							for($i = 0; $i < $num_values; $i++){
+								$this->parsed[$block][$selector][$property][$i] = preg_replace('/(\$_'.$g_constant.')\b/', $g_value, $this->parsed[$block][$selector][$property][$i]);
+							}
+						}
+					}
+					// Handle @font-face
+					else{
+						foreach($styles as $key => $properties){
+							foreach($properties as $property => $values){
+								$num_values = count($values);
+								for($i = 0; $i < $num_values; $i++){
+									$this->parsed[$block][$selector][$key][$property][$i] = preg_replace('/(\$_'.$g_constant.')\b/', $g_value, $this->parsed[$block][$selector][$key][$property][$i]);
+								}
+							}
 						}
 					}
 				}
@@ -207,9 +239,12 @@ class Cssp extends Parser2 {
 								$this->parsed[$block][$selector]['extends'][$i] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $this->parsed[$block][$selector]['extends'][$i]);
 							}
 							else{
-								if(preg_match('/copy\((.*)[\s]+(.*)\)/', $this->parsed[$block][$selector][$property][$i], $matches)){
-									$matches[1] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $matches[1]);
-									$this->parsed[$block][$selector][$property][$i] = 'copy('.$matches[1].' '.$matches[2].')';
+								// Ignore @font-face and @import
+								if($selector != '@font-face' && $selector != '@import'){
+									if(preg_match('/copy\((.*)[\s]+(.*)\)/', $this->parsed[$block][$selector][$property][$i], $matches)){
+										$matches[1] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $matches[1]);
+										$this->parsed[$block][$selector][$property][$i] = 'copy('.$matches[1].' '.$matches[2].')';
+									}
 								}
 							}
 						}
@@ -277,38 +312,45 @@ class Cssp extends Parser2 {
 	 * @return void
 	 */
 	public function apply_copying(){
+		$inheritance_pattern = '/copy\((.*)[\s]+(.*)\)/';
 		foreach($this->parsed as $block => $css){
 			foreach($this->parsed[$block] as $selector => $styles){
-				$inheritance_pattern = '/copy\((.*)[\s]+(.*)\)/';
-				foreach($styles as $property => $values){
-					$values_num = count($values);
-					for($i = 0; $i < $values_num; $i++){
-						if(preg_match($inheritance_pattern, $values[$i])){
-							$found = false;
-							preg_match_all($inheritance_pattern, $values[$i], $matches);
-							// Exact selector matches
-							if(isset($this->parsed[$block][$matches[1][0]][$matches[2][0]])){
-								$this->parsed[$block][$selector][$property][$i] = $this->get_final_value($this->parsed[$block][$matches[1][0]][$matches[2][0]], $property);
-								$found = true;
-							}
-							// Search for partial selector matches, ie. "#foo" in "#bar, #foo, #blah"
-							else{
-								foreach($this->parsed[$block] as $full_selectors => $v){
-									$tokenized_selectors = $this->tokenize($full_selectors, ',');
-									if(in_array($matches[1][0], $tokenized_selectors)){
-										if(isset($this->parsed[$block][$full_selectors][$matches[2][0]])){
-											$this->parsed[$block][$selector][$property][$i] = $this->get_final_value($this->parsed[$block][$full_selectors][$matches[2][0]], $property);
-											$found = true;
+				// Handle everything but @font-face
+				if($selector != '@font-face'){
+					foreach($styles as $property => $values){
+						$values_num = count($values);
+						for($i = 0; $i < $values_num; $i++){
+							if(preg_match($inheritance_pattern, $values[$i])){
+								$found = false;
+								preg_match_all($inheritance_pattern, $values[$i], $matches);
+								// Exact selector matches
+								if(isset($this->parsed[$block][$matches[1][0]][$matches[2][0]])){
+									$this->parsed[$block][$selector][$property][$i] = $this->get_final_value($this->parsed[$block][$matches[1][0]][$matches[2][0]], $property);
+									$found = true;
+								}
+								// Search for partial selector matches, ie. "#foo" in "#bar, #foo, #blah"
+								else{
+									foreach($this->parsed[$block] as $full_selectors => $v){
+										$tokenized_selectors = $this->tokenize($full_selectors, ',');
+										if(in_array($matches[1][0], $tokenized_selectors)){
+											if(isset($this->parsed[$block][$full_selectors][$matches[2][0]])){
+												$this->parsed[$block][$selector][$property][$i] = $this->get_final_value($this->parsed[$block][$full_selectors][$matches[2][0]], $property);
+												$found = true;
+											}
 										}
 									}
 								}
-							}
-							// Report error if no source was found
-							if(!$found){
-								$this->report_error($selector.' could not find '.$matches[1][0].' to copy '.$matches[2][0].' from.');
+								// Report error if no source was found
+								if(!$found){
+									$this->report_error($selector.' could not find '.$matches[1][0].' to copy '.$matches[2][0].' from.');
+								}
 							}
 						}
 					}
+				}
+				// Handle @font-face
+				else{
+					// TODO
 				}
 			}
 		}
