@@ -31,7 +31,7 @@
  * @todo document the fact that the nesting system is smart about pseudo classes
  * @todo document the comment() method
  * @todo document the fact that values are now always arrays
- * @todo fix the following plugins: Browser, Bugfixes, 
+ * @todo fix the following plugins: Browser, Bugfixes
  */
 class Parser2 extends Base{
 
@@ -106,7 +106,7 @@ class Parser2 extends Base{
 		'pr' => null,
 		'va' => null,
 		'me' => 'global',
-		'fi' => 0,
+		'fi' => -1,
 		'ci' => 0
 	);
 
@@ -640,6 +640,7 @@ class Parser2 extends Base{
 	 * @return string $output The final CSS code
 	 */
 	public function glue($compressed = false){
+		print_r($this->parsed);
 		$output = '';
 		// Whitspace characters
 		$s = ' ';
@@ -975,7 +976,7 @@ class Parser2 extends Base{
 			'pr' => null,
 			'va' => null,
 			'me' => 'global',
-			'fi' => 0,
+			'fi' => -1,
 			'ci' => 0
 		);
 		$this->options = array(
