@@ -545,7 +545,7 @@ class Parser2 extends Base{
 			}
 			$this->token .= $line{$i};
 		}
-		$this->parsed['global']['@import'][] = trim($this->token);
+		$this->parsed['global']['@import'][][0] = trim($this->token);
 	}
 
 
@@ -699,8 +699,8 @@ class Parser2 extends Base{
 		$output = '';
 		$n = ($compressed) ? '' : "\r\n";
 		foreach($imports as $import){
-			$semicolon = (substr($import, -1) == ';') ? '' : ';';
-			$output .= '@import ' . $import . $semicolon . $n;
+			$semicolon = (substr($import[0], -1) == ';') ? '' : ';';
+			$output .= '@import ' . $import[0] . $semicolon . $n;
 		}
 		return $output;
 	}
