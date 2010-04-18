@@ -468,7 +468,7 @@ class Cssp extends Parser2 {
 	/**
 	 * insert
 	 * Inserts an element at a specific position in the block
-	 * @param array $elements The element to insert
+	 * @param array $elements The elements to insert
 	 * @param string $block The block to insert into
 	 * @param string $before The element after which the new element is inserted
 	 * @param string $after The element before which the new element is inserted
@@ -478,27 +478,49 @@ class Cssp extends Parser2 {
 		$newblock = array();
 		// If $before and $after are NULL, insert the new Element at the top
 		if($before == NULL && $after == NULL){
-			foreach($elements as $newselector => $newstyles){
-				$newblock[$newselector] = $newstyles;
-			}
+			$newblock = $this->insert_elements($elements, $block, $newblock);
 		}
-		// Else walk through the whole parsed code
-		foreach($this->parsed[$block] as $selector => $styles){
-			// Handle $after
-			if($after != NULL && $selector == $after){
-				foreach($elements as $newselector => $newstyles){
-					$newblock[$newselector] = $newstyles;
+		else{
+			// Else walk through the whole parsed code
+			foreach($this->parsed[$block] as $selector => $styles){
+				// Handle $after
+				if($after != NULL && $selector == $after){
+					$newblock = $this->insert_elements($elements, $block, $newblock);
+					$newblock[$selector] = $styles;
 				}
-			}
-			$newblock[$selector] = $styles;
-			// Handle $before
-			if($before != NULL && $selector == $before){
-				foreach($elements as $newselector => $newstyles){
-					$newblock[$newselector] = $newstyles;
+				// Handle $before
+				elseif($before != NULL && $selector == $before){
+					$newblock = $this->insert_elements($elements, $block, $newblock);
+					$newblock[$selector] = $styles;
+				}
+				// Insert of the current old element
+				else{
+					$newblock[$selector] = $styles;
 				}
 			}
 		}
 		$this->parsed[$block] = $newblock;
+	}
+
+
+	/**
+	 * insert_elements
+	 * Merge-inserts elements into a new block, preserving old styles from $this->parsed
+	 * @param array $elements The elements to insert
+	 * @param string $block The $this->parsed block to take old information from
+	 * @param array $newblock The new block to insert into
+	 * @return array $newblock
+	 */
+	private function insert_elements($elements, $block, $newblock){
+		foreach($elements as $newselector => $newstyles){
+			if(isset($this->parsed[$block][$newselector])){
+				$newblock[$newselector] = $this->merge_rules($this->parsed[$block][$newselector], $newstyles);
+			}
+			else{
+				$newblock[$newselector] = $newstyles;
+			}
+		}
+		return $newblock;
 	}
 
 
