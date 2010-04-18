@@ -64,13 +64,6 @@
 	}
 
 
-
-
-	
-
-
-
-
 	/*
 	 * colormodels_recalculate
 	 * Tries to return the best possible fallback for browsers not campatible with $model
