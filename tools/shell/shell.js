@@ -40,7 +40,7 @@ window.addEvent('domready', function(){
 	$('go').addEvent('click', evaluate);
 
 	// Evaluate in interactive mode
-	$$([turbineinput, htmlinput]).addEvent('keyup', function(){
+	$$([turbineinput, htmlinput, browserinputs]).addEvent('keyup', function(){
 		if(interactive.checked){
 			evaluate();
 		}
