@@ -38,41 +38,42 @@
 			$changed['button::-moz-focus-inner']['border'][] = 'none';
 		}
 
+		// Add comments for the global fixes
+		foreach($changed as $selector => $styles){
+			foreach($styles as $property => $value){
+				CSSP::comment($changed[$selector], $property, 'Added by bugfix plugin');
+			}
+		}
+
 		// Insert the global bugfixes
 		$cssp->insert($changed, 'global');
-		// print_r($changed);
 
-/*
-			foreach($parsed[$block] as $selector => $styles){
+		// Apply per-element-bugfixes
+		foreach($cssp->parsed as $block => $css){
+			foreach($cssp->parsed[$block] as $selector => $styles){
 
-				// IE 6 local bugfixes
-				if($browser->family == 'MSIE' && floatval($browser->familyversion) < 7){
+				// IE 6 per-element-bugfixes
+				if($browser->engine == 'MSIE' && floatval($browser->engineversion) < 7){
 					// Float double margin bug, fixed with a behavior as this only affects the floating object and no descendant of it
-					if(isset($parsed[$block][$selector]['float']) && $parsed[$block][$selector]['float'] != 'none'){
+					if(isset($cssp->parsed[$block][$selector]['float']) && $cssp->get_final_value($cssp->parsed[$block][$selector]['float']) != 'none'){
 						$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/bugfixes/doublemargin.htc';
-						if(!isset($parsed[$block][$selector]['behavior'])){
-							$parsed[$block][$selector]['behavior'] = 'url("'.$htc_path.'")';
-						}
-						else{
-							if(!strpos($parsed[$block][$selector]['behavior'],'url("'.$htc_path.'")')){
-								$parsed[$block][$selector]['behavior'] .= ', url("'.$htc_path.'")';
-							}
-						}
+						$cssp->parsed[$block][$selector]['behavior'][] = 'url("'.$htc_path.'")';
+						CSSP::comment($cssp->parsed[$block][$selector], 'behavior', 'Added by bugfix plugin');
 					}
 				}
-			
-				// IE 6 + 7 local bugfixes
-				if($browser->family == 'MSIE' && floatval($browser->familyversion) < 8){
+
+				// IE 6 + 7 per-element-bugfixes
+				if($browser->engine == 'MSIE' && floatval($browser->engineversion) < 8){
 					// Enable overflow:hidden, if present
-					if(isset($parsed[$block][$selector]['overflow']) && $parsed[$block][$selector]['overflow'] == 'hidden' && !isset($parsed[$block][$selector]['position'])){
-						$parsed[$block][$selector]['position'] = 'relative';
-						CSSP::comment($parsed[$block][$selector], 'position', 'Added by bugfix plugin');
+					if(isset($cssp->parsed[$block][$selector]['overflow']) && $cssp->get_final_value($cssp->parsed[$block][$selector]['overflow']) == 'hidden' && !isset($cssp->parsed[$block][$selector]['position'])){
+						$cssp->parsed[$block][$selector]['position'][] = 'relative';
+						CSSP::comment($cssp->parsed[$block][$selector], 'position', 'Added by bugfix plugin');
 					}
 				}
 
 			}
+		}
 
-		}*/
 	}
 
 

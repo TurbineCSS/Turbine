@@ -844,7 +844,7 @@ class Parser2 extends Base{
 	public function get_final_value($values, $property = NULL, $compressed = false){
 		// If there's only one value, there's only one thing to return
 		if(count($values) == 1){
-			$final = end($values);
+			$final = array_pop($values);
 		}
 		// Otherwise find the last and/or most !important value
 		else{
