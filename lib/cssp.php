@@ -488,7 +488,12 @@ class Cssp extends Parser2 {
 				$elements = null;
 			}
 			// Insert of the current old element
-			$newblock[$selector] = $this->merge_rules($this->parsed[$block][$selector], $newblock[$selector]);
+			if(isset($newblock[$selector])){
+				$newblock[$selector] = $this->merge_rules($this->parsed[$block][$selector], $newblock[$selector]);
+			}
+			else{
+				$newblock[$selector] = $this->parsed[$block][$selector];
+			}
 			// Handle $before
 			if($elements != null && $before != NULL && $selector == $before){
 				$newblock = $this->insert_elements($elements, $block, $newblock);
