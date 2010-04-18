@@ -639,52 +639,50 @@ class Parser2 extends Base{
 	 * @return string $output The final CSS code
 	 */
 	public function glue($compressed = false){
-		if($this->parsed){
-			$output = '';
-			// Whitspace characters
-			$s = ' ';
-			$t = "\t";
-			$n = "\r\n";
-			// Forget the whitespace if we're compressing
-			if($compressed){
-				$s = $t = $n = '';
-			}
-			// Loop through the blocks
-			foreach($this->parsed as $block => $content){
-				$indented = false;
-				// Is current block an @media-block? If so, open the block
-				$media_block = (substr($block, 0, 6) === '@media');
-				if($media_block){
-					$output .= $block . $s;
-					$output .= '{' . $n;
-					$indented = true;
-				}
-				// Read contents
-				foreach($content as $selector => $rules){
-					// @import rules
-					if($selector == '@import'){
-						$output .= $this->glue_import($rules, $compressed);
-					}
-					// @font-face rules
-					elseif($selector == '@font-face'){
-						$output .= $this->glue_font_face($rules, $compressed);
-					}
-					// @css line
-					elseif(preg_match('/@css-[0-9]+/', $selector)){
-						$output .= $this->glue_css($rules, $indented, $compressed);
-					}
-					// Normal css rules
-					else{
-						$output .= $this->glue_rule($selector, $rules, $indented, $compressed);
-					}
-				}
-				// If @media-block, close block
-				if($media_block){
-					$output .= '}' . $n;
-				}
-			}
-			return $output;
+		$output = '';
+		// Whitspace characters
+		$s = ' ';
+		$t = "\t";
+		$n = "\r\n";
+		// Forget the whitespace if we're compressing
+		if($compressed){
+			$s = $t = $n = '';
 		}
+		// Loop through the blocks
+		foreach($this->parsed as $block => $content){
+			$indented = false;
+			// Is current block an @media-block? If so, open the block
+			$media_block = (substr($block, 0, 6) === '@media');
+			if($media_block){
+				$output .= $block . $s;
+				$output .= '{' . $n;
+				$indented = true;
+			}
+			// Read contents
+			foreach($content as $selector => $rules){
+				// @import rules
+				if($selector == '@import'){
+					$output .= $this->glue_import($rules, $compressed);
+				}
+				// @font-face rules
+				elseif($selector == '@font-face'){
+					$output .= $this->glue_font_face($rules, $compressed);
+				}
+				// @css line
+				elseif(preg_match('/@css-[0-9]+/', $selector)){
+					$output .= $this->glue_css($rules, $indented, $compressed);
+				}
+				// Normal css rules
+				else{
+					$output .= $this->glue_rule($selector, $rules, $indented, $compressed);
+				}
+			}
+			// If @media-block, close block
+			if($media_block){
+				$output .= '}' . $n;
+			}
+		}
+		return $output;
 	}
 
 
@@ -775,14 +773,14 @@ class Parser2 extends Base{
 		if($compressed){
 			$selector = implode(',', $this->tokenize($selector, ','));
 		}
-		// Get comments
-		$comments = array();
-		if(isset($rules['_comments'])){
-			$comments = $rules['_comments'];
-		}
-		// Constuct the output
+		// Constuct the selecor
 		$output .= $prefix . $selector . $s;
 		$output .= '{' . $n;
+		// Add comments
+		if(isset($rules['_comments']['selector'])){
+			$output .= ' /* ' . implode(', ', $rules['_comments']['selector']) . ' */';
+		}
+		// Add the properties
 		$output .= $this->glue_properties($rules, $prefix, $compressed);
 		$output .= $prefix.'}'.$n;
 		return $output;
@@ -821,8 +819,13 @@ class Parser2 extends Base{
 				$output .= $prefix . $t . $property . ':' . $s . $value;
 				// When compressing, omit the last semicolon
 				if(!$compressed || $num_properties != $count_properties){
-					$output .= ';'. $n;
+					$output .= ';';
 				}
+				// Add comments
+				if(isset($rules['_comments'][$property])){
+					$output .= ' /* ' . implode(', ', $rules['_comments'][$property]) . ' */';
+				}
+				$output .= $n;
 			}
 		}
 		return $output;
@@ -940,10 +943,10 @@ class Parser2 extends Base{
 			$property = 'selector';
 		}
 		if(!isset($item['_comments'][$property])){
-			$item['_comments'][$property] = $comment;
+			$item['_comments'][$property] = array($comment);
 		}
 		else{
-			$item['_comments'][$property] .= ' | '.$comment;
+			$item['_comments'][$property][] = $comment;
 		}
 	}
 
