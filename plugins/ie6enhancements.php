@@ -13,38 +13,13 @@
 	 */
 	function ie6enhancements(&$parsed){
 		global $browser;
-		foreach($parsed as $block => $css){
-			// IE 6 enhancements
-			if($browser->family == 'MSIE' && floatval($browser->familyversion) < 7){
-				// Missing :hover-property on every tag except link-tag
-				// Fix found on http://www.xs4all.nl/~peterned/csshover.html
-				$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/ie6_enhancements/csshover3.htc';
-				if(!isset($parsed[$block]['body'])){
-					$parsed[$block]['body'] = array();
-				}
-				if(!isset($parsed[$block]['body']['behavior'])){
-					$parsed[$block]['body']['behavior'] = 'url("'.$htc_path.'")';
-				}
-				else{
-					if(!strpos($parsed[$block]['body']['behavior'],'url("'.$htc_path.'")')){
-						$parsed[$block]['body']['behavior'] .= ', url("'.$htc_path.'")';
-					}
-				}
-				// Fix transparent PNGs
-				// Fix found on http://www.twinhelix.com/css/iepngfix/
-				$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/ie6_enhancements/iepngfix.htc';
-				if(!isset($parsed[$block]['img'])){
-					$parsed[$block]['img'] = array();
-				}
-				if(!isset($parsed[$block]['img']['behavior'])){
-					$parsed[$block]['img']['behavior'] = 'url("'.$htc_path.'")';
-				}
-				else{
-					if(!strpos($parsed[$block]['img']['behavior'],'url("'.$htc_path.'")')){
-						$parsed[$block]['img']['behavior'] .= ', url("'.$htc_path.'")';
-					}
-				}
-			}
+		if($browser->engine == 'MSIE' && floatval($browser->engineversion) < 7){
+			// Missing :hover-property on every tag except link-tag, see http://www.xs4all.nl/~peterned/csshover.html
+			$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/ie6_enhancements/csshover3.htc';
+			$parsed['global']['body']['behavior'][] = 'url("'.$htc_path.'")';
+			// Fix transparent PNGs, see http://www.twinhelix.com/css/iepngfix/
+			$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/ie6_enhancements/iepngfix.htc';
+			$parsed['global']['img']['behavior'][] = 'url("'.$htc_path.'")';
 		}
 	}
 
