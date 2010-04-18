@@ -840,7 +840,7 @@ class Parser2 extends Base{
 	 * @param bool $compressed Compress CSS? (removes whitespace)
 	 * @return string $final The final value
 	 */
-	protected function get_final_value($values, $property, $compressed = false){
+	public function get_final_value($values, $property = NULL, $compressed = false){
 		// If there's only one value, there's only one thing to return
 		if(count($values) == 1){
 			$final = end($values);
