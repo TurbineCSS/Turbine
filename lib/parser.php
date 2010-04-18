@@ -31,7 +31,7 @@
  * @todo document the fact that the nesting system is smart about pseudo classes
  * @todo document the comment() method
  * @todo document the fact that values are now always arrays
- * @todo fix the following plugins: Browser, Bugfixes, IE6 enhancements, Inlineblock, OS
+ * @todo fix the following plugins: Browser, Bugfixes, IE6 enhancements, Inlineblock, OS, Transform
  */
 class Parser2 extends Base{
 
