@@ -225,10 +225,9 @@ if($_GET['files']){
 					$cssp->compile();                                                    // Do the Turbine magic
 					$cssp->apply_plugins('before_glue', $plugin_list, $cssp->parsed);    // Apply plugins for before glue
 
-
 					// Set compression mode
-					if(isset($cssp->parsed['global']['@turbine']['compress'])){
-						$compress = (bool) $cssp->parsed['global']['@turbine']['compress'];
+					if(isset($cssp->parsed['global']['@turbine']['compress'][0])){
+						$compress = (bool) $cssp->parsed['global']['@turbine']['compress'][0];
 					}
 					else{
 						$compress = false;
