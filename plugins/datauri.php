@@ -8,7 +8,8 @@
 	 * Example: -
 	 * Status: Beta
 	 * 
-	 * @todo Only generate MHTML files for IE
+	 * @todo Don't generate MHTML files for non-IE-browsers
+	 * 
 	 * @param mixed &$parsed
 	 * @return void
 	 */
@@ -37,13 +38,15 @@
 				if(isset($parsed[$block][$selector]['background']) || isset($parsed[$block][$selector]['background-image'])){
 					$regex = '/(url\()[\'"]*([^\'"\)]+)[\'"]*(\))/i';
 					$properties = array('background','background-image','src');
-					$basedirectories = array(dirname($file),str_replace('\\','/',dirname(realpath($_SERVER['SCRIPT_FILENAME']))),str_replace('\\','/',dirname(__FILE__)));
+					$basedirectories = array('', dirname($file), str_replace('\\','/',dirname(realpath($_SERVER['SCRIPT_FILENAME']))),str_replace('\\','/',dirname(__FILE__)));
 					foreach($properties as $property){
 						foreach($basedirectories as $basedirectory){
 							if(isset($parsed[$block][$selector][$property])){
-								if(!is_array($parsed[$block][$selector][$property])){ // Ignore multi-value-properties so we don't mess with other plugins
-									if(preg_match($regex, $parsed[$block][$selector][$property], $matches) > 0){
-										$imagefile = $basedirectory.'/'.$matches[2];
+								// Loop through values
+								$num_values = count($parsed[$block][$selector][$property]);
+								for($i = 0; $i < $num_values; $i++){
+									if(preg_match($regex, $parsed[$block][$selector][$property][$i], $matches) > 0){
+										$imagefile = ($basedirectory) ? $basedirectory.'/'.$matches[2] : $matches[2];
 										if(file_exists($imagefile) && filesize($imagefile) <= 24000){
 											$pathinfo = pathinfo($imagefile);
 											$imagetype = strtolower($pathinfo['extension']);
@@ -55,7 +58,7 @@
 												$browser->family == 'WebKit' || 
 												$browser->family == 'KHTML'
 											){
-												$parsed[$block][$selector][$property] = preg_replace($regex, '$1\'data:image/'.$imagetype.';base64,'.$imagedata.'\'$3', $parsed[$block][$selector][$property]);
+												$parsed[$block][$selector][$property][$i] = preg_replace($regex, '$1\'data:image/'.$imagetype.';base64,'.$imagedata.'\'$3', $parsed[$block][$selector][$property][$i]);
 											}
 											elseif(
 												$browser->family == 'MSIE' && 
@@ -81,14 +84,15 @@
 												else{
 													$protocol = 'http';
 												}
-												// Find host, even in strangen evironments (Strato)
+												// Find host, even in strange evironments (Strato hosting)
 												if(isset($_SERVER['SCRIPT_URI'])){
 													$host = parse_url($_SERVER['SCRIPT_URI'], PHP_URL_HOST);
 												}
 												else{
 													$host = $_SERVER['HTTP_HOST'];
 												}
-												$parsed[$block][$selector][$property] = preg_replace($regex, '$1\'mhtml:'.$protocol.'://'.$host.rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/datauri/mhtml.php?cache='.$mhtmlmd5.'!'.$imagetag.'\'$3', $parsed[$block][$selector][$property]);
+												// Set the data URI
+												$parsed[$block][$selector][$property][$i] = preg_replace($regex, '$1\'mhtml:'.$protocol.'://'.$host.rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/datauri/mhtml.php?cache='.$mhtmlmd5.'!'.$imagetag.'\'$3', $parsed[$block][$selector][$property][$i]);
 											}
 										}
 									}
