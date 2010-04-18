@@ -23,28 +23,32 @@
 		if(!empty($capabilities)){
 			// For every possible property...
 			foreach($properties as $search){
-				// ... loop through the css 
+				// ... loop through the css...
 				foreach($parsed as $block => $css){
 					foreach($parsed[$block] as $selector => $styles){
 						if($selector != '@turbine' && isset($parsed[$block][$selector][$search])){
-							// Found something that we may have to replace?
-							if(preg_match($hslapattern, $parsed[$block][$selector][$search], $matches) || preg_match($rgbapattern, $parsed[$block][$selector][$search], $matches)){
-								// See if the browser supports the color model, convert if not
-								$rgba = colormodels_to_rgba($matches);
-								foreach($models as $model){
-									if($model == $matches[1]){
-										if(!isset($capabilities[$model])){
-											$recalculated = colormodels_recalculate($model, $rgba, $capabilities, $search);
-											if(!empty($recalculated)){
-												// Apply the recalculated properties and values to $parsed
-												foreach($recalculated as $property => $value){
-													if(!isset($parsed[$block][$selector][$property])){
-														$parsed[$block][$selector][$property] = $value;
-														CSSP::comment($parsed[$block][$selector], $property, 'Added by colormodels plugin');
-													}
-													else{
-														$parsed[$block][$selector][$property] = str_replace($matches[0], $value, $parsed[$block][$selector][$property]);
-														CSSP::comment($parsed[$block][$selector], $property, 'Modified by colormodels plugin');
+							$num_values = count($parsed[$block][$selector][$search]);
+							// ... loop through the values
+							for($i = 0; $i < $num_values; $i++){
+								// Found something that we may have to replace?
+								if(preg_match($hslapattern, $parsed[$block][$selector][$search][$i], $matches) || preg_match($rgbapattern, $parsed[$block][$selector][$search][$i], $matches)){
+									// See if the browser supports the color model, convert if not
+									$rgba = colormodels_to_rgba($matches);
+									foreach($models as $model){
+										if($model == $matches[1]){
+											if(!isset($capabilities[$model])){
+												$recalculated = colormodels_recalculate($model, $rgba, $capabilities, $search);
+												if(!empty($recalculated)){
+													// Apply the recalculated properties and values to $parsed
+													foreach($recalculated as $property => $value){
+														if(!isset($parsed[$block][$selector][$property])){
+															$parsed[$block][$selector][$property][$i] = $value;
+															CSSP::comment($parsed[$block][$selector], $property, 'Added by colormodels plugin');
+														}
+														else{
+															$parsed[$block][$selector][$property][$i] = str_replace($matches[0], $value, $parsed[$block][$selector][$property][$i]);
+															CSSP::comment($parsed[$block][$selector], $property, 'Modified by colormodels plugin');
+														}
 													}
 												}
 											}
@@ -58,6 +62,13 @@
 			}
 		}
 	}
+
+
+
+
+	
+
+
 
 
 	/*
