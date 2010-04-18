@@ -315,9 +315,6 @@ class Cssp extends Parser2 {
 	}
 
 
-	/* NOT REALLY COMPATIBLE TO THE NEW PARSER BELOW THIS */
-
-
 	/**
 	 * apply_property_expansion
 	 * Expands comma-sepperated properties
@@ -448,29 +445,29 @@ class Cssp extends Parser2 {
 	}
 
 
-	/**
-	 * insert_rules
-	 * Inserts an array of css rules (property => value) into an element at a specific position
+	 /**
+	 * insert_properties
+	 * Inserts an array of css rules (property => Array of values) into an element at a specific position
 	 * @param array $rules The css rules to insert
-	 * @param string_type $block The block where the element $element is to be found
+	 * @param string $block The block where the element $element is to be found
 	 * @param string $element The element to insert the rules into
 	 * @param string $before The property after which the rules are to be inserted
 	 * @return void
 	 */
-	public function insert_rules($rules, $block, $element, $before = null){
+	public function insert_properties($rules, $block, $element, $before = null){
 		$newelement = array();
 		// If there's no $before, insert the new rules at the top
 		if(!$before){
-			foreach($rules as $newproperty => $newvalue){
-				$newelement = $this->insert_property($newelement, $newproperty, $newvalue);
+			foreach($rules as $newproperty => $newvalues){
+				$newelement = $this->insert_property($newelement, $newproperty, $newvalues);
 			}
 		}
 		// Add the properties one after another, insert new ones after $before
-		foreach($this->parsed[$block][$element] as $property => $value){
-			$newelement[$property] = $value;
+		foreach($this->parsed[$block][$element] as $property => $values){
+			$newelement[$property] = $values;
 			if($property == $before){
-				foreach($rules as $newproperty => $newvalue){
-					$newelement = $this->insert_property($newelement, $newproperty, $newvalue);
+				foreach($rules as $newproperty => $newvalues){
+					$newelement = $this->insert_property($newelement, $newproperty, $newvalues);
 				}
 			}
 		}
@@ -483,20 +480,20 @@ class Cssp extends Parser2 {
 	 * Inserts a new property into an array without overwriting any other properties
 	 * @param array $set The array to insert into
 	 * @param string $property The property name
-	 * @param string $value The propertie's value
+	 * @param array $values The properties' values
 	 * @return array $set The set with the new property inserted
 	 */
-	private function insert_property($set, $property, $value){
+	private function insert_property($set, $property, $values){
+		// take care of legacy plugins that might pass a single value as a string
+		if(!is_array($values)){
+			$values = array($values);
+		}
+		// Insert the property
 		if(isset($set[$property])){
-			if(is_array($set[$property])){
-				$set[$property][] = $value;
-			}
-			else{
-				$set[$property] = array($set[$property], $value);
-			}
+			$set[$property] = array_merge($set[$property], $values);
 		}
 		else{
-			$set[$property] = $value;
+			$set[$property] = $values;
 		}
 		return $set;
 	}
