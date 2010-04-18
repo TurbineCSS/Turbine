@@ -18,28 +18,22 @@
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				if(isset($parsed[$block][$selector]['box-shadow'])){
-					// $before keeps track of the previous property in the loop, which is the position we want the new box-shadow properties to be inserted
-					$before = null;
 					foreach($styles as $property => $values){
 						if($property == 'box-shadow'){
 							$shadow_properties = array();
 							// Build prefixed properties
-							$prefixes = array('-moz-', '-webkit-', '');
+							$prefixes = array('-moz-', '-webkit-');
 							foreach($prefixes as $prefix){
 								$shadow_properties[$prefix.'box-shadow'] = $parsed[$block][$selector]['box-shadow'];
 							}
 							// Get IE filters, merge them with the other new properties and insert everything
 							$filter_properties = boxshadow_filters($values);
 							$shadow_properties = array_merge($shadow_properties, $filter_properties);
-							$cssp->insert_properties($shadow_properties, $block, $selector, $before);
+							$cssp->insert_properties($shadow_properties, $block, $selector, null, 'box-shadow');
 							// Comment the newly inserted properties
 							foreach($shadow_properties as $shadow_property => $shadow_value){
 								CSSP::comment($parsed[$block][$selector], $shadow_property, 'Added by box shadow plugin');
 							}
-							$before = array_pop(array_keys($shadow_properties));
-						}
-						else{
-							$before = $property;
 						}
 					}
 				}

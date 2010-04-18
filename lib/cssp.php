@@ -471,13 +471,28 @@ class Cssp extends Parser2 {
 	 * @param array $elements The element to insert
 	 * @param string $block The block to insert into
 	 * @param string $before The element after which the new element is inserted
+	 * @param string $after The element before which the new element is inserted
 	 * @return void
 	 */
-	public function insert($elements, $block, $before){
+	public function insert($elements, $block, $before = NULL, $after = NULL){
 		$newblock = array();
+		// If $before and $after are NULL, insert the new Element at the top
+		if($before == NULL && $after == NULL){
+			foreach($elements as $newselector => $newstyles){
+				$newblock[$newselector] = $newstyles;
+			}
+		}
+		// Else walk through the whole parsed code
 		foreach($this->parsed[$block] as $selector => $styles){
+			// Handle $after
+			if($after != NULL && $selector == $after){
+				foreach($elements as $newselector => $newstyles){
+					$newblock[$newselector] = $newstyles;
+				}
+			}
 			$newblock[$selector] = $styles;
-			if($selector == $before){
+			// Handle $before
+			if($before != NULL && $selector == $before){
 				foreach($elements as $newselector => $newstyles){
 					$newblock[$newselector] = $newstyles;
 				}
@@ -494,20 +509,28 @@ class Cssp extends Parser2 {
 	 * @param string $block The block where the element $element is to be found
 	 * @param string $element The element to insert the rules into
 	 * @param string $before The property after which the rules are to be inserted
+	 * @param string $after The property before which the rules are to be inserted
 	 * @return void
 	 */
-	public function insert_properties($rules, $block, $element, $before = null){
+	public function insert_properties($rules, $block, $element, $before = null, $after = null){
 		$newelement = array();
-		// If there's no $before, insert the new rules at the top
-		if(!$before){
+		// If $before and $after are NULL, insert the new rules at the top
+		if($before == NULL && $after == NULL){
 			foreach($rules as $newproperty => $newvalues){
 				$newelement = $this->insert_property($newelement, $newproperty, $newvalues);
 			}
 		}
-		// Add the properties one after another, insert new ones after $before
+		// Else walk through the whole element
 		foreach($this->parsed[$block][$element] as $property => $values){
+			// Handle $after
+			if($after != NULL && $property == $after){
+				foreach($rules as $newproperty => $newvalues){
+					$newelement = $this->insert_property($newelement, $newproperty, $newvalues);
+				}
+			}
 			$newelement[$property] = $values;
-			if($property == $before){
+			// Handle $before
+			if($before != NULL && $property == $before){
 				foreach($rules as $newproperty => $newvalues){
 					$newelement = $this->insert_property($newelement, $newproperty, $newvalues);
 				}
