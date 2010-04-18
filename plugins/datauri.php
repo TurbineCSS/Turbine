@@ -34,8 +34,8 @@
 		$mhtmlcontent = "Content-Type: multipart/related; boundary=\"_ANY_STRING_WILL_DO_AS_A_SEPARATOR\"\r\n\r\n";
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
-				// Check for backgrounds
-				if(isset($parsed[$block][$selector]['background']) || isset($parsed[$block][$selector]['background-image'])){
+				// Check for backgrounds, ignore @font-face
+				if($selector != '@font-face' && (isset($parsed[$block][$selector]['background']) || isset($parsed[$block][$selector]['background-image']))){
 					$regex = '/(url\()[\'"]*([^\'"\)]+)[\'"]*(\))/i';
 					$properties = array('background','background-image','src');
 					$basedirectories = array('', dirname($file), str_replace('\\','/',dirname(realpath($_SERVER['SCRIPT_FILENAME']))),str_replace('\\','/',dirname(__FILE__)));
