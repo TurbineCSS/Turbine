@@ -31,7 +31,8 @@
  * @todo document the fact that the nesting system is smart about pseudo classes
  * @todo document the comment() method
  * @todo document the fact that values are now always arrays
- * @todo fix the following plugins: Browser, Inlineblock, OS, Transform
+ * @todo document the fact that one cannot copy or inherit from an @font-face declaration
+ * @todo fix the following plugins: Browser, OS, Transform
  */
 class Parser2 extends Base{
 
