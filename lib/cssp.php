@@ -24,7 +24,6 @@
 /**
  * Turbine
  * CSS Preprocessor
- * @todo Handle @font-face in apply_copying()
  */
 class Cssp extends Parser2 {
 
@@ -327,7 +326,6 @@ class Cssp extends Parser2 {
 	 * @return void
 	 */
 	public function apply_copying(){
-		$inheritance_pattern = '/copy\((.*)[\s]+(.*)\)/';
 		foreach($this->parsed as $block => $css){
 			foreach($this->parsed[$block] as $selector => $styles){
 				// Handle everything but @font-face
@@ -335,40 +333,72 @@ class Cssp extends Parser2 {
 					foreach($styles as $property => $values){
 						// Ignore non-css properties
 						if($property{0} != '_'){
-							$values_num = count($values);
-							for($i = 0; $i < $values_num; $i++){
-								if(preg_match($inheritance_pattern, $values[$i])){
-									$found = false;
-									preg_match_all($inheritance_pattern, $values[$i], $matches);
-									// Exact selector matches
-									if(isset($this->parsed[$block][$matches[1][0]][$matches[2][0]])){
-										$this->parsed[$block][$selector][$property][$i] = $this->get_final_value($this->parsed[$block][$matches[1][0]][$matches[2][0]], $property);
-										$found = true;
-									}
-									// Search for partial selector matches, ie. "#foo" in "#bar, #foo, #blah"
-									else{
-										foreach($this->parsed[$block] as $full_selectors => $v){
-											$tokenized_selectors = $this->tokenize($full_selectors, ',');
-											if(in_array($matches[1][0], $tokenized_selectors)){
-												if(isset($this->parsed[$block][$full_selectors][$matches[2][0]])){
-													$this->parsed[$block][$selector][$property][$i] = $this->get_final_value($this->parsed[$block][$full_selectors][$matches[2][0]], $property);
-													$found = true;
-												}
-											}
-										}
-									}
-									// Report error if no source was found
-									if(!$found){
-										$this->report_error($selector.' could not find '.$matches[1][0].' to copy '.$matches[2][0].' from.');
-									}
-								}
-							}
+							$this->apply_copying_values($block, $selector, $property, $values, null);
 						}
 					}
 				}
 				// Handle @font-face
 				else{
-					// TODO
+					foreach($styles as $key => $properties){
+						foreach($properties as $property => $values){
+							// Ignore non-css properties
+							if($property{0} != '_'){
+								$this->apply_copying_values($block, $selector, $property, $values, $key);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * apply_copying_values
+	 * Applies copying to a bunch of values
+	 * @param string $block The block of the element being processed
+	 * @param string $selector The selector of the element being processed
+	 * @param string $property The property that is being processed
+	 * @param array $values The values to apply copying to
+	 * @param int $fontfacekey The @font-face index, if any
+	 * @return void
+	 */
+	private function apply_copying_values($block, $selector, $property, $values, $fontfacekey = NULL){
+		// Set destination element - if we have a $fontfacekey, target a @font-face element
+		if($fontfacekey !== NULL){
+			$dest =& $this->parsed[$block]['@font-face'][$fontfacekey][$property];
+		}
+		else{
+			$dest =& $this->parsed[$block][$selector][$property];
+		}
+		// The copy syntax matching regex
+		$copying_pattern = '/copy\((.*)[\s]+(.*)\)/';
+		// Loop through the values
+		$values_num = count($values);
+		for($i = 0; $i < $values_num; $i++){
+			if(preg_match($copying_pattern, $values[$i])){
+				$found = false;
+				preg_match_all($copying_pattern, $values[$i], $matches);
+				// Exact selector matches
+				if(isset($this->parsed[$block][$matches[1][0]][$matches[2][0]])){
+					$dest[$i] = $this->get_final_value($this->parsed[$block][$matches[1][0]][$matches[2][0]], $property);
+					$found = true;
+				}
+				// Search for partial selector matches, ie. "#foo" in "#bar, #foo, #blah"
+				else{
+					foreach($this->parsed[$block] as $full_selectors => $v){
+						$tokenized_selectors = $this->tokenize($full_selectors, ',');
+						if(in_array($matches[1][0], $tokenized_selectors)){
+							if(isset($this->parsed[$block][$full_selectors][$matches[2][0]])){
+								$dest[$i] = $this->get_final_value($this->parsed[$block][$full_selectors][$matches[2][0]], $property);
+								$found = true;
+							}
+						}
+					}
+				}
+				// Report error if no source was found
+				if(!$found){
+					$this->report_error($selector.' could not find '.$matches[1][0].' to copy '.$matches[2][0].' from.');
 				}
 			}
 		}
