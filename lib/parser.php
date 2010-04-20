@@ -103,9 +103,9 @@ class Parser2 extends Base{
 	 * ci = @css line index
 	 */
 	public $current = array(
-		'se' => null,
-		'pr' => null,
-		'va' => null,
+		'se' => '',
+		'pr' => '',
+		'va' => '',
 		'me' => 'global',
 		'fi' => -1,
 		'ci' => 0
@@ -255,6 +255,7 @@ class Parser2 extends Base{
 					// Else parse as a property-value-pair
 					else{
 						$this->parse_property_line($line);
+						$this->reset_current_property();
 						$debug['type'] = 'Property/Value';
 						$debug['stack'] = $this->selector_stack;
 					}
@@ -618,19 +619,32 @@ class Parser2 extends Base{
 		$pr = $this->current['pr'];
 		$va = $this->current['va'];
 		$fi = $this->current['fi'];
-		// Special destination for @font-face
-		if($se == '@font-face'){
-			$dest =& $this->parsed[$me][$se][$fi][$pr];
+		if($pr !== '' && $va !== ''){
+			// Special destination for @font-face
+			if($se == '@font-face'){
+				$dest =& $this->parsed[$me][$se][$fi][$pr];
+			}
+			else{
+				$dest =& $this->parsed[$me][$se][$pr];
+			}
+			// Set the value array if not aleady present
+			if(!isset($dest)){
+				$dest = array();
+			}
+			// Add the value to the destination
+			$dest[] = $va;
 		}
-		else{
-			$dest =& $this->parsed[$me][$se][$pr];
-		}
-		// Set the value array if not aleady present
-		if(!isset($dest)){
-			$dest = array();
-		}
-		// Add the value to the destination
-		$dest[] = $va;
+	}
+
+
+	/**
+	 * reset_current_property
+	 * Empties the current value and property token
+	 * @return void
+	 */
+	private function reset_current_property(){
+		$this->current['pr'] = '';
+		$this->current['va'] = '';
 	}
 
 
