@@ -32,6 +32,7 @@
  * @todo document the comment() method
  * @todo document the fact that values are now always arrays
  * @todo document the fact that one cannot copy or inherit from an @font-face declaration
+ * @todo document the new zero-optimization of the minifier plugin
  * @todo fix the following plugins: Browser, OS, Transform
  */
 class Parser2 extends Base{
