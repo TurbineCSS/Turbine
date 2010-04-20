@@ -14,7 +14,7 @@
 	 */
 	function minifier(&$parsed){
 		global $browser, $cssp;
-		$color_pattern = '/#([A-F0-9])\1([A-F0-9])\2([A-F0-9])\3/i';
+		$color_pattern = '/\#([A-F0-9])\1([A-F0-9])\2([A-F0-9])\3\b/i';
 		$color_properties = array(
 			'color',
 			'background',
@@ -30,7 +30,7 @@
 		$tokenized_properties = array(
 			'font-family'
 		);
-		$zero_pattern = '/(0(?:em|ex|px|in|cm|mm|pt|pc))/';
+		$zero_pattern = '/\b(0(?:em|ex|px|in|cm|mm|pt|pc))\b/';
 		$zero_properties = array(
 			'margin', 'margin-top', 'margin-left', 'margin-bottom', 'margin-right',
 			'padding', 'padding-top', 'padding-left', 'padding-bottom', 'padding-right',
