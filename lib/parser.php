@@ -794,7 +794,7 @@ class Parser2 extends Base{
 		$output .= $prefix . $selector . $s;
 		$output .= '{' . $n;
 		// Add comments
-		if(isset($rules['_comments']['selector'])){
+		if(isset($rules['_comments']['selector']) && !$compressed){
 			$output .= ' /* ' . implode(', ', $rules['_comments']['selector']) . ' */';
 		}
 		// Add the properties
@@ -839,7 +839,7 @@ class Parser2 extends Base{
 					$output .= ';';
 				}
 				// Add comments
-				if(isset($rules['_comments'][$property])){
+				if(isset($rules['_comments'][$property]) && !$compressed){
 					$output .= ' /* ' . implode(', ', $rules['_comments'][$property]) . ' */';
 				}
 				$output .= $n;
