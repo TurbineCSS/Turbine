@@ -823,7 +823,7 @@ class Parser2 extends Base{
 			$s = $t = $n = '';
 		}
 		// Keep count of the properties
-		$num_properties = count($rules);
+		$num_properties = $this->count_properties($rules);
 		$count_properties = 0;
 		// Build output
 		foreach($rules as $property => $values){
@@ -890,6 +890,23 @@ class Parser2 extends Base{
 			}
 		}
 		return $final;
+	}
+
+
+	/**
+	 * count_properties
+	 * Counts properties excluding hidden properties (prefixed with _)
+	 * @param array $properties The rules containing the properties to count
+	 * @return int $count
+	 */
+	private function count_properties($properties){
+		$count = 0;
+		foreach($properties as $property => $value){
+			if($property{0} != '_'){
+				$count++;
+			}
+		}
+		return $count;
 	}
 
 
