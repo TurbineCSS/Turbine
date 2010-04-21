@@ -127,8 +127,8 @@ if($_POST['css']){
 
 
 	// Set compression mode
-	if(isset($cssp->parsed['global']['@turbine']['compress'])){
-		$compress = (bool) $cssp->parsed['global']['@turbine']['compress'];
+	if(isset($cssp->parsed['global']['@turbine']['compress'][0])){
+		$compress = (bool) $cssp->parsed['global']['@turbine']['compress'][0];
 	}
 	else{
 		$compress = false;
