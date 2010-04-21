@@ -27,7 +27,6 @@
  * Turbine syntax parser
  * @todo document schepp-style selectors
  * @todo document inline css (@css)
- * @todo document block commenting
  * @todo document the fact that the nesting system is smart about pseudo classes
  * @todo document the comment() method
  * @todo document the fact that values are now always arrays

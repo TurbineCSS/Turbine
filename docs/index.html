@@ -85,7 +85,13 @@
 	decrease css devolopment time and web developer headache. Turbine takes something like this&nbsp;&hellip;
 </p>
 <pre class="cssp">
-// Welcome to Turbine!
+// Welcome to Turbine! This is a line comment
+@media screen
+
+--
+This is a block comment
+--
+
 #foo, #bar
     color:#FF0000
     margin-left, margin-right: 4px
@@ -93,27 +99,25 @@
         font-weight:bold
         border-radius:4px</pre>
 &hellip; and turns it into this&nbsp;&hellip;
-<pre class="css">#foo, #bar {
-    color: #FF0000;
-    margin-left: 4px;
-    margin-right: 4px;
-}
-#foo div.alpha, #foo div.beta, #bar div.alpha, #bar div.beta {
-    font-weight: bold;
-    -moz-border-radius: 4px;
-    -khtml-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    border-radius: 4px;
-}
-</pre>
+<pre class="css">@media screen {
+    #foo, #bar {
+        color: #FF0000;
+        margin-left: 4px;
+        margin-right: 4px;
+    }
+    #foo div.alpha, #foo div.beta, #bar div.alpha, #bar div.beta {
+        font-weight: bold;
+        border-radius: 4px;
+    }
+}</pre>
 <p>
-	&hellip;or, if you like great performance, directly into this (which is automatically cached, gezipped and served with the correct expires headers):
+	&hellip;or, if you like fast-loading websites, directly into this (which is automatically cached, gezipped and served with the correct expires headers):
 </p>
-<pre class="css">#foo,#bar{color:#FF0000;margin-left:4px;margin-right:4px;}#foo div.alpha,#foo div.beta,#bar div.alpha,#bar div.beta{font-weight:bold;-moz-border-radius:4px;-khtml-border-radius:4px;-webkit-border-radius:4px;border-radius:4px;}</pre>
+<pre class="css">@media screen{#foo,#bar{color:#F00;margin-left:4px;margin-right:4px}#foo div.alpha,#foo div.beta,#bar div.alpha,#bar div.beta{font-weight:bold;-moz-border-radius:4px;-webkit-border-radius:4px;-khtml-border-radius:4px;border-radius:4px}}</pre>
 <p>
 	Turbine can save you a lot of typing and time <em>and</em> allow you to concentrate on a website's design and functionality instead of
-	css's limitations and your least favourite browser's latest bugs. Think jQuery for CSS. Being fully extensible, you can customize Turbine
-	to your liking.
+	css's limitations, page performance or your least favourite browser's latest bugs. Think jQuery for CSS. Being fully extensible, you
+	can customize Turbine to your liking.
 </p>
 <h2 id="intro-goalsandfeatures">Goals and Features</h2><div>
 <p>
@@ -188,6 +192,7 @@
 	href="path/to/turbine/css.php?files=file1.cssp;file2.cssp"
 /&gt;</pre>
 <p>
+	The base path for the files can be changed in the file <code>config.php</code> (<code>css_base_dir</code>).
 	You can also include regular css files, which will be added to the output unchanged (or minified, if the <code>minify_css</code>
 	configuration option is set to <code>true</code>).
 </p>
@@ -199,10 +204,14 @@
 
 
 <h2 id="usage-syntax">Basic syntax</h2><div>
+<p>
+	The one important thing about Turbine's syntax is that it is all about <strong>lines</strong>. The context of any statements
+	in the code depends of the context of the statement's line.
+</p>
 <h3>Selectors and rules</h3>
 <p>
-	Turbine's syntax is a bit like <a href="#">Python</a>&nbsp;&ndash; <strong>the level of indention </strong>instead of curly braces
-	decides what is what. A simple rule looks like this:
+	Turbine's syntax works a bit like <a href="#">Python</a>&nbsp;&ndash; <strong>the level of indention </strong>instead of curly braces
+	decides the context of a given line. A simple rule looks like this:
 </p>
 <pre class="cssp">#foo div > p               // Selector
     color:red              // Property and value
@@ -221,14 +230,25 @@
 	You can use any number or combination of spaces and tabs for indention, but be careful to keep your indention constistent in the whole
 	file.
 </p>
-<h3>Multiple declarations in one line</h3>
 <p>
-	While semicolons at the end of values are not required, you can use them to put multiple declarations in one line:
+	Semicolons at the end of values are not required, but you can use them to put multiple declarations in one line:
 </p>
 <pre class="cssp">#foo div > p
     color:red; font-weight:bold
     span
         color:blue; font-style:italic</pre>
+<h3>Comments</h3>
+<p>
+	There a two kinds of comments available: singe line comments that start with <code>//</code>&nbsp;&hellip;
+</p>
+<pre class="cssp">// Hello world</pre>
+<p>
+	&hellip; and block comments that start with a line containing nothing but <code>--</code> and end with the same:
+</p>
+<pre class="cssp">--
+Hello world
+This is a block comment
+--</pre>
 <h3>@media rules</h3>
 <p>
 	<code>@media</code>-rules in Turbine a simple switches. Each <code>@media</code> line ends the previous <code>@media</code> block
@@ -345,6 +365,10 @@
 </p>
 <pre class="cssp">@turbine
     plugins:resetstyle, datauri, borderradius</pre>
+<p>
+	Turbine has a set of <a class="smoothscroll" href="#plugins">core plugins</a> that greatly enhance the functionality of Turbine. If
+	you know a bit of PHP you can <a class="smoothscroll" href="#dev-plugins">easily build your own plugins</a>.
+</p>
 </div>
 
 
