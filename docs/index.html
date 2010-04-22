@@ -460,6 +460,25 @@ This is a block comment
 	To avoid confusion it is recommended to use <a class="smoothscroll" href="usage-constantsaliases">aliases</a> for complex selectors
 	instead.
 </p>
+<h3>CSS injection</h3>
+<p>
+	In case you need to insert css without Turbine messing with it, you can use the <code>@css</code> prefix. Any lines that begin with
+	<code>@css</code> will appear in the output completely unchanged (except for the <code>@css</code> prefix which is removed).
+</p>
+<pre class="cssp">@css @-moz-document url-prefix(http://), url-prefix(https://), url-prefix(ftp://){
+
+#foo
+    color:red
+
+@css }</pre>
+<p>
+	Result:
+</p>
+<pre class="css">@-moz-document url-prefix(http://), url-prefix(https://), url-prefix(ftp://){
+#foo {
+	color: red;
+}
+}</pre>
 </div>
 
 
