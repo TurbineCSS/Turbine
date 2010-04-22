@@ -25,7 +25,6 @@
 /**
  * Parser2
  * Turbine syntax parser
- * @todo document schepp-style selectors
  * @todo document inline css (@css)
  * @todo document the comment() method
  * @todo document the fact that values are now always arrays
