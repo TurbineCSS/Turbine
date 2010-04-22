@@ -27,7 +27,6 @@
  * Turbine syntax parser
  * @todo document schepp-style selectors
  * @todo document inline css (@css)
- * @todo document the fact that the nesting system is smart about pseudo classes
  * @todo document the comment() method
  * @todo document the fact that values are now always arrays
  * @todo document the fact that one cannot copy or inherit from an @font-face declaration
@@ -502,8 +501,7 @@ class Parser2 extends Base{
 			foreach($parent as $p){
 				$selector = array();
 				foreach($child as $c){
-					$between = ($c{0} == ':') ? '' : ' '; // Space or no space (if the child is a pseudo class)
-					$selector[] = $p.$between.$c;
+					$selector[] = $p.' '.$c;
 				}
 				$selectors[] = $selector;
 			}
