@@ -1106,12 +1106,26 @@ p.foobar
 	Performs a number of micro-optimizations.
 </p>
 <p>
-	The minifier plugins optimizes and shortens hex color definitions and tokenized strings, saving a (tiny) bit of space and loading time.
+	The minifier plugins shortens hex color declarations, removes units from zero values and removes whitespace from comma-sepparated
+	strings, saving a (tiny) bit of space and loading time.
 </p>
 <h3>Usage</h3>
 <p>
 	Just add <code>minifier</code> to your <code>@turbine</code> plugins rule. Done!
 </p>
+<h3>Example</h3>
+<pre class="cssp">#foo
+    font-family:Verdana, Arial, sans-serif
+    color:#FF0000
+    margin: 1em 0em</pre>
+<p>
+	Result:
+</p>
+<pre>#foo {
+	font-family: Verdana,Arial,sans-serif;
+	color: #F00;
+	margin: 1em 0;
+}</pre>
 </div>
 
 
