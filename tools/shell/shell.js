@@ -46,4 +46,10 @@ window.addEvent('domready', function(){
 		}
 	});
 
+
+	// Add editor functionality
+	var turbineEditor = new Editor('cssp');
+	var htmlEditor = new Editor('html');
+
+
 });

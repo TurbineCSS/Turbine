@@ -64,6 +64,7 @@
 </div>
 
 <script src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.4/mootools-yui-compressed.js"></script>
+<script src="Editor.js"></script>
 <script src="shell.js"></script>
 
 </body>
