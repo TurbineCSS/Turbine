@@ -12,61 +12,57 @@
 	 * @return void
 	 */
 	function bugfixes(&$parsed){
-		global $browser;
-		foreach($parsed as $block => $css){
+		global $cssp, $browser;
+		$changed = array();
 
-			// IE 6 global bugfixes
-			if($browser->family == 'MSIE' && floatval($browser->familyversion) < 7){
-				// Image margin bottom bug
-				if(!isset($parsed[$block]['img'])){
-					$parsed[$block]['img'] = array();
-				}
-				$parsed[$block]['img']['vertical-align'] = 'bottom';
-				CSSP::comment($parsed[$block]['img'], 'vertical-align', 'Added by bugfix plugin');
-				// Background image flickers on hover
-				if(!isset($parsed[$block]['html'])){
-					$parsed[$block]['html'] = array();
-				}
-				if(!isset($parsed[$block]['html']['filter'])){
-					$parsed[$block]['html']['filter'] = 'expression(document.execCommand("BackgroundImageCache",false,true))';
-					CSSP::comment($parsed[$block]['html'], 'filter', 'Added by bugfix plugin');
-				}
-				else{
-					if(!strpos($parsed[$block]['html']['filter'], 'expression(document.execCommand("BackgroundImageCache",false,true))')){
-						$parsed[$block]['html']['filter'] .= ' expression(document.execCommand("BackgroundImageCache",false,true))';
-						CSSP::comment($parsed[$block]['html'], 'filter', 'Modified by bugfix plugin');
+		// IE 6 global bugfixes
+		if($browser->engine == 'MSIE' && floatval($browser->engineversion) < 7){
+			// Image margin bottom bug
+			$changed['img']['vertical-align'][] = 'bottom';
+			// Background image flickers on hover
+			$changed['html']['filter'][] = 'expression(document.execCommand("BackgroundImageCache",false,true))';
+		}
+
+		// IE 6 + 7 global bugfixes
+		if($browser->engine == 'MSIE' && floatval($browser->engineversion) < 8){
+			// Enable full styleability for IE-buttons, see http://www.sitepoint.com/forums/showthread.php?t=547059
+			$changed['button']['overflow'][] = 'visible';
+			$changed['button']['width'][] = 'auto';
+			$changed['button']['white-space'][] = 'nowrap';
+		}
+
+		// Firefox global bugfixes
+		if($browser->engine == 'Gecko'){
+			// Ghost margin around buttons, see http://www.sitepoint.com/forums/showthread.php?t=547059
+			$changed['button::-moz-focus-inner']['padding'][] = '0';
+			$changed['button::-moz-focus-inner']['border'][] = 'none';
+		}
+
+		// Add comments for the global fixes
+		foreach($changed as $selector => $styles){
+			foreach($styles as $property => $value){
+				CSSP::comment($changed[$selector], $property, 'Added by bugfix plugin');
+			}
+		}
+
+		// Insert the global bugfixes
+		$cssp->insert($changed, 'global');
+
+		// Apply per-element-bugfixes
+		foreach($cssp->parsed as $block => $css){
+			foreach($cssp->parsed[$block] as $selector => $styles){
+
+				// IE 6 per-element-bugfixes
+				if($browser->engine == 'MSIE' && floatval($browser->engineversion) < 7){
+					// Float double margin bug, fixed with a behavior as this only affects the floating object and no descendant of it
+					if(isset($cssp->parsed[$block][$selector]['float']) && $cssp->get_final_value($cssp->parsed[$block][$selector]['float']) != 'none'){
+						$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/bugfixes/doublemargin.htc';
+						$cssp->parsed[$block][$selector]['behavior'][] = 'url("'.$htc_path.'")';
+						CSSP::comment($cssp->parsed[$block][$selector], 'behavior', 'Added by bugfix plugin');
 					}
 				}
-			}
 
-			// IE 6 + 7 global bugfixes
-			if($browser->family == 'MSIE' && floatval($browser->familyversion) < 8){
-				// Enable full styleability for IE-buttons
-				// See http://www.sitepoint.com/forums/showthread.php?t=547059
-				if(!isset($parsed[$block]['button'])){
-					$parsed[$block]['button'] = array();
-				}
-				$parsed[$block]['button']['overflow'] = 'visible';
-				$parsed[$block]['button']['width'] = 'auto';
-				$parsed[$block]['button']['white-space'] = 'nowrap';
-				CSSP::comment($parsed[$block]['button'], 'overflow', 'Added by bugfix plugin');
-				CSSP::comment($parsed[$block]['button'], 'width', 'Added by bugfix plugin');
-				CSSP::comment($parsed[$block]['button'], 'white-space', 'Added by bugfix plugin');
-			}
-
-			// Firefox global bugfixes
-			if($browser->engine == 'Gecko'){
-				// Ghost margin around buttons
-				// See http://www.sitepoint.com/forums/showthread.php?t=547059
-				if(!isset($parsed[$block]['button::-moz-focus-inner'])){
-					$parsed[$block]['button::-moz-focus-inner'] = array();
-				}
-				$parsed[$block]['button::-moz-focus-inner']['padding'] = '0';
-				$parsed[$block]['button::-moz-focus-inner']['border'] = 'none';
-				CSSP::comment($parsed[$block]['button::-moz-focus-inner'], 'padding', 'Added by bugfix plugin');
-				CSSP::comment($parsed[$block]['button::-moz-focus-inner'], 'border', 'Added by bugfix plugin');
-			}
-
+<<<<<<< HEAD
 			foreach($parsed[$block] as $selector => $styles){
 
 				// IE 6 local bugfixes
@@ -82,14 +78,20 @@
 								$parsed[$block][$selector]['behavior'] .= ', url("'.$htc_path.'")';
 							}
 						}
+=======
+				// IE 6 + 7 per-element-bugfixes
+				if($browser->engine == 'MSIE' && floatval($browser->engineversion) < 8){
+					// Enable overflow:hidden, if present
+					if(isset($cssp->parsed[$block][$selector]['overflow']) && $cssp->get_final_value($cssp->parsed[$block][$selector]['overflow']) == 'hidden' && !isset($cssp->parsed[$block][$selector]['position'])){
+						$cssp->parsed[$block][$selector]['position'][] = 'relative';
+						CSSP::comment($cssp->parsed[$block][$selector], 'position', 'Added by bugfix plugin');
+>>>>>>> 03d40b72580c292f8e0e8583dbf0b100b5bb2a6f
 					}
 				}
-			
-				// IE 6 + 7 local bugfixes
-				// if($browser->family == 'MSIE' && floatval($browser->familyversion) < 8){}
-			}
 
+			}
 		}
+
 	}
 
 

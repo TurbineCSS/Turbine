@@ -93,7 +93,9 @@ if($_GET['files']){
 	// Client-side cache: Preparing caching-mechanism using eTags by creating a combined fingerprint of the files involved...
 	$fingerprint = '';
 	foreach($files as $file){
-		$fingerprint .= $file.filemtime($file);
+		if(file_exists($file)){
+			$fingerprint .= $file.filemtime($file);
+		}
 	}
 	$etag = md5($fingerprint);
 	// ...and check if client sends eTag to compare it with our eTag-fingerprint
@@ -200,7 +202,7 @@ if($_GET['files']){
 					// Get plugin settings for the before parse hook
 					$plugin_list = array();
 					$found = false;
-					foreach($cssp->css as $line){
+					foreach($cssp->code as $line){
 						if(!$found){
 							if(preg_match('/^[\s\t]*@turbine/i',$line) == 1){
 								$found = true;
@@ -217,16 +219,15 @@ if($_GET['files']){
 
 
 					$cssp->set_indention_char();                                         // Set the character(s) used for code indention
-					$cssp->apply_plugins('before_parse', $plugin_list, $cssp->css);      // Apply plugins for before parse
+					$cssp->apply_plugins('before_parse', $plugin_list, $cssp->code);     // Apply plugins for before parse
 					$cssp->parse();                                                      // Parse the code
 					$cssp->apply_plugins('before_compile', $plugin_list, $cssp->parsed); // Apply plugins for before compile
 					$cssp->compile();                                                    // Do the Turbine magic
 					$cssp->apply_plugins('before_glue', $plugin_list, $cssp->parsed);    // Apply plugins for before glue
 
-
 					// Set compression mode
-					if(isset($cssp->parsed['global']['@turbine']['compress'])){
-						$compress = (bool) $cssp->parsed['global']['@turbine']['compress'];
+					if(isset($cssp->parsed['global']['@turbine']['compress'][0])){
+						$compress = (bool) $cssp->parsed['global']['@turbine']['compress'][0];
 					}
 					else{
 						$compress = false;

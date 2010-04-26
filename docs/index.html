@@ -29,8 +29,7 @@
 				<li><a href="#usage-setup">Installation and setup</a></li>
 				<li><a href="#usage-syntax">Basic syntax</a></li>
 				<li><a href="#usage-configuration">Configuration</a></li>
-				<li><a href="#usage-expanding">Expanding properties</a></li>
-				<li><a href="#usage-nested">Nested selectors</a></li>
+				<li><a href="#usage-advanced">Advanced syntax</a></li>
 				<li><a href="#usage-constantsaliases">Constants and aliases</a></li>
 				<li><a href="#usage-inheritancetemplating">Inheritance and prototyping</a></li>
 			</ul>
@@ -86,6 +85,8 @@
 </p>
 <pre class="cssp">
 // Welcome to Turbine!
+@media screen
+
 #foo, #bar
     color:#FF0000
     margin-left, margin-right: 4px
@@ -93,27 +94,25 @@
         font-weight:bold
         border-radius:4px</pre>
 &hellip; and turns it into this&nbsp;&hellip;
-<pre class="css">#foo, #bar {
-    color: #FF0000;
-    margin-left: 4px;
-    margin-right: 4px;
-}
-#foo div.alpha, #foo div.beta, #bar div.alpha, #bar div.beta {
-    font-weight: bold;
-    -moz-border-radius: 4px;
-    -khtml-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    border-radius: 4px;
-}
-</pre>
+<pre class="css">@media screen {
+    #foo, #bar {
+        color: #FF0000;
+        margin-left: 4px;
+        margin-right: 4px;
+    }
+    #foo div.alpha, #foo div.beta, #bar div.alpha, #bar div.beta {
+        font-weight: bold;
+        border-radius: 4px;
+    }
+}</pre>
 <p>
-	&hellip;or, if you like great performance, directly into this (which is automatically cached, gezipped and served with the correct expires headers):
+	&hellip;or, if you like fast-loading websites, directly into this (which is automatically cached, gezipped and served with the correct expires headers):
 </p>
-<pre class="css">#foo,#bar{color:#FF0000;margin-left:4px;margin-right:4px;}#foo div.alpha,#foo div.beta,#bar div.alpha,#bar div.beta{font-weight:bold;-moz-border-radius:4px;-khtml-border-radius:4px;-webkit-border-radius:4px;border-radius:4px;}</pre>
+<pre class="css">@media screen{#foo,#bar{color:#F00;margin-left:4px;margin-right:4px}#foo div.alpha,#foo div.beta,#bar div.alpha,#bar div.beta{font-weight:bold;-moz-border-radius:4px;-webkit-border-radius:4px;-khtml-border-radius:4px;border-radius:4px}}</pre>
 <p>
 	Turbine can save you a lot of typing and time <em>and</em> allow you to concentrate on a website's design and functionality instead of
-	css's limitations and your least favourite browser's latest bugs. Think jQuery for CSS. Being fully extensible, you can customize Turbine
-	to your liking.
+	css's limitations, page performance or your least favourite browser's latest bugs. Think jQuery for CSS. Being fully extensible, you
+	can customize Turbine to your liking.
 </p>
 <h2 id="intro-goalsandfeatures">Goals and Features</h2><div>
 <p>
@@ -188,6 +187,7 @@
 	href="path/to/turbine/css.php?files=file1.cssp;file2.cssp"
 /&gt;</pre>
 <p>
+	The base path for the files can be changed in the file <code>config.php</code> (<code>css_base_dir</code>).
 	You can also include regular css files, which will be added to the output unchanged (or minified, if the <code>minify_css</code>
 	configuration option is set to <code>true</code>).
 </p>
@@ -199,10 +199,14 @@
 
 
 <h2 id="usage-syntax">Basic syntax</h2><div>
+<p>
+	The one important thing about Turbine's syntax is that it is all about <strong>lines</strong>. The context of any statements
+	in the code depends of the context of the statement's line.
+</p>
 <h3>Selectors and rules</h3>
 <p>
-	Turbine's syntax is a bit like <a href="#">Python</a>&nbsp;&ndash; <strong>the level of indention </strong>instead of curly braces
-	decides what is what. A simple rule looks like this:
+	Turbine's syntax works a bit like <a href="#">Python</a>&nbsp;&ndash; <strong>the level of indention </strong>instead of curly braces
+	decides the context of a given line. A simple rule looks like this:
 </p>
 <pre class="cssp">#foo div > p               // Selector
     color:red              // Property and value
@@ -221,14 +225,25 @@
 	You can use any number or combination of spaces and tabs for indention, but be careful to keep your indention constistent in the whole
 	file.
 </p>
-<h3>Multiple declarations in one line</h3>
 <p>
-	While semicolons at the end of values are not required, you can use them to put multiple declarations in one line:
+	Semicolons at the end of values are not required, but you can use them to put multiple declarations in one line:
 </p>
 <pre class="cssp">#foo div > p
     color:red; font-weight:bold
     span
         color:blue; font-style:italic</pre>
+<h3>Comments</h3>
+<p>
+	There a two kinds of comments available: singe line comments that start with <code>//</code>&nbsp;&hellip;
+</p>
+<pre class="cssp">// Hello world</pre>
+<p>
+	&hellip; and block comments that start with a line containing nothing but <code>--</code> and end with the same:
+</p>
+<pre class="cssp">--
+Hello world
+This is a block comment
+--</pre>
 <h3>@media rules</h3>
 <p>
 	<code>@media</code>-rules in Turbine a simple switches. Each <code>@media</code> line ends the previous <code>@media</code> block
@@ -345,10 +360,15 @@
 </p>
 <pre class="cssp">@turbine
     plugins:resetstyle, datauri, borderradius</pre>
+<p>
+	Turbine has a set of <a class="smoothscroll" href="#plugins">core plugins</a> that greatly enhance the functionality of Turbine. If
+	you know a bit of PHP you can <a class="smoothscroll" href="#dev-plugins">easily build your own plugins</a>.
+</p>
 </div>
 
 
-<h2 id="usage-expanding">Advanced syntax: Expanding properties</h2><div>
+<h2 id="usage-advanced">Advanced syntax features</h2><div>
+<h3>Expanding properties</h3>
 <p>
 	if you want to use multiple properties with the same value inside a selector, you can take advantage of expanding properties. This
 	allows you to use properties as a comma-sepperated list&nbsp;&hellip;
@@ -365,9 +385,7 @@
     left: 4px;
 }</pre>
 </div>
-
-
-<h2 id="usage-nested">Advanced syntax: Nested selectors</h2><div>
+<h3>Nested selectors</h3>
 <p>
 	Turbine implements nested css selectors using a simple principle: whenever the <em>next</em> line is indented, to current line
 	is used as a selector and combined with it's parent selectors.
@@ -426,6 +444,37 @@
 #footer p a:active, #footer p a:hover {
 	text-decoration: none;
 }</pre>
+<h3>Multi-line selectors</h3>
+<p>
+	A selector can span multiple lines if each line except tha last one ends with a comma:
+</p>
+<pre class="cssp">#header,
+#footer,
+#foobar
+    color:red</pre>
+<p>
+	To avoid confusion it is recommended to use <a class="smoothscroll" href="usage-constantsaliases">aliases</a> for complex selectors
+	instead.
+</p>
+<h3>CSS injection</h3>
+<p>
+	In case you need to insert css without Turbine messing with it, you can use the <code>@css</code> prefix. Any lines that begin with
+	<code>@css</code> will appear in the output completely unchanged (except for the <code>@css</code> prefix which is removed).
+</p>
+<pre class="cssp">@css @-moz-document url-prefix(http://), url-prefix(https://), url-prefix(ftp://){
+
+#foo
+    color:red
+
+@css }</pre>
+<p>
+	Result:
+</p>
+<pre class="css">@-moz-document url-prefix(http://), url-prefix(https://), url-prefix(ftp://){
+#foo {
+	color: red;
+}
+}</pre>
 </div>
 
 
@@ -481,8 +530,15 @@ $mainNavigation
 </p>
 <h3>Scope</h3>
 <p>
-	Constants and aliases apply only to the <code>@media</code>-block they are defined in. The exception is the set of constents defined
-	outside of any block&nbsp;&ndash; they apply to the whole file.
+	All <code>.cssp</code> are processed completly independent from each other. Inside the files, constants and aliases apply only to
+	the <code>@media</code>-block they are defined in. The exception is the set of constents defined outside of any block&nbsp;&ndash;
+	they apply to the whole file.
+</p>
+<p>
+	<img src="scope.png">
+</p>
+<p>
+	Example:
 </p>
 <pre class="cssp">@constants
     mycolor:#F00 // Defined outside of any @media block = applies _globally_
@@ -524,7 +580,8 @@ $mainNavigation
 <h2 id="usage-inheritancetemplating">Inheritance and Prototyping</h2><div>
 <p>
 	Turbine's inheritance, prototyping and copying features allow you to pass around chunks of properties and values between elements in
-	your code.
+	your code. Note that <code>@font-face</code> and <code>@import</code> elements can copy and interit properties from other elements,
+	but they cannot be copied or inherited from.
 </p>
 <h3>Copying values from other elements</h3>
 <p>
@@ -993,8 +1050,8 @@ p.foo {
     background: rgb(200, 0, 0);
 }</pre>
 <p>
-	The problem is that in the browser <strong>the filter will also affect <code>p.foobar</code></strong> because the <code>p</code>
-	selector of course also matches <code>p.foobar</code>. The solution is to explicitly remove any filters from <code>p.foobar</code>:
+	The problem is that in the browser <strong>the filter will also affect <code>p.foo</code></strong> because the <code>p</code>
+	selector of course also matches <code>p.foo</code>. The solution is to explicitly remove any filters from <code>p.foobar</code>:
 </p>
 <pre class="cssp">p
     background:rgba(200, 0, 0, 0.5)
@@ -1072,12 +1129,26 @@ p.foobar
 	Performs a number of micro-optimizations.
 </p>
 <p>
-	The minifier plugins optimizes and shortens hex color definitions and tokenized strings, saving a (tiny) bit of space and loading time.
+	The minifier plugins shortens hex color declarations, removes units from zero values and removes whitespace from comma-sepparated
+	strings, saving a (tiny) bit of space and loading time.
 </p>
 <h3>Usage</h3>
 <p>
 	Just add <code>minifier</code> to your <code>@turbine</code> plugins rule. Done!
 </p>
+<h3>Example</h3>
+<pre class="cssp">#foo
+    font-family: Verdana, Arial, sans-serif
+    color: #FF0000
+    margin: 1em 0em</pre>
+<p>
+	Result:
+</p>
+<pre>#foo {
+	font-family: Verdana,Arial,sans-serif;
+	color: #F00;
+	margin: 1em 0;
+}</pre>
 </div>
 
 
@@ -1097,7 +1168,7 @@ p.foobar
 </p>
 <h3>Usage</h3>
 <p>
-	Pdd <code>load</code> to your <code>@turbine</code> plugins rule and add a <code>@load url(path/to/file.cssp)</code> line
+	Add <code>load</code> to your <code>@turbine</code> plugins rule and add a <code>@load url(path/to/file.cssp)</code> line
 	where you want a file to be included. Done!
 </p>
 <h4>Use cases</h4>
@@ -1419,15 +1490,15 @@ table {
 </table>
 <h3>Hooks</h3>
 <p>
-	Too hook into Turbine you need to call the <code>register_plugin()</code> function using three arguments: the hook, an
+	To hook into Turbine you need to call the <code>register_plugin()</code> function using three arguments: the hook, an
 	execution priority and your plugin function's name:
 </p>
 <pre class="php">&lt;?php
     register_plugin('before_compile', 0, 'mypluginfunction');
 ?&gt;</pre>
 <p>
-	It's recommended to leave the execution priority at 0 unless its <strong>really</strong> important. A higher priority means
-	earlier execution.
+	It is recommended to leave the execution priority at 0 unless early oder late execution of the plugin is <strong>really</strong>
+	important. A higher priority means earlier execution.
 </p>
 <h3>Array structure</h3>
 <p>
@@ -1439,24 +1510,138 @@ table {
     [@media foo] => Array
     (
         [#bar] => Array
+        (
+            [property1] => Array
             (
-                [property1] => valueA
-                [property2] => valueB
+                [0] => value
             )
+            [property2] => Array
+            (
+                [0] => value
+            )
+        )
     )
     [@media bar] => Array
     (
         [#bar] => Array
+        (
+            [property1] => Array
             (
-                [property1] => valueA
-                [property2] => valueB
+                [0] => value
             )
+            [property2] => Array
+            (
+                [0] => value1
+                [1] => value2
+                [2] => value3
+            )
+        )
     )
 )</pre>
 <p>
-	CSS rules that a not part of any <code>@media</code> block a stored in the <code>global</code> block. A properties values may
-	be in an array if there is more than one value for a given property.
+	CSS rules that are not part of any <code>@media</code> block a stored in the <code>global</code> block. A property may contain more
+	than one value. Properties that start with an underscore are considered hidden/special properties. They will usually not apprar in
+	the final css output like normal properties.
 </p>
+<h4>Exceptions</h4>
+<ul>
+	<li>
+		All <code>@font-face</code> and <code>@import</code> statements are stored in sepperate arrays in the <code>global</code> block.
+	</li>
+	<li>
+		All <code>@cssp</code> statements appear in their respective blocks as <code>@css-X</code> elements with <code>X</code> being a
+		consecutive number. All <code>@css-X</code> elements have only one property, <code>_value</code>, which contains the raw CSS code
+		from the<code>@cssp</code> statement.
+	</li>
+</ul>
+<h4>Example array</h4>
+<p>
+	Given the following Turbine input code&nbsp;&hellip;
+</p>
+<pre class="cssp">@import url(foobar.css);
+
+span.test
+    color:blue
+
+span.test
+    color:green
+
+@font-face
+    font-family:"Example"
+    src:url("example.otf")
+
+@media screen
+
+#foo
+    div.bar
+        margin, padding:4px</pre>
+<p>
+	&hellip; the array that plugin functions recieve on <code>before_compile</code> will be the following:
+</p>
+<pre>Array
+(
+    [global] => Array
+    (
+        [@import] => Array
+        (
+            [0] => Array
+            (
+                [0] => url(foobar.css);
+            )
+        )
+        [@font-face] => Array
+        (
+            [0] => Array
+            (
+                [font-family] => Array
+                (
+                    [0] => "Example"
+                )
+                [src] => Array
+                (
+                    [0] => url("example.otf")
+                )
+            )
+        )
+        [span.test] => Array
+        (
+            [color] => Array
+            (
+                [0] => blue
+                [1] => green
+            )
+        )
+    )
+    [@media screen] => Array
+    (
+        [#foo div.bar] => Array
+        (
+            [margin, padding] => Array
+            (
+                [0] => 4px
+            )
+        )
+    )
+)</pre>
+<p>
+	The array that plugin functions recieve on <code>before_glue</code> will most likely be slightly different because Turbine and some
+	plugins will by then have already done their work. The <code>margin, padding</code> property would for example already be expanded to
+	two sepperate properties:
+</p>
+<pre>[@media screen] => Array
+(
+    [#foo div.bar] => Array
+    (
+        [margin] => Array
+        (
+            [0] => 4px
+        )
+        [padding] => Array
+        (
+            [0] => 4px
+        )
+    )
+)</pre>
 <h3>Plugin example</h3>
 <p>
 	In case you wanted your plugin to remove all occurences of <code>background-image</code> from your stylesheets,
@@ -1468,12 +1653,12 @@ table {
      * Remove all occurences of background-image
      */
     function remove_background_image(&$parsed){
-        // Loop through the blocks
+        // Loop through the @media blocks
         foreach($parsed as $block => $css){
             // Loop through the selectors
             foreach($parsed[$block] as $selector => $styles){
-                // Look for background-image
-                if($parsed[$block][$selector]['background-image']){
+                // Look for background-image in the styles
+                if(isset($parsed[$block][$selector]['background-image'])){
                     // Be gone!
                     unset($parsed[$block][$selector]['background-image']);
                 }
@@ -1489,7 +1674,12 @@ table {
 	Don't be afraid to do anything CPU- or memory consuming in your plugins - in production mode, everything is calculated
 	only once and is served from the cache afterwards.
 </p>
-<h3>The browser class</h3>
+<h3>Useful classes and methods for plugin development</h3>
+<h4>The <code>$cssp</code> instance</h4>
+<p>
+	TODO
+</p>
+<h4>The browser class</h4>
 <p>
 	TODO
 </p>
@@ -1535,9 +1725,8 @@ table {
 		Turbine is beta software. Expect stuff to break everywhere, all the time. If you encounter bugs, <a href="http://github.com/SirPepe/Turbine/issues">report them</a>!
 	</li>
 	<li>
-		Try not to mess up your indention! Seriously. Turbine is (at the moment) not very good at catching incorrectly
-		indented lines and they <em>will</em> destroy your css in places you'll never expect. So just pay attention to your whitespace
-		or wait for the parser to become/help us to make the parser more tolerant towards indention errors.
+		Try not to mess up your indention! Seriously. Turbine is not <em>that</em> goot at catching incorrectly indented lines and they
+		<em>will</em> destroy your css in places you'll never expect. So just pay attention to your whitespace!
 	</li>
 	<li>
 		Don't use constants only for colors! If you use them for font stacks and paths, you can save yourself a lot of typing&nbsp;&ndash;

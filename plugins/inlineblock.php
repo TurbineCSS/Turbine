@@ -7,23 +7,24 @@
 	 * 
 	 * Usage: Nobrainer, just switch it on
 	 * Example: -
-	 * Status: Beta
+	 * Status: Stable
+	 * Version: 1.0
 	 * 
 	 * @param mixed &$parsed
 	 * @return void
 	 */
 	function inlineblock(&$parsed){
-		global $browser;
-		foreach($parsed as $block => $css){
-			foreach($parsed[$block] as $selector => $styles){
+		global $browser, $cssp;
+		foreach($cssp->parsed as $block => $css){
+			foreach($cssp->parsed[$block] as $selector => $styles){
 				// Everywhere
-				if(isset($parsed[$block][$selector]['display']) && $parsed[$block][$selector]['display'] == 'inline-block'){
-					if($browser->family == 'MSIE' && floatval($browser->familyversion) < 8){
-						$parsed[$block][$selector]['display'] = 'inline';
-						$parsed[$block][$selector]['zoom'] = '1';
+				if(isset($cssp->parsed[$block][$selector]['display']) && $cssp->get_final_value($cssp->parsed[$block][$selector]['display'], 'display') == 'inline-block'){
+					if($browser->engine == 'MSIE' && floatval($browser->engineversion) < 8){
+						$cssp->parsed[$block][$selector]['display'][] = 'inline';
+						$cssp->parsed[$block][$selector]['zoom'][] = '1';
 					} 
 					elseif($browser->engine == 'Gecko' && floatval($browser->engineversion) < 1.9){
-						$parsed[$block][$selector]['display'] = '-moz-inline-stack';
+						$cssp->parsed[$block][$selector]['display'][] = '-moz-inline-stack';
 					}
 				}
 			}

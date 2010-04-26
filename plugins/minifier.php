@@ -14,8 +14,8 @@
 	 */
 	function minifier(&$parsed){
 		global $browser, $cssp;
-		$colorpattern = '/#([A-F0-9])\1([A-F0-9])\2([A-F0-9])\3/i';
-		$colorproperties = array(
+		$color_pattern = '/\#([A-F0-9])\1([A-F0-9])\2([A-F0-9])\3\b/i';
+		$color_properties = array(
 			'color',
 			'background',
 			'background-color',
@@ -24,25 +24,37 @@
 			'border-top',
 			'border-left',
 			'border-bottom',
-			'border-right'
+			'border-right',
+			'box-shadow'
 		);
-		$tokenizedproperties = array(
+		$tokenized_properties = array(
 			'font-family'
+		);
+		$zero_pattern = '/\b(0(?:em|ex|px|in|cm|mm|pt|pc))\b/';
+		$zero_properties = array(
+			'margin', 'margin-top', 'margin-left', 'margin-bottom', 'margin-right',
+			'padding', 'padding-top', 'padding-left', 'padding-bottom', 'padding-right',
+			'border', 'border-top', 'border-left', 'border-bottom', 'border-right'
 		);
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
-				// Optimize hex colors
-				foreach($colorproperties as $property){
-					if(isset($parsed[$block][$selector][$property])){
-						$parsed[$block][$selector][$property] =
-							preg_replace($colorpattern, '#\1\2\3', $parsed[$block][$selector][$property]);
-					}
-				}
-				// Optimize tokenized strings
-				foreach($tokenizedproperties as $property){
-					if(isset($parsed[$block][$selector][$property])){
-						$parsed[$block][$selector][$property] =
-							implode(',', $cssp->tokenize($parsed[$block][$selector][$property], ','));
+				// Ignore @font-face
+				if($selector != '@font-face'){
+					foreach($parsed[$block][$selector] as $property => $values){
+						foreach($parsed[$block][$selector][$property] as $key => $value){
+							// Optimize hex colors
+							if(in_array($property, $color_properties)){
+								$parsed[$block][$selector][$property][$key] = preg_replace($color_pattern, '#\1\2\3', $value);
+							}
+							// Optimize tokenized strings
+							if(in_array($property, $tokenized_properties)){
+								$parsed[$block][$selector][$property][$key] = implode(',', $cssp->tokenize($value, ','));
+							}
+							// Optimize zeros
+							if(in_array($property, $zero_properties)){
+								$parsed[$block][$selector][$property][$key] = preg_replace($zero_pattern, '0', $value);
+							}
+						}
 					}
 				}
 			}
@@ -53,6 +65,6 @@
 	/**
 	 * Register the plugin
 	 */
-	$cssp->register_plugin('before_compile', 0, 'minifier');
+	$cssp->register_plugin('before_glue', 0, 'minifier');
 
 ?>

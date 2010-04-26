@@ -18,29 +18,22 @@
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				if(isset($parsed[$block][$selector]['box-shadow'])){
-					// $before keeps track of the prevoius property in the loop, which is the position we want the new
-					// box-shadow properties to be inserted
-					$before = null;
-					foreach($styles as $property => $value){
+					foreach($styles as $property => $values){
 						if($property == 'box-shadow'){
 							$shadow_properties = array();
 							// Build prefixed properties
-							$prefixes = array('-moz-', '-webkit-', '');
+							$prefixes = array('-moz-', '-webkit-');
 							foreach($prefixes as $prefix){
 								$shadow_properties[$prefix.'box-shadow'] = $parsed[$block][$selector]['box-shadow'];
 							}
 							// Get IE filters, merge them with the other new properties and insert everything
-							$filter_properties = boxshadow_filters($value);
+							$filter_properties = boxshadow_filters($values);
 							$shadow_properties = array_merge($shadow_properties, $filter_properties);
-							$cssp->insert_rules($shadow_properties, $block, $selector, $before);
+							$cssp->insert_properties($shadow_properties, $block, $selector, null, 'box-shadow');
 							// Comment the newly inserted properties
 							foreach($shadow_properties as $shadow_property => $shadow_value){
 								CSSP::comment($parsed[$block][$selector], $shadow_property, 'Added by box shadow plugin');
 							}
-							$before = array_pop(array_keys($shadow_properties));
-						}
-						else{
-							$before = $property;
 						}
 					}
 				}
@@ -51,11 +44,15 @@
 
 	/**
 	 * boxshadow_filters
-	 * 
+	 * Builds filter properties for IE
 	 * @return array $filter_properties The new filter properties
 	 */
-	function boxshadow_filters($value){
+	function boxshadow_filters($values){
+		// Get the relevant box shadow value
+		global $cssp;
+		$value = $cssp->get_final_value($values);
 		$filter_properties = array();
+		// Build the filter value
 		if(preg_match('/([0-9]+)\D+([0-9]+)\D+([0-9]+)\D+#([0-9A-F]{3,6})+/i', trim($value), $matches) == 1){
 			$xoffset = intval($matches[1]);
 			$yoffset = intval($matches[2]);
@@ -66,7 +63,7 @@
 			}
 			$median_offset = round(($xoffset + $yoffset) / 2);
 			$opacity = (($median_offset - $blur) > 0) ? (($median_offset - $blur) / $median_offset) : 0.05;
-			$color_opacity = strtoupper(str_pad(dechex(round(hexdec(substr($color,0,2)) * $opacity)),2,'0',STR_PAD_LEFT).str_pad(dechex(round(hexdec(substr($color,2,2)) * $opacity)),2,'0',STR_PAD_LEFT).str_pad(dechex(round(hexdec(substr($color,4,2)) * $opacity)),2,'0',STR_PAD_LEFT));
+			$color_opacity = strtoupper(str_pad(dechex(round(hexdec(substr($color,0,2)) * $opacity)), 2, '0', STR_PAD_LEFT).str_pad(dechex(round(hexdec(substr($color,2,2)) * $opacity)),2,'0',STR_PAD_LEFT).str_pad(dechex(round(hexdec(substr($color,4,2)) * $opacity)),2,'0',STR_PAD_LEFT));
 			$direction = 135;
 			$direction_factor = abs($xoffset) / abs($yoffset);
 			if($direction_factor == 1){
@@ -108,10 +105,10 @@
 				$filter = 'progid:DXImageTransform.Microsoft.Shadow(Color=\'#'.$color.'\',Direction='.$direction.',Strength='.$median_offset.')';
 			}
 			//IE8-compliance (note: value inside apostrophes!)
-			$filter_properties['-ms-filter'] = '"'.$filter.'"';
+			$filter_properties['-ms-filter'] = array('"'.$filter.'"');
 			//Legacy IE-compliance
-			$filter_properties['filter'] = $filter;
-			$filter_properties['zoom'] = 1;
+			$filter_properties['filter'] = array($filter);
+			$filter_properties['zoom'] = array('1');
 		}
 		return $filter_properties;
 	}

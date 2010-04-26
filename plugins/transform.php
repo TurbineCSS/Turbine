@@ -19,7 +19,7 @@
 	 * @return void
 	 */
 	function transform(&$parsed){
-		global $browser;
+		global $browser, $cssp;
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
 				$offset_x = 0;
@@ -35,10 +35,19 @@
 				$scale_x = 1;
 				$scale_y = 1;
 				if(isset($parsed[$block][$selector]['transform'])){
-					$value = $parsed[$block][$selector]['transform'];
-					$parsed[$block][$selector]['-moz-transform'] = $value;
-					$parsed[$block][$selector]['-o-transform'] = $value;
-					$parsed[$block][$selector]['-webkit-transform'] = $value;
+					$num_values = count($parsed[$block][$selector]['transform']);
+					for($i = 0; $i < $num_values; $i++){
+						$value = $parsed[$block][$selector]['transform'][$i];
+						$newproperties = array(
+							'-moz-transform' => array($value),
+							'-o-transform' => array($value),
+							'-webkit-transform' => array($value)
+						);
+						$cssp->insert_properties($newproperties, $block, $selector, null, 'transform');
+					}
+
+
+					/*
 					if(isset($parsed[$block][$selector]['width']) && isset($parsed[$block][$selector]['height'])){
 						if(preg_match('/([0-9\.]+)([a-z%]*)/i',$parsed[$block][$selector]['width'],$matches) == 1){
 							$offset_x = $matches[1] / 2;
@@ -134,6 +143,7 @@
 						//Set hasLayout
 						$parsed[$block][$selector]['zoom'] = 1;
 					}
+					*/
 				}
 			}
 		}

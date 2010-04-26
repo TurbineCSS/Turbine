@@ -1,2 +1,0 @@
-#We make sure that .htc files are served with the proper MIME type, which is critical for XP SP2
-AddType text/x-component .htc

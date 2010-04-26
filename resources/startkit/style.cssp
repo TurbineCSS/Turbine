@@ -1,0 +1,40 @@
+--
+	STYLE.CSSP
+	This an example Turbine file for use as a starting point in your next project!
+
+	How to include this file in HTML: <link rel="stylesheet" href="path/to/turbine/css.php?files=path/to/stylesheets/style.cssp">
+	You can set the base path and other configuration options in the config.php file
+--
+
+
+// Turbine options
+@turbine
+	compress: 0                                  // Set to "1" to enable minified output
+	plugins: boxshadow, borderradius             // Add more plugins here
+
+@constants                                       // Define a buch of constants
+	font_sans: Verdana, Arial, sans-serif
+	font_serif: "Times New Roman", Times, serif
+
+@aliases                                         // Aliases are constants for selectors
+	foo: div#foo
+
+
+
+@media screen                                    // Begins "@media screen" section
+
+$foo                                             // Using the "foo" alias
+	font-family: $font_sans                      // Using the "font_sans" constant
+	display: block
+	background-color: #CCC
+	border-radius:8px
+	p
+		color: #F00
+		padding: 50px
+
+
+
+@media print                                     // Begins "@media print" section
+
+body
+	font-family: $font_serif

@@ -1,0 +1,7 @@
+@turbine
+	plugins:bugfixes, load
+
+@aliases
+	prefix:.fixed
+
+@load url($_FILEPATH/tests.cssp)

@@ -27,9 +27,12 @@
 			foreach($parsed[$block] as $selector => $styles){
 				// Apply quotes
 				if(isset($parsed[$block][$selector]['quotes'])){
-					$value = $parsed[$block][$selector]['quotes'];
-					if(isset($quotes[$value])){
-						$parsed[$block][$selector]['quotes'] = '"\\'.$quotes[$value][0].'" "\\'.$quotes[$value][1].'" "\\'.$quotes[$value][2].'" "\\'.$quotes[$value][3].'"';
+					foreach($parsed[$block][$selector]['quotes'] as $key => $value){
+						foreach($quotes as $lang => $quote){
+							if($value == $lang){
+								$parsed[$block][$selector]['quotes'][$key] = '"\\'.$quotes[$lang][0].'" "\\'.$quotes[$lang][1].'" "\\'.$quotes[$lang][2].'" "\\'.$quotes[$lang][3].'"';
+							}
+						}
 					}
 				}
 			}

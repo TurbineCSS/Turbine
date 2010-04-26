@@ -39,12 +39,24 @@ window.addEvent('domready', function(){
 	// Highlight code areas
 	var areas = $$('pre.cssp');
 	areas.each(function(area){
+		var block_comment_state = false;
 		var newlines = [];
 		var lines = area.get('text').split("\n");
 		var num = lines.length;
 		for(var i = 0; i < num; i++){
 			var line = lines[i];
 			var nextline = lines[i + 1];
+			// Block comment
+			if(line.substr(0, 2) == '--'){
+				if(block_comment_state == false){
+					line = '<span class="co">' + line;
+					block_comment_state = true;
+				}
+				else{
+					line = line + '</span>';
+					block_comment_state = false;
+				}
+			}
 			// @rules
 			if(line.substr(0, 1) == '@'){
 				line = '<span class="at">' + line + '</span>';

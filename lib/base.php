@@ -135,7 +135,7 @@ public function report_error($error){
 
 /**
  * array_get_previous
- * Searches the array $array for the value befor the key $search
+ * Searches the array $array for the value before the key $search
  * @param array $array The array to search in
  * @param mixed $search The key before the searched value
  * @return mixed $previous The search result

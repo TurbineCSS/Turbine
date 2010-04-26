@@ -6,7 +6,8 @@
 	 * 
 	 * Usage: See the individual plugins' descriptions
 	 * Example: -
-	 * Status: Beta
+	 * Status: Stable
+	 * Version: 1.0
 	 * 
 	 * @param array &$css The style lines (unused)
 	 * @return void

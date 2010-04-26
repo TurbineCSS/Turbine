@@ -88,11 +88,42 @@ class Cssp extends Parser2 {
 	 * @return void
 	 */
 	protected function apply_block_constants($constants, $block){
-		foreach($constants as $constant => $value){
+		foreach($constants as $constant => $constant_value){
+			// We will only ever need the last value out of the constant's value array
+			$constant_value = end($constant_value);
+			// Apply the value to the elements in the block
 			foreach($this->parsed[$block] as $selector => $styles){
-				foreach($styles as $css_property => $css_value){
-					$replacement = $this->get_constant_replacement($block, $value);
-					$this->parsed[$block][$selector][$css_property] = preg_replace('/(\$'.$constant.')\b/', $replacement, $css_value);
+				// Handle everything but @font-face
+				if($selector != '@font-face'){
+					foreach($styles as $property => $values){
+						// Ignore non-css properties
+						if($property{0} != '_'){
+							$num_values = count($values);
+							for($i = 0; $i < $num_values; $i++){
+								// Get the replacement value
+								$replacement = $this->get_constant_replacement($block, $constant_value);
+								// Replace the value with the constant's value
+								$this->parsed[$block][$selector][$property][$i] = preg_replace('/(\$'.$constant.')\b/', $replacement, $this->parsed[$block][$selector][$property][$i]);
+							}
+						}
+					}
+				}
+				// Handle @font-face
+				else{
+					foreach($styles as $key => $properties){
+						foreach($properties as $property => $values){
+							// Ignore non-css properties
+							if($property{0} != '_'){
+								$num_values = count($values);
+								for($i = 0; $i < $num_values; $i++){
+									// Get the replacement value
+									$replacement = $this->get_constant_replacement($block, $constant_value);
+									// Replace the value with the constant's value
+									$this->parsed[$block][$selector][$key][$property][$i] = preg_replace('/(\$'.$constant.')\b/', $replacement, $this->parsed[$block][$selector][$key][$property][$i]);
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -113,13 +144,15 @@ class Cssp extends Parser2 {
 		}
 		// Else search the true replacement
 		else{
+			// Search in the given block AND in the global block
 			$blocks = array('global');
 			if($block != 'global'){
 				$blocks[] = $block;
 			}
 			foreach($blocks as $block){
-				if(isset($this->parsed[$block]['@constants'][$matches[1][0]])){
-					return $this->get_constant_replacement($block, $this->parsed[$block]['@constants'][$matches[1][0]]);
+				if(isset($this->parsed[$block]['@constants'][$matches[1]])){
+					// We will only ever need the last value out of the constant's value array
+					return $this->get_constant_replacement($block, end($this->parsed[$block]['@constants'][$matches[1]]));
 				}
 			}
 		}
@@ -135,8 +168,31 @@ class Cssp extends Parser2 {
 		foreach($this->global_constants as $g_constant => $g_value){
 			foreach($this->parsed as $block => $css){
 				foreach($this->parsed[$block] as $selector => $styles){
-					foreach($styles as $property => $value){
-						$this->parsed[$block][$selector][$property] = preg_replace('/(\$_'.$g_constant.')\b/', $g_value, $value);
+					// Handle everything but @font-face
+					if($selector != '@font-face'){
+						foreach($styles as $property => $values){
+							// Ignore non-css properties
+							if($property{0} != '_'){
+								$num_values = count($values);
+								for($i = 0; $i < $num_values; $i++){
+									$this->parsed[$block][$selector][$property][$i] = preg_replace('/(\$_'.$g_constant.')\b/', $g_value, $this->parsed[$block][$selector][$property][$i]);
+								}
+							}
+						}
+					}
+					// Handle @font-face
+					else{
+						foreach($styles as $key => $properties){
+							foreach($properties as $property => $values){
+								// Ignore non-css properties
+								if($property{0} != '_'){
+									$num_values = count($values);
+									for($i = 0; $i < $num_values; $i++){
+										$this->parsed[$block][$selector][$key][$property][$i] = preg_replace('/(\$_'.$g_constant.')\b/', $g_value, $this->parsed[$block][$selector][$key][$property][$i]);
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -174,6 +230,8 @@ class Cssp extends Parser2 {
 	 */
 	protected function apply_block_aliases($aliases, $block){
 		foreach($aliases as $alias => $alias_value){
+			// We will only ever need the last value out of the constant's value array
+			$alias_value = end($alias_value);
 			foreach($this->parsed[$block] as $selector => $styles){
 				// Replace in selectors: add a new element with the full selector and delete the old one
 				$newselector = preg_replace('/(\$'.$alias.')\b/', $alias_value, $selector);
@@ -184,13 +242,26 @@ class Cssp extends Parser2 {
 				}
 				// Replace in values
 				foreach($styles as $property => $value){
-					$matches = array();
-					if($property == 'extends' && isset($this->parsed[$block][$selector]['extends'])){
-						$this->parsed[$block][$selector]['extends'] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $this->parsed[$block][$selector]['extends']);
-					}
-					elseif(isset($this->parsed[$block][$selector][$property]) && preg_match('/copy\((.*)[\s]+(.*)\)/', $this->parsed[$block][$selector][$property], $matches)){
-						$matches[1] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $matches[1]);
-						$this->parsed[$block][$selector][$property] = 'copy('.$matches[1].' '.$matches[2].')';
+					// Ignore non-css properties
+					if($property{0} != '_'){
+						if(isset($this->parsed[$block][$selector][$property])){
+							$num_property_values = count($this->parsed[$block][$selector][$property]);
+							for($i = 0; $i < $num_property_values; $i++){
+								$matches = array();
+								if($property == 'extends' && isset($this->parsed[$block][$selector]['extends'][$i])){
+									$this->parsed[$block][$selector]['extends'][$i] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $this->parsed[$block][$selector]['extends'][$i]);
+								}
+								else{
+									// Ignore @font-face and @import
+									if($selector != '@font-face' && $selector != '@import'){
+										if(preg_match('/copy\((.*)[\s]+(.*)\)/', $this->parsed[$block][$selector][$property][$i], $matches)){
+											$matches[1] = preg_replace('/(\$'.$alias.')\b/', $alias_value, $matches[1]);
+											$this->parsed[$block][$selector][$property][$i] = 'copy('.$matches[1].' '.$matches[2].')';
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -207,32 +278,42 @@ class Cssp extends Parser2 {
 		foreach($this->parsed as $block => $css){
 			foreach($this->parsed[$block] as $selector => $styles){
 				// Full inheritance
-				if(isset($this->parsed[$block][$selector]['extends']) && !empty($this->parsed[$block][$selector]['extends'])){
-					$found = false;
-					// Parse ancestors
-					$ancestors =  $this->tokenize($this->parsed[$block][$selector]['extends'], array('"', "'", ','));
-					foreach($ancestors as $ancestor){
-						// Find ancestor
-						$ancestor_key = $this->find_ancestor_key($ancestor, $block);
-						// Merge ancestor's rules with own rules
-						if($ancestor_key){
-							$this->parsed[$block][$selector] = $this->merge_rules(
-								$this->parsed[$block][$selector],
-								$this->parsed[$block][$ancestor_key],
-								array(),
-								false
-							);
-							$found = true;
+				if(isset($this->parsed[$block][$selector]['extends'])){
+					$num_extends = count($this->parsed[$block][$selector]['extends']);
+					for($i = 0; $i < $num_extends; $i++){
+						$found = false;
+						// Parse ancestors
+						$ancestors = $this->tokenize($this->parsed[$block][$selector]['extends'][$i], array('"', "'", ','));
+						// First merge all the ancestor's rules into one...
+						$ancestors_rules = array();
+						foreach($ancestors as $ancestor){
+							// Find ancestor
+							$ancestor_key = $this->find_ancestor_key($ancestor, $block);
+							// Merge ancestor's rules with own rules
+							if($ancestor_key){
+								$ancestors_rules = $this->merge_rules(
+									$ancestors_rules,
+									$this->parsed[$block][$ancestor_key],
+									array(),
+									true
+								);
+								$found = true;
+							}
+						}
+						// ... then merge the combined ancestor's rules into $parsed
+						$this->parsed[$block][$selector] = $this->merge_rules(
+							$this->parsed[$block][$selector],
+							$ancestors_rules,
+							array(),
+							false
+						);
+						// Report error if no ancestor was found
+						if(!$found){
+							$this->report_error($selector.' could not find '.$this->parsed[$block][$selector]['extends'][$i].' to inherit properties from.');
 						}
 					}
-					// Report error if no ancestor was found
-					if(!$found){
-						$this->report_error($selector.' could not find '.$this->parsed[$block][$selector]['extends'].' to inherit properties from.');
-					}
-					else{
-						// Unset the extends property
-						unset($this->parsed[$block][$selector]['extends']);
-					}
+					// Unset the extends property
+					unset($this->parsed[$block][$selector]['extends']);
 				}
 			}
 		}
@@ -247,37 +328,77 @@ class Cssp extends Parser2 {
 	public function apply_copying(){
 		foreach($this->parsed as $block => $css){
 			foreach($this->parsed[$block] as $selector => $styles){
-				$inheritance_pattern = '/copy\((.*)[\s]+(.*)\)/';
-				foreach($styles as $property => $value){
-					// Properties that have multiple values as an array are possible too...
-					if(!is_array($value)){
-						$value = array($value);
+				// Handle everything but @font-face
+				if($selector != '@font-face'){
+					foreach($styles as $property => $values){
+						// Ignore non-css properties
+						if($property{0} != '_'){
+							$this->apply_copying_values($block, $selector, $property, $values, null);
+						}
 					}
-					foreach($value as $val){
-						if(preg_match($inheritance_pattern, $val)){
-							$found = false;
-							preg_match_all($inheritance_pattern, $val, $matches);
-							if(isset($this->parsed[$block][$matches[1][0]][$matches[2][0]])){
-								$this->parsed[$block][$selector][$property] = $this->parsed[$block][$matches[1][0]][$matches[2][0]];
-								$found = true;
-							}
-							else{ // Search for partial matches
-								foreach($this->parsed[$block] as $full_selectors => $v){
-									$tokenized_selectors = $this->tokenize($full_selectors, ',');
-									if(in_array($matches[1][0], $tokenized_selectors)){
-										if(isset($this->parsed[$block][$full_selectors][$matches[2][0]])){
-											$this->parsed[$block][$selector][$matches[2][0]] = $this->parsed[$block][$full_selectors][$matches[2][0]];
-											$found = true;
-										}
-									}
-								}
-							}
-							// Report error if no source was found
-							if(!$found){
-								$this->report_error($selector.' could not find '.$matches[1][0].' to copy '.$matches[2][0].' from.');
+				}
+				// Handle @font-face
+				else{
+					foreach($styles as $key => $properties){
+						foreach($properties as $property => $values){
+							// Ignore non-css properties
+							if($property{0} != '_'){
+								$this->apply_copying_values($block, $selector, $property, $values, $key);
 							}
 						}
 					}
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * apply_copying_values
+	 * Applies copying to a bunch of values
+	 * @param string $block The block of the element being processed
+	 * @param string $selector The selector of the element being processed
+	 * @param string $property The property that is being processed
+	 * @param array $values The values to apply copying to
+	 * @param int $fontfacekey The @font-face index, if any
+	 * @return void
+	 */
+	private function apply_copying_values($block, $selector, $property, $values, $fontfacekey = NULL){
+		// Set destination element - if we have a $fontfacekey, target a @font-face element
+		if($fontfacekey !== NULL){
+			$dest =& $this->parsed[$block]['@font-face'][$fontfacekey][$property];
+		}
+		else{
+			$dest =& $this->parsed[$block][$selector][$property];
+		}
+		// The copy syntax matching regex
+		$copying_pattern = '/copy\((.*)[\s]+(.*)\)/';
+		// Loop through the values
+		$values_num = count($values);
+		for($i = 0; $i < $values_num; $i++){
+			if(preg_match($copying_pattern, $values[$i])){
+				$found = false;
+				preg_match_all($copying_pattern, $values[$i], $matches);
+				// Exact selector matches
+				if(isset($this->parsed[$block][$matches[1][0]][$matches[2][0]])){
+					$dest[$i] = $this->get_final_value($this->parsed[$block][$matches[1][0]][$matches[2][0]], $property);
+					$found = true;
+				}
+				// Search for partial selector matches, ie. "#foo" in "#bar, #foo, #blah"
+				else{
+					foreach($this->parsed[$block] as $full_selectors => $v){
+						$tokenized_selectors = $this->tokenize($full_selectors, ',');
+						if(in_array($matches[1][0], $tokenized_selectors)){
+							if(isset($this->parsed[$block][$full_selectors][$matches[2][0]])){
+								$dest[$i] = $this->get_final_value($this->parsed[$block][$full_selectors][$matches[2][0]], $property);
+								$found = true;
+							}
+						}
+					}
+				}
+				// Report error if no source was found
+				if(!$found){
+					$this->report_error($selector.' could not find '.$matches[1][0].' to copy '.$matches[2][0].' from.');
 				}
 			}
 		}
@@ -293,24 +414,27 @@ class Cssp extends Parser2 {
 		foreach($this->parsed as $block => $css){
 			foreach($this->parsed[$block] as $selector => $styles){
 				foreach($styles as $property => $value){
-					// Find possivle expandable properties
-					if(strpos($property, ',') !== false){
-						$properties = $this->tokenize($property, ',');
-						if(count($properties) > 1){
-							// Rebuild the selector's contents with the expanded selectors
-							$newcontents = array();
-							foreach($this->parsed[$block][$selector] as $p => $v){
-								if($p == $property){
-									foreach($properties as $expanded){
-										$newcontents[$expanded] = $v;
+					// Ignore non-css properties
+					if($property{0} != '_'){
+						// Find possible expandable properties
+						if(strpos($property, ',') !== false){
+							$properties = $this->tokenize($property, ',');
+							if(count($properties) > 1){
+								// Rebuild the selector's contents with the expanded selectors
+								$newcontents = array();
+								foreach($this->parsed[$block][$selector] as $p => $v){
+									if($p == $property){
+										foreach($properties as $expanded){
+											$newcontents[$expanded] = $v;
+										}
+									}
+									else{
+										$newcontents[$p] = $v;
 									}
 								}
-								else{
-									$newcontents[$p] = $v;
-								}
+								// Set the selector's contents to the new array with the expanded selectors
+								$this->parsed[$block][$selector] = $newcontents;
 							}
-							// Set the selector's contents to the new array with the expanded selectors
-							$this->parsed[$block][$selector] = $newcontents;
 						}
 					}
 				}
@@ -321,8 +445,7 @@ class Cssp extends Parser2 {
 
 	/***
 	 * merge_rules
-	 * Merges possible conflicting css rules.
-	 * Overloads the parsers native merge_rules method to make exclusion of certain properties possible
+	 * Merges possible conflicting css rules
 	 * @param mixed $old The OLD rules (overridden by the new rules)
 	 * @param mixed $new The NEW rules (override the old rules)
 	 * @param array $exclude A list of properties NOT to merge
@@ -331,16 +454,20 @@ class Cssp extends Parser2 {
 	 */
 	public function merge_rules($old, $new, $exclude = array(), $allow_overwrite = true){
 		$rule = $old;
-		foreach($new as $property => $value){
+		foreach($new as $property => $values){
+			// If the property is not excluded...
 			if(!in_array($property, $exclude)){
+				// ... apply the values one by one...
 				if(isset($rule[$property])){
-					$tokens = $this->tokenize($rule[$property]);
-					if($allow_overwrite == true && !in_array('!important', $tokens)){
-						$rule[$property] = $value;
+					if($allow_overwrite){
+						foreach($values as $value){
+							$rule[$property][] = $value;
+						}
 					}
 				}
+				// ... or copy the whole set of values
 				else{
-					$rule[$property] = $value;
+					$rule[$property] = $values;
 				}
 			}
 		}
@@ -392,19 +519,36 @@ class Cssp extends Parser2 {
 	/**
 	 * insert
 	 * Inserts an element at a specific position in the block
-	 * @param array $elements The element to insert
+	 * @param array $elements The elements to insert
 	 * @param string $block The block to insert into
 	 * @param string $before The element after which the new element is inserted
+	 * @param string $after The element before which the new element is inserted
 	 * @return void
 	 */
-	public function insert($elements, $block, $before){
+	public function insert($elements, $block, $before = NULL, $after = NULL){
 		$newblock = array();
+		// If $before and $after are NULL, insert the new Element at the top
+		if($before == NULL && $after == NULL){
+			$newblock = $this->insert_elements($elements, $block, $newblock);
+		}
+		// Walk through the whole parsed code
 		foreach($this->parsed[$block] as $selector => $styles){
-			$newblock[$selector] = $styles;
-			if($selector == $before){
-				foreach($elements as $newselector => $newstyles){
-					$newblock[$newselector] = $newstyles;
-				}
+			// Handle $after
+			if($elements != null && $after != NULL && $selector == $after){
+				$newblock = $this->insert_elements($elements, $block, $newblock);
+				$elements = null;
+			}
+			// Insert of the current old element
+			if(isset($newblock[$selector])){
+				$newblock[$selector] = $this->merge_rules($this->parsed[$block][$selector], $newblock[$selector]);
+			}
+			else{
+				$newblock[$selector] = $this->parsed[$block][$selector];
+			}
+			// Handle $before
+			if($elements != null && $before != NULL && $selector == $before){
+				$newblock = $this->insert_elements($elements, $block, $newblock);
+				$elements = null;
 			}
 		}
 		$this->parsed[$block] = $newblock;
@@ -412,28 +556,57 @@ class Cssp extends Parser2 {
 
 
 	/**
-	 * insert_rules
-	 * Inserts an array of css rules (property => value) into an element at a specific position
-	 * @param array $rules The css rules to insert
-	 * @param string_type $block The block where the element $element is to be found
-	 * @param string $element The element to insert the rules into
-	 * @param string $before The property after which the rules are to be inserted
-	 * @return void
+	 * insert_elements
+	 * Merges or appends elements into a new block, preserving old styles from $this->parsed
+	 * @param array $elements The elements to insert
+	 * @param string $block The $this->parsed block to take old information from
+	 * @param array $newblock The new block to insert into
+	 * @return array $newblock
 	 */
-	public function insert_rules($rules, $block, $element, $before = null){
-		$newelement = array();
-		// If there's no $before, insert the new rules at the top
-		if(!$before){
-			foreach($rules as $newproperty => $newvalue){
-				$newelement = $this->insert_property($newelement, $newproperty, $newvalue);
+	private function insert_elements($elements, $block, $newblock){
+		foreach($elements as $newselector => $newstyles){
+			if(isset($this->parsed[$block][$newselector])){
+				$newblock[$newselector] = $this->merge_rules($this->parsed[$block][$newselector], $newstyles);
+			}
+			else{
+				$newblock[$newselector] = $newstyles;
 			}
 		}
-		// Add the properties one after another, insert new ones after $before
-		foreach($this->parsed[$block][$element] as $property => $value){
-			$newelement[$property] = $value;
-			if($property == $before){
-				foreach($rules as $newproperty => $newvalue){
-					$newelement = $this->insert_property($newelement, $newproperty, $newvalue);
+		return $newblock;
+	}
+
+
+	 /**
+	 * insert_properties
+	 * Inserts an array of css rules (property => Array of values) into an element at a specific position
+	 * @param array $rules The css rules to insert
+	 * @param string $block The block where the element $element is to be found
+	 * @param string $element The element to insert the rules into
+	 * @param string $before The property after which the rules are to be inserted
+	 * @param string $after The property before which the rules are to be inserted
+	 * @return void
+	 */
+	public function insert_properties($rules, $block, $element, $before = null, $after = null){
+		$newelement = array();
+		// If $before and $after are NULL, insert the new rules at the top
+		if($before == NULL && $after == NULL){
+			foreach($rules as $newproperty => $newvalues){
+				$newelement = $this->insert_property($newelement, $newproperty, $newvalues);
+			}
+		}
+		// Else walk through the whole element
+		foreach($this->parsed[$block][$element] as $property => $values){
+			// Handle $after
+			if($after != NULL && $property == $after){
+				foreach($rules as $newproperty => $newvalues){
+					$newelement = $this->insert_property($newelement, $newproperty, $newvalues);
+				}
+			}
+			$newelement[$property] = $values;
+			// Handle $before
+			if($before != NULL && $property == $before){
+				foreach($rules as $newproperty => $newvalues){
+					$newelement = $this->insert_property($newelement, $newproperty, $newvalues);
 				}
 			}
 		}
@@ -446,20 +619,20 @@ class Cssp extends Parser2 {
 	 * Inserts a new property into an array without overwriting any other properties
 	 * @param array $set The array to insert into
 	 * @param string $property The property name
-	 * @param string $value The propertie's value
+	 * @param array $values The properties' values
 	 * @return array $set The set with the new property inserted
 	 */
-	private function insert_property($set, $property, $value){
+	private function insert_property($set, $property, $values){
+		// take care of legacy plugins that might pass a single value as a string
+		if(!is_array($values)){
+			$values = array($values);
+		}
+		// Insert the property
 		if(isset($set[$property])){
-			if(is_array($set[$property])){
-				$set[$property][] = $value;
-			}
-			else{
-				$set[$property] = array($set[$property], $value);
-			}
+			$set[$property] = array_merge($set[$property], $values);
 		}
 		else{
-			$set[$property] = $value;
+			$set[$property] = $values;
 		}
 		return $set;
 	}
