@@ -84,12 +84,8 @@
 	decrease css devolopment time and web developer headache. Turbine takes something like this&nbsp;&hellip;
 </p>
 <pre class="cssp">
-// Welcome to Turbine! This is a line comment
+// Welcome to Turbine!
 @media screen
-
---
-This is a block comment
---
 
 #foo, #bar
     color:#FF0000
@@ -537,6 +533,12 @@ $mainNavigation
 	All <code>.cssp</code> are processed completly independent from each other. Inside the files, constants and aliases apply only to
 	the <code>@media</code>-block they are defined in. The exception is the set of constents defined outside of any block&nbsp;&ndash;
 	they apply to the whole file.
+</p>
+<p>
+	<img src="scope.png">
+</p>
+<p>
+	Example:
 </p>
 <pre class="cssp">@constants
     mycolor:#F00 // Defined outside of any @media block = applies _globally_
