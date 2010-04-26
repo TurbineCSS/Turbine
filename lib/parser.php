@@ -26,7 +26,6 @@
  * Parser2
  * Turbine syntax parser
  * @todo document the comment() method
- * @todo document the fact that one cannot copy or inherit from an @font-face declaration
  * @todo fix the following plugins: Browser, OS, Transform
  */
 class Parser2 extends Base{
@@ -649,7 +648,6 @@ class Parser2 extends Base{
 	 * @return string $output The final CSS code
 	 */
 	public function glue($compressed = false){
-		print_r($this->parsed);
 		$output = '';
 		// Whitspace characters
 		$s = ' ';

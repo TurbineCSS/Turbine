@@ -534,8 +534,9 @@ $mainNavigation
 </p>
 <h3>Scope</h3>
 <p>
-	Constants and aliases apply only to the <code>@media</code>-block they are defined in. The exception is the set of constents defined
-	outside of any block&nbsp;&ndash; they apply to the whole file.
+	All <code>.cssp</code> are processed completly independent from each other. Inside the files, constants and aliases apply only to
+	the <code>@media</code>-block they are defined in. The exception is the set of constents defined outside of any block&nbsp;&ndash;
+	they apply to the whole file.
 </p>
 <pre class="cssp">@constants
     mycolor:#F00 // Defined outside of any @media block = applies _globally_
@@ -577,7 +578,8 @@ $mainNavigation
 <h2 id="usage-inheritancetemplating">Inheritance and Prototyping</h2><div>
 <p>
 	Turbine's inheritance, prototyping and copying features allow you to pass around chunks of properties and values between elements in
-	your code.
+	your code. Note that <code>@font-face</code> and <code>@import</code> elements can copy and interit properties from other elements,
+	but they cannot be copied or inherited from.
 </p>
 <h3>Copying values from other elements</h3>
 <p>
@@ -1670,7 +1672,12 @@ span.test
 	Don't be afraid to do anything CPU- or memory consuming in your plugins - in production mode, everything is calculated
 	only once and is served from the cache afterwards.
 </p>
-<h3>The browser class</h3>
+<h3>Useful classes and methods for plugin development</h3>
+<h4>The <code>$cssp</code> instance</h4>
+<p>
+	TODO
+</p>
+<h4>The browser class</h4>
 <p>
 	TODO
 </p>
@@ -1716,9 +1723,8 @@ span.test
 		Turbine is beta software. Expect stuff to break everywhere, all the time. If you encounter bugs, <a href="http://github.com/SirPepe/Turbine/issues">report them</a>!
 	</li>
 	<li>
-		Try not to mess up your indention! Seriously. Turbine is (at the moment) not very good at catching incorrectly
-		indented lines and they <em>will</em> destroy your css in places you'll never expect. So just pay attention to your whitespace
-		or wait for the parser to become/help us to make the parser more tolerant towards indention errors.
+		Try not to mess up your indention! Seriously. Turbine is not <em>that</em> goot at catching incorrectly indented lines and they
+		<em>will</em> destroy your css in places you'll never expect. So just pay attention to your whitespace!
 	</li>
 	<li>
 		Don't use constants only for colors! If you use them for font stacks and paths, you can save yourself a lot of typing&nbsp;&ndash;
