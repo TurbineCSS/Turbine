@@ -8,6 +8,7 @@
 	 * Usage: Nobrainer, just switch it on
 	 * Example: -
 	 * Status: Stable
+	 * Version: 1.0
 	 * 
 	 * @param mixed &$parsed
 	 * @return void

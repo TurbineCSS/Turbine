@@ -6,7 +6,8 @@
 	 * 
 	 * Usage: Nobrainer, just switch it on
 	 * Example: -
-	 * Status: Beta
+	 * Status: Stable
+	 * Version: 1.0
 	 * 
 	 * html5
 	 * Adds the correct default styles for HTML5 elements
