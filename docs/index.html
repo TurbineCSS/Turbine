@@ -52,7 +52,7 @@
 				<li><a href="#plugins-reset">Reset stylesheet</a></li>
 				<li><a href="#plugins-transforms">Transforms</a></li>
 				<li><a href="#plugins-meta">Meta plugins</a></li>
-				<li><a href="#plugins-experimental">Experimental plugins</a></li>
+				<!--<li><a href="#plugins-experimental">Experimental plugins</a></li>-->
 			</ul>
 		</li>
 		<li>&darr; <a href="#dev">Development</a>
@@ -446,7 +446,7 @@ This is a block comment
 }</pre>
 <h3>Multi-line selectors</h3>
 <p>
-	A selector can span multiple lines if each line except tha last one ends with a comma:
+	A selector can span multiple lines if each line except the last one ends with a comma:
 </p>
 <pre class="cssp">#header,
 #footer,
@@ -791,11 +791,10 @@ div.blackRound
 	Automatically adds vendor-specific versions of <code>border-radius</code> and implements some shortcuts.
 </p>
 <p>
-	Webkit and Mozilla browsers require vendor-specific prefixes for the CSS3 property <code>border-radius</code>. This plugin automatically
-	inserts all of them wherever a <code>border-radius</code> property is found and also adds a HTC-Hack for Internet Explorer (only for
-	simple <code>border-radius</code>, not <code>border-left-radius</code> etc). Additionally, the plugin provides shortcuts for adding rounded
-	corners only on the left, right, top or bottom side of an element: <code>border-left-radius</code>, <code>border-right-radius</code>,
-	<code>border-top-radius</code>, <code>border-bottom-radius</code>
+	Webkit and Mozilla browsers require vendor-specific prefixes for the CSS3 property <code>border-radius</code>. This plugin
+	automatically inserts all of them wherever a <code>border-radius</code> property is found. Additionally, the plugin provides
+	shortcuts for adding rounded corners only on the left, right, top or bottom side of an element: <code>border-left-radius</code>,
+	<code>border-right-radius</code>, <code>border-top-radius</code>, <code>border-bottom-radius</code>.
 </p>
 <h3>Usage</h3>
 <p>
@@ -873,7 +872,7 @@ div.blackRound
 
 
 
-<h2 id="plugins-fontface">@font-face syntax</h2><div>
+<h2 id="plugins-fontface">Simple @font-face</h2><div>
 <p class="abstract">
 	Generates @font-face declarations from a simplified syntax.
 </p>
@@ -891,7 +890,7 @@ div.blackRound
 		url("GraublauWeb.svg#grablau") format("svg");
 }</pre>
 <p>
-	The @font-face syntax plugin generates browser-specific @font-face declarations from a very simplified syntax.
+	The @font-face syntax plugin generates <strong>browser-specific @font-face declarations</strong> from a very simplified syntax.
 </p>
 <h3>Usage</h3>
 <ol>
@@ -906,9 +905,9 @@ div.blackRound
 		</ul>
 	</li>
 	<li>Build a special <code>@font-face</code>-rule with a single <code>src</code>-property pointing not to a real
-	file but to that common basename, e.g. "<code>src:url('fonts/SaginawMedium')</code>"</li>
+	file but to the common basename, e.g. "<code>src:url('fonts/SaginawMedium')</code>"</li>
 	<li>The plugin will look after any known fontfile format by appending the suffixes
-	<code>.eot, .woff, .otf, .ttf</code> and <code>.svg</code>.<br />
+	<code>.eot, .woff, .otf, .ttf</code> and <code>.svg</code>.
 	<ul>
 		<li>For IE &lt;= 8 it will serve the .eot-file if there is one named <code>fonts/SaginawMedium.eot</code>.</li>
 		<li>For the other browser it will serve as many of the other flavors as available.<br />
@@ -997,7 +996,8 @@ div.blackRound
 </p>
 <p>
 	The colormodels plugin enables the CSS color declarations <code>rgba()</code>, </code>hsl()</code> and <code>hsla()</code> for browsers
-	that usually don't support them. It works by transforming the original declarations to somthing the current browser can understand.
+	that usually don't support them. It works by transforming the original declarations to somthing the browser that is currently used
+	can understand.
 </p>
 <h3>Usage</h3>
 <p>
@@ -1010,7 +1010,7 @@ div.blackRound
 <pre class="cssp">p
     background:hsla(200, 20%, 20%, 0.5)</pre>
 <p>
-	&hellip; is recalculated to RGBA for Opera 9:
+	&hellip; is recalculated to RGBA for Opera 9, which doesn't support <code>hsla()</code>:
 </p>
 <pre class="css">p {
     background: rgba(40, 54, 61, 0.5);
@@ -1024,7 +1024,8 @@ div.blackRound
     zoom: 1;
 }</pre>
 <p>
-	If neither filters nor anything else would work, a solid color is used:
+	If neither filters nor anything else would work (e.g. in really prehistoric browsers or in IE for non-background properties), a solid
+	color is used:
 </p>
 <pre class="css">p {
     background: rgb(40, 54, 61);
@@ -1069,7 +1070,7 @@ p.foobar
 </p>
 <p>
 	The Data URI plugin inlines all images smaller than 24kb as base64 encoded as a data URI or, for Internet Explorer, as MHTML. This
-	reduces the number of HTTP requests.
+	significantly reduces the number of HTTP requests.
 </p>
 <h3>Usage</h3>
 <p>
@@ -1098,7 +1099,7 @@ p.foobar
 <p>
 	The HTML5 plugin adds most of the correct default styles for HTML5 elements according to <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/rendering.html#the-css-user-agent-style-sheet-and-presentational-hints">the specifications</a>.
 	Some parts of the specifications (like the font size for headlines in sectioning content) are ignored because they would require an
-	insane amount of css code to implement correctly. Note that for this plugin to work in internet explorer you still have to
+	insane amount of css code to implement correctly. Note that for this plugin to work in Internet Explorer you still have to
 	<a href="http://code.google.com/p/html5shiv/">enable HTML5 elements via javascript</a>.
 </p>
 <h3>Usage</h3>
@@ -1371,7 +1372,7 @@ table {
 </p>
 <h3>CSS3</h3>
 <p>
-	Activates all other plugins that enable CSS3 properties:
+	Activates all other plugins that enable advanced CSS properties:
 </p>
 <ul>
 	<li>Border radius</li>
@@ -1392,8 +1393,8 @@ table {
 	Activates all other plugins that help you to support older browsers:
 </p>
 <ul>
-	<li>IE6 enhancements</li>
-	<li>IE Bugfixes</li>
+	<li>IE enhancements</li>
+	<li>Bugfixes</li>
 	<li>Inline block</li>
 </ul>
 <h3>Utility</h3>
@@ -1401,14 +1402,14 @@ table {
 	Activates all other plugins that add helpful utilities:
 </p>
 <ul>
-	<li>Bullet proof @font-face</li>
+	<li>Simple @font-face</li>
 	<li>Quote style</li>
 </ul>
 </div>
 
 
 
-<h2 id="plugins-experimental">Experimental plugins</h2><div>
+<!--<h2 id="plugins-experimental">Experimental plugins</h2><div>
 <p>
 	Some experimental plugins are not yet officially part of Turbine but you can play with them (or improve them) if you like. They
 	are available via the <a href="http://github.com/SirPepe/Turbine/tree/experimental">experimental development branch</a> on Github.
@@ -1420,7 +1421,7 @@ table {
 	<li><strong>colortools</strong>: Functions to manipulate color in cssp files</li>
 	<li><strong>transition</strong>: CSS3 transitions</li>
 </ul>
-</div>
+</div>-->
 
 
 
