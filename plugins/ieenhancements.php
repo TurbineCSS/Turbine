@@ -24,7 +24,9 @@
 							$value = $cssp->get_final_value($parsed[$block][$selector]['opacity'], 'opacity');
 							$filter_value = 100 * floatval($value);
 							$parsed[$block][$selector]['filter'][] = 'alpha(opacity='.$filter_value.')';
+							CSSP::comment($parsed[$block][$selector], 'filter', 'Modified/Added by IE enhancements plugin');
 							$parsed[$block][$selector]['zoom'][] = '1';
+							CSSP::comment($parsed[$block][$selector], 'zoom', 'Modified/Added by IE enhancements plugin');
 						}
 					}
 				}
@@ -33,9 +35,11 @@
 					// Missing :hover-property on every tag except link-tag, see http://www.xs4all.nl/~peterned/csshover.html
 					$htc_path = trim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/ieenhancements/csshover3.htc';
 					$parsed['global']['body']['behavior'][] = 'url("'.$htc_path.'")';
+					CSSP::comment($parsed['global']['body'], 'behavior', 'Modified/Added by IE enhancements plugin');
 					// Fix transparent PNGs, see http://www.twinhelix.com/css/iepngfix/
 					$htc_path = trim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/ieenhancements/iepngfix.htc';
 					$parsed['global']['img']['behavior'][] = 'url("'.$htc_path.'")';
+					CSSP::comment($parsed['global']['img'], 'behavior', 'Modified/Added by IE enhancements plugin');
 				}
 			}
 		}
