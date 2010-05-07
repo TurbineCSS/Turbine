@@ -47,6 +47,7 @@
 	 * Status:  Stable
 	 * Version: 1.1
 	 * 
+	 * @todo Include a fix for webkit? http://paulirish.com/2010/font-face-gotchas/
 	 * @param mixed &$parsed
 	 * @return void
 	 */
