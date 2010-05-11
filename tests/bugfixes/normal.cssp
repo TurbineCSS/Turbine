@@ -1,7 +1,0 @@
-@turbine
-	plugins:load
-
-@aliases
-	prefix:.normal
-
-@load url($_FILEPATH/tests.cssp)

@@ -67,6 +67,7 @@ $cssp = new CSSP();
 
 // Get and store browser properties
 $browser = new Browser();
+$browser->parse();
 
 
 // Set global path constant SCRIPTPATH for use in the special constant $_SCRIPTPATH
@@ -148,14 +149,12 @@ if($_GET['files']){
 				// Server-side cache: Create a name for the new cache file
 				$cachefile = md5(
 					$browser->platform.
-					$browser->platformversion.
-					$browser->platformtype.
+					$browser->platform_version.
+					$browser->platform_type.
 					$browser->engine.
-					$browser->engineversion.
-					$browser->family.
-					$browser->familyversion.
-					$browser->name.
-					$browser->version.
+					$browser->engine_version.
+					$browser->browser.
+					$browser->browser_version.
 					$file
 				).'.txt';
 
@@ -303,15 +302,13 @@ if($_GET['files']){
 			'Version' => TURBINEVERSION,
 			'Path' => TURBINEPATH,
 			'Benchmark' => $end - $start,
-			'Browser' => $browser->name,
-			'Browser version' => $browser->version,
-			'Browser family' => $browser->family,
-			'Browser family version' => $browser->familyversion,
+			'Browser' => $browser->browser,
+			'Browser version' => $browser->browser_version,
 			'Browser engine' => $browser->engine,
-			'Browser engine version' => $browser->engineversion,
+			'Browser engine version' => $browser->engine_version,
 			'Platform' => $browser->platform,
-			'Platform version' => $browser->platformversion,
-			'Platform type' => $browser->platformtype
+			'Platform version' => $browser->platform_version,
+			'Platform type' => $browser->platform_type
 		);
 		foreach($debugginginfo as $key => $value){
 			echo "\r\n\t$key: $value";

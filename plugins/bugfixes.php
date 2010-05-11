@@ -16,7 +16,7 @@
 		$changed = array();
 
 		// IE 6 global bugfixes
-		if($browser->engine == 'MSIE' && floatval($browser->engineversion) < 7){
+		if($browser->browser == 'ie' && floatval($browser->browser_version) < 7){
 			// Image margin bottom bug
 			$changed['img']['vertical-align'][] = 'bottom';
 			// Background image flickers on hover
@@ -24,7 +24,7 @@
 		}
 
 		// IE 6 + 7 global bugfixes
-		if($browser->engine == 'MSIE' && floatval($browser->engineversion) < 8){
+		if($browser->browser == 'ie' && floatval($browser->browser_version) < 8){
 			// Enable full styleability for IE-buttons, see http://www.sitepoint.com/forums/showthread.php?t=547059
 			$changed['button']['overflow'][] = 'visible';
 			$changed['button']['width'][] = 'auto';
@@ -32,7 +32,7 @@
 		}
 
 		// Firefox global bugfixes
-		if($browser->engine == 'Gecko'){
+		if($browser->browser == 'firefox'){
 			// Ghost margin around buttons, see http://www.sitepoint.com/forums/showthread.php?t=547059
 			$changed['button::-moz-focus-inner']['padding'][] = '0';
 			$changed['button::-moz-focus-inner']['border'][] = 'none';
@@ -53,7 +53,7 @@
 			foreach($cssp->parsed[$block] as $selector => $styles){
 
 				// IE 6 per-element-bugfixes
-				if($browser->engine == 'MSIE' && floatval($browser->engineversion) < 7){
+				if($browser->browser == 'ie' && floatval($browser->browser_version) < 7){
 					// Float double margin bug, fixed with a behavior as this only affects the floating object and no descendant of it
 					if(isset($cssp->parsed[$block][$selector]['float']) && $cssp->get_final_value($cssp->parsed[$block][$selector]['float']) != 'none'){
 						$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/bugfixes/doublemargin.htc';
@@ -63,7 +63,7 @@
 				}
 
 				// IE 6 + 7 per-element-bugfixes
-				if($browser->engine == 'MSIE' && floatval($browser->engineversion) < 8){
+				if($browser->browser == 'ie' && floatval($browser->browser_version) < 8){
 					// Enable overflow:hidden, if present
 					if(isset($cssp->parsed[$block][$selector]['overflow']) && $cssp->get_final_value($cssp->parsed[$block][$selector]['overflow']) == 'hidden' && !isset($cssp->parsed[$block][$selector]['position'])){
 						$cssp->parsed[$block][$selector]['position'][] = 'relative';
