@@ -67,7 +67,7 @@
 							$newfont = '';
 							$message = '';
 							// If we are dealing with IE <= 8 then check for EOT only
-							if($browser->family == 'MSIE' && floatval($browser->familyversion) <= 8){
+							if($browser->engine == 'ie' && floatval($browser->engine_version) <= 8){
 								$fontfile_eot = $fontfile_base.'.eot';
 								// If there exists an EOT-file point to it
 								if(file_exists($basedirectory.'/'.$fontfile_eot)){

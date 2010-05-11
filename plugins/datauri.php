@@ -18,14 +18,12 @@
 		global $file;
 		$mhtmlmd5 = md5(
 			$browser->platform.
-			$browser->platformversion.
-			$browser->platformtype.
+			$browser->platform_version.
+			$browser->platform_type.
 			$browser->engine.
-			$browser->engineversion.
-			$browser->family.
-			$browser->familyversion.
-			$browser->name.
-			$browser->version.
+			$browser->engine_version.
+			$browser->browser.
+			$browser->browser_version.
 			$file
 		);
 		// Start preparing MHTML
@@ -52,19 +50,19 @@
 											$imagetype = strtolower($pathinfo['extension']);
 											$imagedata = base64_encode(file_get_contents($imagefile));
 											if(
-												($browser->family == 'MSIE' && floatval($browser->familyversion) >= 8) || 
-												$browser->engine == 'Gecko' || 
-												$browser->family == 'Opera' || 
-												$browser->family == 'WebKit' || 
-												$browser->family == 'KHTML'
+												($browser->engine == 'ie' && floatval($browser->engine_version) >= 8) || 
+												$browser->engine == 'gecko' || 
+												$browser->engine == 'opera' || 
+												$browser->engine == 'webkit' || 
+												$browser->engine == 'khtml'
 											){
 												$parsed[$block][$selector][$property][$i] = preg_replace($regex, '$1\'data:image/'.$imagetype.';base64,'.$imagedata.'\'$3', $parsed[$block][$selector][$property][$i]);
 											}
 											elseif(
-												$browser->family == 'MSIE' && 
+												$browser->engine == 'ie' && 
 												(
-													(floatval($browser->familyversion) < 7 && $browser->platform == 'Windows') || 
-													(floatval($browser->familyversion) < 8 && $browser->platform == 'Windows'  && $browser->platformversion < 6)
+													(floatval($browser->engine_version) < 7 && $browser->platform == 'win') || 
+													(floatval($browser->engine_version) < 8 && $browser->platform == 'win'  && $browser->platform_version < 6)
 												) 
 											){
 												// Calculate identifier and anchor-tag for the MHTML-file

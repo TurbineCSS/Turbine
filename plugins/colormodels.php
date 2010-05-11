@@ -117,28 +117,28 @@
 	function colormodels_get_browser_capabilities(){
 		global $browser;
 		$capabilities = array();
-		if($browser->engine == 'MSIE'){
+		if($browser->engine == 'ie'){
 			$capabilities['filter'] = true;
 		}
-		elseif($browser->engine == 'Gecko'){
+		elseif($browser->engine == 'gecko'){
 			$capabilities['rgba'] = true;
-			if($browser->engineversion >= 1.81){
+			if($browser->engine_version >= 1.81){
 				$capabilities['hsl'] = true;
-				if($browser->engineversion >= 1.9){
+				if($browser->engine_version >= 1.9){
 					$capabilities['hsla'] = true;
 				}
 			}
 		}
-		elseif($browser->engine == 'WebKit'){
+		elseif($browser->engine == 'webkit'){
 			$capabilities['rgba'] = true;
-			if($browser->engineversion >= 522.11){
+			if($browser->engine_version >= 522.11){
 				$capabilities['hsl'] = true;
 				$capabilities['hsla'] = true;
 			}
 		}
-		elseif($browser->engine == 'Opera'){
+		elseif($browser->engine == 'opera'){
 			$capabilities['rgba'] = true;
-			if($browser->engineversion >= 10){
+			if($browser->engine_version >= 10){
 				$capabilities['hsl'] = true;
 				$capabilities['hsla'] = true;
 			}

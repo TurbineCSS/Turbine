@@ -104,7 +104,7 @@
 						$filter = 'progid:DXImageTransform.Microsoft.Matrix(Dx=1.0,Dy=1.0,M11='.($matrix_a * $scale_x).',M12='.($matrix_b * $scale_x).',M21='.($matrix_c * $scale_y).',M22='.($matrix_d * $scale_y).',sizingMethod=\'auto expand\')';
 						
 						//Adjust offset for IEs, needs to come in first
-						if($browser->family == 'MSIE' && floatval($browser->familyversion) < 9){
+						if($browser->engine == 'ie' && floatval($browser->engine_version) < 9){
 							if(!isset($parsed[$block][$selector]['position'])){
 								$parsed[$block][$selector]['position'] = 'relative';
 							}

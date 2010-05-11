@@ -19,11 +19,11 @@
 			foreach($cssp->parsed[$block] as $selector => $styles){
 				// Everywhere
 				if(isset($cssp->parsed[$block][$selector]['display']) && $cssp->get_final_value($cssp->parsed[$block][$selector]['display'], 'display') == 'inline-block'){
-					if($browser->engine == 'MSIE' && floatval($browser->engineversion) < 8){
+					if($browser->engine == 'ie' && floatval($browser->engine_version) < 8){
 						$cssp->parsed[$block][$selector]['display'][] = 'inline';
 						$cssp->parsed[$block][$selector]['zoom'][] = '1';
 					} 
-					elseif($browser->engine == 'Gecko' && floatval($browser->engineversion) < 1.9){
+					elseif($browser->engine == 'gecko' && floatval($browser->engine_version) < 1.9){
 						$cssp->parsed[$block][$selector]['display'][] = '-moz-inline-stack';
 					}
 				}

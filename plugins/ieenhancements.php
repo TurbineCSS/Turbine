@@ -15,9 +15,9 @@
 	 */
 	function ieenhancements(&$parsed){
 		global $browser, $cssp;
-		if($browser->engine == 'MSIE'){
+		if($browser->engine == 'ie'){
 			// Fixes for IE 6 and 7
-			if(floatval($browser->engineversion) < 8){
+			if(floatval($browser->engine_version) < 8){
 				// Enable opacity through a proprietary filter
 				foreach($parsed as $block => $css){
 					foreach($parsed[$block] as $selector => $styles){
@@ -32,7 +32,7 @@
 					}
 				}
 				// Fixes for IE 6 only
-				if(floatval($browser->engineversion) < 7){
+				if(floatval($browser->engine_version) < 7){
 					// Missing :hover-property on every tag except link-tag, see http://www.xs4all.nl/~peterned/csshover.html
 					$htc_path = trim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/ieenhancements/csshover3.htc';
 					$parsed['global']['body']['behavior'][] = 'url("'.$htc_path.'")';
