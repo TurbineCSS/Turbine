@@ -87,6 +87,18 @@ class Browser {
 
 
 	/**
+	 * @var array $gecko_firefox_versions Maps gecko engine versions to firefox versions
+	 */
+	public $gecko_firefox_versions = array(
+		'1.81' => '2.0',
+		'1.9'  => '3.0',
+		'1.91' => '3.5',
+		'1.92' => '3.6',
+		'1.93' => '4.0'
+	);
+
+
+	/**
 	 * __construct
 	 * Class constructor. Sets the user agent var
 	 * @return void
@@ -166,7 +178,6 @@ class Browser {
 			else{
 				$this->platform_type = 'desktop';
 			}
-			$this->platform_version = '0';
 		}
 		// Unix
 		elseif(preg_match('/(dragonfly|freebsd|openbsd|solaris|sunos)/i', $this->ua)){
@@ -327,27 +338,16 @@ class Browser {
 		// Firefox
 		elseif(preg_match('/(firefox|minefield|namoroka)/i', $this->ua, $name)){
 			$this->browser = 'firefox';
+			$this->browser_version = $this->get_firefox_version($name[0]);
 			$this->engine = 'gecko';
-			if(preg_match('/'.$name[0].'(?:\/|[\s])([0-9\.]+)/i', $this->ua, $matches)){
-				if(preg_match('/(songbird|flock)/i', $this->ua)){
-					$this->browser_version = 'unknown';
-				}
-				else{
-					$this->browser_version = $this->version_to_float($matches[1]);
-				}
-			}
-			if(preg_match('/rv:([0-9\.]+)/i', $this->ua, $matches)){
-				$this->engine_version = $this->version_to_float($matches[1]);
-			}
+			$this->engine_version = $this->get_gecko_version();
 		}
 		// Firefox variations
-		elseif(preg_match('/(songbird|flock)/i', $this->ua)){
+		elseif(preg_match('/(songbird|flock|seamonkey)/i', $this->ua)){
 			$this->browser = 'firefox';
-			$this->browser_version = 'unknown';
+			$this->browser_version = $this->get_firefox_version(null);
 			$this->engine = 'gecko';
-			if(preg_match('/rv:([0-9\.]+)/i', $this->ua, $matches)){
-				$this->engine_version = $this->version_to_float($matches[1]);
-			}
+			$this->engine_version = $this->get_gecko_version();
 		}
 	}
 
@@ -365,13 +365,13 @@ class Browser {
 		elseif(preg_match('/windows\s*([0-9\.]+)/i', $this->ua, $matches)){
 			return $this->version_to_float($matches[1]);
 		}
-		elseif(preg_match('/windows xp/i', $this->ua)){
+		elseif(preg_match('/(windows xp|winxp)/i', $this->ua)){
 			return 5.1;
 		}
-		elseif(preg_match('/windows 95/i', $this->ua)){
+		elseif(preg_match('/(windows 95|win95)/i', $this->ua)){
 			return 4;
 		}
-		elseif(preg_match('/windows 98/i', $this->ua)){
+		elseif(preg_match('/(windows 98|win98)/i', $this->ua)){
 			return 4.1;
 		}
 		elseif(preg_match('/windows me/i', $this->ua)){
@@ -432,6 +432,69 @@ class Browser {
 		}
 		if(!empty($matches[1])){
 			$version = $this->version_to_float($matches[1]);
+		}
+		else{
+			$version = 'unknown';
+		}
+		return $version;
+	}
+
+
+	/**
+	 * get_gecko_version
+	 * Extracts the gecko version number from user agent string
+	 * @return mixed $version The version number
+	 */
+	public function get_gecko_version(){
+		if(preg_match('/rv:([0-9\.]+)/i', $this->ua, $matches)){
+			$version = $this->version_to_float($matches[1]);
+		}
+		else{
+			$version = 'unknown';
+		}
+		return $version;
+	}
+
+
+	/**
+	 * get_firefox_version
+	 * Extracts the browser version number from a firefox user agent string
+	 * @param string $name Browser name (null for firefox variations)
+	 * @return mixed $version The version number
+	 */
+	public function get_firefox_version($name = null){
+		if($name !== null){
+			if(preg_match('/'.$name.'(?:\/|[\s])([0-9\.]+)/i', $this->ua, $matches)){
+				$version = $this->version_to_float($matches[1]);
+			}
+			else{
+				$version = $this->get_firefox_version_by_engine($this->get_gecko_version());
+			}
+		}
+		else{
+			$version = $this->get_firefox_version_by_engine($this->get_gecko_version());
+		}
+		return $version;
+	}
+
+
+	/**
+	 * get_firefox_version_by_engine
+	 * Returns a firefox version number by a gecko engine version
+	 * @param mixed $engine_version Engine verison
+	 * @return mixed $version The browser version number
+	 */
+	public function get_firefox_version_by_engine($engine_version){
+		if($engine_version !== 'unknown'){
+			$version = '0.0';
+			foreach($this->gecko_firefox_versions as $gecko => $firefox){
+				if(floatval($gecko) > floatval($engine_version)){
+					break;
+				}
+				else{
+					$version = $firefox;
+				}
+			}
 		}
 		else{
 			$version = 'unknown';
