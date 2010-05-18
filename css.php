@@ -55,7 +55,7 @@ else{
 
 // Load libraries
 include('lib/base.php');
-include('lib/browser.php');
+include('lib/browser/browser.php');
 include('lib/parser.php');
 include('lib/cssp.php');
 include('lib/cssmin.php');
