@@ -61,4 +61,4 @@ Turbine is still in active development. Help us to make it better!
   [4]: http://github.com/anthonyshort/csscaffold
   [5]: http://github.com/SirPepe/Turbine/issues
   [6]: http://github.com/SirPepe/Turbine
-  [7]: http://github.com/SirPepe/Browser
+  [7]: http://github.com/SirPepe/Turbine-Browser
