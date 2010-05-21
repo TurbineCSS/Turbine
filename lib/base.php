@@ -2,7 +2,7 @@
 
 /**
  * Turbine
- * http://github.com/SirPepe/Turbine
+ * http://turbine.peterkroener.de/
  * 
  * Copyright (C) 2009 Peter Kröner, Christian Schaefer
  * 
