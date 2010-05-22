@@ -54,11 +54,11 @@ else{
 
 
 // Load libraries
-include('lib/base.php');
 include('lib/browser/browser.php');
+include('lib/cssmin/cssmin.php');
+include('lib/base.php');
 include('lib/parser.php');
 include('lib/cssp.php');
-include('lib/cssmin.php');
 
 
 // Create the Turbine instance

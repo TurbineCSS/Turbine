@@ -2,8 +2,8 @@ cache/empty
 lib/browser/browser.php
 lib/browser/readme.md
 lib/browser/test.php
+lib/cssmin/cssmin.php
 lib/base.php
-lib/cssmin.php
 lib/cssp.php
 lib/parser.php
 plugins
