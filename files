@@ -11,4 +11,6 @@ resources
 config.php
 css.php
 readme.md
+license.txt
+version.txt
 turbine.png

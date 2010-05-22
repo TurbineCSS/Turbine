@@ -3,7 +3,7 @@ Turbine
 
 ![Turbine logo][1]
 
-**→ [Online documentation][2]** (not quite complete yet)
+**→ [Online documentation][2]**
 
 Turbine is a collection of PHP-powered tools that are designed to decrease css devolopment time and web developer headache. This includes:
 
