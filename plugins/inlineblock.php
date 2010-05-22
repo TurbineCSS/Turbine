@@ -21,10 +21,13 @@
 				if(isset($cssp->parsed[$block][$selector]['display']) && $cssp->get_final_value($cssp->parsed[$block][$selector]['display'], 'display') == 'inline-block'){
 					if($browser->engine == 'ie' && floatval($browser->engine_version) < 8){
 						$cssp->parsed[$block][$selector]['display'][] = 'inline';
+						CSSP::comment($cssp->parsed[$block][$selector], 'display', 'Added by inline-block plugin');
 						$cssp->parsed[$block][$selector]['zoom'][] = '1';
-					} 
+						CSSP::comment($cssp->parsed[$block][$selector], 'zoom', 'Added by inline-block plugin');
+					}
 					elseif($browser->engine == 'gecko' && floatval($browser->engine_version) < 1.9){
 						$cssp->parsed[$block][$selector]['display'][] = '-moz-inline-stack';
+						CSSP::comment($cssp->parsed[$block][$selector], 'display', 'Added by inline-block plugin');
 					}
 				}
 			}
