@@ -60,6 +60,11 @@
 						$cssp->parsed[$block][$selector]['behavior'][] = 'url("'.$htc_path.'")';
 						CSSP::comment($cssp->parsed[$block][$selector], 'behavior', 'Added by bugfix plugin');
 					}
+					// Min-height for IE6
+					if(isset($cssp->parsed[$block][$selector]['min-height']) && !isset($cssp->parsed[$block][$selector]['height'])){
+						$cssp->parsed[$block][$selector]['height'] = $cssp->parsed[$block][$selector]['min-height'];
+						CSSP::comment($cssp->parsed[$block][$selector], 'height', 'Added by bugfix plugin');
+					}
 				}
 
 				// IE 6 + 7 per-element-bugfixes
