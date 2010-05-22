@@ -32,7 +32,7 @@
 			'font-family'
 		);
 		// Optimize zeros and float values
-		$float_pattern = '/\b(0(\.[0-9]*)(em|ex|px|in|cm|mm|pt|pc))\b/';
+		$float_pattern = '/((\b|-)0(\.[0-9]*)(em|ex|px|in|cm|mm|pt|pc))\b/';
 		$zero_pattern = '/\b(0(?:em|ex|px|in|cm|mm|pt|pc))\b/';
 		$zero_properties = array(
 			'margin', 'margin-top', 'margin-left', 'margin-bottom', 'margin-right',
@@ -56,11 +56,13 @@
 							// Optimize zeros and floats
 							if(in_array($property, $zero_properties)){
 								$parsed[$block][$selector][$property][$key] = preg_replace($zero_pattern, '0', $value);
-								$parsed[$block][$selector][$property][$key] = preg_replace($float_pattern, '\2\3', $parsed[$block][$selector][$property][$key]);
+								$parsed[$block][$selector][$property][$key] = preg_replace($float_pattern, '\2\3\4', $parsed[$block][$selector][$property][$key]);
 							}
 							// Shorten long margins and paddings
-							if($property == 'margin' || $property == 'padding'){
-								preg_match_all('/(\b[0-9]*(?:em|ex|px|in|cm|mm|pt|pc)\b)/', $value, $matches);
+							if($property == 'margin'/* || $property == 'padding'*/){
+								preg_match_all('/((?:\b|-)[0-9.]*(?:em|ex|px|in|cm|mm|pt|pc)?\b)/', $value, $matches);
+								// Filter out empty values
+								$matches[0] = array_values(array_filter($matches[0], create_function('$element', 'return strlen($element) > 0;')));
 								if(count($matches[0]) == 2){
 									if($matches[0][0] == $matches[0][1]){
 										$parsed[$block][$selector][$property][$key] = $matches[0][0];
