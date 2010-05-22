@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Update LOC
+LIB="$(find lib -type f \( -name '*.php' -o -name '*.htc' \) -exec cat {} \; | wc -l)"
+PLUGINS="$(find plugins -type f \( -name '*.php' -o -name '*.htc' \) -exec cat {} \; | wc -l)"
+CONFIG="$(cat config.php | wc -l)"
+CSS="$(cat css.php | wc -l)"
+SUM=`expr $LIB + $PLUGINS + $CONFIG + $CSS`
+echo $SUM > loc.txt
+
+# Get Version number, create file name
+VERSION="$(cat version.txt)"
+FILENAME="turbine-${VERSION}.tar.gz"
+
+# List of files
+FILES="$(cat files)"
+
+# Pack files
+tar -czf $FILENAME $FILES
