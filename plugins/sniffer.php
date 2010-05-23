@@ -15,9 +15,13 @@
  * @return void
  */
 function sniffer(&$parsed){
-	// Look for a browser rule in @turbine, empty $parsed on mismatch
+	// Look for a browser rule in @turbine
 	if(sniffer_apply_rules($parsed['global']['@turbine']) === false){
+		// Empty $parsed on mismatch
 		$parsed = array();
+		// Kill off all other plugins
+		global $plugin_list;
+		$plugin_list = array();
 	}
 	// Loop through the blocks
 	foreach($parsed as $block => $css){
