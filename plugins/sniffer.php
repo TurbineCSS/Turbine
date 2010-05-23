@@ -193,8 +193,8 @@
 		$os_windowsnames['2000'] = $os_windowsnames['2K'] = 5.0;
 		$os_windowsnames['XP'] = 5.1;
 		$os_windowsnames['2003'] = $os_windowsnames['2K3'] = 5.2;
-		$os_windowsnames['Vista'] = $os_windowsnames['2008'] = $os_windowsnames['2K8'] = 6.0;
-		$os_windowsnames['Windows7'] = $os_windowsnames['Win7'] = $os_windowsnames['2008R2'] = $os_windowsnames['2K8R2'] = 6.1;
+		$os_windowsnames['Vista'] = 6.0;
+		$os_windowsnames['Windows7'] = $os_windowsnames['Win7'] = $os_windowsnames['7'] = 6.1;
 		foreach($rules as $rule){
 			preg_match('/([\^]?)([a-z\-_0-9]+)([!=><]{0,2})([0-9]*\.?[0-9]*]*)/i', $rule, $matches);
 			// If the useragent's detected os/platform is found in the current rule
