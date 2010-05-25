@@ -223,7 +223,7 @@ function sniffer_parse_os($rules){
 					$matches[4] = $os_windowsnames[$matches[4]];
 				}
 				// Filter and run the detected rule through the PHP interpreter
-				eval('if('.floatval($browser->platformversion).$matches[3].floatval($matches[4]).') $submatch = true; else $submatch = false;');
+				eval('if('.floatval($browser->platform_version).$matches[3].floatval($matches[4]).') $submatch = true; else $submatch = false;');
 			}
 		}
 		else{
