@@ -198,16 +198,16 @@ function sniffer_parse_os($rules){
 	// Prepare special array for Windows name to version mapping
 	$os_windowsnames = array();
 	$os_windowsnames['95'] = 4.0;
-	$os_windowsnames['NT4'] = 4.0;
+	$os_windowsnames['nt4'] = 4.0;
 	$os_windowsnames['98'] = 4.1;
-	$os_windowsnames['ME'] = 4.9;
-	$os_windowsnames['2000'] = $os_windowsnames['2K'] = 5.0;
-	$os_windowsnames['XP'] = 5.1;
-	$os_windowsnames['2003'] = $os_windowsnames['2K3'] = 5.2;
-	$os_windowsnames['Vista'] = 6.0;
-	$os_windowsnames['Windows7'] = $os_windowsnames['Win7'] = $os_windowsnames['7'] = 6.1;
+	$os_windowsnames['me'] = 4.9;
+	$os_windowsnames['2000'] = $os_windowsnames['2k'] = 5.0;
+	$os_windowsnames['xp'] = 5.1;
+	$os_windowsnames['2003'] = $os_windowsnames['2k3'] = 5.2;
+	$os_windowsnames['vista'] = 6.0;
+	$os_windowsnames['windows7'] = $os_windowsnames['win7'] = $os_windowsnames['7'] = 6.1;
 	foreach($rules as $rule){
-		preg_match('/([\^]?)([a-z\-_0-9]+)([!=><]{0,2})([0-9]*\.?[0-9]*]*)/i', $rule, $matches);
+		preg_match('/([\^]?)([a-z\-_0-9]+)([!=><]{0,2})([a-z0-9]*\.?[0-9]*]*)/i', $rule, $matches);
 		// If the useragent's detected os/platform is found in the current rule
 		if(strstr(strtolower($matches[2]), $browser->platform)){
 			// For the time being set $submatch to true
