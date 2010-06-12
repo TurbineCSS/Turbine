@@ -20,7 +20,6 @@
 		global $cssp;
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
-				// $before keeps track of the prevoius property in the loop, which is the position we want the new border-radius properties to be inserted
 				foreach($styles as $property => $values){
 					if(preg_match('/border(?:-(top|right|bottom|left)(?:-(right|left))*)*-radius/', $property, $matches)){
 						// Create the new rules and insert them
