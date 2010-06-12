@@ -12,7 +12,7 @@
 	 * @return void
 	 */
 	function boxsizing(&$parsed){
-		global $cssp;
+		global $browser, $cssp;
 		$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/boxsizing/boxsizing.htc';
 		foreach($parsed as $block => $css){
 			foreach($parsed[$block] as $selector => $styles){
@@ -20,9 +20,13 @@
 					// Create the vendor-specific rules and insert them
 					$boxsizing_rules = array(
 						'-moz-box-sizing' => $styles['box-sizing'],
-						'-webkit-box-sizing' => $styles['box-sizing'],
-						'behaviour' => array('url('.$htc_path.')')
+						'-webkit-box-sizing' => $styles['box-sizing']
 					);
+					// Check for IE <= 7 and then append behavior
+					if($browser->engine == 'ie' && floatval($browser->engine_version) < 8)
+					{
+						$boxsizing_rules['behavior'] = array('url('.$htc_path.')');
+					}
 					$cssp->insert_properties($boxsizing_rules, $block, $selector, null, 'box-sizing');
 					// Comment the newly inserted properties
 					foreach($boxsizing_rules as $border_property => $border_value){
