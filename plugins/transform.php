@@ -46,17 +46,19 @@
 						$cssp->insert_properties($newproperties, $block, $selector, null, 'transform');
 					}
 
-
-					/*
-					if(isset($parsed[$block][$selector]['width']) && isset($parsed[$block][$selector]['height'])){
-						if(preg_match('/([0-9\.]+)([a-z%]*)/i',$parsed[$block][$selector]['width'],$matches) == 1){
+					// If we have width & height defined, the replicate transforms with the help of IE's matrix-filter
+					if(isset($parsed[$block][$selector]['width'][0]) && isset($parsed[$block][$selector]['height'][0])){
+						// Offset IE's transform origin X-axis to match the one of the other browsers
+						if(preg_match('/([0-9\.]+)([a-z%]*)/i',$parsed[$block][$selector]['width'][0],$matches) == 1){
 							$offset_x = $matches[1] / 2;
 							$offset_x_unit = $matches[2];
 						}
-						if(preg_match('/([0-9\.]+)([a-z%]*)/i',$parsed[$block][$selector]['height'],$matches) == 1){
+						// Offset IE's transform origin Y-axis to match the one of the other browsers
+						if(preg_match('/([0-9\.]+)([a-z%]*)/i',$parsed[$block][$selector]['height'][0],$matches) == 1){
 							$offset_y = $matches[1] / 2;
 							$offset_y_unit = $matches[2];
 						}
+						// If we are dealing with a matrix-transformation
 						if(preg_match('/matrix\(\D*([0-9\-]+)\s([0-9\-]+)\s([0-9\-]+)\s([0-9\-]+)\s([0-9\-]+)\s([0-9\-]+)\D*\)/i',$value,$matches) == 1){
 							$matrix_a = $matches[1];
 							$matrix_b = $matches[2];
@@ -64,37 +66,46 @@
 							$matrix_d = $matches[4];
 						}
 						else{
+							// If we are dealing with a translation
 							if(preg_match('/translate\(\D*([0-9\-]+)([a-z%]*),\s*([0-9\-]+)([a-z%]*)\D*\)/i',$value,$matches) == 1){
 								$translate_x = $matches[1];
 								$translate_x_unit = $matches[2];
 								$translate_y = $matches[3];
 								$translate_y_unit = $matches[4];
 							}
+							// If we are dealing with a rotation
 							if(preg_match('/rotate\(\D*([0-9\-]+)\D*\)/i',$value,$matches) == 1){
 								$rotate_x = $matches[1];
 								$rotate_y = $matches[1];
 							}
+							// If we are dealing with a scaling on the X-axis
 							if(preg_match('/scaleX\(\D*([0-9\-]+)\D*\)/i',$value,$matches) == 1){
 								$scale_x = $matches[1];
 							}
+							// If we are dealing with a scaling on the Y-axis
 							if(preg_match('/scaleY\(\D*([0-9\-]+)\D*\)/i',$value,$matches) == 1){
 								$scale_y = $matches[1];
 							}
+							// If we are dealing with a scaling on both axis
 							if(preg_match('/scale\(\D*([0-9\-]+)\D*\)/i',$value,$matches) == 1){
 								$scale_x = $matches[1];
 								$scale_y = $matches[1];
 							}
+							// If we are dealing with a skew-transform on the X-axis
 							if(preg_match('/skewX*\(\D*([0-9\-]+)\D*\)/i',$value,$matches) == 1){
 								$rotate_x = $matches[1] * -1;
 							}
+							// If we are dealing with a skew-transform on the Y-axis
 							if(preg_match('/skewY\(\D*([0-9\-]+)\D*\)/i',$value,$matches) == 1){
 								$rotate_y = $matches[1] * -1;
 							}
+							// If we are dealing with a skew-transform on the both axis
 							if(preg_match('/skew\(\D*([0-9\-]+)\D*,\D*([0-9\-]+)\D*\)/i',$value,$matches) == 1){
 								$rotate_x = $matches[1] * -1;
 								$rotate_y = $matches[2] * -1;
 							}
 						}
+						// Convert translation, rotation, scale and skew into matrix values
 						$radian_x = deg2rad($rotate_x);
 						$radian_y = deg2rad($rotate_y);
 						$matrix_a = floatval(number_format(cos($radian_x),8,'.',''));
@@ -105,45 +116,58 @@
 						
 						//Adjust offset for IEs, needs to come in first
 						if($browser->engine == 'ie' && floatval($browser->engine_version) < 9){
+							$newproperties = array();
 							if(!isset($parsed[$block][$selector]['position'])){
-								$parsed[$block][$selector]['position'] = 'relative';
+								$newproperties['position'] = array('relative');
+								CSSP::comment($parsed[$block][$selector], 'position', 'Added by transform plugin');
 							}
 							if(
 								!isset($parsed[$block][$selector]['margin']) && 
 								!isset($parsed[$block][$selector]['margin-left']) && 
 								!isset($parsed[$block][$selector]['margin-right'])
 							){
-								$parsed[$block][$selector]['margin-left'] = (($offset_x * -1 * $scale_x) + ($translate_x * $scale_x)).$offset_x_unit;
+								#$newproperties['margin-left'] = array((($offset_x * -1 * $scale_x) + ($translate_x * $scale_x)).$offset_x_unit);
+								#CSSP::comment($parsed[$block][$selector], 'margin-left', 'Added by transform plugin');
 							}
 							if(
 								!isset($parsed[$block][$selector]['margin']) && 
 								!isset($parsed[$block][$selector]['margin-top']) && 
 								!isset($parsed[$block][$selector]['margin-bottom'])
 							){
-								$parsed[$block][$selector]['margin-top'] = (($offset_y * -1 * $scale_y) + ($translate_y * $scale_y)).$offset_y_unit;
+								#$newproperties['margin-top'] = array((($offset_y * -1 * $scale_y) + ($translate_y * $scale_y)).$offset_y_unit);
+								#CSSP::comment($parsed[$block][$selector], 'margin-top', 'Added by transform plugin');
 							}
+							$cssp->insert_properties($newproperties, $block, $selector, null, 'transform');
 						}
+						
 						//IE8-compliance (note: value inside apostrophes!)
+						//If -ms-filter-property not yet set
 						if(!isset($parsed[$block][$selector]['-ms-filter'])){
-							$parsed[$block][$selector]['-ms-filter'] = '"'.$filter.'"';
+							$parsed[$block][$selector]['-ms-filter'] = array($filter);
 						}
+						//If -ms-filter-property already set
 						else{
-							if(!strpos($parsed[$block][$selector]['-ms-filter'],$filter)){
-								//Needs its filter-value to be put in first place!
-								$parsed[$block][$selector]['-ms-filter'] = '"'.$filter.' '.trim($parsed[$block][$selector]['-ms-filter'],'"').'"';
-							}
+							//Needs its filter-value to be put in first place!
+							array_unshift($parsed[$block][$selector]['-ms-filter'],$filter);
 						}
+						CSSP::comment($parsed[$block][$selector], '-ms-filter', 'Added by transform plugin');
+						
 						//Legacy IE-compliance
+						//If filter-property not yet set
 						if(!isset($parsed[$block][$selector]['filter'])){
-							$parsed[$block][$selector]['filter'] = $filter;
+							$parsed[$block][$selector]['filter'] = array($filter);
 						}
+						//If filter-property already set
 						else{
-							if(!strpos($parsed[$block][$selector]['filter'],$filter)) $parsed[$block][$selector]['filter'] = $filter.' '.$parsed[$block][$selector]['filter'];
+							//Needs its filter-value to be put in first place!
+							array_unshift($parsed[$block][$selector]['filter'],$filter);
 						}
+						CSSP::comment($parsed[$block][$selector], 'filter', 'Added by transform plugin');
+
 						//Set hasLayout
-						$parsed[$block][$selector]['zoom'] = 1;
+						$parsed[$block][$selector]['zoom'] = array('1');
+						CSSP::comment($parsed[$block][$selector], 'zoom', 'Added by transform plugin');
 					}
-					*/
 				}
 			}
 		}
