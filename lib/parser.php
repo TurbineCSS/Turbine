@@ -856,7 +856,7 @@ class Parser2 extends Base{
 	/**
 	 * get_final_value
 	 * Returns the last and/or most !important value from a list of values
-	 * @param string $values A list of values
+	 * @param array $values A list of values
 	 * @param string $property The property the values belong to
 	 * @param bool $compressed Compress CSS? (removes whitespace)
 	 * @return string $final The final value
@@ -881,14 +881,14 @@ class Parser2 extends Base{
 				// Tokenized properties
 				if(in_array($property, $this->tokenized_properties)){
 					if($final != ''){
-						$final .= ' ' . trim($s);
+						$final .= ' ';
 					}
 					$final .= $values[$i];
 				}
 				// Listed properties
 				elseif(in_array($property, $this->listed_properties)){
 					if($final != ''){
-						$final .= ',' . trim($s);
+						$final .= ','.$s;
 					}
 					$final .= $values[$i];
 				}
