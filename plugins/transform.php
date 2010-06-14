@@ -69,9 +69,11 @@
 										$translate_y_unit = $matches[4];
 									}
 									// If we are dealing with a rotation
-									if(preg_match('/rotate\(\D*([0-9\-]+)\D*\)/i',$value,$matches) == 1){
+									if(preg_match('/rotate\(\D*([0-9\-\.]+)(deg|rad|grad)\D*\)/i',$value,$matches) == 1){
 										$rotate_x = $matches[1];
+										$rotate_x_unit = $matches[2];
 										$rotate_y = $matches[1];
+										$rotate_y_unit = $matches[2];
 									}
 									// If we are dealing with a scaling on the X-axis
 									if(preg_match('/scaleX\(\D*([0-9\.]+)\D*\)/i',$value,$matches) == 1){
@@ -87,23 +89,31 @@
 										$scale_y = $matches[1];
 									}
 									// If we are dealing with a skew-transform on the X-axis
-									if(preg_match('/skewX*\(\D*([0-9\-]+)\D*\)/i',$value,$matches) == 1){
+									if(preg_match('/skewX*\(\D*([0-9\-\.]+)(deg|rad|grad)\D*\)/i',$value,$matches) == 1){
 										$rotate_x = $matches[1] * -1;
+										$rotate_x_unit = $matches[2];
 									}
 									// If we are dealing with a skew-transform on the Y-axis
-									if(preg_match('/skewY\(\D*([0-9\-]+)\D*\)/i',$value,$matches) == 1){
+									if(preg_match('/skewY\(\D*([0-9\-\.]+)(deg|rad|grad)\D*\)/i',$value,$matches) == 1){
 										$rotate_y = $matches[1] * -1;
+										$rotate_y_unit = $matches[4];
 									}
 									// If we are dealing with a skew-transform on the both axis
-									if(preg_match('/skew\(\D*([0-9\-]+)\D*,\D*([0-9\-]+)\D*\)/i',$value,$matches) == 1){
+									if(preg_match('/skew\(\D*([0-9\-\.]+)(deg|rad|grad)\D*,\D*([0-9\-\.]+)(deg|rad|grad)\D*\)/i',$value,$matches) == 1){
 										$rotate_x = $matches[1] * -1;
-										$rotate_y = $matches[2] * -1;
+										$rotate_x_unit = $matches[2];
+										$rotate_y = $matches[3] * -1;
+										$rotate_y_unit = $matches[4];
 									}
 								}
 							}
 							// Convert translation, rotation, scale and skew into matrix values
-							$radian_x = deg2rad(floatval($rotate_x));
-							$radian_y = deg2rad(floatval($rotate_y));
+							if($rotate_x_unit == 'deg') $radian_x = deg2rad(floatval($rotate_x));
+							if($rotate_x_unit == 'rad') $radian_x = floatval($rotate_x);
+							if($rotate_x_unit == 'grad') $radian_x = deg2rad((floatval($rotate_x) / 400) * 360);
+							if($rotate_y_unit == 'deg') $radian_y = deg2rad(floatval($rotate_y));
+							if($rotate_y_unit == 'rad') $radian_y = floatval($rotate_y);
+							if($rotate_y_unit == 'grad') $radian_y = deg2rad((floatval($rotate_y) / 400) * 360);
 							$matrix_a = floatval(number_format(cos($radian_x),8,'.',''));
 							$matrix_b = -1 * floatval(number_format(sin($radian_x),8,'.',''));
 							$matrix_c = floatval(number_format(sin($radian_y),8,'.',''));
@@ -180,30 +190,32 @@
 							$cssp->insert_properties($newproperties, $block, $selector, null, 'transform');
 						}
 						
-						//IE8-compliance (note: value inside apostrophes!)
-						//If -ms-filter-property not yet set
-						if(!isset($parsed[$block][$selector]['-ms-filter'])){
-							$parsed[$block][$selector]['-ms-filter'] = array($filter);
-						}
-						//If -ms-filter-property already set
-						else{
-							//Needs its filter-value to be put in first place!
-							array_unshift($parsed[$block][$selector]['-ms-filter'],$filter);
-						}
-						CSSP::comment($parsed[$block][$selector], '-ms-filter', 'Added by transform plugin');
-						
 						//Legacy IE-compliance
-						//If filter-property not yet set
-						if(!isset($parsed[$block][$selector]['filter'])){
-							$parsed[$block][$selector]['filter'] = array($filter);
+						if($browser->engine == 'ie' && floatval($browser->engine_version) < 8){
+							//If filter-property not yet set
+							if(!isset($parsed[$block][$selector]['filter'])){
+								$parsed[$block][$selector]['filter'] = array($filter);
+							}
+							//If filter-property already set
+							else{
+								//Needs its filter-value to be put in first place!
+								array_unshift($parsed[$block][$selector]['filter'],$filter);
+							}
+							CSSP::comment($parsed[$block][$selector], 'filter', 'Added by transform plugin');
 						}
-						//If filter-property already set
-						else{
-							//Needs its filter-value to be put in first place!
-							array_unshift($parsed[$block][$selector]['filter'],$filter);
+						else {						
+							//IE8-compliance (note: value inside apostrophes!)
+							//If -ms-filter-property not yet set
+							if(!isset($parsed[$block][$selector]['-ms-filter'])){
+								$parsed[$block][$selector]['-ms-filter'] = array($filter);
+							}
+							//If -ms-filter-property already set
+							else{
+								//Needs its filter-value to be put in first place!
+								array_unshift($parsed[$block][$selector]['-ms-filter'],$filter);
+							}
+							CSSP::comment($parsed[$block][$selector], '-ms-filter', 'Added by transform plugin');
 						}
-						CSSP::comment($parsed[$block][$selector], 'filter', 'Added by transform plugin');
-
 						//Set hasLayout
 						$parsed[$block][$selector]['zoom'] = array('1');
 						CSSP::comment($parsed[$block][$selector], 'zoom', 'Added by transform plugin');
