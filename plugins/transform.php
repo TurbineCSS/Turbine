@@ -34,25 +34,31 @@
 				$translate_y_unit = 'px';
 				$scale_x = 1;
 				$scale_y = 1;
+				$rotate_before_translate = false;
+				$scale_before_translate = false;
 				if(isset($parsed[$block][$selector]['transform'])){
-					$num_values = count($parsed[$block][$selector]['transform']);
-					for($i = 0; $i < $num_values; $i++){
-						$value = $parsed[$block][$selector]['transform'][$i];
-						$newproperties = array(
-							'-moz-transform' => array($value),
-							'-o-transform' => array($value),
-							'-webkit-transform' => array($value)
-						);
-						$cssp->insert_properties($newproperties, $block, $selector, null, 'transform');
+					// Creating good browser CSS
+					if($browser->engine != 'ie' || floatval($browser->engine_version) >= 9){
+						$num_values = count($parsed[$block][$selector]['transform']);
+						for($i = 0; $i < $num_values; $i++){
+							$value = $parsed[$block][$selector]['transform'][$i];
+							$newproperties = array(
+								'-moz-transform' => array($value),
+								'-o-transform' => array($value),
+								'-webkit-transform' => array($value)
+							);
+							$cssp->insert_properties($newproperties, $block, $selector, null, 'transform');
+						}
 					}
 
 					// Applying the matrix-filter for IE
 					if($browser->engine == 'ie' && floatval($browser->engine_version) < 9){
 						// If we have width & height defined, the replicate transforms with the help of IE's matrix-filter
 						if(isset($parsed[$block][$selector]['width'][0]) && isset($parsed[$block][$selector]['height'][0])){
-							$num_values = count($parsed[$block][$selector]['transform']);
+							$values = explode(' ',implode(' ',$parsed[$block][$selector]['transform']));
+							$num_values = count($values);
 							for($i = 0; $i < $num_values; $i++){
-								$value = $parsed[$block][$selector]['transform'][$i];
+								$value = $values[$i];
 								// If we are dealing with a matrix-transformation
 								if(preg_match('/matrix\(\D*([0-9\-]+)\s([0-9\-]+)\s([0-9\-]+)\s([0-9\-]+)\s([0-9\-]+)\s([0-9\-]+)\D*\)/i',$value,$matches) == 1){
 									$matrix_a = $matches[1];
@@ -61,13 +67,6 @@
 									$matrix_d = $matches[4];
 								}
 								else{
-									// If we are dealing with a translation
-									if(preg_match('/translate\(\D*([0-9\.\-]+)([a-z%]*),\s*([0-9\.\-]+)([a-z%]*)\D*\)/i',$value,$matches) == 1){
-										$translate_x = $matches[1];
-										$translate_x_unit = $matches[2];
-										$translate_y = $matches[3];
-										$translate_y_unit = $matches[4];
-									}
 									// If we are dealing with a rotation
 									if(preg_match('/rotate\(\D*([0-9\-\.]+)(deg|rad|grad)\D*\)/i',$value,$matches) == 1){
 										$rotate_x = $matches[1];
@@ -105,6 +104,15 @@
 										$rotate_y = $matches[3] * -1;
 										$rotate_y_unit = $matches[4];
 									}
+									// If we are dealing with a translation
+									if(preg_match('/translate\(\D*([0-9\.\-]+)([a-z%]*),\s*([0-9\.\-]+)([a-z%]*)\D*\)/i',$value,$matches) == 1){
+										$translate_x = $matches[1];
+										if($matches[2] != '') $translate_x_unit = $matches[2];
+										if($matches[3] != '') $translate_y = $matches[3];
+										if($matches[4] != '') $translate_y_unit = $matches[4];
+										if($rotate_x != 0 || $rotate_y != 0) $rotate_before_translate = true;
+										if($scale_x != 1 || $scale_y != 1) $scale_before_translate = true;
+									}
 								}
 							}
 							// Convert translation, rotation, scale and skew into matrix values
@@ -128,7 +136,61 @@
 								$cssp->insert_properties($newproperties, $block, $selector, null, 'transform');
 								CSSP::comment($parsed[$block][$selector], 'position', 'Added by transform plugin');
 							}
+		
+							//Include behavior to compansate for IEs auto expand feature
+							$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/transform/transform.htc';
+							$parsed[$block][$selector]['behavior'] = array('url('.$htc_path.')');
+							CSSP::comment($parsed[$block][$selector], 'behavior', 'Added by transform plugin');
+							
+							//Legacy IE-compliance
+							if(floatval($browser->engine_version) < 8){
+								//If filter-property not yet set
+								if(!isset($parsed[$block][$selector]['filter'])){
+									$parsed[$block][$selector]['filter'] = array($filter);
+								}
+								//If filter-property already set
+								else{
+									//Needs its filter-value to be put in first place!
+									array_unshift($parsed[$block][$selector]['filter'],$filter);
+								}
+								CSSP::comment($parsed[$block][$selector], 'filter', 'Added by transform plugin');
+							}
+							else {						
+								//IE8-compliance (note: value inside apostrophes!)
+								//If -ms-filter-property not yet set
+								if(!isset($parsed[$block][$selector]['-ms-filter'])){
+									$parsed[$block][$selector]['-ms-filter'] = array($filter);
+								}
+								//If -ms-filter-property already set
+								else{
+									//Needs its filter-value to be put in first place!
+									array_unshift($parsed[$block][$selector]['-ms-filter'],$filter);
+								}
+								CSSP::comment($parsed[$block][$selector], '-ms-filter', 'Added by transform plugin');
+							}
+	
+							//Set hasLayout
+							$parsed[$block][$selector]['zoom'] = array('1');
+							CSSP::comment($parsed[$block][$selector], 'zoom', 'Added by transform plugin');
 							$newproperties = array();
+
+							// Adjust translation to scaling
+							if($scale_before_translate)
+							{
+								$translate_x = $translate_x * floatval($scale_x);
+								$translate_y = $translate_y * floatval($scale_y);
+							}
+
+							// Adjust translation to rotation
+							if($rotate_before_translate)
+							{
+								$translate_x = ($translate_x * cos($radian_x)) + ($translate_y * sin($radian_y));
+								$translate_y = ($translate_x * sin($radian_x)) + ($translate_y * cos($radian_y));
+							}
+
+							if($translate_x_unit == 'px') $translate_x = round($translate_x);
+							if($translate_y_unit == 'px') $translate_y = round($translate_y);
+							
 							// If position-property is not set, or not set to absolute
 							if($parsed[$block][$selector]['position'][0] != 'absolute'){
 								// Translation on x-axis
@@ -187,43 +249,8 @@
 									CSSP::comment($parsed[$block][$selector], 'margin-bottom', 'Added by transform plugin');
 								}
 							}
-							$cssp->insert_properties($newproperties, $block, $selector, null, 'transform');
+							$cssp->insert_properties($newproperties, $block, $selector, 'transform', null);
 						}
-						
-						//Legacy IE-compliance
-						if($browser->engine == 'ie' && floatval($browser->engine_version) < 8){
-							//If filter-property not yet set
-							if(!isset($parsed[$block][$selector]['filter'])){
-								$parsed[$block][$selector]['filter'] = array($filter);
-							}
-							//If filter-property already set
-							else{
-								//Needs its filter-value to be put in first place!
-								array_unshift($parsed[$block][$selector]['filter'],$filter);
-							}
-							CSSP::comment($parsed[$block][$selector], 'filter', 'Added by transform plugin');
-						}
-						else {						
-							//IE8-compliance (note: value inside apostrophes!)
-							//If -ms-filter-property not yet set
-							if(!isset($parsed[$block][$selector]['-ms-filter'])){
-								$parsed[$block][$selector]['-ms-filter'] = array($filter);
-							}
-							//If -ms-filter-property already set
-							else{
-								//Needs its filter-value to be put in first place!
-								array_unshift($parsed[$block][$selector]['-ms-filter'],$filter);
-							}
-							CSSP::comment($parsed[$block][$selector], '-ms-filter', 'Added by transform plugin');
-						}
-						//Set hasLayout
-						$parsed[$block][$selector]['zoom'] = array('1');
-						CSSP::comment($parsed[$block][$selector], 'zoom', 'Added by transform plugin');
-
-						//Include behavior to compansate for IEs auto expand feature
-						$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/transform/transform.htc';
-						$parsed[$block][$selector]['behavior'] = array('url('.$htc_path.')');
-						CSSP::comment($parsed[$block][$selector], 'behavior', 'Added by transform plugin');
 					}
 				}
 			}

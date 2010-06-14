@@ -62,10 +62,11 @@ function setContentBoxDimensions() {
 	element.runtimeStyle.marginRight = Math.round(getMarginRight() + box_differencemargin_x) + "px";
 	element.runtimeStyle.marginTop = Math.round(getMarginTop() + box_differencemargin_y) + "px";
 	element.runtimeStyle.marginBottom = Math.round(getMarginBottom() + box_differencemargin_y) + "px";
+
 }
 
 function checkPropertyChange() {
-	switch (event.propertyName) {
+	switch(event.propertyName) {
 		case "style.filter":
 		case "style.marginTop":
 		case "style.marginBottom":
