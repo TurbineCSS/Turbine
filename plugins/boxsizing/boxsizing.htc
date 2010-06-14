@@ -20,9 +20,7 @@ function restore() {
 /* Taken from Dean Edward's IE7 framework,
  * added by Schepp on 12.06.2010.
  *
- * Allows us to convert from relative to pixel-values
- * by applying with to seldom used left-property and
- * then measuring and read back the result in pixels.
+ * Allows us to convert from relative to pixel-values.
  *
  * Citing Dean himself:
  * "MSIE6+ has special pixelLeft/Width/Height etc properties. 
