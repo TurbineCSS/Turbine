@@ -2,11 +2,10 @@
 
 	/**
 	 * Cross-browser-box-sizing
-	 * TODO: Make more robust in IE
 	 * 
 	 * Usage:     box-sizing:inherit|content-box|border-box
 	 * Status:    Beta
-	 * Version:   1.1
+	 * Version:   1.0
 	 * 
 	 * @param mixed &$parsed
 	 * @return void
@@ -29,8 +28,8 @@
 					}
 					$cssp->insert_properties($boxsizing_rules, $block, $selector, null, 'box-sizing');
 					// Comment the newly inserted properties
-					foreach($boxsizing_rules as $border_property => $border_value){
-						CSSP::comment($parsed[$block][$selector], $border_property, 'Added by box-sizing plugin');
+					foreach($boxsizing_rules as $property => $value){
+						CSSP::comment($parsed[$block][$selector], $property, 'Added by box-sizing plugin');
 					}
 				}
 			}

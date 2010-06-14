@@ -50,9 +50,21 @@ class Parser2 extends Base{
 
 
 	/**
-	 * @var array $combined_properties The list properties where multiple valiues are to be combined on output
+	 * @var array $tokenized_properties The list properties where multiple values are to be combined on output using a space character
 	 */
-	public $combined_properties = array('plugins', 'behavior', 'filter', '-ms-filter');
+	public $tokenized_properties = array('filter', '-ms-filter');
+
+
+	/**
+	 * @var array $listed_properties The list properties where multiple values are to be combined on output using a comma
+	 */
+	public $listed_properties = array('plugins', 'behavior');
+
+
+	/**
+	 * @var array $quoted_properties The list properties where the value needs to be quoted as a whole before output
+	 */
+	public $quoted_properties = array('-ms-filter');
 
 
 	/**
@@ -844,7 +856,7 @@ class Parser2 extends Base{
 	/**
 	 * get_final_value
 	 * Returns the last and/or most !important value from a list of values
-	 * @param string $values A list of values
+	 * @param array $values A list of values
 	 * @param string $property The property the values belong to
 	 * @param bool $compressed Compress CSS? (removes whitespace)
 	 * @return string $final The final value
@@ -866,8 +878,15 @@ class Parser2 extends Base{
 			$final = '';
 			$num_values = count($values);
 			for($i = 0; $i < $num_values; $i++){
-				// Combined properties
-				if(in_array($property, $this->combined_properties)){
+				// Tokenized properties
+				if(in_array($property, $this->tokenized_properties)){
+					if($final != ''){
+						$final .= ' ';
+					}
+					$final .= $values[$i];
+				}
+				// Listed properties
+				elseif(in_array($property, $this->listed_properties)){
 					if($final != ''){
 						$final .= ','.$s;
 					}
@@ -880,6 +899,10 @@ class Parser2 extends Base{
 					}
 				}
 			}
+		}
+		// Add quotes to quoted properties
+		if(in_array($property, $this->quoted_properties)){
+			$final = '"' . $final . '"';
 		}
 		return $final;
 	}
