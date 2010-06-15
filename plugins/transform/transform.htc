@@ -1,0 +1,84 @@
+<component lightWeight="true">
+<attach event="onpropertychange" onevent="checkPropertyChange()" />
+<script>
+//<![CDATA[
+
+/* Taken from Dean Edward's IE7 framework,
+ * added by Schepp on 12.06.2010.
+ *
+ * Allows us to convert from relative to pixel-values
+ *
+ * Citing Dean himself:
+ * "MSIE6+ has special pixelLeft/Width/Height etc properties. 
+ * They represent the current pixel value of the equivalent style setting. 
+ * So, if you have style.width=8em then style.pixelWidth would return the 
+ * pixel equivalent. MSIE also supports an override style called runtimeStyle. 
+ * Setting properties on runtimeStyle overrides all other style properties.
+ *
+ * This trick works by setting style.left and then getting MSIE to convert 
+ * it by calling style.pixelLeft. To stop the element moving around the screen 
+ * when we do this, we set runtimeStyle.left with the current left value. 
+ * After we’ve done the conversion we set everything back to the way it was.
+ *
+ * http://ajaxian.com/archives/computed-vs-cascaded-style
+ */
+function getPixelValue(value) {
+	var PIXEL = /^\d+(px)?$/i;
+	if (PIXEL.test(value)) return parseInt(value);
+	var style = element.style.left;
+	var runtimeStyle = element.runtimeStyle.left;
+	element.runtimeStyle.left = element.currentStyle.left;
+	element.style.left = value || 0;
+	value = parseInt(element.style.pixelLeft);
+	element.style.left = style;
+	element.runtimeStyle.left = runtimeStyle;
+	
+	return value;
+}
+
+/* start margin getters */
+function getMargin(sSide) {
+	if (element.currentStyle["margin" + sSide] == "")
+		return 0;
+	var n = getPixelValue(element.currentStyle["margin" + sSide]);
+	return n || 0;
+}
+
+function getMarginLeft() { return getMargin("Left"); }
+function getMarginRight() { return getMargin("Right"); }
+function getMarginTop() { return getMargin("Top"); }
+function getMarginBottom() { return getMargin("Bottom"); }
+/* end margin getters */
+
+function setContentBoxDimensions() {
+	var box_width = getPixelValue(element.currentStyle.width);
+	var box_height = getPixelValue(element.currentStyle.height);
+	var box_offsetwidth = element.offsetWidth;
+	var box_offsetheight = element.offsetHeight;
+	var box_differencemargin_x = (box_width - box_offsetwidth) / 2;
+	var box_differencemargin_y = (box_height - box_offsetheight) / 2;
+	
+	element.runtimeStyle.marginLeft = Math.round(getMarginLeft() + box_differencemargin_x) + "px";
+	element.runtimeStyle.marginRight = Math.round(getMarginRight() + box_differencemargin_x) + "px";
+	element.runtimeStyle.marginTop = Math.round(getMarginTop() + box_differencemargin_y) + "px";
+	element.runtimeStyle.marginBottom = Math.round(getMarginBottom() + box_differencemargin_y) + "px";
+
+}
+
+function checkPropertyChange() {
+	switch(event.propertyName) {
+		case "style.filter":
+		case "style.marginTop":
+		case "style.marginBottom":
+		case "style.marginLeft":
+		case "style.marginRight":
+			setContentBoxDimensions();
+			break;
+	}
+}
+
+setContentBoxDimensions();
+
+//]]>
+</script>
+</component>

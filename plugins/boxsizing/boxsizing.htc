@@ -20,9 +20,7 @@ function restore() {
 /* Taken from Dean Edward's IE7 framework,
  * added by Schepp on 12.06.2010.
  *
- * Allows us to convert from relative to pixel-values
- * by applying with to seldom used left-property and
- * then measuring and read back the result in pixels.
+ * Allows us to convert from relative to pixel-values.
  *
  * Citing Dean himself:
  * "MSIE6+ has special pixelLeft/Width/Height etc properties. 
@@ -38,16 +36,16 @@ function restore() {
  *
  * http://ajaxian.com/archives/computed-vs-cascaded-style
  */
-function getPixelValue(elm, value) {
+function getPixelValue(value) {
 	var PIXEL = /^\d+(px)?$/i;
 	if (PIXEL.test(value)) return parseInt(value);
-	var style = elm.style.left;
-	var runtimeStyle = elm.runtimeStyle.left;
-	elm.runtimeStyle.left = elm.currentStyle.left;
-	elm.style.left = value || 0;
-	value = parseInt(elm.style.pixelLeft);
-	elm.style.left = style;
-	elm.runtimeStyle.left = runtimeStyle;
+	var style = element.style.left;
+	var runtimeStyle = element.runtimeStyle.left;
+	element.runtimeStyle.left = element.currentStyle.left;
+	element.style.left = value || 0;
+	value = parseInt(element.style.pixelLeft);
+	element.style.left = style;
+	element.runtimeStyle.left = runtimeStyle;
 	
 	return value;
 }
@@ -56,7 +54,7 @@ function getPixelValue(elm, value) {
 function getBorderWidth(sSide) {
 	if (element.currentStyle["border" + sSide + "Style"] == "none")
 		return 0;
-	var n = getPixelValue(element,element.currentStyle["border" + sSide + "Width"]);
+	var n = getPixelValue(element.currentStyle["border" + sSide + "Width"]);
 	return n || 0;
 }
 
@@ -68,7 +66,7 @@ function getBorderBottomWidth() { return getBorderWidth("Bottom"); }
 
 /* padding getters */
 function getPadding(sSide) {
-	var n = getPixelValue(element,element.currentStyle["padding" + sSide]);
+	var n = getPixelValue(element.currentStyle["padding" + sSide]);
 	return n || 0;
 }
 
@@ -127,7 +125,7 @@ function updateBorderBoxWidth() {
 		return;
 	var csw = element.currentStyle.width;
 	if (csw != "auto") {
-		csw = getPixelValue(element,element.currentStyle.width);
+		csw = getPixelValue(element.currentStyle.width);
 		if (getBoxSizing() == "border-box")
 			setBorderBoxWidth(parseInt(csw));
 		else
@@ -141,7 +139,7 @@ function updateBorderBoxHeight() {
 		return;
 	var csh = element.currentStyle.height;
 	if (csh != "auto") {
-		csh = getPixelValue(element,element.currentStyle.height);
+		csh = getPixelValue(element.currentStyle.height);
 		if (getBoxSizing() == "border-box")
 			setBorderBoxHeight(parseInt(csh));
 		else
