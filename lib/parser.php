@@ -654,12 +654,47 @@ class Parser2 extends Base{
 
 
 	/**
+	 * check_sanity
+	 * Check sanity before output. Complain if somthing stupid comes along, but don't stop it - that's the web developer's job
+	 * @return void
+	 */
+	private function check_sanity(){
+		// Loop through the blocks
+		foreach($this->parsed as $block => $content){
+			// Loop through elements
+			foreach($content as $selector => $rules){
+				$this->check_sanity_filters($selector, $rules);
+			}
+		}
+	}
+
+
+
+	/**
+	 * check_sanity_filters
+	 * Check if something could potentially prevent IE's filters from working
+	 * @param string $selector The selector that is being checked
+	 * @param array $rules The rules to check
+	 * @return void
+	 */
+	private function check_sanity_filters($selector, $rules){
+		if(isset($rules['overflow']) && (isset($rules['filter']) || isset($rules['-ms-filter']))){
+			if($this->get_final_value($rules['overflow'], 'overflow') != 'visible'){
+				$this->report_error('Potential problem: Filters and a non-visible overflow value present at selector '. $selector);
+			}
+		}
+	}
+
+
+
+	/**
 	 * glue
 	 * Turn the current parsed array back into CSS code
 	 * @param bool $compressed Compress CSS? (removes whitespace)
 	 * @return string $output The final CSS code
 	 */
 	public function glue($compressed = false){
+		$this->check_sanity();
 		$output = '';
 		// Whitspace characters
 		$s = ' ';
