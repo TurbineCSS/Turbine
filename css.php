@@ -33,7 +33,7 @@ $start = microtime(true);
 
 
 // Constants
-define('TURBINEVERSION', 0.01);
+define('TURBINEVERSION', trim(file_get_contents('version.txt')));
 define('TURBINEPATH', dirname($_SERVER['SCRIPT_NAME']));
 
 
