@@ -44,7 +44,7 @@
 			<match>[@]+(.*)</match>
 		</context>
 
-		<context id="important" style-ref="keyword">
+		<context id="important" style-ref="string">
 			<match>\![ \t]*important</match>
 		</context>
 
@@ -74,7 +74,7 @@
 		</context>
 
 		<context id="selector" style-ref="selector">
-			<match>^\s*[a-zA-Z#.:?*][\sa-zA-Z0-9#.,~|=>+\[\]]+\s*$</match>
+			<match>^\s*[a-zA-Z#.:?*][:]?[\sa-zA-Z0-9#.,~|=>+\[\]]*\s*$</match>
 		</context>
 
 		<context id="cssp">
