@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	Syntax highlighting for turbine
+	Put this file to ~/.share/local/gtksourceview-2.0/language-specs or usr/share/gtksourceview-2.0/language-specs
+-->
+
+<language id="cssp" _name="CSSP" version="2.0" _section="Others">
+	<metadata>
+		<property name="mimetypes">text/x-cssp</property>
+		<property name="globs">*.cssp</property>
+		<property name="line-comment-start">//</property>
+	</metadata>
+
+	<styles>
+		<style id="comment" _name="Comment" map-to="def:comment"/>
+		<style id="string" _name="String" map-to="def:string"/>
+		<style id="keyword" _name="Keyword" map-to="def:keyword"/>
+		<style id="variable" _name="Variable" map-to="def:identifier"/>
+		<style id="color" _name="Color" map-to="def:base-n-integer"/>
+		<style id="function" _name="Function" map-to="def:function"/>
+		<style id="decimal" _name="Decimal" map-to="def:decimal"/>
+		<style id="dimension" _name="Dimension" map-to="def:floating-point"/>
+		<style id="selector" _name="Selector" map-to="def:keyword"/>
+	</styles>
+
+	<default-regex-options case-sensitive="false"/>
+
+	<definitions>
+
+		<context id="comment" style-ref="comment" class="comment" class-disabled="no-spell-check">
+			<start>^[\s]*--[\s]*$</start>
+			<end>^[\s]*--[\s]*$</end>
+		</context>
+
+		<context id="line-comment" style-ref="comment" end-at-line-end="true">
+			<start>//</start>
+			<include>
+				<context ref="def:in-line-comment"/>
+			</include>
+		</context>
+
+		<context id="atrule" style-ref="keyword">
+			<match>[@]+(.*)</match>
+		</context>
+
+		<context id="important" style-ref="keyword">
+			<match>\![ \t]*important</match>
+		</context>
+
+		<context id="variable" style-ref="variable">
+			<match>[$]+[a-zA-Z0-9_-]*</match>
+		</context>
+
+		<context id="prototype" style-ref="variable">
+			<match>[?]+[a-zA-Z0-9_-]*</match>
+		</context>
+
+		<context id="hexadecimal-color" style-ref="color">
+			<match>#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})\b</match>
+		</context>
+
+		<context id="function" style-ref="function">
+			<start>[a-zA-Z][a-z0-9-]+\(</start>
+			<end>\)</end>
+		</context>
+
+		<context id="number" style-ref="decimal">
+			<match>\b(0|[\+-]?[1-9][0-9]*)</match>
+		</context>
+
+		<context id="dimension" style-ref="dimension">
+			<match>[\+-]?([0-9]+|[0-9]*\.[0-9]+)(%|e(m|x)|p(x|t|c)|in|ft|(m|c)m|k?Hz|deg|g?rad|m?s)</match>
+		</context>
+
+		<context id="selector" style-ref="selector">
+			<match>^\s*[a-zA-Z#.:?*][\sa-zA-Z0-9#.,~|=>+\[\]]+\s*$</match>
+		</context>
+
+		<context id="cssp">
+			<include>
+				<context ref="comment"/>
+				<context ref="line-comment"/>
+				<context ref="atrule"/>
+				<context ref="def:string"/>
+				<context ref="def:single-quoted-string"/>
+				<context ref="important"/>
+				<context ref="variable"/>
+				<context ref="prototype"/>
+				<context ref="hexadecimal-color"/>
+				<context ref="function"/>
+				<context ref="dimension"/>
+				<context ref="number"/>
+				<context ref="selector"/>
+			</include>
+		</context>
+
+	</definitions>
+</language>
