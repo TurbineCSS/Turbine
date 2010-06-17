@@ -679,8 +679,9 @@ class Parser2 extends Base{
 	 */
 	private function check_sanity_filters($selector, $rules){
 		if(isset($rules['overflow']) && (isset($rules['filter']) || isset($rules['-ms-filter']))){
-			if($this->get_final_value($rules['overflow'], 'overflow') != 'visible'){
-				$this->report_error('Potential problem: Filters and a non-visible overflow value present at selector '. $selector);
+			if($this->get_final_value($rules['overflow'], 'overflow') == 'visible'){
+				$this->report_error('Potential problem: Filters and overflow:visible are present at selector '
+					. $selector . '. Filter may enforce unwanted overflow:hidden in Internet Explorer.');
 			}
 		}
 	}
