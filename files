@@ -12,6 +12,7 @@ config.php
 css.php
 readme.md
 changelog.md
+version.txt
 license.txt
 authors.md
 turbine.png
