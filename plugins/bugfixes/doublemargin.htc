@@ -1,5 +1,14 @@
 <public:component lightweight="true">
 <script type="text/javascript">
+/**
+ * This file is part of Turbine
+ * http://github.com/SirPepe/Turbine
+ * 
+ * Copyright Peter Kröner
+ * Licensed under GNU LGPL 3, see license.txt or http://www.gnu.org/licenses/
+ */
+
+
 if(element.currentStyle.styleFloat == 'left' || element.currentStyle.styleFloat == 'right')
 {
 	element.style.display = 'inline';

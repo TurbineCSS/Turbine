@@ -1,6 +1,15 @@
 <?php
 
 /**
+ * This file is part of Turbine
+ * http://github.com/SirPepe/Turbine
+ * 
+ * Copyright Peter Kröner
+ * Licensed under GNU LGPL 3, see license.txt or http://www.gnu.org/licenses/
+ */
+
+
+/**
  * Data-URI
  * Injects all images smaller than 24KB right inside the CSS for all dataURI-capable browsers
  * 

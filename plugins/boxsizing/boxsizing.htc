@@ -19,6 +19,8 @@ function restore() {
 
 /* Taken from Dean Edward's IE7 framework,
  * added by Schepp on 12.06.2010.
+ * http://code.google.com/p/ie7-js/
+ * MIT License (http://www.opensource.org/licenses/mit-license.php)
  *
  * Allows us to convert from relative to pixel-values.
  *
