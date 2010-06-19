@@ -74,7 +74,7 @@
 		</context>
 
 		<context id="selector" style-ref="selector">
-			<match>^\s*[a-zA-Z#.:?*][:]?[\sa-zA-Z0-9#.,~|=>+\[\]\-_]*\s*$</match>
+			<match>^\s*[a-zA-Z#.:>?*][:]?[\sa-zA-Z0-9#.,~|=>+\[\]\-_]*\s*$</match>
 		</context>
 
 		<context id="cssp">
