@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>nop</string>
+	<key>command</key>
+	<string>#!/usr/bin/env ruby
+#
+# Lookup current word as a CSS property on w3c.org
+#
+# The mapping below was generated using:
+# echo '$props = {'; curl -s http://www.w3.org/TR/CSS2/propidx.html|egrep "(^|&lt;tr&gt;&lt;td&gt;)&lt;a href=\".*\" class=\"noxref\"&gt;&lt;span class=\".*\"&gt;'.*'&lt;/span&gt;&lt;/a&gt;"|perl -pe "s|(?:&lt;tr&gt;&lt;td&gt;)?&lt;a href=\"(.*)\" class=\"noxref\"&gt;&lt;span class=\".*\"&gt;'(.*)'&lt;/span&gt;&lt;/a&gt;|\t\"\$2\"\t=&gt; \"\$1\",|"; echo '}'
+
+$props = {
+  "turbine" =&gt; "#usage-configuration",
+  "constants" =&gt; "#usage-constantsaliases",
+  "font-face" =&gt; "#plugins-fontface",
+  "borderradius" =&gt; "#plugins-borderradius",
+  "boxshadow" =&gt; "#plugins-boxshadow",
+  "boxsizing" =&gt; "#plugins-boxsizing",
+  "sniffer" =&gt; "#plugins-sniffer",
+  "bugfixes" =&gt; "#plugins-bugfix",
+  "colormodels" =&gt; "#plugins-colormodels",
+  "plugins" =&gt; "#plugins",
+  "html5" =&gt; "#plugins-html5"
+}
+
+cur_line = ENV['TM_CURRENT_LINE']
+cur_word = ENV['TM_CURRENT_WORD']
+
+# since dash (‘-’) is not a word character, extend current word to neighboring word and dash characters
+$prop_name = /[-\w]*#{Regexp.escape cur_word}[-\w]*/.match(cur_line)[0]
+
+def request_prop_name
+  s = `\"#{ENV['TM_SUPPORT_PATH']}/bin/CocoaDialog.app/Contents/MacOS/CocoaDialog\" inputbox --title 'Documentation for Property' --informative-text 'What property would you like to lookup?' --text '#{$prop_name}' --button1 'Lookup' --button2 'Cancel' --button3 'Show All Properties'`
+  case (a = s.split("\n"))[0].to_i
+    when 1 then $props[a[1].to_s] || "propidx.html"
+    when 2 then abort "&lt;script&gt;window.close()&lt;/script&gt;"
+    when 3 then "propidx.html"
+  end
+end
+
+prop_url = $props[$prop_name] || request_prop_name
+url = "http://turbine.peterkroener.de/docs.php" + prop_url
+puts "&lt;meta http-equiv='Refresh' content='0;URL=#{url}'&gt;"
+</string>
+	<key>input</key>
+	<string>none</string>
+	<key>keyEquivalent</key>
+	<string>^h</string>
+	<key>name</key>
+	<string>Property Documentation</string>
+	<key>output</key>
+	<string>showAsHTML</string>
+	<key>scope</key>
+	<string>source.cssp</string>
+	<key>uuid</key>
+	<string>92EB6E98-B6FF-40F3-A94B-8A0E49929544</string>
+</dict>
+</plist>
