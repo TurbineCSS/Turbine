@@ -4,6 +4,7 @@ Authors ordered by first contribution
   - [Peter Kröner][1]
   - [Christian Schaefer][2]
   - [Frank Bültge][3]
+  - [Alexander Rösel][9]
 
 
 
@@ -14,7 +15,7 @@ Turbine uses parts of the following projects:
   - [cssmin.php][5] by Joe Scylla
   - [Whatever:hover][6] by Peter Nederlof
   - [IE5.5+ PNG Alpha Fix][7] by Angus Turnbull
-  - [Box Sizing Bahavior][8] by Erik Arvidsson
+  - [Box Sizing Behavior][8] by Erik Arvidsson
 
 
   [1]: http://www.peterkroener.de
@@ -25,3 +26,4 @@ Turbine uses parts of the following projects:
   [6]: http://www.xs4all.nl/~peterned/
   [7]: http://www.twinhelix.com
   [8]: http://webfx.eae.net/dhtml/boxsizing/boxsizing.html
+  [9]: http://twitter.com/traxmaxx
