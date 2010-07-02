@@ -23,6 +23,16 @@
           $changed[$extended_selector] = $styles;
           $cssp->insert($changed,'global',$selector);
           unset($parsed[$block][$selector]);
+        } elseif (preg_match('@(.*?)\((\:.*?)\)@',$selector,$matches)) {
+          $exploded_selectors = explode(',',$matches[2]);
+          
+          foreach ($exploded_selectors as $key => $value) {
+            $extended_selector = $matches[1].trim($value);
+            $changed = array();
+            $changed[$extended_selector] = $styles;
+            $cssp->insert($changed,'global',$selector);
+          }
+          unset($parsed[$block][$selector]);
         }
       }
     }
