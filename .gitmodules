@@ -1,6 +1,6 @@
 [submodule "website"]
 	path = website
-	url = http://github.com/SirPepe/Turbine-Website.git
+	url = git://github.com/SirPepe/Turbine-Website.git
 [submodule "lib/browser"]
 	path = lib/browser
-	url = http://github.com/SirPepe/Turbine-Browser.git
+	url = git://github.com/SirPepe/Turbine-Browser.git
