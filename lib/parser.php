@@ -294,7 +294,7 @@ class Parser2 extends Base{
 		$linecount = count($lines);
 		for($i = 0; $i < $linecount; $i++){
 			$line = $lines[$i];
-			$nextline = $lines[$i + 1];
+			$nextline = (isset($lines[$i + 1])) ? $lines[$i + 1] : '';
 			// If the line and the following line are not empty and not @rules, find the whitespace used for indention
 			if($line != '' && trim($nextline) != '' && preg_match('/^([\s]+)(.*?)$/', $nextline, $matches)){
 				if(count($matches) == 3 && strlen($matches[1]) > 0 && $matches[2]{0} != '@'){
