@@ -34,6 +34,8 @@ function bugfixes(&$parsed){
 
 	// IE 6 + 7 global bugfixes
 	if($browser->browser == 'ie' && floatval($browser->browser_version) < 8){
+		// Have IE7 resample images bicubic instead of using nearest neighbor method
+		$changed['img']['-ms-interpolation-mode'][] = 'bicubic';
 		// Enable full styleability for IE-buttons, see http://www.sitepoint.com/forums/showthread.php?t=547059
 		$changed['button']['overflow'][] = 'visible';
 		$changed['button']['width'][] = 'auto';
