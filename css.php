@@ -89,7 +89,7 @@ if($_GET['files']){
 	}
 	$etag = md5($fingerprint);
 	// ...and check if client sends eTag to compare it with our eTag-fingerprint
-	if($cssp->config['debug_level'] == 0 && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag){
+	if($cssp->config['debug_level'] == 0 && isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag){
 		// Browser already has the file so we tell him nothing changed and exit
 		header('HTTP/1.1 304 Not Modified');
 		exit();
