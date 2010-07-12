@@ -904,6 +904,10 @@ class Parser2 extends Base{
 					if($final != ''){
 						$final .= ' ';
 					}
+					// Remove quotes in values on quoted properties
+					if(in_array($property, $this->quoted_properties)){
+						$values[$i] = str_replace('"',"'",trim($values[$i],'"'));
+					}
 					$final .= $values[$i];
 				}
 				// Listed properties
