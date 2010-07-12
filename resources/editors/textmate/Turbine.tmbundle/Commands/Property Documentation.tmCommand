@@ -7,7 +7,7 @@
 	<key>command</key>
 	<string>#!/usr/bin/env ruby
 #
-# Lookup current word as a CSS property on w3c.org
+# Lookup current word as a CSS property on http://turbine.peterkroener.de/docs.php
 #
 # The mapping below was generated using:
 # echo '$props = {'; curl -s http://www.w3.org/TR/CSS2/propidx.html|egrep "(^|&lt;tr&gt;&lt;td&gt;)&lt;a href=\".*\" class=\"noxref\"&gt;&lt;span class=\".*\"&gt;'.*'&lt;/span&gt;&lt;/a&gt;"|perl -pe "s|(?:&lt;tr&gt;&lt;td&gt;)?&lt;a href=\"(.*)\" class=\"noxref\"&gt;&lt;span class=\".*\"&gt;'(.*)'&lt;/span&gt;&lt;/a&gt;|\t\"\$2\"\t=&gt; \"\$1\",|"; echo '}'
@@ -23,7 +23,19 @@ $props = {
   "bugfixes" =&gt; "#plugins-bugfix",
   "colormodels" =&gt; "#plugins-colormodels",
   "plugins" =&gt; "#plugins",
-  "html5" =&gt; "#plugins-html5"
+  "html5" =&gt; "#plugins-html5",
+  "datauri" =&gt; "#plugins-datauri",
+  "ieenhancements" =&gt; "#plugins-iee",
+  "inlineblock" =&gt; "#plugins-inlineblock",
+  "minifier" =&gt; "#plugins-minifier",
+  "load" =&gt; "#plugins-load",
+  "quotes" =&gt; "#plugins-quote",
+  "resetstyle" =&gt; "#plugins-reset",
+  "transform" =&gt; "#plugins-transforms",
+  "css3" =&gt; "#plugins-meta",
+  "performance" =&gt; "#plugins-meta",
+  "legacy" =&gt; "#plugins-meta",
+  "utility" =&gt; "#plugins-meta"
 }
 
 cur_line = ENV['TM_CURRENT_LINE']

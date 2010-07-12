@@ -98,6 +98,18 @@
 		</dict>
 		<dict>
 			<key>match</key>
+			<string>\((\d{1,})-(\d{1,})\)</string>
+			<key>name</key>
+			<string>generated.selector.parameter.cssp</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>\((\:.*?)\)</string>
+			<key>name</key>
+			<string>generated.selector.parameter.cssp</string>
+		</dict>
+		<dict>
+			<key>match</key>
 			<string>(-|\+)?\s*[0-9]+(\.[0-9]+)?</string>
 			<key>name</key>
 			<string>constant.numeric.cssp</string>
