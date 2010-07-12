@@ -134,7 +134,7 @@ function backgroundgradient(&$parsed){
 								$filter = 'progid:DXImageTransform.Microsoft.gradient(startColorstr='.$matches[2].',endColorstr='.$matches[3].',gradientType='.$ie_gradienttype.')';
 								// Legacy IE compliance
 								if($browser->engine_version < 8){
-									$filter_properties['filter'] = array($filter);
+									$filter_properties['filter'][] = $filter;
 									$parsed[$block][$selector][$property][$i] = preg_replace(
 										$urlregex,
 										'',
@@ -143,7 +143,7 @@ function backgroundgradient(&$parsed){
 								}
 								// IE8 compliance (note: value inside apostrophes!)
 								elseif($browser->engine_version < 9){
-									$filter_properties['-ms-filter'] = array($filter);
+									$filter_properties['-ms-filter'][] = $filter;
 									$parsed[$block][$selector][$property][$i] = preg_replace(
 										$urlregex,
 										'',

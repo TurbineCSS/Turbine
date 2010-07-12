@@ -35,9 +35,9 @@ function opacity(&$parsed){
 							$opacity_properties[$prefix.'opacity'] = $parsed[$block][$selector]['opacity'];
 						}
 						// Create IE filters and insert everything
-						$filter = 'alpha(opacity='.round(floatval($parsed[$block][$selector]['opacity']) * 100).')';
-						$opacity_properties['-ms-filter'] = array($filter);
-						$opacity_properties['filter'] = array($filter);
+						$filter = 'alpha(opacity='.round(floatval($parsed[$block][$selector]['opacity'][0]) * 100).')';
+						$opacity_properties['-ms-filter'][] = $filter;
+						$opacity_properties['filter'][] = $filter;
 						$cssp->insert_properties($opacity_properties, $block, $selector, null, 'opacity');
 						// Comment the newly inserted properties
 						foreach($opacity_properties as $opacity_property => $opacity_value){
