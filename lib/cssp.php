@@ -589,9 +589,8 @@ class Cssp extends Parser2 {
 					$this->parsed[$block][$element] = $this->insert_property($this->parsed[$block][$element], $newproperty, $newvalues);
 				}
 			}
-			$newelement[$property] = $values;
 			// Handle $before
-			if($before != NULL && $property == $before){
+			elseif($before != NULL && $property == $before){
 				foreach($rules as $newproperty => $newvalues){
 					$this->parsed[$block][$element] = $this->insert_property($this->parsed[$block][$element], $newproperty, $newvalues);
 				}
