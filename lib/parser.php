@@ -904,7 +904,9 @@ class Parser2 extends Base{
 					if($final != ''){
 						$final .= ' ';
 					}
-					$final .= $values[$i];
+					// Strip quotes from start and end (important for -ms-filter property)
+					$value = trim($values[$i], '"\'');
+					$final .= $value;
 				}
 				// Listed properties
 				elseif(in_array($property, $this->listed_properties)){
