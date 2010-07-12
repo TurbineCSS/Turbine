@@ -101,6 +101,11 @@ function backgroundgradient(&$parsed){
 								// IE
 								case 'ie':
 								$filter_properties = array();
+								$opacity = 'FF';
+								if(isset($parsed[$block][$selector]['opacity'])){
+									$opacity = dechex(round(floatval($parsed[$block][$selector]['opacity'][0]) * 255));
+									unset($parsed[$block][$selector]['opacity']);
+								}
 								if(strtolower($matches[1]) == 'top'){
 									$ie_gradienttype = '0';
 								}
@@ -110,18 +115,18 @@ function backgroundgradient(&$parsed){
 								// Expand shorthand colors
 								$shorthandpattern = '/^#([0-9A-F]{1})([0-9A-F]{1})([0-9A-F]{1})$/i';
 								if(preg_match($shorthandpattern,$matches[2],$shorthandmatches)){
-									$matches[2] = '#FF'.strtoupper($shorthandmatches[1].$shorthandmatches[1].$shorthandmatches[2].$shorthandmatches[2].$shorthandmatches[3].$shorthandmatches[3]);
+									$matches[2] = '#'.$opacity.strtoupper($shorthandmatches[1].$shorthandmatches[1].$shorthandmatches[2].$shorthandmatches[2].$shorthandmatches[3].$shorthandmatches[3]);
 								}
 								if(preg_match($shorthandpattern,$matches[3],$shorthandmatches)){
-									$matches[3] = '#FF'.strtoupper($shorthandmatches[1].$shorthandmatches[1].$shorthandmatches[2].$shorthandmatches[2].$shorthandmatches[3].$shorthandmatches[3]);
+									$matches[3] = '#'.$opacity.strtoupper($shorthandmatches[1].$shorthandmatches[1].$shorthandmatches[2].$shorthandmatches[2].$shorthandmatches[3].$shorthandmatches[3]);
 								}
 								// Convert from RGB colors
 								$rgbpattern = '/rgb\([\s]*(.+?)[\s]*,[\s]*(.+?)[\s]*,[\s]*(.+?)[\s]*\)/i';
 								if(preg_match($rgbpattern,$matches[2],$rgbmatches)){
-									$matches[2] = '#FF'.strtoupper(dechex(intval($rgbmatches[1])).dechex(intval($rgbmatches[2])).dechex(intval($rgbmatches[3])));
+									$matches[2] = '#'.$opacity.strtoupper(dechex(intval($rgbmatches[1])).dechex(intval($rgbmatches[2])).dechex(intval($rgbmatches[3])));
 								}
 								if(preg_match($rgbpattern,$matches[3],$rgbmatches)){
-									$matches[3] = '#FF'.strtoupper(dechex(intval($rgbmatches[1])).dechex(intval($rgbmatches[2])).dechex(intval($rgbmatches[3])));
+									$matches[3] = '#'.$opacity.strtoupper(dechex(intval($rgbmatches[1])).dechex(intval($rgbmatches[2])).dechex(intval($rgbmatches[3])));
 								}
 								// Convert from RGBA colors
 								$rgbapattern = '/rgba\([\s]*(.+?)[\s]*,[\s]*(.+?)[\s]*,[\s]*(.+?)[\s]*,[\s]*(.+?)[\s]*\)/i';
@@ -134,25 +139,17 @@ function backgroundgradient(&$parsed){
 								$filter = 'progid:DXImageTransform.Microsoft.gradient(startColorstr='.$matches[2].',endColorstr='.$matches[3].',gradientType='.$ie_gradienttype.')';
 								// Legacy IE compliance
 								if($browser->engine_version < 8){
-									$filter_properties['filter'][] = $filter;
-									$parsed[$block][$selector][$property][$i] = preg_replace(
-										$urlregex,
-										'',
-										$parsed[$block][$selector][$property][$i]
-									);
+									$filter_properties['filter'] = array($filter);
 								}
 								// IE8 compliance (note: value inside apostrophes!)
 								elseif($browser->engine_version < 9){
-									$filter_properties['-ms-filter'][] = $filter;
-									$parsed[$block][$selector][$property][$i] = preg_replace(
-										$urlregex,
-										'',
-										$parsed[$block][$selector][$property][$i]
-									);
+									$filter_properties['-ms-filter'] = array($filter);
 								}
-								$cssp->insert_properties($filter_properties, $block, $selector, null, $property);
+
+								// Insert all
+								$cssp->insert_properties($filter_properties, $block, $selector, NULL, $property);
 								foreach($filter_properties as $filter_property => $filter_value){
-									CSSP::comment($parsed[$block][$selector], $shadow_property, 'Added by background-gradient plugin');
+									CSSP::comment($parsed[$block][$selector], $filter_property, 'Added by background-gradient plugin');
 								}
 								break;
 							}
