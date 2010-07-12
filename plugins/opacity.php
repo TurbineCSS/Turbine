@@ -22,7 +22,7 @@
  * @return void
  */
 function opacity(&$parsed){
-	global $cssp;
+	global $cssp, $browser;
 	foreach($parsed as $block => $css){
 		foreach($parsed[$block] as $selector => $styles){
 			if(isset($parsed[$block][$selector]['opacity'])){
@@ -37,12 +37,12 @@ function opacity(&$parsed){
 						// Create IE filters and insert everything
 						$filter = 'progid:DXImageTransform.Microsoft.Alpha(opacity='.round(floatval($parsed[$block][$selector]['opacity'][0]) * 100).')';
 						// Legacy IE compliance
-						if($browser->engine_version < 8){
-							$filter_properties['filter'] = array($filter);
+						if($browser->engine == 'ie' && $browser->engine_version < 8){
+							$opacity_properties['filter'] = array($filter);
 						}
 						// IE8 compliance (note: value inside apostrophes!)
-						elseif($browser->engine_version < 9){
-							$filter_properties['-ms-filter'] = array($filter);
+						elseif($browser->engine == 'ie' && $browser->engine_version < 9){
+							$opacity_properties['-ms-filter'] = array($filter);
 						}
 						$cssp->insert_properties($opacity_properties, $block, $selector, NULL, $property);
 						// Comment the newly inserted properties
