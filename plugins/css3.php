@@ -29,8 +29,7 @@ function css3(&$css){
 		'boxshadow',
 		'colormodels',
 		'opacity',
-		'transform',
-		'transition'
+		'transform'
 	);
 	$plugin_list = array_merge($plugin_list, $css3plugins);
 }
