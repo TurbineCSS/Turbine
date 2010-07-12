@@ -26,19 +26,6 @@ function ieenhancements(&$parsed){
 	if($browser->engine == 'ie'){
 		// Fixes for IE 6 and 7
 		if(floatval($browser->engine_version) < 8){
-			// Enable opacity through a proprietary filter
-			foreach($parsed as $block => $css){
-				foreach($parsed[$block] as $selector => $styles){
-					if(isset($parsed[$block][$selector]['opacity'])){
-						$value = $cssp->get_final_value($parsed[$block][$selector]['opacity'], 'opacity');
-						$filter_value = 100 * floatval($value);
-						$parsed[$block][$selector]['filter'][] = 'alpha(opacity='.$filter_value.')';
-						CSSP::comment($parsed[$block][$selector], 'filter', 'Modified/Added by IE enhancements plugin');
-						$parsed[$block][$selector]['zoom'][] = '1';
-						CSSP::comment($parsed[$block][$selector], 'zoom', 'Modified/Added by IE enhancements plugin');
-					}
-				}
-			}
 			// Fixes for IE 6 only
 			if(floatval($browser->engine_version) < 7){
 				// Missing :hover-property on every tag except link-tag, see http://www.xs4all.nl/~peterned/csshover.html
