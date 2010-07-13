@@ -76,6 +76,14 @@ function bugfixes(&$parsed){
 					$cssp->parsed[$block][$selector]['height'] = $cssp->parsed[$block][$selector]['min-height'];
 					CSSP::comment($cssp->parsed[$block][$selector], 'height', 'Added by bugfix plugin');
 				}
+				// Missing :hover-property on every tag except link-tag, see http://www.xs4all.nl/~peterned/csshover.html
+				$htc_path = trim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/bugfixes/csshover3.htc';
+				$parsed['global']['body']['behavior'][] = 'url("'.$htc_path.'")';
+				CSSP::comment($parsed['global']['body'], 'behavior', 'Modified/Added by bugfixes plugin');
+				// Fix transparent PNGs, see http://www.twinhelix.com/css/iepngfix/
+				$htc_path = trim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/bugfixes/iepngfix.htc';
+				$parsed['global']['img']['behavior'][] = 'url("'.$htc_path.'")';
+				CSSP::comment($parsed['global']['img'], 'behavior', 'Modified/Added by bugfixes plugin');
 			}
 
 			// IE 6 + 7 per-element-bugfixes
