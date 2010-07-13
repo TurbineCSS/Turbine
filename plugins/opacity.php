@@ -44,7 +44,7 @@ function opacity(&$parsed){
 						elseif($browser->engine == 'ie' && $browser->engine_version < 9){
 							$opacity_properties['-ms-filter'] = array($filter);
 						}
-						$cssp->insert_properties($opacity_properties, $block, $selector, NULL, $property);
+						$cssp->insert_properties($opacity_properties, $block, $selector, $property, NULL);
 						// Comment the newly inserted properties
 						foreach($opacity_properties as $opacity_property => $opacity_value){
 							CSSP::comment($parsed[$block][$selector], $opacity_property, 'Added by opacity plugin');
