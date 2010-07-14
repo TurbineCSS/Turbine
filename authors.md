@@ -3,6 +3,7 @@ Authors ordered by first contribution
 
   - [Peter Kröner][1]
   - [Christian Schaefer][2]
+  - [Christian Hayungs][10]
   - [Frank Bültge][3]
   - [Alexander Rösel][9]
 
@@ -27,3 +28,4 @@ Turbine uses parts of the following projects:
   [7]: http://www.twinhelix.com
   [8]: http://webfx.eae.net/dhtml/boxsizing/boxsizing.html
   [9]: http://twitter.com/traxmaxx
+  [9]: http://hayungs.de/
