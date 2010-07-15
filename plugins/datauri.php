@@ -120,7 +120,7 @@ function datauri_get_mode(){
 		$browser->engine == 'ie' &&
 		(
 			(floatval($browser->engine_version) < 7 && $browser->platform == 'windows') || 
-			(floatval($browser->engine_version) < 8 && $browser->platform == 'windows'  && $browser->platform_version < 6)
+			(floatval($browser->engine_version) < 8)
 		)
 	){
 		$mode = 'mhtml';
