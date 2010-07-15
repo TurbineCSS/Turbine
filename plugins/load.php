@@ -42,19 +42,22 @@ function load_apply($lines){
 	foreach($lines as $line){
 		if(preg_match('/^[\s]*@load[\s]+url\((.*?)\)/', $line, $matches)){
 			if(count($matches) == 2){
-				$filepath = $matches[1];
+				$loadfilepath = $matches[1];
 				// Apply global path constants;
 				foreach($cssp->global_constants as $g_constant => $g_value){
-					$filepath = preg_replace('/(\$_'.$g_constant.')\b/', $g_value, $filepath);
+					$loadfilepath = preg_replace('/(\$_'.$g_constant.')\b/', $g_value, $loadfilepath);
 				}
+				$basedir = dirname($loadfilepath);
 				// Load the file
-				if(file_exists($filepath)){
-					$newlines = file($filepath);
+				if(file_exists($loadfilepath)){
+					$newlines = file($loadfilepath);
 					$newlines_indention_char = Parser2::get_indention_char($newlines);
 					// Fix the indention of the new lines
 					if($cssp->indention_char != $newlines_indention_char){
 						$newlines = load_fix_indention($newlines, $cssp->indention_char, $newlines_indention_char);
 					}
+					// Apply the basedir to $_FILEPATH
+					$newlines = load_fix_filepath($newlines, $basedir);
 					// Apply the loader plugin to the loaded files
 					$newlines = load_apply($newlines);
 					// Import the new lines
@@ -63,7 +66,7 @@ function load_apply($lines){
 					}
 				}
 				else{
-					$cssp->report_error('Loader plugin could not find file '.$filepath.'.');
+					$cssp->report_error('Loader plugin could not find file '.$loadfilepath.'.');
 				}
 			}
 		}
@@ -89,6 +92,23 @@ function load_fix_indention($lines, $newchar, $oldchar){
 		if(preg_match('/^([\s]+)(.+)$/', $line, $parts)){
 			$line = str_replace($oldchar, $newchar, $parts[1]).$parts[2];
 		}
+		$newlines[] = $line;
+	}
+	return $newlines;
+}
+
+
+/**
+ * load_fix_filepath
+ * Fixes the $_FILEPATH var with the relative basedir
+ * @param array $lines The lines to fix
+ * @param array $basedir The basedir
+ * @return array $newlines The fixed lines
+ */
+function load_fix_filepath($lines, $basedir){
+	$newlines = array();
+	foreach($lines as $line){
+		$line = preg_replace('/\$_FILEPATH/' , $basedir.'/' , $line);
 		$newlines[] = $line;
 	}
 	return $newlines;
