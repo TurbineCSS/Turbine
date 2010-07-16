@@ -27,6 +27,7 @@ function css3(&$css){
 		'backgroundgradient',
 		'borderradius',
 		'boxshadow',
+		'boxsizing',
 		'colormodels',
 		'opacity',
 		'transform'
