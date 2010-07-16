@@ -125,12 +125,12 @@ if($_GET['files']){
 				// Server-side cache: Check if cache-directory has been created
 				if(!is_dir($cachedir)){
 					if(!@mkdir($cachedir, 0777)){
-						$cssp->report_error('The cache directory doesn\'t exist!');
+						$cssp->report_error('The cache directory doesn\'t exist! Please create a directory \"cache\" in '.dirname(realpath(__FILE__)).' and make it writeable.');
 					}
 				}
 				elseif(!is_writable($cachedir)){
 					if(!@chmod($cachedir, 0777)){
-						$cssp->report_error('The cache directory is not writeable!');
+						$cssp->report_error('The cache directory '.realpath($cachedir).' is not writeable!');
 					}
 				}
 
