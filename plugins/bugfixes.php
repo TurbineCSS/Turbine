@@ -32,8 +32,7 @@ function bugfixes(&$parsed){
 		$changed['html']['filter'][] = 'expression(document.execCommand("BackgroundImageCache",false,true))';
 		// Fix transparent PNGs, see http://www.twinhelix.com/css/iepngfix/
 		$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/bugfixes/iepngfix.htc';
-		$parsed['global']['img']['behavior'][] = 'url("'.$htc_path.'")';
-		CSSP::comment($parsed['global']['img'], 'behavior', 'Modified/Added by bugfixes plugin');
+		$changed['img']['behavior'][] = 'url("'.$htc_path.'")';
 	}
 
 	// IE 6 + 7 global bugfixes
@@ -46,8 +45,7 @@ function bugfixes(&$parsed){
 		$changed['button']['white-space'][] = 'nowrap';
 		// Missing :hover-property on every tag except link-tag, see http://www.xs4all.nl/~peterned/csshover.html
 		$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/bugfixes/csshover3.htc';
-		$parsed['global']['body']['behavior'][] = 'url("'.$htc_path.'")';
-		CSSP::comment($parsed['global']['body'], 'behavior', 'Modified/Added by bugfixes plugin');
+		$changed['body']['behavior'][] = 'url("'.$htc_path.'")';
 	}
 
 	// Firefox global bugfixes
