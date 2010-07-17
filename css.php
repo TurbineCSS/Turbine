@@ -48,6 +48,7 @@ include('lib/cssmin/cssmin.php');
 include('lib/base.php');
 include('lib/parser.php');
 include('lib/cssp.php');
+include('lib/plugin.php');
 
 
 // Create the Turbine instance
