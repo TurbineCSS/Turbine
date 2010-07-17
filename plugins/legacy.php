@@ -24,7 +24,6 @@
 function legacy(&$css){
 	global $plugin_list;
 	$legacyplugins = array(
-		'ie6enhancements',
 		'bugfixes',
 		'inlineblock'
 	);
