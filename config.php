@@ -16,7 +16,7 @@ $config = array(
 	// Mode 0 hides all error messages
 	// Mode 1 displays error messages related to the style sheets (like elements trying to inherit properties that don't exist)
 	// Mode 2 additionally displays php developer messages and sets error_reporting to E_ALL
-	'debug_level' => 0,
+	'debug_level' => 2,
 
 
 	// Base path to cssp and css files relative to css.php

@@ -23,13 +23,12 @@ class Plugin {
 	 * @return array $settings The plugin settings
 	 */
 	static function get_settings($plugin){
-		global $cssp;
+		global $cssp, $plugin_settings;
 		$settings = array();
 		// Are there settings for this plugin?
-		if(isset($cssp->parsed['global']['@turbine'][$plugin])){
-			// Read the settings and return them
-			$settings_string = $cssp->get_final_value($cssp->parsed['global']['@turbine'][$plugin]);
-			$settings = $cssp->tokenize($settings_string, ',');
+		if(isset($plugin_settings[$plugin])){
+			// Tokenize the settings and return them
+			$settings = $cssp->tokenize($plugin_settings[$plugin], ',');
 			return $settings;
 		}
 	}

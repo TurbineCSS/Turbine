@@ -188,12 +188,12 @@ if($_GET['files']){
 					}
 
 
-					// Get plugin settings for the before parse hook
+					// Get plugin list for the before parse hook
 					$plugin_list = array();
 					$found = false;
 					foreach($cssp->code as $line){
 						if(!$found){
-							if(preg_match('/^[\s\t]*@turbine/i',$line) == 1){
+							if(preg_match('/^[\s\t]*@turbine/i', $line) == 1){
 								$found = true;
 							}
 						}
@@ -202,6 +202,32 @@ if($_GET['files']){
 							if(count($matches) == 2){
 								$plugin_list = $cssp->tokenize($matches[1], ',');
 								break;
+							}
+						}
+					}
+
+
+					// Get plugin options
+					$plugin_settings = array();
+					foreach($cssp->code as $line){
+						if(!$found){
+							if(preg_match('/^[\s\t]*@turbine/i', $line) == 1){
+								$found = true;
+							}
+						}
+						else{
+							if($line == ''){
+								break;
+							}
+							else{
+								preg_match('~^\s+([a-zA-Z0-9]+):(.*?)(?://|$)~', $line, $matches);
+								if(count($matches) == 3){
+									$plugin_settings_key = trim($matches[1]);
+									$plugin_settings_val = trim($matches[2]);
+									if(in_array($plugin_settings_key, $plugin_list)){
+										$plugin_settings[$plugin_settings_key] = $plugin_settings_val;
+									}
+								}
 							}
 						}
 					}
