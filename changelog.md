@@ -1,6 +1,15 @@
 Changelog
 =========
 
+1.0.2
+-----
+
+  - Fix: Bugfix plugin inserted unnecessary behavior values
+  - Fix: Wrong paths for htc files in bugfix plugin
+  - Fix: Removed non-existing IE6 plugin from legacy meta plugin
+
+
+
 1.0.1
 -----
 
