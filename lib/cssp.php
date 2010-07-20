@@ -276,16 +276,18 @@ class Cssp extends Parser2 {
 						$ancestors_rules = array();
 						foreach($ancestors as $ancestor){
 							// Find ancestor
-							$ancestor_key = $this->find_ancestor_key($ancestor, $block);
+							$ancestor_keys = $this->find_ancestor_keys($ancestor, $block);
 							// Merge ancestor's rules with own rules
-							if($ancestor_key){
-								$ancestors_rules = $this->merge_rules(
-									$ancestors_rules,
-									$this->parsed[$block][$ancestor_key],
-									array(),
-									true
-								);
+							if(!empty($ancestor_keys)){
 								$found = true;
+								foreach($ancestor_keys as $ancestor_key){
+									$ancestors_rules = $this->merge_rules(
+										$ancestors_rules,
+										$this->parsed[$block][$ancestor_key],
+										array(),
+										true
+									);
+								}
 							}
 						}
 						// ... then merge the combined ancestor's rules into $parsed
@@ -464,19 +466,21 @@ class Cssp extends Parser2 {
 
 
 	/**
-	 * find_ancestor
+	 * find_ancestor_keys
 	 * Find selectors matching (partially) $selector
 	 * @param string $selector The selector to search
 	 * @param string $block The block to search in
-	 * @return string $key The matching key (if any)
+	 * @return array $results The matching keys (if any)
 	 */
-	protected function find_ancestor_key($selector, $block){
+	protected function find_ancestor_keys($selector, $block){
+		$results = array();
 		foreach($this->parsed[$block] as $key => $value){
 			$tokens = $this->tokenize($key, ',');
 			if(in_array($selector, $tokens)){
-				return $key;
+				$results[] = $key;
 			}
 		}
+		return $results;
 	}
 
 
