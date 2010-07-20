@@ -301,6 +301,10 @@ class Cssp extends Parser2 {
 						if(!$found){
 							$this->report_error($selector.' could not find '.$this->parsed[$block][$selector]['extends'][$i].' to inherit properties from.');
 						}
+						// Add a comment explaining where the inherited properties come from
+						else{
+							CSSP::comment($this->parsed[$block][$selector], null, 'Extends '.implode(', ', $ancestors));
+						}
 					}
 					// Unset the extends property
 					unset($this->parsed[$block][$selector]['extends']);
