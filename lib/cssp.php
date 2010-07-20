@@ -272,11 +272,15 @@ class Cssp extends Parser2 {
 						$found = false;
 						// Parse ancestors
 						$ancestors = $this->tokenize($this->parsed[$block][$selector]['extends'][$i], array('"', "'", ','));
+						// List to keep track of all the ancestor's selectors for debugging comment
+						$ancestors_list = array();
 						// First merge all the ancestor's rules into one...
 						$ancestors_rules = array();
 						foreach($ancestors as $ancestor){
-							// Find ancestor
+							// Find ancestors
 							$ancestor_keys = $this->find_ancestor_keys($ancestor, $block);
+							// Add ancestors to the list
+							$ancestors_list = array_merge($ancestors_list, $ancestor_keys);
 							// Merge ancestor's rules with own rules
 							if(!empty($ancestor_keys)){
 								$found = true;
@@ -303,7 +307,7 @@ class Cssp extends Parser2 {
 						}
 						// Add a comment explaining where the inherited properties come from
 						else{
-							CSSP::comment($this->parsed[$block][$selector], null, 'Inherited properties from: '.implode(', ', $ancestors));
+							CSSP::comment($this->parsed[$block][$selector], null, 'Inherited properties from: "'.implode('", "', $ancestors_list).'"');
 						}
 					}
 					// Unset the extends property
