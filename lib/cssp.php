@@ -303,7 +303,7 @@ class Cssp extends Parser2 {
 						}
 						// Add a comment explaining where the inherited properties come from
 						else{
-							CSSP::comment($this->parsed[$block][$selector], null, 'Extends '.implode(', ', $ancestors));
+							CSSP::comment($this->parsed[$block][$selector], null, 'Inherited properties from: '.implode(', ', $ancestors));
 						}
 					}
 					// Unset the extends property
