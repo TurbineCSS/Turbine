@@ -817,11 +817,12 @@ class Parser2 extends Base{
 		}
 		// Constuct the selecor
 		$output .= $prefix . $selector . $s;
-		$output .= '{' . $n;
+		$output .= '{';
 		// Add comments
 		if(isset($rules['_comments']['selector']) && !$compressed){
 			$output .= ' /* ' . implode(', ', $rules['_comments']['selector']) . ' */';
 		}
+		$output .= $n;
 		// Add the properties
 		$output .= $this->glue_properties($rules, $prefix, $compressed);
 		$output .= $prefix.'}'.$n;
