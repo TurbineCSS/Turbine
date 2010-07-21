@@ -272,20 +272,26 @@ class Cssp extends Parser2 {
 						$found = false;
 						// Parse ancestors
 						$ancestors = $this->tokenize($this->parsed[$block][$selector]['extends'][$i], array('"', "'", ','));
+						// List to keep track of all the ancestor's selectors for debugging comment
+						$ancestors_list = array();
 						// First merge all the ancestor's rules into one...
 						$ancestors_rules = array();
 						foreach($ancestors as $ancestor){
-							// Find ancestor
-							$ancestor_key = $this->find_ancestor_key($ancestor, $block);
+							// Find ancestors
+							$ancestor_keys = $this->find_ancestor_keys($ancestor, $block);
+							// Add ancestors to the list
+							$ancestors_list = array_merge($ancestors_list, $ancestor_keys);
 							// Merge ancestor's rules with own rules
-							if($ancestor_key){
-								$ancestors_rules = $this->merge_rules(
-									$ancestors_rules,
-									$this->parsed[$block][$ancestor_key],
-									array(),
-									true
-								);
+							if(!empty($ancestor_keys)){
 								$found = true;
+								foreach($ancestor_keys as $ancestor_key){
+									$ancestors_rules = $this->merge_rules(
+										$ancestors_rules,
+										$this->parsed[$block][$ancestor_key],
+										array(),
+										true
+									);
+								}
 							}
 						}
 						// ... then merge the combined ancestor's rules into $parsed
@@ -298,6 +304,10 @@ class Cssp extends Parser2 {
 						// Report error if no ancestor was found
 						if(!$found){
 							$this->report_error($selector.' could not find '.$this->parsed[$block][$selector]['extends'][$i].' to inherit properties from.');
+						}
+						// Add a comment explaining where the inherited properties come from
+						else{
+							CSSP::comment($this->parsed[$block][$selector], null, 'Inherited properties from: "'.implode('", "', $ancestors_list).'"');
 						}
 					}
 					// Unset the extends property
@@ -464,19 +474,21 @@ class Cssp extends Parser2 {
 
 
 	/**
-	 * find_ancestor
+	 * find_ancestor_keys
 	 * Find selectors matching (partially) $selector
 	 * @param string $selector The selector to search
 	 * @param string $block The block to search in
-	 * @return string $key The matching key (if any)
+	 * @return array $results The matching keys (if any)
 	 */
-	protected function find_ancestor_key($selector, $block){
+	protected function find_ancestor_keys($selector, $block){
+		$results = array();
 		foreach($this->parsed[$block] as $key => $value){
 			$tokens = $this->tokenize($key, ',');
 			if(in_array($selector, $tokens)){
-				return $key;
+				$results[] = $key;
 			}
 		}
+		return $results;
 	}
 
 
