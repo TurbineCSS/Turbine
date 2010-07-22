@@ -42,8 +42,20 @@ else{
 }
 
 
-// Load libraries
-include('lib/browser/browser.php');
+// A simple function for displaying error messages via css
+function turbine_css_error_message($error_message){
+	return 'body:before { content:"'.$error_message.'" !important; font-family:Verdana, Arial, sans-serif !important;
+		font-weight:bold !important; color:#000 !important; background:#F4EA9F !important; display:block !important;
+		border-bottom:1px solid #D5CA6E; padding:8px !important; white-space:pre; }';
+}
+
+
+// Load libraries. Special treatment for the browser class because it tends to be forgotten when cloning git repositories
+if(!@include('lib/browser/browser.php')){
+	echo turbine_css_error_message('Browser library not found! Please download the public version of Turbine or, if you
+		are using git, clone the browser sub project from http://github.com/SirPepe/Turbine-Browser into lib/browser.');
+	exit();
+}
 include('lib/cssmin/cssmin.php');
 include('lib/base.php');
 include('lib/parser.php');
@@ -285,9 +297,7 @@ if($_GET['files']){
 	// Show errors
 	if($cssp->config['debug_level'] > 0 && !empty($cssp->errors)){
 		$error_message = implode('\\00000A', $cssp->errors);
-		$css = $css.'body:before { content:"'.$error_message.'" !important; font-family:Verdana, Arial, sans-serif !important;
-			font-weight:bold !important; color:#000 !important; background:#F4EA9F !important; display:block !important;
-			border-bottom:1px solid #D5CA6E; padding:8px !important; white-space:pre; }';
+		$css .= turbine_css_error_message($error_message);
 	}
 
 
