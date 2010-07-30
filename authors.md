@@ -6,6 +6,7 @@ Authors ordered by first contribution
   - [Christian Hayungs][10]
   - [Frank Bültge][3]
   - [Alexander Rösel][9]
+  - [Karsten Bellwied][11]
 
 
 
@@ -28,4 +29,5 @@ Turbine uses parts of the following projects:
   [7]: http://www.twinhelix.com
   [8]: http://webfx.eae.net/dhtml/boxsizing/boxsizing.html
   [9]: http://twitter.com/traxmaxx
-  [9]: http://hayungs.de/
+  [10]: http://hayungs.de/
+  [11]: http://zierfischkaefig.de/
