@@ -115,7 +115,7 @@ if($_GET['files']){
 			}
 
 			if($fileinfo['extension'] == 'css'){
-				// Simply include normal css files in the output. Minify if not debugging or configured not to minify
+				// Simply include normal css files in the output. Minify if not debugging and configured to minify
 				if($cssp->config['debug_level'] == 0 && $cssp->config['minify_css'] == true){
 					$css .= cssmin::minify(file_get_contents($file));
 				}
