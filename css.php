@@ -106,8 +106,10 @@ if($_GET['files']){
 			// CSSP or CSS?
 			$fileinfo = pathinfo($file);
 
-			// For security reasons only process files from the base dir
-			if(realpath($fileinfo['dirname']) != realpath($cssp->config['css_base_dir'])){
+			// For security reasons do not allow processing of files from above the base dir
+			$file_dir_level = count(explode('/', realpath($fileinfo['dirname'])));
+			$base_dir_level = count(explode('/', realpath($cssp->config['css_base_dir'])));
+			if($file_dir_level < $base_dir_level){
 				$cssp->report_error('Path of '.$file.' is not in the base directory. File not processed for security reasons.');
 				continue;
 			}

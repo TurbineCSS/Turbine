@@ -1,6 +1,16 @@
 Changelog
 =========
 
+1.0.6
+-----
+  - Fix: Allow directories in the base directory
+  - Fix: 
+  - Fix: 
+  - Fix: 
+  - Fix: 
+  - Improvement: Display an error when a file outside the base directory is being accessed
+
+
 1.0.5
 -----
   - Fix: Prevent directory traversal by only allowing turbine to access files in the css_base_dir
