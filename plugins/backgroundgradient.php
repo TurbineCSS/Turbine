@@ -88,11 +88,11 @@ function backgroundgradient(&$parsed){
 								case 'opera':
 								$svg_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/backgroundgradient/svg.php';
 								$svg_params = 'direction='.strtolower($matches[1]);
-								$svg_params .= '&startcolor='.strtolower($matches[2]);
-								$svg_params .= '&endcolor='.strtolower($matches[3]);
+								$svg_params .= '&startcolor='.str_replace('#','%23',strtolower($matches[2]));
+								$svg_params .= '&endcolor='.str_replace('#','%23',strtolower($matches[3]));
 								$parsed[$block][$selector][$property][$i] = preg_replace(
 									$urlregex,
-									'url('.$svg_path.'?'.$svg_params.') 0 0 repeat',
+									'url('.$svg_path.'?'.$svg_params.')',
 									$parsed[$block][$selector][$property][$i]
 								);
 								CSSP::comment($parsed[$block][$selector], $property, 'Modified by background-gradient plugin');
