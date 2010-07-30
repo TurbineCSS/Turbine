@@ -37,13 +37,13 @@ class Parser2 extends Base{
 	/**
 	 * @var array $tokenized_properties The list properties where multiple values are to be combined on output using a space character
 	 */
-	public $tokenized_properties = array('filter', '-ms-filter');
+	public $tokenized_properties = array('filter');
 
 
 	/**
 	 * @var array $listed_properties The list properties where multiple values are to be combined on output using a comma
 	 */
-	public $listed_properties = array('plugins', 'behavior');
+	public $listed_properties = array('plugins', 'behavior', '-ms-filter');
 
 
 	/**
