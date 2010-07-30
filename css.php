@@ -67,6 +67,10 @@ $cssp->global_constants['SCRIPTPATH'] = TURBINEPATH;
 $plugins_loaded = false;
 
 
+// List of available plugins
+$plugins_available = array();
+
+
 // Process files
 if($_GET['files']){
 
@@ -172,7 +176,8 @@ if($_GET['files']){
 						if($handle = opendir($plugindir)){
 							while(false !== ($pluginfile = readdir($handle))){
 								if($pluginfile != '.' && $pluginfile != '..' && is_file($plugindir.'/'.$pluginfile) && pathinfo($plugindir.'/'.$pluginfile,PATHINFO_EXTENSION) == 'php' && !function_exists(substr($pluginfile, 0, -4))){
-									include($plugindir.'/'.$pluginfile);
+									include($plugindir.'/'.$pluginfile);               // Include the plugin
+									$plugins_available[] = substr($pluginfile, 0, -4); // Add the plugin to the list of available plugins
 								}
 							}
 							closedir($handle);
@@ -211,6 +216,13 @@ if($_GET['files']){
 								break;
 							}
 						}
+					}
+
+
+					// Check if there is any plugin in the list that doesn't actually exist
+					$plugin_diff = array_diff($plugin_list, $plugins_available);
+					if(!empty($plugin_diff)){
+						$cssp->report_error('The following plugins are not present in your Turbine installation: '.ucfirst(implode(', ', $plugin_diff)));
 					}
 
 
