@@ -116,9 +116,14 @@ if($_GET['files']){
 	foreach($files as $file){
 		if(file_exists($file)){
 
-			
 			// CSSP or CSS?
 			$fileinfo = pathinfo($file);
+
+			// For security reasons only process files from the base dir
+			if(realpath($fileinfo['dirname']) != realpath($cssp->config['css_base_dir'])){
+				continue;
+			}
+
 			if($fileinfo['extension'] == 'css'){
 				// Simply include normal css files in the output. Minify if not debugging or configured not to minify
 				if($cssp->config['debug_level'] == 0 && $cssp->config['minify_css'] == true){
