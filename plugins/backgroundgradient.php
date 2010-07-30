@@ -30,7 +30,7 @@
 function backgroundgradient(&$parsed){
 	global $cssp, $browser;
 	// Searches for W3C-style two-stepped linear gradient
-	$urlregex = '/linear-gradient\((top|left),(#[0-9A-F]+|rgba*\([0-9,]+\)),(#[0-9A-F]+|rgba*\([0-9,]+\))\)/i';
+	$urlregex = '/linear-gradient\s*\(\s*(top|left)\s*,\s*(#[0-9A-F]+|rgba*\([0-9,]+\))\s*,\s*(#[0-9A-F]+|rgba*\([0-9,]+\))\s*\)/i';
 	// In which properties to searcg
 	$urlproperties = array('background', 'background-image');
 	// Loop through the array
