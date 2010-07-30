@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.0.5
+-----
+  - Fix: Prevent directory traversal by only allowing turbine to access files in the css_base_dir
+  - Fix: Made background gradient plugin more tolerant to whitespace
+
+
 1.0.4
 -----
   - Fix: Background gradient sometimes didn't work in Opera
