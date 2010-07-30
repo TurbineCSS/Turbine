@@ -13,7 +13,6 @@
  * css.php
  * Loads Turbine
  * @var string $_GET['files'] A list of css files, separated by ;
- * @var string $_GET['config'] Path to the plugin configuration file
  */
 
 
