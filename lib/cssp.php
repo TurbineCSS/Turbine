@@ -269,7 +269,7 @@ class Cssp extends Parser2 {
 				if(isset($this->parsed[$block][$selector]['extends'])){
 					$num_extends = count($this->parsed[$block][$selector]['extends']);
 					for($i = 0; $i < $num_extends; $i++){
-						$found = false;
+						$not_found = array();
 						// Parse ancestors
 						$ancestors = $this->tokenize($this->parsed[$block][$selector]['extends'][$i], array('"', "'", ','));
 						// List to keep track of all the ancestor's selectors for debugging comment
@@ -283,7 +283,6 @@ class Cssp extends Parser2 {
 							$ancestors_list = array_merge($ancestors_list, $ancestor_keys);
 							// Merge ancestor's rules with own rules
 							if(!empty($ancestor_keys)){
-								$found = true;
 								foreach($ancestor_keys as $ancestor_key){
 									$ancestors_rules = $this->merge_rules(
 										$ancestors_rules,
@@ -293,6 +292,10 @@ class Cssp extends Parser2 {
 									);
 								}
 							}
+							// Otherwise collect the ancestor for error reporting
+							else{
+								$not_found[] = $ancestor;
+							}
 						}
 						// ... then merge the combined ancestor's rules into $parsed
 						$this->parsed[$block][$selector] = $this->merge_rules(
@@ -301,14 +304,14 @@ class Cssp extends Parser2 {
 							array(),
 							false
 						);
-						// Report error if no ancestor was found
-						if(!$found){
-							$this->report_error($selector.' could not find '.$this->parsed[$block][$selector]['extends'][$i].' to inherit properties from.');
+						// Report errors for every ancestor that was not found
+						if(!empty($not_found)){
+							foreach($not_found as $fail){
+								$this->report_error($selector.' could not find '.$fail.' to inherit properties from.');
+							}
 						}
-						// Add a comment explaining where the inherited properties come from
-						else{
-							CSSP::comment($this->parsed[$block][$selector], null, 'Inherited properties from: "'.implode('", "', $ancestors_list).'"');
-						}
+						// Add a comment explaining where the inherited properties came from
+						CSSP::comment($this->parsed[$block][$selector], null, 'Inherited properties from: "'.implode('", "', $ancestors_list).'"');
 					}
 					// Unset the extends property
 					unset($this->parsed[$block][$selector]['extends']);
