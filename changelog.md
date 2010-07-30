@@ -4,10 +4,7 @@ Changelog
 1.0.6
 -----
   - Fix: Allow directories in the base directory
-  - Fix: 
-  - Fix: 
-  - Fix: 
-  - Fix: 
+  - Improvement: Display an error when a plugin that doesn't exist is called
   - Improvement: Display an error when a file outside the base directory is being accessed
 
 
