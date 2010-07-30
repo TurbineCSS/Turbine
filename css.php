@@ -108,6 +108,7 @@ if($_GET['files']){
 
 			// For security reasons only process files from the base dir
 			if(realpath($fileinfo['dirname']) != realpath($cssp->config['css_base_dir'])){
+				$cssp->report_error('Path of '.$file.' is not in the base directory. File not processed for security reasons.');
 				continue;
 			}
 
