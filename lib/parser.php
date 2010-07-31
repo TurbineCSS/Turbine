@@ -551,7 +551,7 @@ class Parser2 extends Base{
 		$line = substr($line, 4);                   // Strip "@css"
 		$selector = '@css-'.$this->current['ci']++; // Build the selector using the @css-Index
 		$this->parsed[$this->current['me']][$selector] = array(
-			'_value' => trim($line)
+			'_value' => array(trim($line))
 		);
 	}
 
@@ -781,7 +781,7 @@ class Parser2 extends Base{
 	 * @return string $output Formatted CSS
 	 */
 	private function glue_css($contents, $indented, $compressed){
-		$value = $contents['_value'];
+		$value = array_pop($contents['_value']);
 		// Set the indention prefix
 		$prefix = ($indented && !$compressed) ? "\t" : '';
 		// Construct and return the result
