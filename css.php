@@ -13,7 +13,6 @@
  * css.php
  * Loads Turbine
  * @var string $_GET['files'] A list of css files, separated by ;
- * @var string $_GET['config'] Path to the plugin configuration file
  */
 
 
@@ -22,7 +21,7 @@ $start = microtime(true);
 
 
 // Constants
-define('TURBINEVERSION', trim(file_get_contents('version.txt')));
+define('TURBINEVERSION', (file_exists('version.txt')) ? trim(file_get_contents('version.txt')) : 'unknown');
 define('TURBINEPATH', dirname($_SERVER['SCRIPT_NAME']));
 
 
@@ -80,6 +79,10 @@ $cssp->global_constants['SCRIPTPATH'] = TURBINEPATH;
 $plugins_loaded = false;
 
 
+// List of available plugins
+$plugins_available = array();
+
+
 // Process files
 if($_GET['files']){
 
@@ -119,13 +122,14 @@ if($_GET['files']){
 			// CSSP or CSS?
 			$fileinfo = pathinfo($file);
 
-			// For security reasons only process files from the base dir
-			if(realpath($fileinfo['dirname']) != realpath($cssp->config['css_base_dir'])){
+			// For security reasons do not allow processing of files from above the base dir
+			if(strpos(realpath($fileinfo['dirname']), realpath($cssp->config['css_base_dir'])) !== 0){
+				$cssp->report_error('Path of '.$file.' is not in the base directory. File not processed for security reasons.');
 				continue;
 			}
 
 			if($fileinfo['extension'] == 'css'){
-				// Simply include normal css files in the output. Minify if not debugging or configured not to minify
+				// Simply include normal css files in the output. Minify if not debugging and configured to minify
 				if($cssp->config['debug_level'] == 0 && $cssp->config['minify_css'] == true){
 					$css .= cssmin::minify(file_get_contents($file));
 				}
@@ -182,7 +186,8 @@ if($_GET['files']){
 						if($handle = opendir($plugindir)){
 							while(false !== ($pluginfile = readdir($handle))){
 								if($pluginfile != '.' && $pluginfile != '..' && is_file($plugindir.'/'.$pluginfile) && pathinfo($plugindir.'/'.$pluginfile,PATHINFO_EXTENSION) == 'php' && !function_exists(substr($pluginfile, 0, -4))){
-									include($plugindir.'/'.$pluginfile);
+									include($plugindir.'/'.$pluginfile);               // Include the plugin
+									$plugins_available[] = substr($pluginfile, 0, -4); // Add the plugin to the list of available plugins
 								}
 							}
 							closedir($handle);
@@ -250,6 +255,13 @@ if($_GET['files']){
 					}
 
 
+					// Check if there is any plugin in the list that doesn't actually exist
+					$plugin_diff = array_diff($plugin_list, $plugins_available);
+					if(!empty($plugin_diff)){
+						$cssp->report_error('The following plugins are not present in your Turbine installation: '.ucfirst(implode(', ', $plugin_diff)));
+					}
+
+
 					$cssp->set_indention_char();                                         // Set the character(s) used for code indention
 					$cssp->apply_plugins('before_parse', $plugin_list, $cssp->code);     // Apply plugins for before parse
 					$cssp->parse();                                                      // Parse the code
@@ -297,7 +309,7 @@ if($_GET['files']){
 		}
 
 
-	}
+	} // End foreach($files as $file)
 
 	// Show errors
 	if($cssp->config['debug_level'] > 0 && !empty($cssp->errors)){
@@ -350,7 +362,7 @@ if($_GET['files']){
 	// Close comment, output CSS
 	echo "\r\n*/\r\n".$css;
 
-}
+}  // End if($_GET['files'])
 
 
 ?>
