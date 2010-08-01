@@ -430,12 +430,13 @@ class Parser2 extends Base{
 		$len = strlen($line);
 		for($i = 0; $i < $len; $i++ ){
 			$this->switch_string_state($line{$i});
-			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){ // Break on comment
+			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){     // Break on comment
 				break;
 			}
 			$this->token .= $line{$i};
 		}
-		$this->current['me'] = trim(preg_replace('/[\s]+/', ' ', $this->token)); // Trim whitespace from token, use it as current @media
+		$media = trim(preg_replace('/[\s]+/', ' ', $this->token));                      // Trim whitespace from token
+		$this->current['me'] = (trim(substr($media, 6)) != 'none') ? $media : 'global'; // Use token as current @media or reset to global
 	}
 
 
@@ -551,7 +552,7 @@ class Parser2 extends Base{
 		$line = substr($line, 4);                   // Strip "@css"
 		$selector = '@css-'.$this->current['ci']++; // Build the selector using the @css-Index
 		$this->parsed[$this->current['me']][$selector] = array(
-			'_value' => trim($line)
+			'_value' => array(trim($line))
 		);
 	}
 
@@ -781,7 +782,7 @@ class Parser2 extends Base{
 	 * @return string $output Formatted CSS
 	 */
 	private function glue_css($contents, $indented, $compressed){
-		$value = $contents['_value'];
+		$value = array_pop($contents['_value']);
 		// Set the indention prefix
 		$prefix = ($indented && !$compressed) ? "\t" : '';
 		// Construct and return the result
