@@ -430,12 +430,13 @@ class Parser2 extends Base{
 		$len = strlen($line);
 		for($i = 0; $i < $len; $i++ ){
 			$this->switch_string_state($line{$i});
-			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){ // Break on comment
+			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){     // Break on comment
 				break;
 			}
 			$this->token .= $line{$i};
 		}
-		$this->current['me'] = trim(preg_replace('/[\s]+/', ' ', $this->token)); // Trim whitespace from token, use it as current @media
+		$media = trim(preg_replace('/[\s]+/', ' ', $this->token));                      // Trim whitespace from token
+		$this->current['me'] = (trim(substr($media, 6)) != 'none') ? $media : 'global'; // Use token as current @media or reset to global
 	}
 
 
