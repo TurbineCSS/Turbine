@@ -37,13 +37,13 @@ class Parser2 extends Base{
 	/**
 	 * @var array $tokenized_properties The list properties where multiple values are to be combined on output using a space character
 	 */
-	public $tokenized_properties = array('filter', '-ms-filter');
+	public $tokenized_properties = array('filter');
 
 
 	/**
 	 * @var array $listed_properties The list properties where multiple values are to be combined on output using a comma
 	 */
-	public $listed_properties = array('plugins', 'behavior');
+	public $listed_properties = array('plugins', 'behavior', '-ms-filter');
 
 
 	/**
@@ -294,7 +294,7 @@ class Parser2 extends Base{
 		$linecount = count($lines);
 		for($i = 0; $i < $linecount; $i++){
 			$line = $lines[$i];
-			$nextline = $lines[$i + 1];
+			$nextline = (isset($lines[$i + 1])) ? $lines[$i + 1] : '';
 			// If the line and the following line are not empty and not @rules, find the whitespace used for indention
 			if($line != '' && trim($nextline) != '' && preg_match('/^([\s]+)(.*?)$/', $nextline, $matches)){
 				if(count($matches) == 3 && strlen($matches[1]) > 0 && $matches[2]{0} != '@'){
@@ -430,12 +430,13 @@ class Parser2 extends Base{
 		$len = strlen($line);
 		for($i = 0; $i < $len; $i++ ){
 			$this->switch_string_state($line{$i});
-			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){ // Break on comment
+			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){     // Break on comment
 				break;
 			}
 			$this->token .= $line{$i};
 		}
-		$this->current['me'] = trim(preg_replace('/[\s]+/', ' ', $this->token)); // Trim whitespace from token, use it as current @media
+		$media = trim(preg_replace('/[\s]+/', ' ', $this->token));                      // Trim whitespace from token
+		$this->current['me'] = (trim(substr($media, 6)) != 'none') ? $media : 'global'; // Use token as current @media or reset to global
 	}
 
 
@@ -551,7 +552,7 @@ class Parser2 extends Base{
 		$line = substr($line, 4);                   // Strip "@css"
 		$selector = '@css-'.$this->current['ci']++; // Build the selector using the @css-Index
 		$this->parsed[$this->current['me']][$selector] = array(
-			'_value' => trim($line)
+			'_value' => array(trim($line))
 		);
 	}
 
@@ -781,7 +782,7 @@ class Parser2 extends Base{
 	 * @return string $output Formatted CSS
 	 */
 	private function glue_css($contents, $indented, $compressed){
-		$value = $contents['_value'];
+		$value = array_pop($contents['_value']);
 		// Set the indention prefix
 		$prefix = ($indented && !$compressed) ? "\t" : '';
 		// Construct and return the result
@@ -817,11 +818,12 @@ class Parser2 extends Base{
 		}
 		// Constuct the selecor
 		$output .= $prefix . $selector . $s;
-		$output .= '{' . $n;
+		$output .= '{';
 		// Add comments
 		if(isset($rules['_comments']['selector']) && !$compressed){
 			$output .= ' /* ' . implode(', ', $rules['_comments']['selector']) . ' */';
 		}
+		$output .= $n;
 		// Add the properties
 		$output .= $this->glue_properties($rules, $prefix, $compressed);
 		$output .= $prefix.'}'.$n;
@@ -903,6 +905,10 @@ class Parser2 extends Base{
 				if(in_array($property, $this->tokenized_properties)){
 					if($final != ''){
 						$final .= ' ';
+					}
+					// Remove quotes in values on quoted properties (important for -ms-filter property)
+					if(in_array($property, $this->quoted_properties)){
+						$values[$i] = str_replace('"',"'",trim($values[$i],'"'));
 					}
 					$final .= $values[$i];
 				}

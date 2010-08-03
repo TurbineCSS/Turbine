@@ -269,23 +269,32 @@ class Cssp extends Parser2 {
 				if(isset($this->parsed[$block][$selector]['extends'])){
 					$num_extends = count($this->parsed[$block][$selector]['extends']);
 					for($i = 0; $i < $num_extends; $i++){
-						$found = false;
+						$not_found = array();
 						// Parse ancestors
 						$ancestors = $this->tokenize($this->parsed[$block][$selector]['extends'][$i], array('"', "'", ','));
+						// List to keep track of all the ancestor's selectors for debugging comment
+						$ancestors_list = array();
 						// First merge all the ancestor's rules into one...
 						$ancestors_rules = array();
 						foreach($ancestors as $ancestor){
-							// Find ancestor
-							$ancestor_key = $this->find_ancestor_key($ancestor, $block);
+							// Find ancestors
+							$ancestor_keys = $this->find_ancestor_keys($ancestor, $block);
+							// Add ancestors to the list
+							$ancestors_list = array_merge($ancestors_list, $ancestor_keys);
 							// Merge ancestor's rules with own rules
-							if($ancestor_key){
-								$ancestors_rules = $this->merge_rules(
-									$ancestors_rules,
-									$this->parsed[$block][$ancestor_key],
-									array(),
-									true
-								);
-								$found = true;
+							if(!empty($ancestor_keys)){
+								foreach($ancestor_keys as $ancestor_key){
+									$ancestors_rules = $this->merge_rules(
+										$ancestors_rules,
+										$this->parsed[$block][$ancestor_key],
+										array(),
+										true
+									);
+								}
+							}
+							// Otherwise collect the ancestor for error reporting
+							else{
+								$not_found[] = $ancestor;
 							}
 						}
 						// ... then merge the combined ancestor's rules into $parsed
@@ -295,10 +304,14 @@ class Cssp extends Parser2 {
 							array(),
 							false
 						);
-						// Report error if no ancestor was found
-						if(!$found){
-							$this->report_error($selector.' could not find '.$this->parsed[$block][$selector]['extends'][$i].' to inherit properties from.');
+						// Report errors for every ancestor that was not found
+						if(!empty($not_found)){
+							foreach($not_found as $fail){
+								$this->report_error($selector.' could not find '.$fail.' to inherit properties from.');
+							}
 						}
+						// Add a comment explaining where the inherited properties came from
+						CSSP::comment($this->parsed[$block][$selector], null, 'Inherited properties from: "'.implode('", "', $ancestors_list).'"');
 					}
 					// Unset the extends property
 					unset($this->parsed[$block][$selector]['extends']);
@@ -464,19 +477,21 @@ class Cssp extends Parser2 {
 
 
 	/**
-	 * find_ancestor
+	 * find_ancestor_keys
 	 * Find selectors matching (partially) $selector
 	 * @param string $selector The selector to search
 	 * @param string $block The block to search in
-	 * @return string $key The matching key (if any)
+	 * @return array $results The matching keys (if any)
 	 */
-	protected function find_ancestor_key($selector, $block){
+	protected function find_ancestor_keys($selector, $block){
+		$results = array();
 		foreach($this->parsed[$block] as $key => $value){
 			$tokens = $this->tokenize($key, ',');
 			if(in_array($selector, $tokens)){
-				return $key;
+				$results[] = $key;
 			}
 		}
+		return $results;
 	}
 
 
@@ -574,12 +589,11 @@ class Cssp extends Parser2 {
 	 * @param string $after The property before which the rules are to be inserted
 	 * @return void
 	 */
-	public function insert_properties($rules, $block, $element, $before = null, $after = null){
-		$newelement = array();
+	public function insert_properties($rules, $block, $element, $before = NULL, $after = NULL){
 		// If $before and $after are NULL, insert the new rules at the top
 		if($before == NULL && $after == NULL){
 			foreach($rules as $newproperty => $newvalues){
-				$newelement = $this->insert_property($newelement, $newproperty, $newvalues);
+				$this->parsed[$block][$element] = $this->insert_property($this->parsed[$block][$element], $newproperty, $newvalues);
 			}
 		}
 		// Else walk through the whole element
@@ -587,18 +601,16 @@ class Cssp extends Parser2 {
 			// Handle $after
 			if($after != NULL && $property == $after){
 				foreach($rules as $newproperty => $newvalues){
-					$newelement = $this->insert_property($newelement, $newproperty, $newvalues);
+					$this->parsed[$block][$element] = $this->insert_property($this->parsed[$block][$element], $newproperty, $newvalues);
 				}
 			}
-			$newelement[$property] = $values;
 			// Handle $before
-			if($before != NULL && $property == $before){
+			elseif($before != NULL && $property == $before){
 				foreach($rules as $newproperty => $newvalues){
-					$newelement = $this->insert_property($newelement, $newproperty, $newvalues);
+					$this->parsed[$block][$element] = $this->insert_property($this->parsed[$block][$element], $newproperty, $newvalues);
 				}
 			}
 		}
-		$this->parsed[$block][$element] = $newelement;
 	}
 
 

@@ -25,6 +25,7 @@
  * @return void
  */
 function resetstyle(&$output){
+	$settings = Plugin::get_settings('resetstyle');
 	// Get the reset stylesheet. Use the custom file if it exists
 	if(file_exists('plugins/resetstyle/custom.css')){
 		$reset_stylesheet = file_get_contents('plugins/resetstyle/custom.css');
@@ -35,6 +36,10 @@ function resetstyle(&$output){
 	if(!empty($reset_stylesheet)){
 		// Compress the styles
 		$reset_stylesheet = cssmin::minify($reset_stylesheet);
+		// Force a scrollbar?
+		if(in_array('force-scrollbar', $settings)){
+			$reset_stylesheet .= 'html{overflow-y:scroll}';
+		}
 		// Add the reset stylesheet to the output. Done!
 		$output = $reset_stylesheet.$output;
 	}

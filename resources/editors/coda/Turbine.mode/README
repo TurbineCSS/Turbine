@@ -1,0 +1,28 @@
+Sass.mode
+http://github.com/Brajeshwar/Sass.mode
+----------------------------------------------
+
+COMPATIBILITY
+
+Coda - http://www.panic.com/coda/
+SubEthaEdit - http://www.codingmonkeys.de/subethaedit/
+----------------------------------------------
+
+SUPPORTED EXTENSIONS
+
+.scss
+----------------------------------------------
+
+INSTALL
+
+git clone (or Copy) "Sass.mode" folder to "~/Library/Application Support/Coda/Modes"
+
+Notes:
+* Create folder(s) if needed.
+* You might need to rename the folder to "Sass.mode" (downloaded from source)
+* In the Alternate INSTALL, you'll need to do a "Show Package Content" on the "Coda" Application.
+----------------------------------------------
+
+REFERENCES
+
+More about Mode Customization: http://www.codingmonkeys.de/subethaedit/mode.html

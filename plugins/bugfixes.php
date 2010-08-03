@@ -30,14 +30,22 @@ function bugfixes(&$parsed){
 		$changed['img']['vertical-align'][] = 'bottom';
 		// Background image flickers on hover
 		$changed['html']['filter'][] = 'expression(document.execCommand("BackgroundImageCache",false,true))';
+		// Fix transparent PNGs, see http://www.twinhelix.com/css/iepngfix/
+		$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/bugfixes/iepngfix.htc';
+		$changed['img']['behavior'][] = 'url("'.$htc_path.'")';
 	}
 
 	// IE 6 + 7 global bugfixes
 	if($browser->browser == 'ie' && floatval($browser->browser_version) < 8){
+		// Have IE7 resample images bicubic instead of using nearest neighbor method
+		$changed['img']['-ms-interpolation-mode'][] = 'bicubic';
 		// Enable full styleability for IE-buttons, see http://www.sitepoint.com/forums/showthread.php?t=547059
 		$changed['button']['overflow'][] = 'visible';
 		$changed['button']['width'][] = 'auto';
 		$changed['button']['white-space'][] = 'nowrap';
+		// Missing :hover-property on every tag except link-tag, see http://www.xs4all.nl/~peterned/csshover.html
+		$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/bugfixes/csshover3.htc';
+		$changed['body']['behavior'][] = 'url("'.$htc_path.'")';
 	}
 
 	// Firefox global bugfixes

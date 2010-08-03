@@ -24,9 +24,12 @@
 function css3(&$css){
 	global $plugin_list;
 	$css3plugins = array(
+		'backgroundgradient',
 		'borderradius',
 		'boxshadow',
+		'boxsizing',
 		'colormodels',
+		'opacity',
 		'transform'
 	);
 	$plugin_list = array_merge($plugin_list, $css3plugins);
