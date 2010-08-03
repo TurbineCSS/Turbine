@@ -4,3 +4,6 @@
 [submodule "lib/browser"]
 	path = lib/browser
 	url = git://github.com/SirPepe/Turbine-Browser.git
+[submodule "Turbine-Website"]
+	path = Turbine-Website
+	url = git@github.com:Traxmaxx/Turbine-Website.git
