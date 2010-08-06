@@ -68,6 +68,10 @@ public function __construct(){
 			$this->config[$key] = $setting;
 		}
 	}
+	// Apppend the final slash to the base dir if it is missing
+	if($this->config['css_base_dir'] != ''){
+		$this->config['css_base_dir'] = rtrim($this->config['css_base_dir'], '/').'/';
+	}
 	// Set error output
 	if($this->config['debug_level'] == 2){
 		error_reporting(E_ALL);
