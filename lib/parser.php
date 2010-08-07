@@ -888,6 +888,10 @@ class Parser2 extends Base{
 		// If there's only one value, there's only one thing to return
 		if(count($values) == 1){
 			$final = array_pop($values);
+			// Remove quotes in values on quoted properties (important for -ms-filter property)
+			if(in_array($property, $this->quoted_properties)){
+				$final = str_replace('"', "'", trim($final, '"'));
+			}
 		}
 		// Otherwise find the last and/or most !important value
 		else{
@@ -916,6 +920,10 @@ class Parser2 extends Base{
 				elseif(in_array($property, $this->listed_properties)){
 					if($final != ''){
 						$final .= ','.$s;
+					}
+					// Remove quotes in values on quoted properties (important for -ms-filter property)
+					if(in_array($property, $this->quoted_properties)){
+						$values[$i] = str_replace('"',"'",trim($values[$i],'"'));
 					}
 					$final .= $values[$i];
 				}
