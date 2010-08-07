@@ -1,6 +1,13 @@
 Changelog
 =========
 
+
+1.0.7
+-----
+  - Improvement: Made some plugins independent of ua sniffing
+  - Improvement: Transform plugin displays an error when width and height of an element are not defined (which in required for transforms in IE)
+
+
 1.0.6
 -----
   - Fix: Allow directories inside the base directory
