@@ -53,6 +53,12 @@ class Parser2 extends Base{
 
 
 	/**
+	 * @var array $last_properties The list properties that must be output AFTER all other plugins, in order of output
+	 */
+	public $last_properties = array('filter', '-ms-filter');
+
+
+	/**
 	 * @var string $indention_char The Whitespace character(s) used for indention
 	 */
 	public $indention_char = false;
@@ -848,6 +854,14 @@ class Parser2 extends Base{
 		// Forget the whitespace if we're compressing
 		if($compressed){
 			$s = $t = $n = '';
+		}
+		// Reorder for output
+		foreach($this->last_properties as $property){
+			if(isset($rules[$property])){
+				$content = $rules[$property]; // Make a copy
+				unset($rules[$property]);     // Remove the original
+				$rules[$property] = $content; // Re-insert the property at the end
+			}
 		}
 		// Keep count of the properties
 		$num_properties = $this->count_properties($rules);

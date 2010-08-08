@@ -6,6 +6,7 @@ Changelog
 -----
   - Fix: IE didn't use background properties when a gradient declaration was present
   - Fix: -ms-filter was not quoted correctly
+  - Fix: The -ms-filter property was not always ouput after the filter property, which is necessary because IE8 sometimes interprets -ms-filter AND filter
   - Improvement: Made some plugins independent of ua sniffing
   - Improvement: Transform plugin displays an error when width and height of an element are not defined (which in required for transforms in IE)
 
