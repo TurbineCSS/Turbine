@@ -6,7 +6,7 @@
 
 
 // Exclude IE8
-if(typeof(document.body.style.boxSizing) != "undefined"){
+if(typeof(element.style.boxSizing) != "undefined"){
 
 
 var doc = element.document;
