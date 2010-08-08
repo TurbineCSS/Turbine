@@ -953,6 +953,7 @@ class Parser2 extends Base{
 		if(in_array($property, $this->quoted_properties)){
 			$final = '"' . $final . '"';
 		}
+		$final = trim($final);
 		return $final;
 	}
 
