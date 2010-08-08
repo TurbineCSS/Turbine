@@ -2,6 +2,11 @@ Changelog
 =========
 
 
+1.0.8
+-----
+  - Fix: IE8 doesn't need the htc file to support box-sizing
+
+
 1.0.7
 -----
   - Fix: IE didn't use background properties when a gradient declaration was present
