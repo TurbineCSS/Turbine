@@ -37,19 +37,25 @@ class Parser2 extends Base{
 	/**
 	 * @var array $tokenized_properties The list properties where multiple values are to be combined on output using a space character
 	 */
-	public $tokenized_properties = array('filter', '-ms-filter');
+	public $tokenized_properties = array('filter');
 
 
 	/**
 	 * @var array $listed_properties The list properties where multiple values are to be combined on output using a comma
 	 */
-	public $listed_properties = array('plugins', 'behavior');
+	public $listed_properties = array('plugins', 'behavior', '-ms-filter');
 
 
 	/**
 	 * @var array $quoted_properties The list properties where the value needs to be quoted as a whole before output
 	 */
 	public $quoted_properties = array('-ms-filter');
+
+
+	/**
+	 * @var array $last_properties The list properties that must be output AFTER all other plugins, in order of output
+	 */
+	public $last_properties = array('filter', '-ms-filter');
 
 
 	/**
@@ -430,12 +436,13 @@ class Parser2 extends Base{
 		$len = strlen($line);
 		for($i = 0; $i < $len; $i++ ){
 			$this->switch_string_state($line{$i});
-			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){ // Break on comment
+			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){     // Break on comment
 				break;
 			}
 			$this->token .= $line{$i};
 		}
-		$this->current['me'] = trim(preg_replace('/[\s]+/', ' ', $this->token)); // Trim whitespace from token, use it as current @media
+		$media = trim(preg_replace('/[\s]+/', ' ', $this->token));                      // Trim whitespace from token
+		$this->current['me'] = (trim(substr($media, 6)) != 'none') ? $media : 'global'; // Use token as current @media or reset to global
 	}
 
 
@@ -551,7 +558,7 @@ class Parser2 extends Base{
 		$line = substr($line, 4);                   // Strip "@css"
 		$selector = '@css-'.$this->current['ci']++; // Build the selector using the @css-Index
 		$this->parsed[$this->current['me']][$selector] = array(
-			'_value' => trim($line)
+			'_value' => array(trim($line))
 		);
 	}
 
@@ -781,7 +788,7 @@ class Parser2 extends Base{
 	 * @return string $output Formatted CSS
 	 */
 	private function glue_css($contents, $indented, $compressed){
-		$value = $contents['_value'];
+		$value = array_pop($contents['_value']);
 		// Set the indention prefix
 		$prefix = ($indented && !$compressed) ? "\t" : '';
 		// Construct and return the result
@@ -848,6 +855,14 @@ class Parser2 extends Base{
 		if($compressed){
 			$s = $t = $n = '';
 		}
+		// Reorder for output
+		foreach($this->last_properties as $property){
+			if(isset($rules[$property])){
+				$content = $rules[$property]; // Make a copy
+				unset($rules[$property]);     // Remove the original
+				$rules[$property] = $content; // Re-insert the property at the end
+			}
+		}
 		// Keep count of the properties
 		$num_properties = $this->count_properties($rules);
 		$count_properties = 0;
@@ -884,9 +899,15 @@ class Parser2 extends Base{
 	 * @return string $final The final value
 	 */
 	public function get_final_value($values, $property = NULL, $compressed = false){
+		// Remove duplicates
+		$values = array_unique($values);
 		// If there's only one value, there's only one thing to return
 		if(count($values) == 1){
 			$final = array_pop($values);
+			// Remove quotes in values on quoted properties (important for -ms-filter property)
+			if(in_array($property, $this->quoted_properties)){
+				$final = str_replace('"', "'", trim($final, '"'));
+			}
 		}
 		// Otherwise find the last and/or most !important value
 		else{
@@ -916,6 +937,10 @@ class Parser2 extends Base{
 					if($final != ''){
 						$final .= ','.$s;
 					}
+					// Remove quotes in values on quoted properties (important for -ms-filter property)
+					if(in_array($property, $this->quoted_properties)){
+						$values[$i] = str_replace('"',"'",trim($values[$i],'"'));
+					}
 					$final .= $values[$i];
 				}
 				// Normal properties
@@ -930,6 +955,7 @@ class Parser2 extends Base{
 		if(in_array($property, $this->quoted_properties)){
 			$final = '"' . $final . '"';
 		}
+		$final = trim($final);
 		return $final;
 	}
 
