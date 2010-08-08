@@ -899,6 +899,8 @@ class Parser2 extends Base{
 	 * @return string $final The final value
 	 */
 	public function get_final_value($values, $property = NULL, $compressed = false){
+		// Remove duplicates
+		$values = array_unique($values);
 		// If there's only one value, there's only one thing to return
 		if(count($values) == 1){
 			$final = array_pop($values);
@@ -953,6 +955,7 @@ class Parser2 extends Base{
 		if(in_array($property, $this->quoted_properties)){
 			$final = '"' . $final . '"';
 		}
+		$final = trim($final);
 		return $final;
 	}
 

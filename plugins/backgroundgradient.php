@@ -153,12 +153,30 @@ function backgroundgradient(&$parsed){
 								$filter_properties['*background'] = array($background_rest);            // IE7 and 6
 								$filter_properties['background /*\**/'] = array($background_rest.'\9'); // IE8
 							}
+							// hasLayout stuff
+							$filter_properties['zoom'] = array('1');
 							// Insert all
 							$cssp->insert_properties($filter_properties, $block, $selector, NULL, $property);
 							foreach($filter_properties as $filter_property => $filter_value){
 								CSSP::comment($parsed[$block][$selector], $filter_property, 'Added by background-gradient plugin');
 							}
 
+						}
+						else{
+							// This is fucking ugly, but must be done to keep thing sane for css developers. In order to have background
+							// declarations that don't contain any gradient _remove_ gradients that the element may have inherited
+							// we have to explicitly add disabled filters for IE - always. So in the end what this does is adding three
+							// lines of css code for every background property as long as it doesn't add a gradient. Talk about bloated
+							// code... but hey, blame the IE team for their fucked up browsers, not us...
+							$filter_properties = array();
+							$filter = 'progid:DXImageTransform.Microsoft.gradient(enabled:false)';
+							$filter_properties['zoom'] = array('1');
+							$filter_properties['filter'] = array($filter);
+							$filter_properties['-ms-filter'] = array($filter);
+							$cssp->insert_properties($filter_properties, $block, $selector, NULL, $property);
+							foreach($filter_properties as $filter_property => $filter_value){
+								CSSP::comment($parsed[$block][$selector], $filter_property, 'Added by background-gradient plugin');
+							}
 						}
 					}
 				}

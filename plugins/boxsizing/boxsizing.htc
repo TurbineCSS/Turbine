@@ -5,6 +5,10 @@
 //<![CDATA[
 
 
+// Exclude IE8
+if(typeof(document.body.style.boxSizing) != "undefined"){
+
+
 var doc = element.document;
 
 function init() {
@@ -189,6 +193,8 @@ function checkPropertyChange() {
 }
 
 init();
+
+} // End exclude IE8
 
 //]]>
 </script>

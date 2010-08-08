@@ -65,7 +65,18 @@ function boxshadow_filters($values){
 	$value = $cssp->get_final_value($values);
 	$filter_properties = array();
 	// Build the filter value
-	if(preg_match('/([-0-9]+)\D+([-0-9]+)\D+([-0-9]+)\D+#([0-9A-F]{3,6})+/i', trim($value), $matches) == 1){
+	if($value == 'none'){
+		$filters = array(
+			'progid:DXImageTransform.Microsoft.dropshadow(enabled:false)',
+			'progid:DXImageTransform.Microsoft.Shadow(enabled:false)'
+		);
+		// IE8 compliance (note: value inside apostrophes!)
+		$filter_properties['-ms-filter'] = $filters;
+		// Legacy IE compliance
+		$filter_properties['filter'] = $filters;
+		$filter_properties['zoom'] = array('1');
+	}
+	elseif(preg_match('/([-0-9]+)\D+([-0-9]+)\D+([-0-9]+)\D+#([0-9A-F]{3,6})+/i', $value, $matches) == 1){
 		$xoffset = intval($matches[1]);
 		$yoffset = intval($matches[2]);
 		$blur = intval($matches[3]);
@@ -84,7 +95,8 @@ function boxshadow_filters($values){
 		}
 		// Soft Shadow
 		else{
-			$filter = 'progid:DXImageTransform.Microsoft.Shadow(Color=\'#'.$color.'\',Direction='.$direction.',Strength='.$median_offset.')';
+			$strength = ($median_offset + $blur) / 2;
+			$filter = 'progid:DXImageTransform.Microsoft.Shadow(Color=\'#'.$color.'\',Direction='.$direction.',Strength='.$strength.')';
 		}
 		// IE8 compliance (note: value inside apostrophes!)
 		$filter_properties['-ms-filter'] = array('"'.$filter.'"');
