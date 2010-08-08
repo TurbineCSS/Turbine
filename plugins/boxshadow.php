@@ -91,7 +91,8 @@ function boxshadow_filters($values){
 		}
 		// Soft Shadow
 		else{
-			$filter = 'progid:DXImageTransform.Microsoft.Shadow(Color=\'#'.$color.'\',Direction='.$direction.',Strength='.$median_offset.')';
+			$strength = ($median_offset + $blur) / 2;
+			$filter = 'progid:DXImageTransform.Microsoft.Shadow(Color=\'#'.$color.'\',Direction='.$direction.',Strength='.$strength.')';
 		}
 		// IE8 compliance (note: value inside apostrophes!)
 		$filter_properties['-ms-filter'] = array('"'.$filter.'"');
