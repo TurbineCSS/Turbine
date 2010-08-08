@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>content</key>
+	<string>scaleY(${1:sy})$0</string>
+	<key>name</key>
+	<string>transform-scaleY</string>
+	<key>scope</key>
+	<string>source.cssp</string>
+	<key>tabTrigger</key>
+	<string>scaley</string>
+	<key>uuid</key>
+	<string>827D3CC4-8E6F-4ED1-85DB-1E662E5EC027</string>
+</dict>
+</plist>

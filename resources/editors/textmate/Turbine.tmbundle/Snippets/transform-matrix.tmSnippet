@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>content</key>
+	<string>matrix(${1:a},${2:c},${3:b},${4:d},${5:tx},${6:ty})$0</string>
+	<key>name</key>
+	<string>transform-matrix</string>
+	<key>scope</key>
+	<string>source.cssp</string>
+	<key>tabTrigger</key>
+	<string>matrix</string>
+	<key>uuid</key>
+	<string>A4972456-E27C-461D-BAA2-2361C5E7F7F5</string>
+</dict>
+</plist>

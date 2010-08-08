@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>content</key>
+	<string>engine:${1:gecko/webkit/khtml}$0</string>
+	<key>name</key>
+	<string>engine-sniffer</string>
+	<key>scope</key>
+	<string>source.cssp</string>
+	<key>tabTrigger</key>
+	<string>engine</string>
+	<key>uuid</key>
+	<string>08F4C177-D8A9-4D55-8291-8E8E2A55FB20</string>
+</dict>
+</plist>

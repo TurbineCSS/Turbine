@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>content</key>
+	<string>box-sizing:${1:content-box/border-box/inherit}$0</string>
+	<key>name</key>
+	<string>box-sizing</string>
+	<key>scope</key>
+	<string>source.cssp</string>
+	<key>tabTrigger</key>
+	<string>box-sizing</string>
+	<key>uuid</key>
+	<string>1B51C4B4-6FAE-4B6C-8A6E-CB1C9C813460</string>
+</dict>
+</plist>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>content</key>
+	<string>scale(${1:sx[, sy]})$0</string>
+	<key>name</key>
+	<string>transform-scale</string>
+	<key>scope</key>
+	<string>source.cssp</string>
+	<key>tabTrigger</key>
+	<string>scale</string>
+	<key>uuid</key>
+	<string>C2D95A50-E665-45BA-970F-54F3901317E0</string>
+</dict>
+</plist>
