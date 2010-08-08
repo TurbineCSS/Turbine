@@ -4,12 +4,11 @@ Changelog
 
 1.0.8
 -----
-  - 
-  - 
   - Fix: Gradients couldn't be disabled in IE
   - Fix: "none" didn't work as a value for box-shadow in IE
   - Fix: IE8 doesn't need the htc file to support box-sizing
   - Improvement: Better soft shadow strength calculation for box-shadow in IE
+  - Improvement: Remove duplicate filter values before output
 
 
 1.0.7
