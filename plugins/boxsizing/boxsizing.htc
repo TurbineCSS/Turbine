@@ -4,21 +4,20 @@
 <script>
 //<![CDATA[
 
-
-// Exclude IE8
-if(typeof(element.style.boxSizing) != "undefined"){
-
-
 var doc = element.document;
 
 function init() {
-	updateBorderBoxWidth();
-	updateBorderBoxHeight();
+	if(typeof(element.style.boxSizing) == "undefined"){
+		updateBorderBoxWidth();
+		updateBorderBoxHeight();
+	}
 }
 
 function restore() {
-	element.runtimeStyle.width = "";
-	element.runtimeStyle.height = "";
+	if(typeof(element.style.boxSizing) == "undefined"){
+		element.runtimeStyle.width = "";
+		element.runtimeStyle.height = "";
+	}
 }
 
 /* Taken from Dean Edward's IE7 framework,
@@ -154,47 +153,47 @@ function updateBorderBoxHeight() {
 }
 
 function checkPropertyChange() {
-	var pn = event.propertyName;
-	var undef;
-
-	if (pn == "style.boxSizing" && element.style.boxSizing == "") {
-		element.style.removeAttribute("boxSizing");
-		element.runtimeStyle.boxSizing = undef;		
-	}
-
-
-	switch (pn) {
-		case "style.width":
-		case "style.borderLeftWidth":
-		case "style.borderLeftStyle":
-		case "style.borderRightWidth":
-		case "style.borderRightStyle":
-		case "style.paddingLeft":
-		case "style.paddingRight":
-			updateBorderBoxWidth();
-			break;
-		
-		case "style.height":
-		case "style.borderTopWidth":
-		case "style.borderTopStyle":
-		case "style.borderBottomWidth":
-		case "style.borderBottomStyle":
-		case "style.paddingTop":
-		case "style.paddingBottom":
-			updateBorderBoxHeight();
-			break;
-		
-		case "className":
-		case "style.boxSizing":
-			updateBorderBoxWidth();
-			updateBorderBoxHeight();
-			break;
+	if(typeof(element.style.boxSizing) == "undefined"){
+		var pn = event.propertyName;
+		var undef;
+	
+		if (pn == "style.boxSizing" && element.style.boxSizing == "") {
+			element.style.removeAttribute("boxSizing");
+			element.runtimeStyle.boxSizing = undef;		
+		}
+	
+	
+		switch (pn) {
+			case "style.width":
+			case "style.borderLeftWidth":
+			case "style.borderLeftStyle":
+			case "style.borderRightWidth":
+			case "style.borderRightStyle":
+			case "style.paddingLeft":
+			case "style.paddingRight":
+				updateBorderBoxWidth();
+				break;
+			
+			case "style.height":
+			case "style.borderTopWidth":
+			case "style.borderTopStyle":
+			case "style.borderBottomWidth":
+			case "style.borderBottomStyle":
+			case "style.paddingTop":
+			case "style.paddingBottom":
+				updateBorderBoxHeight();
+				break;
+			
+			case "className":
+			case "style.boxSizing":
+				updateBorderBoxWidth();
+				updateBorderBoxHeight();
+				break;
+		}
 	}
 }
 
 init();
-
-} // End exclude IE8
 
 //]]>
 </script>
