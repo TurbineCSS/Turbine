@@ -4,6 +4,10 @@ Changelog
 
 1.0.8
 -----
+  - 
+  - 
+  - Fix: Gradients couldn't be disabled in IE
+  - Fix: "none" didn't work as a value for box-shadow in IE
   - Fix: IE8 doesn't need the htc file to support box-sizing
 
 
