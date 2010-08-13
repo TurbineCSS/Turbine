@@ -6,6 +6,7 @@ lib/cssmin/cssmin.php
 lib/base.php
 lib/cssp.php
 lib/parser.php
+lib/plugin.php
 plugins
 resources
 config.php

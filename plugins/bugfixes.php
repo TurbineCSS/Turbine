@@ -24,17 +24,21 @@ function bugfixes(&$parsed){
 	global $cssp, $browser;
 	$changed = array();
 
-	// IE6: Image margin bottom bug
-	$changed['img']['vertical-align'][] = 'bottom';
+	// IE: remove scrollbars from textareas
+	$changed['textarea']['overflow'][] = 'auto';
 
-	// IE6: Background image flickers on hover
-	$changed['html']['filter'][] = 'expression(document.execCommand("BackgroundImageCache",false,true))';
-
-	// IE6: Fix transparent PNGs, see http://www.twinhelix.com/css/iepngfix/
-	$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/bugfixes/iepngfix.htc';
-	$changed['img']['behavior'][] = 'url("'.$htc_path.'")';
-
-	// IE6 and 7: resample images bicubic instead of using nearest neighbor method
+	if($browser->browser == 'ie' && floatval($browser->browser_version) < 7){
+		// IE6: Image margin bottom bug
+		$changed['img']['vertical-align'][] = 'bottom';
+	
+		// IE6: Background image flickers on hover
+		$changed['html']['filter'][] = 'expression(document.execCommand("BackgroundImageCache",false,true))';
+	
+		// IE6: Fix transparent PNGs, see http://www.twinhelix.com/css/iepngfix/
+		$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/bugfixes/iepngfix.htc';
+		$changed['img']['behavior'][] = 'url("'.$htc_path.'")';
+	}	
+	// IE 7: resample images bicubic instead of using nearest neighbor method
 	$changed['img']['-ms-interpolation-mode'][] = 'bicubic';
 
 	// IE6 and 7: Enable full styleability for buttons, see http://www.sitepoint.com/forums/showthread.php?t=547059

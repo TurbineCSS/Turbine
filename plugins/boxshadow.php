@@ -16,13 +16,14 @@
  * Usage:   #foo { box-shadow: 2px 2px 8px #666; }
  * Result:  #foo { box-shadow: 2px 2px 8px #666; -moz-box-shadow: 2px 2px 8px #666; -webkit-box-shadow: 2px 2px 8px #666; }
  * Status:  Stable
- * Version: 1.1
+ * Version: 1.2
  * 
  * @param mixed &$parsed
  * @return void
  */
 function boxshadow(&$parsed){
 	global $cssp;
+	$settings = Plugin::get_settings('boxshadow');
 	foreach($parsed as $block => $css){
 		foreach($parsed[$block] as $selector => $styles){
 			if(isset($parsed[$block][$selector]['box-shadow'])){
@@ -35,8 +36,11 @@ function boxshadow(&$parsed){
 							$shadow_properties[$prefix.'box-shadow'] = $parsed[$block][$selector]['box-shadow'];
 						}
 						// Get IE filters, merge them with the other new properties and insert everything
-						$filter_properties = boxshadow_filters($values);
-						$shadow_properties = array_merge($shadow_properties, $filter_properties);
+						if(!in_array('noie', $settings)){
+							$filter_properties = boxshadow_filters($values);
+							$shadow_properties = array_merge($shadow_properties, $filter_properties);
+						}
+						// Insert the new properties
 						$cssp->insert_properties($shadow_properties, $block, $selector, null, 'box-shadow');
 						// Comment the newly inserted properties
 						foreach($shadow_properties as $shadow_property => $shadow_value){

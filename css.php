@@ -41,12 +41,25 @@ else{
 }
 
 
-// Load libraries
-include('lib/browser/browser.php');
+// A simple function for displaying error messages via css
+function turbine_css_error_message($error_message){
+	return 'body:before { content:"'.$error_message.'" !important; font-family:Verdana, Arial, sans-serif !important;
+		font-weight:bold !important; color:#000 !important; background:#F4EA9F !important; display:block !important;
+		border-bottom:1px solid #D5CA6E; padding:8px !important; white-space:pre; }';
+}
+
+
+// Load libraries. Special treatment for the browser class because it tends to be forgotten when cloning git repositories
+if(!@include('lib/browser/browser.php')){
+	echo turbine_css_error_message('Browser library not found! Please download the public version of Turbine or, if you
+		are using git, clone the browser sub project from http://github.com/SirPepe/Turbine-Browser into lib/browser.');
+	exit();
+}
 include('lib/cssmin/cssmin.php');
 include('lib/base.php');
 include('lib/parser.php');
 include('lib/cssp.php');
+include('lib/plugin.php');
 
 
 // Create the Turbine instance
@@ -134,12 +147,12 @@ if($_GET['files']){
 				// Server-side cache: Check if cache-directory has been created
 				if(!is_dir($cachedir)){
 					if(!@mkdir($cachedir, 0777)){
-						$cssp->report_error('The cache directory doesn\'t exist!');
+						$cssp->report_error('The cache directory doesn\'t exist! Please create a directory \"cache\" in '.dirname(realpath(__FILE__)).' and make it writeable.');
 					}
 				}
 				elseif(!is_writable($cachedir)){
 					if(!@chmod($cachedir, 0777)){
-						$cssp->report_error('The cache directory is not writeable!');
+						$cssp->report_error('The cache directory '.realpath($cachedir).' is not writeable!');
 					}
 				}
 
@@ -197,12 +210,12 @@ if($_GET['files']){
 					}
 
 
-					// Get plugin settings for the before parse hook
+					// Get plugin list for the before parse hook
 					$plugin_list = array();
 					$found = false;
 					foreach($cssp->code as $line){
 						if(!$found){
-							if(preg_match('/^[\s\t]*@turbine/i',$line) == 1){
+							if(preg_match('/^[\s\t]*@turbine/i', $line) == 1){
 								$found = true;
 							}
 						}
@@ -211,6 +224,32 @@ if($_GET['files']){
 							if(count($matches) == 2){
 								$plugin_list = $cssp->tokenize($matches[1], ',');
 								break;
+							}
+						}
+					}
+
+
+					// Get plugin options
+					$plugin_settings = array();
+					foreach($cssp->code as $line){
+						if(!$found){
+							if(preg_match('/^[\s\t]*@turbine/i', $line) == 1){
+								$found = true;
+							}
+						}
+						else{
+							if($line == ''){
+								break;
+							}
+							else{
+								preg_match('~^\s+([a-zA-Z0-9]+):(.*?)(?://|$)~', $line, $matches);
+								if(count($matches) == 3){
+									$plugin_settings_key = trim($matches[1]);
+									$plugin_settings_val = trim($matches[2]);
+									if(in_array($plugin_settings_key, $plugin_list)){
+										$plugin_settings[$plugin_settings_key] = $plugin_settings_val;
+									}
+								}
 							}
 						}
 					}
@@ -270,14 +309,12 @@ if($_GET['files']){
 		}
 
 
-	}
+	} // End foreach($files as $file)
 
 	// Show errors
 	if($cssp->config['debug_level'] > 0 && !empty($cssp->errors)){
 		$error_message = implode('\\00000A', $cssp->errors);
-		$css = $css.'body:before { content:"'.$error_message.'" !important; font-family:Verdana, Arial, sans-serif !important;
-			font-weight:bold !important; color:#000 !important; background:#F4EA9F !important; display:block !important;
-			border-bottom:1px solid #D5CA6E; padding:8px !important; white-space:pre; }';
+		$css .= turbine_css_error_message($error_message);
 	}
 
 
@@ -325,7 +362,7 @@ if($_GET['files']){
 	// Close comment, output CSS
 	echo "\r\n*/\r\n".$css;
 
-}
+}  // End if($_GET['files'])
 
 
 ?>
