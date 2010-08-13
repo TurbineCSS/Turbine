@@ -4,23 +4,30 @@
 <script>
 //<![CDATA[
 
+
+// Shortcut for the document object
 var doc = element.document;
 
-function init() {
+
+// 
+function init(){
 	if(typeof(element.style.boxSizing) == "undefined"){
 		updateBorderBoxWidth();
 		updateBorderBoxHeight();
 	}
 }
 
-function restore() {
+// 
+function restore(){
 	if(typeof(element.style.boxSizing) == "undefined"){
 		element.runtimeStyle.width = "";
 		element.runtimeStyle.height = "";
 	}
 }
 
-/* Taken from Dean Edward's IE7 framework,
+
+/* 
+ * Taken from Dean Edward's IE7 framework,
  * added by Schepp on 12.06.2010.
  * http://code.google.com/p/ie7-js/
  * MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -41,9 +48,11 @@ function restore() {
  *
  * http://ajaxian.com/archives/computed-vs-cascaded-style
  */
-function getPixelValue(value) {
+function getPixelValue(value){
 	var PIXEL = /^\d+(px)?$/i;
-	if (PIXEL.test(value)) return parseInt(value);
+	if(PIXEL.test(value)){
+		return parseInt(value);
+	}
 	var style = element.style.left;
 	var runtimeStyle = element.runtimeStyle.left;
 	element.runtimeStyle.left = element.currentStyle.left;
@@ -51,119 +60,150 @@ function getPixelValue(value) {
 	value = parseInt(element.style.pixelLeft);
 	element.style.left = style;
 	element.runtimeStyle.left = runtimeStyle;
-	
 	return value;
 }
 
-/* border width getters */
-function getBorderWidth(sSide) {
-	if (element.currentStyle["border" + sSide + "Style"] == "none")
+
+/*
+ * getBorderWidth & friends
+ * Border width getters
+ */
+function getBorderWidth(sSide){
+	if(element.currentStyle["border" + sSide + "Style"] == "none"){
 		return 0;
+	}
 	var n = getPixelValue(element.currentStyle["border" + sSide + "Width"]);
 	return n || 0;
 }
-
 function getBorderLeftWidth() { return getBorderWidth("Left"); }
 function getBorderRightWidth() { return getBorderWidth("Right"); }
 function getBorderTopWidth() { return getBorderWidth("Top"); }
 function getBorderBottomWidth() { return getBorderWidth("Bottom"); }
-/* end border width getters */
 
-/* padding getters */
+
+/*
+ * getPadding & friends
+ * Padding width getters
+ */
 function getPadding(sSide) {
 	var n = getPixelValue(element.currentStyle["padding" + sSide]);
 	return n || 0;
 }
-
 function getPaddingLeft() { return getPadding("Left"); }
 function getPaddingRight() { return getPadding("Right"); }
 function getPaddingTop() { return getPadding("Top"); }
 function getPaddingBottom() { return getPadding("Bottom"); }
-/* end padding getters */
 
-function getBoxSizing() {
+
+
+/*
+ * getBoxSizing
+ * Get the box-sizing value for the current element
+ */
+function getBoxSizing(){
 	var s = element.style;
 	var cs = element.currentStyle
-
-	if (typeof s.boxSizing != "undefined" && s.boxSizing != "")
+	if(typeof s.boxSizing != "undefined" && s.boxSizing != ""){
 		return s.boxSizing;
-	if (typeof s["box-sizing"] != "undefined" && s["box-sizing"] != "")
+	}
+	if(typeof s["box-sizing"] != "undefined" && s["box-sizing"] != ""){
 		return s["box-sizing"];
-	if (typeof cs.boxSizing != "undefined" && cs.boxSizing != "")
+	}
+	if(typeof cs.boxSizing != "undefined" && cs.boxSizing != ""){
 		return cs.boxSizing;
-	if (typeof cs["box-sizing"] != "undefined" && cs["box-sizing"] != "")
+	}
+	if(typeof cs["box-sizing"] != "undefined" && cs["box-sizing"] != ""){
 		return cs["box-sizing"];
+	}
 	return getDocumentBoxSizing();
 }
 
-function getDocumentBoxSizing() {
-	if (doc.compatMode == null || doc.compatMode == "BackCompat")
+
+/*
+ * getDocumentBoxSizing
+ * Get the default document box sizing (check for quirks mode)
+ */
+function getDocumentBoxSizing(){
+	if(doc.compatMode == null || doc.compatMode == "BackCompat"){
 		return "border-box";
+	}
 	return "content-box"
 }
 
-/* width and height setters */
-function setBorderBoxWidth(n) {
+
+/*
+ * setBorderBoxWidth & friends
+ * Width and height setters
+ */
+function setBorderBoxWidth(n){
 	element.runtimeStyle.width = Math.max(0, n - getBorderLeftWidth() -
 		getPaddingLeft() - getPaddingRight() - getBorderRightWidth()) + "px";
 }
-
-function setBorderBoxHeight(n) {
+function setBorderBoxHeight(n){
 	element.runtimeStyle.height = Math.max(0, n - getBorderTopWidth() -
 		getPaddingTop() - getPaddingBottom() - getBorderBottomWidth()) + "px";
 }
-
-function setContentBoxWidth(n) {
+function setContentBoxWidth(n){
 	element.runtimeStyle.width = Math.max(0, n + getBorderLeftWidth() +
 		getPaddingLeft() + getPaddingRight() + getBorderRightWidth()) + "px";
 }
-
-function setContentBoxHeight(n) {
+function setContentBoxHeight(n){
 	element.runtimeStyle.height = Math.max(0, n + getBorderTopWidth() +
 		getPaddingTop() + getPaddingBottom() + getBorderBottomWidth()) + "px";
 }
-/* end width and height setters */
 
+
+/*
+ * updateBorderBoxWidth & updateBorderBoxHeight
+ * 
+ */
 function updateBorderBoxWidth() {
 	element.runtimeStyle.width = "";
-	if (getDocumentBoxSizing() == getBoxSizing())
+	if(getDocumentBoxSizing() == getBoxSizing()){
 		return;
+	}
 	var csw = element.currentStyle.width;
-	if (csw != "auto") {
+	if(csw != "auto"){
 		csw = getPixelValue(element.currentStyle.width);
-		if (getBoxSizing() == "border-box")
+		if(getBoxSizing() == "border-box"){
 			setBorderBoxWidth(parseInt(csw));
-		else
+		}
+		else{
 			setContentBoxWidth(parseInt(csw));
+		}
 	}
 }
-
 function updateBorderBoxHeight() {
-	element.runtimeStyle.height = "";	
-	if (getDocumentBoxSizing() == getBoxSizing())
+	element.runtimeStyle.height = "";
+	if(getDocumentBoxSizing() == getBoxSizing()){
 		return;
+	}
 	var csh = element.currentStyle.height;
-	if (csh != "auto") {
+	if(csh != "auto"){
 		csh = getPixelValue(element.currentStyle.height);
-		if (getBoxSizing() == "border-box")
+		if(getBoxSizing() == "border-box"){
 			setBorderBoxHeight(parseInt(csh));
-		else
+		}
+		else{
 			setContentBoxHeight(parseInt(csh));
+		}
 	}
 }
 
-function checkPropertyChange() {
+
+/*
+ * updateBorderBoxWidth & updateBorderBoxHeight
+ * 
+ */
+function checkPropertyChange(){
 	if(typeof(element.style.boxSizing) == "undefined"){
 		var pn = event.propertyName;
 		var undef;
-	
-		if (pn == "style.boxSizing" && element.style.boxSizing == "") {
+		if(pn == "style.boxSizing" && element.style.boxSizing == ""){
 			element.style.removeAttribute("boxSizing");
-			element.runtimeStyle.boxSizing = undef;		
+			element.runtimeStyle.boxSizing = undef;
 		}
-	
-	
-		switch (pn) {
+		switch (pn){
 			case "style.width":
 			case "style.borderLeftWidth":
 			case "style.borderLeftStyle":
@@ -172,8 +212,8 @@ function checkPropertyChange() {
 			case "style.paddingLeft":
 			case "style.paddingRight":
 				updateBorderBoxWidth();
-				break;
-			
+			break;
+		
 			case "style.height":
 			case "style.borderTopWidth":
 			case "style.borderTopStyle":
@@ -182,18 +222,21 @@ function checkPropertyChange() {
 			case "style.paddingTop":
 			case "style.paddingBottom":
 				updateBorderBoxHeight();
-				break;
-			
+			break;
+		
 			case "className":
 			case "style.boxSizing":
 				updateBorderBoxWidth();
 				updateBorderBoxHeight();
-				break;
+			break;
 		}
 	}
 }
 
+
+// Run the calculations
 init();
+
 
 //]]>
 </script>
