@@ -29,8 +29,8 @@ class Plugin {
 		if(isset($plugin_settings[$plugin])){
 			// Tokenize the settings and return them
 			$settings = $cssp->tokenize($plugin_settings[$plugin], ',');
-			return $settings;
 		}
+		return $settings;
 	}
 
 
