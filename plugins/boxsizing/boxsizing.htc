@@ -9,25 +9,75 @@
 var doc = element.document;
 
 
-// 
+/*
+* init gets called once at the start and then never again, 
+* triggers box-sizing calculations and updates width and height
+*/
 function init(){
+	// check for IE8+
 	if(typeof(element.style.boxSizing) == "undefined"){
 		updateBorderBoxWidth();
 		updateBorderBoxHeight();
 	}
 }
 
-// 
+/*
+* restore gets called when the behavior is being detached (see event binding at the top),
+* resets everything like it was before applying the behavior
+*/
 function restore(){
+	// check for IE8+
 	if(typeof(element.style.boxSizing) == "undefined"){
 		element.runtimeStyle.width = "";
 		element.runtimeStyle.height = "";
 	}
 }
 
+/*
+* checkPropertyChange gets called as soon as an element property changes 
+* (see event binding at the top), it then checks if any property influencing its 
+* dimensions was changed and if yes recalculates width and height 
+*/
+function checkPropertyChange(){
+	if(typeof(element.style.boxSizing) == "undefined"){
+		var pn = event.propertyName;
+		var undef;
+		if(pn == "style.boxSizing" && element.style.boxSizing == ""){
+			element.style.removeAttribute("boxSizing");
+			element.runtimeStyle.boxSizing = undef;
+		}
+		switch (pn){
+			case "style.width":
+			case "style.borderLeftWidth":
+			case "style.borderLeftStyle":
+			case "style.borderRightWidth":
+			case "style.borderRightStyle":
+			case "style.paddingLeft":
+			case "style.paddingRight":
+				updateBorderBoxWidth();
+			break;
+		
+			case "style.height":
+			case "style.borderTopWidth":
+			case "style.borderTopStyle":
+			case "style.borderBottomWidth":
+			case "style.borderBottomStyle":
+			case "style.paddingTop":
+			case "style.paddingBottom":
+				updateBorderBoxHeight();
+			break;
+		
+			case "className":
+			case "style.boxSizing":
+				updateBorderBoxWidth();
+				updateBorderBoxHeight();
+			break;
+		}
+	}
+}
 
 /* 
- * Taken from Dean Edward's IE7 framework,
+ * Helper function, taken from Dean Edward's IE7 framework,
  * added by Schepp on 12.06.2010.
  * http://code.google.com/p/ie7-js/
  * MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -186,49 +236,6 @@ function updateBorderBoxHeight() {
 		}
 		else{
 			setContentBoxHeight(parseInt(csh));
-		}
-	}
-}
-
-
-/*
- * updateBorderBoxWidth & updateBorderBoxHeight
- * 
- */
-function checkPropertyChange(){
-	if(typeof(element.style.boxSizing) == "undefined"){
-		var pn = event.propertyName;
-		var undef;
-		if(pn == "style.boxSizing" && element.style.boxSizing == ""){
-			element.style.removeAttribute("boxSizing");
-			element.runtimeStyle.boxSizing = undef;
-		}
-		switch (pn){
-			case "style.width":
-			case "style.borderLeftWidth":
-			case "style.borderLeftStyle":
-			case "style.borderRightWidth":
-			case "style.borderRightStyle":
-			case "style.paddingLeft":
-			case "style.paddingRight":
-				updateBorderBoxWidth();
-			break;
-		
-			case "style.height":
-			case "style.borderTopWidth":
-			case "style.borderTopStyle":
-			case "style.borderBottomWidth":
-			case "style.borderBottomStyle":
-			case "style.paddingTop":
-			case "style.paddingBottom":
-				updateBorderBoxHeight();
-			break;
-		
-			case "className":
-			case "style.boxSizing":
-				updateBorderBoxWidth();
-				updateBorderBoxHeight();
-			break;
 		}
 	}
 }
