@@ -143,7 +143,7 @@ function transform(&$parsed){
 						CSSP::comment($parsed[$block][$selector], 'position', 'Added by transform plugin');
 					}
 
-					//Include behavior to compansate for IEs auto expand feature
+					//Include behavior to compensate for IEs auto expand feature
 					$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/transform/transform.htc';
 					$parsed[$block][$selector]['behavior'] = array('url('.$htc_path.')');
 					CSSP::comment($parsed[$block][$selector], 'behavior', 'Added by transform plugin');
