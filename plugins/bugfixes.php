@@ -15,7 +15,7 @@
  * Usage: Nobrainer, just switch it on
  * Example: -
  * Status:  Stable
- * Version: 1.0
+ * Version: 1.2
  * 
  * @param mixed &$parsed
  * @return void
@@ -43,13 +43,13 @@ function bugfixes(&$parsed){
 	$changed['button']['white-space'][] = 'nowrap';
 
 	// IE6 and 7: Missing :hover-property on every tag except a, see http://www.xs4all.nl/~peterned/csshover.html
-	$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/bugfixes/csshover3.htc';
-	$changed['body']['behavior'][] = 'url("'.$htc_path.'")';
+	// IE8: Reenable cleartype where filters are set
+	$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/bugfixes/';
+	$changed['body']['behavior'][] = 'url("'.$htc_path.'csshover3.htc") url("'.$htc_path.'cleartypefix.htc")';
 
 	// Firefox: Ghost margin around buttons, see http://www.sitepoint.com/forums/showthread.php?t=547059
 	$changed['button::-moz-focus-inner']['padding'][] = '0';
 	$changed['button::-moz-focus-inner']['border'][] = 'none';
-
 
 	// Add comments for the global fixes
 	foreach($changed as $selector => $styles){
@@ -61,8 +61,17 @@ function bugfixes(&$parsed){
 	// Insert the global bugfixes
 	$cssp->insert($changed, 'global');
 
-	// Apply per-element-bugfixes
+	// Apply per-block-bugfixes
 	foreach($cssp->parsed as $block => $css){
+
+		// Firefox: overflow:hidden printing bug
+		if(!isset($cssp->parsed[$block]['body']) || !isset($cssp->parsed[$block]['body']['overflow']))
+		{
+			$cssp->parsed[$block]['body']['overflow'][] = 'visible !important';
+			CSSP::comment($cssp->parsed[$block]['body'], 'overflow', 'Added by bugfix plugin');
+		}
+
+		// Apply per-element-bugfixes
 		foreach($cssp->parsed[$block] as $selector => $styles){
 
 			// IE 6 per-element-bugfixes
@@ -88,7 +97,6 @@ function bugfixes(&$parsed){
 					CSSP::comment($cssp->parsed[$block][$selector], 'position', 'Added by bugfix plugin');
 				}
 			}
-
 		}
 	}
 

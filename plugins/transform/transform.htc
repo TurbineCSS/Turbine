@@ -65,6 +65,8 @@ function setContentBoxDimensions() {
 	element.runtimeStyle.marginTop = Math.round(getMarginTop() + box_differencemargin_y) + "px";
 	element.runtimeStyle.marginBottom = Math.round(getMarginBottom() + box_differencemargin_y) + "px";
 
+	//alert(element.runtimeStyle.marginLeft + ' ' + element.runtimeStyle.marginRight + ' ' + element.runtimeStyle.marginTop + ' ' + element.runtimeStyle.marginBottom);
+
 }
 
 function checkPropertyChange() {
