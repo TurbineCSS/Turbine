@@ -2,6 +2,12 @@ Changelog
 =========
 
 
+1.0.9
+-----
+  - Fix: Box sizing turned out not to work in IE < 8 at all. Fixed.
+  - Improvement: Added reasonable comments to boxsizing.htc
+
+
 1.0.8
 -----
   - Fix: Gradients couldn't be disabled in IE
