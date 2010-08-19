@@ -6,6 +6,7 @@ Changelog
 -----
   - Fix: Box sizing turned out not to work in IE < 8 at all. Fixed.
   - Improvement: Added reasonable comments to boxsizing.htc
+  - Improvement: Added "Vary: Accept-Encoding" header to css output
 
 
 1.0.8
