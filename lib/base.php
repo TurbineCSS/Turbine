@@ -68,6 +68,10 @@ public function __construct(){
 			$this->config[$key] = $setting;
 		}
 	}
+	else{
+		// Else print a comment reporting an error into the css. Real error reporting won't work here as the default debug value is 0
+		echo "/* Notice: Configuration file config.php not found - using default configuration */\r\n\r\n";
+	}
 	// Apppend the final slash to the base dir if it is missing
 	if($this->config['css_base_dir'] != ''){
 		$this->config['css_base_dir'] = rtrim($this->config['css_base_dir'], '/').'/';
