@@ -16,7 +16,7 @@
  * Usage:   #foo { opacity: 0.5; }
  * Result:  #foo { -moz-opacity: 0.5; -webkit-opacity: 0.5; -kthml-opacity: 0.5; -ms-filter: "alpha(opacity=50)"; filter: alpha(opacity=50); opacity: 0.5;}
  * Status:  Stable
- * Version: 1.1
+ * Version: 1.2
  * 
  * @param mixed &$parsed
  * @return void
@@ -40,6 +40,8 @@ function opacity(&$parsed){
 						$opacity_properties['filter'] = $filter;
 						// IE8 compliance
 						$opacity_properties['-ms-filter'] = $filter;
+						// Legacy IE compliance
+						$opacity_properties['zoom'] = 1;
 						$cssp->insert_properties($opacity_properties, $block, $selector, $property, NULL);
 						// Comment the newly inserted properties
 						foreach($opacity_properties as $opacity_property => $opacity_value){
