@@ -9,7 +9,7 @@ lib/parser.php
 lib/plugin.php
 plugins
 resources
-config.php
+example-config.php
 css.php
 readme.md
 changelog.md
