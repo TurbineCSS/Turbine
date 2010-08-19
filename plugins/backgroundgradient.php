@@ -20,7 +20,7 @@
  * Example 1: background: linear-gradient(top,#FFF,#000) // vertical gradient, from top to bottom, from white to black
  * Example 2: background-image: linear-gradient(left,rgb(255,255,255),rgb(0,0,0)) // horizontal gradient, from left to right, from white to black
  * Status:    Beta
- * Version:   1.0
+ * Version:   1.01
  * 
  * 
  * backgroundgradient
@@ -157,13 +157,13 @@ function backgroundgradient(&$parsed){
 								}
 								// hasLayout stuff
 								$filter_properties['zoom'] = array('1');
-								// Insert all
+
+								// Insert all filters
 								$cssp->insert_properties($filter_properties, $block, $selector, NULL, $property);
 								foreach($filter_properties as $filter_property => $filter_value){
 									CSSP::comment($parsed[$block][$selector], $filter_property, 'Added by background-gradient plugin');
 								}
 							} // End if(!in_array('noie', $settings))
-
 						}
 						else{
 							// This is fucking ugly, but must be done to keep things sane for css developers. In order to have background
