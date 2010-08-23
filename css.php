@@ -43,7 +43,7 @@ else{
 
 // A simple function for displaying error messages via css
 function turbine_css_error_message($error_message){
-	return 'body:before { content:"'.$error_message.'" !important; font-family:Verdana, Arial, sans-serif !important;
+	return 'html:before { content:"'.$error_message.'" !important; font-family:Verdana, Arial, sans-serif !important;
 		font-weight:bold !important; color:#000 !important; background:#F4EA9F !important; display:block !important;
 		border-bottom:1px solid #D5CA6E; padding:8px !important; white-space:pre; }';
 }
