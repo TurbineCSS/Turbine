@@ -36,7 +36,7 @@ function boxshadow(&$parsed){
 							$shadow_properties[$prefix.'box-shadow'] = $parsed[$block][$selector]['box-shadow'];
 						}
 						// Get IE filters, merge them with the other new properties and insert everything
-						if(!in_array('noie', $settings)){
+						if(is_array($settings) && !in_array('noie', $settings)){
 							$filter_properties = boxshadow_filters($values);
 							$shadow_properties = array_merge($shadow_properties, $filter_properties);
 						}
