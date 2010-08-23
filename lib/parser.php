@@ -871,19 +871,24 @@ class Parser2 extends Base{
 			// Ignore empty properties (might happen because of errors in plugins) and non-content-properties
 			if(!empty($property) && $property{0} != '_'){
 				$count_properties++;
-				// Implode values
-				$value = $this->get_final_value($values, $property, $compressed);
-				// Output property line
-				$output .= $prefix . $t . $property . ':' . $s . $value;
-				// When compressing, omit the last semicolon
-				if(!$compressed || $num_properties != $count_properties){
-					$output .= ';';
+				// Clean up values
+				$values = $this->get_final_value_array($values, $property, $compressed);
+				// Output property lines
+				$num_values = count($values);
+				$count_values = 0;
+				foreach($values as $value){
+					$count_values++;
+					$output .= $prefix . $t . $property . ':' . $s . $value;
+					// When compressing, omit the last semicolon
+					if(!$compressed || $num_properties != $count_properties || $num_values != $count_values){
+						$output .= ';';
+					}
+					// Add comments
+					if(isset($rules['_comments'][$property]) && !$compressed){
+						$output .= ' /* ' . implode(', ', $rules['_comments'][$property]) . ' */';
+					}
+					$output .= $n;
 				}
-				// Add comments
-				if(isset($rules['_comments'][$property]) && !$compressed){
-					$output .= ' /* ' . implode(', ', $rules['_comments'][$property]) . ' */';
-				}
-				$output .= $n;
 			}
 		}
 		return $output;
@@ -956,6 +961,27 @@ class Parser2 extends Base{
 			$final = '"' . $final . '"';
 		}
 		$final = trim($final);
+		return $final;
+	}
+
+
+	/**
+	 * get_final_value_array
+	 * Returns a cleaned up version of an array of values
+	 * @param array $values A list of values
+	 * @param string $property The property the values belong to
+	 * @param bool $compressed Compress CSS? (removes whitespace)
+	 * @return array $final The final values
+	 */
+	public function get_final_value_array($values, $property = NULL, $compressed = false){
+		// In the case of listed/tokenized properties, get a single combined final value
+		if(in_array($property, $this->tokenized_properties) || in_array($property, $this->listed_properties)){
+			$final = array($this->get_final_value_array($values, $property, $compressed));
+		}
+		// Otherwise just clean up the value array and return it
+		else{
+			$final = array_unique($values);
+		}
 		return $final;
 	}
 
