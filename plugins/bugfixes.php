@@ -37,6 +37,9 @@ function bugfixes(&$parsed){
 		// IE6: Fix transparent PNGs, see http://www.twinhelix.com/css/iepngfix/
 		$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/bugfixes/iepngfix.htc';
 		$changed['img']['behavior'][] = 'url("'.$htc_path.'")';
+		
+		// IE6: Input align, see http://tjkdesign.com/ez-css/css/base.css
+		$changed['img']['vertical-align'][] = 'text-bottom';
 	}	
 	// IE 7: resample images bicubic instead of using nearest neighbor method
 	$changed['img']['-ms-interpolation-mode'][] = 'bicubic';
@@ -54,6 +57,12 @@ function bugfixes(&$parsed){
 	// Firefox: Ghost margin around buttons, see http://www.sitepoint.com/forums/showthread.php?t=547059
 	$changed['button::-moz-focus-inner']['padding'][] = '0';
 	$changed['button::-moz-focus-inner']['border'][] = 'none';
+
+	// Webkit: better antialiasing, see http://maxvoltar.com/archive/-webkit-font-smoothing
+	$changed['html']['-webkit-font-smoothing'][] = 'antialiased';
+	
+	// Webkit: better kerning, see http://www.aestheticallyloyal.com/public/optimize-legibility/
+	$changed['html']['text-rendering'][] = 'optimizeLegibility';
 
 	// Add comments for the global fixes
 	foreach($changed as $selector => $styles){
