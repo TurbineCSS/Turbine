@@ -30,4 +30,15 @@ $config = array(
 );
 
 
+
+// For multiple sites using the same Turbine installation, add the base dirs and the conditions of their use here. Example:
+// if($_SERVER['SERVER_NAME'] == 'localhost'){
+// 	$config['css_base_dir'] = '/my/local/base/dir';
+// }
+// elseif($_SERVER['SERVER_NAME'] == 'www.production.com'){
+// 	$config['css_base_dir'] = '/production/base/dir';
+// }
+
+
+
 ?>
