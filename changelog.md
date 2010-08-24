@@ -8,6 +8,7 @@ Changelog
   - New: "noie" option for box shadow plugin (no box shadows for ie)
   - New: "noie" option for background gradient plugin (no gradients for ie)
   - New: "force-scrollbar" option for reset style plugin (forces a vertical scrollbar)
+  - New: Utility class for developers. Contains several methods for color calculations.
   - Improvement: Apppend the final slash to the base dir if it is missing
   - Improvement: Many new helpful error messages when something goes wrong
 

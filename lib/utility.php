@@ -87,7 +87,45 @@ public static function hsla2rgba($input, $matches = array()){
 	if(empty($matches)){
 		preg_match(self::$hslapattern, $input, $matches);
 	}
-	return 'Hallo!';
+	$h = intval($matches[2]) / 360;
+	$s = intval($matches[3]) / 100;
+	$l = intval($matches[4]) / 100;
+	if($s == 0){
+		$rgba['r'] = $rgba['g'] = $rgba['b'] = 0;
+	}
+	else{
+		if($l <= 0.5){
+			$m2 = $l * ($s + 1);
+		}
+		else{
+			$m2 = $l + $s - ($l * $s);
+		}
+		$m1 = $l * 2 - $m2;
+		$rgba['r'] = floor(self::hslhue($m1, $m2, ($h + 1/3)) * 255);
+		$rgba['g'] = floor(self::hslhue($m1, $m2, $h) * 255);
+		$rgba['b'] = floor(self::hslhue($m1, $m2, ($h - 1/3)) * 255);
+	}
+	$rgba['a'] = (isset($matches[5])) ? $matches[5] : 1;
+	return $rgba;
+}
+
+
+/*
+ * hslhue
+ * Applies hue value
+ * Stolen from here: http://monc.se/kitchen/119/working-with-hsl-in-css
+ * @param float $m1
+ * @param float $m2
+ * @param float $h
+ * @return float $m1
+ */
+private static function hslhue($m1, $m2, $h){
+	if ($h < 0){ $h = $h+1; }
+	if ($h > 1){ $h = $h-1; }
+	if ($h*6 < 1){ return $m1 + ($m2 - $m1) * $h * 6; }
+	if ($h*2 < 1){ return $m2; }
+	if ($h*3 < 2){ return $m1 + ($m2 - $m1) * (2/3 - $h) * 6; }
+	return $m1;
 }
 
 
