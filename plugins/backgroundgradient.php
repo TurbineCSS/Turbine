@@ -164,6 +164,7 @@ function backgroundgradient(&$parsed){
 									CSSP::comment($parsed[$block][$selector], $filter_property, 'Added by background-gradient plugin');
 								}
 							} // End if(!in_array('noie', $settings))
+
 						}
 						else{
 							// This is fucking ugly, but must be done to keep things sane for css developers. In order to have background

@@ -50,3 +50,10 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+	
+/* Input align, see http://tjkdesign.com/ez-css/css/base.css */
+input[type="radio"] { vertical-align: text-bottom; }
+input[type="checkbox"] { vertical-align: bottom; *vertical-align: baseline; }
+
+/* Button cursor, see http://html5boilerplate.com/ */
+label, input[type=button], input[type=submit], button { cursor: pointer; }

@@ -37,13 +37,13 @@ class Parser2 extends Base{
 	/**
 	 * @var array $tokenized_properties The list properties where multiple values are to be combined on output using a space character
 	 */
-	public $tokenized_properties = array('filter');
+	public $tokenized_properties = array('filter', 'behavior');
 
 
 	/**
 	 * @var array $listed_properties The list properties where multiple values are to be combined on output using a comma
 	 */
-	public $listed_properties = array('plugins', 'behavior', '-ms-filter');
+	public $listed_properties = array('plugins', '-ms-filter');
 
 
 	/**
@@ -916,6 +916,62 @@ class Parser2 extends Base{
 		}
 		// Otherwise find the last and/or most !important value
 		else{
+			// Check if we are dealing with IE-filters
+			if(in_array($property,array('filter','-ms-filter')))
+			{
+				$filters = array();
+				$filters['chroma'] = array();
+				$filters['matrix'] = array();
+				$filters['standard'] = array();
+				$transformfilters = array();
+				$num_values = count($values);
+				reset($values);
+				for($i = 0; $i < $num_values; $i++){
+					if(stristr(current($values),'chroma')){
+						$filters['chroma'][] = current($values);
+					}
+					elseif(stristr(current($values),'matrix')){
+						$filters['matrix'][] = current($values);
+					}
+					else{
+						$filters['standard'][] = current($values);
+					}
+					next($values);
+				}
+				reset($values);
+				$values = array_merge($filters['chroma'],$filters['matrix'],$filters['standard']);
+			}
+			// Check if we are dealing with IE-behaviors
+			if(in_array($property,array('behavior')))
+			{
+				$behavior = array();
+				$behavior['borderradius'] = array();
+				$behavior['transform'] = array();
+				$behavior['standard'] = array();
+				$transformfilters = array();
+				$num_values = count($values);
+				reset($values);
+				echo "/*count: ".count($values)."*/\r\n";
+				for($i = 0; $i < $num_values; $i++){
+					echo "/*".current($values)."*/\r\n";
+					if(stristr(current($values),'borderradius.htc')){
+						echo "/*borderradius!*/\r\n";
+						$behavior['borderradius'][] = current($values);
+					}
+					elseif(stristr(current($values),'transform.htc')){
+						echo "/*transform!*/\r\n";
+						$behavior['transform'][] = current($values);
+					}
+					else{
+						echo "/*standard!*/\r\n";
+						$behavior['standard'][] = current($values);
+					}
+					next($values);
+				}
+				reset($values);
+				$values = array_merge($behavior['borderradius'],$behavior['transform'],$behavior['standard']);
+				echo '/*'.implode(',',$values)."*/\r\n";
+			}
 			// Whitspace characters
 			$s = ' ';
 			// Forget the whitespace if we're compressing
