@@ -166,7 +166,7 @@ if($_GET['files']){
 					$browser->engine_version.
 					$browser->browser.
 					$browser->browser_version.
-					$file
+					realpath($file)
 				).'.txt';
 
 
