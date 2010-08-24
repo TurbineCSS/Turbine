@@ -16,24 +16,84 @@
 class Utility {
 
 
-/*
- * hex2rgb
- * Convert hex colors RGB(A)
- * @param string $input
- * @param int $alpha Return RGBA? 0 = No, 1 = Auto (return alpha only if the input uses an alpha value), 2 = Yes
- * @return array $output
- */
-static function hex2rgb($input, $alpha = 1){}
+/* Color patterns */
+public static $hexpattern = '/(#((?:[A-Fa-f0-9]{3})(?:[A-Fa-f0-9]{3})?))/i';
+public static $rgbapattern = '/(rgb(?:a)?)\([\s]*([0-9]+%?)[\s]*,[\s]*([0-9]+%?)[\s]*,[\s]*([0-9]+%?)[\s]*(?:,[\s]*([0-1]\.[0-9]*)[\s]*)?\)/i';
+public static $hslapattern = '/(hsl(?:a)?)\([\s]*([0-9]+)[\s]*,[\s]*([0-9]+%)[\s]*,[\s]*([0-9]+%)[\s]*(?:,[\s]*([0-1]\.[0-9]*)[\s]*)?\)/i';
 
 
 /*
- * rgb2hex
- * Convert hex colors RGB(A)
- * @param string $input
- * @param int $alpha Return hex with alpha? 0 = No, 1 = Auto (return alpha only if the input uses an alpha value), 2 = Yes
- * @return array $output
+ * any2rgba
+ * Convert any color declaration to RGBA
+ * @param string $input Color input
+ * @return array
  */
-static function rgb2hex($input, $alpha = 1){}
+public static function any2rgba($input){
+	if(preg_match(self::$hexpattern, $input, $matches)){
+		return self::hex2rgba($input, $matches);
+	}
+	elseif(preg_match(self::$hslapattern, $input, $matches)){
+		return self::hsla2rgba($input, $matches);
+	}
+	elseif(preg_match(self::$rgbapattern, $input, $matches)){
+		return self::rgba2rgba($input, $matches);
+	}
+	else{
+		return false;
+	}
+}
+
+
+/*
+ * hex2rgba
+ * Convert a hex color declaration to RGBA
+ * @param string $input Color input
+ * @param string $matches [optional] Regex matches for the color pattern
+ * @return array $rgba The RGBA array
+ */
+public static function hex2rgba($input, $matches = array()){
+	$rgba = array();
+	if(empty($matches)){
+		preg_match(self::$hexpattern, $input, $matches);
+	}
+	return 'Hallo!';
+}
+
+
+/*
+ * hsla2rgba
+ * Convert a HSL(A) color declaration to RGBA
+ * @param string $input Color input
+ * @param string $matches [optional] Regex matches for the color pattern
+ * @return array $rgba The RGBA array
+ */
+public static function hsla2rgba($input, $matches = array()){
+	$rgba = array();
+	if(empty($matches)){
+		preg_match(self::$hslapattern, $input, $matches);
+	}
+	return 'Hallo!';
+}
+
+
+/*
+ * hsla2rgba
+ * Convert a RGB(A) color declaration to RGBA
+ * @param string $input Color input
+ * @param string $matches [optional] Regex matches for the color pattern
+ * @return array $rgba The RGBA array
+ */
+public static function rgba2rgba($input, $matches = array()){
+	$rgba = array();
+	if(empty($matches)){
+		preg_match(self::$rgbapattern, $input, $matches);
+	}
+	$rgba['r'] = (substr($matches[2], -1) == '%') ? round(255 / 100 * $matches[2]) : $matches[2];
+	$rgba['g'] = (substr($matches[3], -1) == '%') ? round(255 / 100 * $matches[3]) : $matches[3];
+	$rgba['b'] = (substr($matches[4], -1) == '%') ? round(255 / 100 * $matches[4]) : $matches[4];
+	$rgba['a'] = (isset($matches[5])) ? $matches[5] : 1;
+	return $rgba;
+}
 
 
 }
