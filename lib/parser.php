@@ -922,16 +922,13 @@ class Parser2 extends Base{
 				$num_values = count($values);
 				reset($values);
 				for($i = 0; $i < $num_values; $i++){
-					if(stristr(current($values),'chroma')) 
-					{
+					if(stristr(current($values),'chroma')){
 						$filters['chroma'][] = current($values);
 					}
-					elseif(stristr(current($values),'matrix'))
-					{
+					elseif(stristr(current($values),'matrix')){
 						$filters['matrix'][] = current($values);
 					}
-					else
-					{
+					else{
 						$filters['standard'][] = current($values);
 					}
 					next($values);
@@ -952,18 +949,15 @@ class Parser2 extends Base{
 				echo "/*count: ".count($values)."*/\r\n";
 				for($i = 0; $i < $num_values; $i++){
 					echo "/*".current($values)."*/\r\n";
-					if(stristr(current($values),'borderradius.htc')) 
-					{
+					if(stristr(current($values),'borderradius.htc')){
 						echo "/*borderradius!*/\r\n";
 						$behavior['borderradius'][] = current($values);
 					}
-					elseif(stristr(current($values),'transform.htc'))
-					{
+					elseif(stristr(current($values),'transform.htc')){
 						echo "/*transform!*/\r\n";
 						$behavior['transform'][] = current($values);
 					}
-					else
-					{
+					else{
 						echo "/*standard!*/\r\n";
 						$behavior['standard'][] = current($values);
 					}
