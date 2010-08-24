@@ -56,7 +56,22 @@ public static function hex2rgba($input, $matches = array()){
 	if(empty($matches)){
 		preg_match(self::$hexpattern, $input, $matches);
 	}
-	return 'Hallo!';
+	// Short hex
+	if(strlen($matches[2]) == 3){
+		$rgba['r'] = hexdec(str_repeat(substr($matches[2], 0, 1), 2));
+		$rgba['g'] = hexdec(str_repeat(substr($matches[2], 1, 1), 2));
+		$rgba['b'] = hexdec(str_repeat(substr($matches[2], 2, 1), 2));
+		$rgba['a'] = 1;
+	}
+	// Normal hex
+	else{
+		$hexdec = hexdec($matches[2]);
+		$rgba['r'] = 0xFF & ($hexdec >> 0x10);
+		$rgba['g'] = 0xFF & ($hexdec >> 0x8);
+		$rgba['b'] = 0xFF & $hexdec;
+		$rgba['a'] = 1;
+	}
+	return $rgba;
 }
 
 
