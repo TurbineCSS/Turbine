@@ -976,7 +976,7 @@ class Parser2 extends Base{
 	public function get_final_value_array($values, $property = NULL, $compressed = false){
 		// In the case of listed/tokenized properties, get a single combined final value
 		if(in_array($property, $this->tokenized_properties) || in_array($property, $this->listed_properties)){
-			$final = array($this->get_final_value_array($values, $property, $compressed));
+			$final = array($this->get_final_value($values, $property, $compressed));
 		}
 		// Otherwise just clean up the value array and return it
 		else{
