@@ -246,7 +246,7 @@ if($_GET['files']){
 								preg_match('~^\s+([a-zA-Z0-9]+):(.*?)(?://|$)~', $line, $matches);
 								if(count($matches) == 3){
 									$plugin_settings_key = trim($matches[1]);
-									$plugin_settings_val = trim($matches[2]);
+									$plugin_settings_val = trim(rtrim($matches[2], ';')); // Dont forget to strip semicolons
 									if(in_array($plugin_settings_key, $plugin_list)){
 										$plugin_settings[$plugin_settings_key] = $plugin_settings_val;
 									}
