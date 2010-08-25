@@ -2,6 +2,11 @@ Changelog
 =========
 
 
+1.0.10
+------
+  - Fix: Semicolons were not stripped vom @turbine's plugin rule
+
+
 1.0.9
 -----
   - Fix: Box sizing turned out not to work in IE < 8 at all. Fixed.
