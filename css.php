@@ -222,6 +222,7 @@ if($_GET['files']){
 						else{
 							preg_match('~^\s+plugins:(.*?)(?://|$)~', $line, $matches);
 							if(count($matches) == 2){
+								$matches[1] = rtrim($matches[1], ';'); // Strip semicolons
 								$plugin_list = $cssp->tokenize($matches[1], ',');
 								break;
 							}
