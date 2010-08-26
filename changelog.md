@@ -5,6 +5,7 @@ Changelog
 1.0.10
 ------
   - Fix: Semicolons were not stripped vom @turbine's plugin rule
+  - Improvement: Updated browser sniffer
 
 
 1.0.9
