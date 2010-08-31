@@ -34,9 +34,11 @@ function boxshadow(&$parsed){
 						$prefixes = array('gecko' => '-moz-',
 										  'webkit' => '-webkit-');
 
-						// Add vendor-specific version
-						if (isset($prefixes[$browser->engine])) {
-							$shadow_properties[$prefixes[$browser->engine].'box-shadow'] = $parsed[$block][$selector]['box-shadow'];
+						foreach($prefixes as $engine => $prefix){
+							// Only add vendor-specific version
+							if($browser->engine == $engine || $engine == '_all'){
+								$shadow_properties[$prefix.'box-shadow'] = $parsed[$block][$selector]['box-shadow'];
+							}
 						}
 
 						// Get IE filters, merge them with the other new properties and insert everything
