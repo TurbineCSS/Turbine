@@ -22,7 +22,7 @@
  * @return void
  */
 function boxshadow(&$parsed){
-	global $cssp;
+	global $cssp, $browser;
 	$settings = Plugin::get_settings('boxshadow');
 	foreach($parsed as $block => $css){
 		foreach($parsed[$block] as $selector => $styles){
@@ -31,12 +31,16 @@ function boxshadow(&$parsed){
 					if($property == 'box-shadow'){
 						$shadow_properties = array();
 						// Build prefixed properties
-						$prefixes = array('-moz-', '-webkit-');
-						foreach($prefixes as $prefix){
-							$shadow_properties[$prefix.'box-shadow'] = $parsed[$block][$selector]['box-shadow'];
-						}
+						$prefixes = array('gecko' => '-moz-',
+                                          'webkit' => '-webkit-');
+
+                        // Add vendor-specific version
+                        if (isset($prefixes[$browser->engine])) {
+                            $shadow_properties[$prefixes[$browser->engine].'box-shadow'] = $parsed[$block][$selector]['box-shadow'];
+                        }
+
 						// Get IE filters, merge them with the other new properties and insert everything
-						if(!in_array('noie', $settings)){
+						if(!in_array('noie', $settings) && $browser->engine == 'ie'){
 							$filter_properties = boxshadow_filters($values);
 							$shadow_properties = array_merge($shadow_properties, $filter_properties);
 						}
@@ -112,6 +116,5 @@ function boxshadow_filters($values){
  * Register the plugin
  */
 $cssp->register_plugin('before_glue', 0, 'boxshadow');
-
 
 ?>

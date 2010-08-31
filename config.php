@@ -20,7 +20,7 @@ $config = array(
 
 
 	// Base path to cssp and css files relative to css.php
-	'css_base_dir' => '',
+	'css_base_dir' => dirname(__FILE__).'/../css/',
 
 
 	// Minify regular css files (true) oder include them completely unchanged (false)

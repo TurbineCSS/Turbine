@@ -8,3 +8,5 @@ body
 h1:hover
     color:red
 
+h2:active
+    color:blue
