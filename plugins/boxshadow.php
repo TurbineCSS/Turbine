@@ -32,7 +32,7 @@ function boxshadow(&$parsed){
 						$shadow_properties = array();
 						// Build prefixed properties
 						$prefixes = array('gecko' => '-moz-',
-											'webkit' => '-webkit-');
+							'webkit' => '-webkit-');
 
 						foreach($prefixes as $engine => $prefix){
 							// Only add vendor-specific version

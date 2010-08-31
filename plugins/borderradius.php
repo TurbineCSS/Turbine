@@ -60,9 +60,9 @@ function borderradius_glue_rules($parts, $value){
     global $browser;
 	$properties = array();
     $prefixes = array('gecko' => '-moz-',
-					  'webkit' => '-webkit-',
-                      'khtml' => '-khtml-',
-                      '_all' => '');
+	    'webkit' => '-webkit-',
+	    'khtml' => '-khtml-',
+	    '_all' => '');
 	$partnum = count($parts);
 	foreach($prefixes as $engine => $prefix){
 		// Only add vendor-specific version
