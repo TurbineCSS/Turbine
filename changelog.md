@@ -2,6 +2,30 @@ Changelog
 =========
 
 
+1.1.0
+-----
+  - New: Configurable plugins
+  - New: "noie" option for box shadow plugin (no box shadows for ie)
+  - New: "noie" option for background gradient plugin (no gradients for ie)
+  - New: "force-scrollbar" option for reset style plugin (forces a vertical scrollbar)
+  - New: Utility class for developers. Contains several methods for color calculations.
+  - Improvement: Apppend the final slash to the base dir if it is missing
+  - Improvement: Many new helpful error messages when something goes wrong
+
+
+1.0.10
+------
+  - Fix: Semicolons were not stripped vom @turbine's plugin rule
+  - Improvement: Updated browser sniffer
+
+
+1.0.9
+-----
+  - Fix: Box sizing turned out not to work in IE < 8 at all. Fixed.
+  - Improvement: Added reasonable comments to boxsizing.htc
+  - Improvement: Added "Vary: Accept-Encoding" header to css output
+
+
 1.0.8
 -----
   - Fix: Gradients couldn't be disabled in IE

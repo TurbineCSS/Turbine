@@ -40,7 +40,7 @@ function boxshadow(&$parsed){
                         }
 
 						// Get IE filters, merge them with the other new properties and insert everything
-						if(!in_array('noie', $settings) && $browser->engine == 'ie'){
+						if(is_array($settings) && !in_array('noie', $settings) && $browser->engine == 'ie'){
 							$filter_properties = boxshadow_filters($values);
 							$shadow_properties = array_merge($shadow_properties, $filter_properties);
 						}

@@ -37,13 +37,13 @@ class Parser2 extends Base{
 	/**
 	 * @var array $tokenized_properties The list properties where multiple values are to be combined on output using a space character
 	 */
-	public $tokenized_properties = array('filter');
+	public $tokenized_properties = array('filter', 'behavior');
 
 
 	/**
 	 * @var array $listed_properties The list properties where multiple values are to be combined on output using a comma
 	 */
-	public $listed_properties = array('plugins', 'behavior', '-ms-filter');
+	public $listed_properties = array('plugins', '-ms-filter');
 
 
 	/**
@@ -871,19 +871,24 @@ class Parser2 extends Base{
 			// Ignore empty properties (might happen because of errors in plugins) and non-content-properties
 			if(!empty($property) && $property{0} != '_'){
 				$count_properties++;
-				// Implode values
-				$value = $this->get_final_value($values, $property, $compressed);
-				// Output property line
-				$output .= $prefix . $t . $property . ':' . $s . $value;
-				// When compressing, omit the last semicolon
-				if(!$compressed || $num_properties != $count_properties){
-					$output .= ';';
+				// Clean up values
+				$values = $this->get_final_value_array($values, $property, $compressed);
+				// Output property lines
+				$num_values = count($values);
+				$count_values = 0;
+				foreach($values as $value){
+					$count_values++;
+					$output .= $prefix . $t . $property . ':' . $s . $value;
+					// When compressing, omit the last semicolon
+					if(!$compressed || $num_properties != $count_properties || $num_values != $count_values){
+						$output .= ';';
+					}
+					// Add comments
+					if(isset($rules['_comments'][$property]) && !$compressed){
+						$output .= ' /* ' . implode(', ', $rules['_comments'][$property]) . ' */';
+					}
+					$output .= $n;
 				}
-				// Add comments
-				if(isset($rules['_comments'][$property]) && !$compressed){
-					$output .= ' /* ' . implode(', ', $rules['_comments'][$property]) . ' */';
-				}
-				$output .= $n;
 			}
 		}
 		return $output;
@@ -911,6 +916,62 @@ class Parser2 extends Base{
 		}
 		// Otherwise find the last and/or most !important value
 		else{
+			// Check if we are dealing with IE-filters
+			if(in_array($property,array('filter','-ms-filter')))
+			{
+				$filters = array();
+				$filters['chroma'] = array();
+				$filters['matrix'] = array();
+				$filters['standard'] = array();
+				$transformfilters = array();
+				$num_values = count($values);
+				reset($values);
+				for($i = 0; $i < $num_values; $i++){
+					if(stristr(current($values),'chroma')){
+						$filters['chroma'][] = current($values);
+					}
+					elseif(stristr(current($values),'matrix')){
+						$filters['matrix'][] = current($values);
+					}
+					else{
+						$filters['standard'][] = current($values);
+					}
+					next($values);
+				}
+				reset($values);
+				$values = array_merge($filters['chroma'],$filters['matrix'],$filters['standard']);
+			}
+			// Check if we are dealing with IE-behaviors
+			if(in_array($property,array('behavior')))
+			{
+				$behavior = array();
+				$behavior['borderradius'] = array();
+				$behavior['transform'] = array();
+				$behavior['standard'] = array();
+				$transformfilters = array();
+				$num_values = count($values);
+				reset($values);
+				echo "/*count: ".count($values)."*/\r\n";
+				for($i = 0; $i < $num_values; $i++){
+					echo "/*".current($values)."*/\r\n";
+					if(stristr(current($values),'borderradius.htc')){
+						echo "/*borderradius!*/\r\n";
+						$behavior['borderradius'][] = current($values);
+					}
+					elseif(stristr(current($values),'transform.htc')){
+						echo "/*transform!*/\r\n";
+						$behavior['transform'][] = current($values);
+					}
+					else{
+						echo "/*standard!*/\r\n";
+						$behavior['standard'][] = current($values);
+					}
+					next($values);
+				}
+				reset($values);
+				$values = array_merge($behavior['borderradius'],$behavior['transform'],$behavior['standard']);
+				echo '/*'.implode(',',$values)."*/\r\n";
+			}
 			// Whitspace characters
 			$s = ' ';
 			// Forget the whitespace if we're compressing
@@ -956,6 +1017,27 @@ class Parser2 extends Base{
 			$final = '"' . $final . '"';
 		}
 		$final = trim($final);
+		return $final;
+	}
+
+
+	/**
+	 * get_final_value_array
+	 * Returns a cleaned up version of an array of values
+	 * @param array $values A list of values
+	 * @param string $property The property the values belong to
+	 * @param bool $compressed Compress CSS? (removes whitespace)
+	 * @return array $final The final values
+	 */
+	public function get_final_value_array($values, $property = NULL, $compressed = false){
+		// In the case of listed/tokenized properties, get a single combined final value
+		if(in_array($property, $this->tokenized_properties) || in_array($property, $this->listed_properties)){
+			$final = array($this->get_final_value($values, $property, $compressed));
+		}
+		// Otherwise just clean up the value array and return it
+		else{
+			$final = array_unique($values);
+		}
 		return $final;
 	}
 

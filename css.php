@@ -43,7 +43,7 @@ else{
 
 // A simple function for displaying error messages via css
 function turbine_css_error_message($error_message){
-	return 'body:before { content:"'.$error_message.'" !important; font-family:Verdana, Arial, sans-serif !important;
+	return 'html:before { content:"'.$error_message.'" !important; font-family:Verdana, Arial, sans-serif !important;
 		font-weight:bold !important; color:#000 !important; background:#F4EA9F !important; display:block !important;
 		border-bottom:1px solid #D5CA6E; padding:8px !important; white-space:pre; }';
 }
@@ -166,7 +166,7 @@ if($_GET['files']){
 					$browser->engine_version.
 					$browser->browser.
 					$browser->browser_version.
-					$file
+					realpath($file)
 				).'.txt';
 
 
@@ -222,6 +222,7 @@ if($_GET['files']){
 						else{
 							preg_match('~^\s+plugins:(.*?)(?://|$)~', $line, $matches);
 							if(count($matches) == 2){
+								$matches[1] = rtrim($matches[1], ';'); // Strip semicolons
 								$plugin_list = $cssp->tokenize($matches[1], ',');
 								break;
 							}
@@ -245,7 +246,7 @@ if($_GET['files']){
 								preg_match('~^\s+([a-zA-Z0-9]+):(.*?)(?://|$)~', $line, $matches);
 								if(count($matches) == 3){
 									$plugin_settings_key = trim($matches[1]);
-									$plugin_settings_val = trim($matches[2]);
+									$plugin_settings_val = trim(rtrim($matches[2], ';')); // Dont forget to strip semicolons
 									if(in_array($plugin_settings_key, $plugin_list)){
 										$plugin_settings[$plugin_settings_key] = $plugin_settings_val;
 									}
@@ -326,6 +327,7 @@ if($_GET['files']){
 	else{
 		header('Cache-Control: no-cache, must-revalidate');
 		header('Expires: '.gmdate('D, d M Y H:i:s').' GMT');
+		header("Vary: Accept-Encoding"); 
 		header('Content-type: text/css'); 
 		header('ETag: '.$etag);
 	}
