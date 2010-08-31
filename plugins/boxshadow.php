@@ -32,12 +32,12 @@ function boxshadow(&$parsed){
 						$shadow_properties = array();
 						// Build prefixed properties
 						$prefixes = array('gecko' => '-moz-',
-                                          'webkit' => '-webkit-');
+										  'webkit' => '-webkit-');
 
-                        // Add vendor-specific version
-                        if (isset($prefixes[$browser->engine])) {
-                            $shadow_properties[$prefixes[$browser->engine].'box-shadow'] = $parsed[$block][$selector]['box-shadow'];
-                        }
+						// Add vendor-specific version
+						if (isset($prefixes[$browser->engine])) {
+							$shadow_properties[$prefixes[$browser->engine].'box-shadow'] = $parsed[$block][$selector]['box-shadow'];
+						}
 
 						// Get IE filters, merge them with the other new properties and insert everything
 						if(is_array($settings) && !in_array('noie', $settings) && $browser->engine == 'ie'){
