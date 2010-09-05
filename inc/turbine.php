@@ -15,11 +15,13 @@
  * @param string $path The path to css.php
  * @param array $files The list of cssp or css files to use
  * @param string $mode Output the html as xhtml or html
+ * @param string $media Content for the media attribute
  * @return string $html The <link> tag
  */
-function get_turbine($path = 'css.php', $files = array(), $mode = 'xhtml'){
+function get_turbine($path = 'css.php', $files = array(), $mode = 'xhtml', $media = ''){
 	$query_string = '?files=' . implode(';', $files);
-	$html = '<link rel="stylesheet" href="' . $path . $query_string . '"';
+	$media_string = ($media) ? ' media="'.$media.'"' : '';
+	$html = '<link rel="stylesheet" href="' . $path . $query_string . '"'.$media_string;
 	if($mode == 'xhtml'){
 		$html .= ' /';
 	}
@@ -34,8 +36,9 @@ function get_turbine($path = 'css.php', $files = array(), $mode = 'xhtml'){
  * @param string $path The path to css.php
  * @param array $files The list of cssp or css files to use
  * @param string $mode Output the html as xhtml or html
+ * @param string $media Content for the media attribute
  * @return string $html The <link> tag
  */
-function turbine($path = 'css.php', $files = array(), $mode = 'xhtml'){
-	echo get_turbine($path, $files, $mode);
+function turbine($path = 'css.php', $files = array(), $mode = 'xhtml', $media = ''){
+	echo get_turbine($path, $files, $mode, $media);
 }
