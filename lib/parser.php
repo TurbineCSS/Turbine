@@ -276,6 +276,24 @@ class Parser2 extends Base{
 	}
 
 
+
+	/**
+	 * while_parsing_plugins
+	 * Run the plugins for the while_parsing hook
+	 * @param string $type The type of the line that's being processed
+	 * @param string $line The line that's being processed
+	 * @return void
+	 */
+	private function while_parsing_plugins($type, $line){
+		global $plugin_list;
+		$lineinfo = array(
+			'type' => $type,
+			'line' => $line
+		);
+		$this->apply_plugins('while_parsing', $plugin_list, $lineinfo);
+	}
+
+
 	/**
 	 * set_indention_char
 	 * Sets the indention char
@@ -443,6 +461,7 @@ class Parser2 extends Base{
 		}
 		$media = trim(preg_replace('/[\s]+/', ' ', $this->token));                      // Trim whitespace from token
 		$this->current['me'] = (trim(substr($media, 6)) != 'none') ? $media : 'global'; // Use token as current @media or reset to global
+		$this->while_parsing_plugins($this->current['me'], 'media');                    // Fire the while_parsing plugins
 	}
 
 
@@ -475,6 +494,7 @@ class Parser2 extends Base{
 		$this->current['se'] = $selector;
 		// Add to the selector stack
 		$this->selector_stack[$level] = $selector;
+		$this->while_parsing_plugins($selector, 'selector'); // Fire the while_parsing plugins
 	}
 
 
@@ -544,7 +564,9 @@ class Parser2 extends Base{
 			}
 			$this->token .= $line{$i};
 		}
-		$this->parsed['global']['@import'][][0] = trim($this->token);
+		$this->token = trim($this->token);
+		$this->parsed['global']['@import'][][0] = $this->token;
+		$this->while_parsing_plugins($this->token, 'import'); // Fire the while_parsing plugins
 	}
 
 
@@ -560,6 +582,7 @@ class Parser2 extends Base{
 		$this->parsed[$this->current['me']][$selector] = array(
 			'_value' => array(trim($line))
 		);
+		$this->while_parsing_plugins(trim($line), 'css'); // Fire the while_parsing plugins
 	}
 
 
@@ -580,6 +603,7 @@ class Parser2 extends Base{
 					$this->current['va'] = trim($this->token);
 					$this->token = '';
 					$this->merge();
+					$this->while_parsing_plugins($this->current['pr'] . ':' . $this->current['va'], 'rule'); // Fire the while_parsing plugins
 				}
 				break;
 			}
@@ -596,6 +620,7 @@ class Parser2 extends Base{
 				$this->state = 'pr';
 				$this->token = '';
 				$this->merge();
+				$this->while_parsing_plugins($this->current['pr'] . ':' . $this->current['va'], 'rule'); // Fire the while_parsing plugins
 			}
 			else{
 				$this->token .= $line{$i};

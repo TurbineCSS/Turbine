@@ -41,6 +41,7 @@ public $errors = array();
  */
 public $plugins = array(
 	'before_parse' => array(),
+	'while_parsing' => array(),
 	'before_compile' => array(),
 	'before_glue' => array(),
 	'before_output' => array()
