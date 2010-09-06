@@ -79,6 +79,8 @@ function minifier(&$parsed){
 			if($selector != '@font-face'){
 				foreach($parsed[$block][$selector] as $property => $values){
 					foreach($parsed[$block][$selector][$property] as $key => $value){
+						// Strip whitespace from values
+						$parsed[$block][$selector][$property][$key] = preg_replace('/\s+/', ' ', $value);
 						// Optimize hex colors
 						if(in_array($property, $color_properties)){
 							if(preg_match($color_shortable_pattern, $value)){
@@ -102,7 +104,9 @@ function minifier(&$parsed){
 						// Optimize font weight
 						if($property == 'font-weight'){
 							foreach($font_weights as $weight => $replacement){
-								$parsed[$block][$selector][$property][$key] = str_replace($weight, $replacement, $value);
+								if($value == $weight){
+									$parsed[$block][$selector][$property][$key] = $replacement;
+								}
 							}
 						}
 						// Shorten long margins and paddings
