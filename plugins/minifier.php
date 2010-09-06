@@ -68,6 +68,11 @@ function minifier(&$parsed){
 		'padding', 'padding-top', 'padding-left', 'padding-bottom', 'padding-right',
 		'border', 'border-top', 'border-left', 'border-bottom', 'border-right'
 	);
+	// Optimize font weight
+	$font_weights = array(
+		'normal' => 400,
+		'bold' => 700
+	);
 	foreach($parsed as $block => $css){
 		foreach($parsed[$block] as $selector => $styles){
 			// Ignore @font-face
@@ -93,6 +98,12 @@ function minifier(&$parsed){
 						if(in_array($property, $zero_properties)){
 							$parsed[$block][$selector][$property][$key] = preg_replace($zero_pattern, '0', $value);
 							$parsed[$block][$selector][$property][$key] = preg_replace($float_pattern, '\2\3\4', $parsed[$block][$selector][$property][$key]);
+						}
+						// Optimize font weight
+						if($property == 'font-weight'){
+							foreach($font_weights as $weight => $replacement){
+								$parsed[$block][$selector][$property][$key] = str_replace($weight, $replacement, $value);
+							}
 						}
 						// Shorten long margins and paddings
 						if($property == 'margin' || $property == 'padding'){
