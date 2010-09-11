@@ -43,66 +43,46 @@ function backgroundgradient(&$parsed){
 					for($i = 0; $i < $num_values; $i++){
 						if(preg_match($urlregex, $parsed[$block][$selector][$property][$i], $matches) > 0){
 
-							// For all non-ie browsers, sniff the engine and use the appropriate syntax/hack
-							switch($browser->engine){
+							// Gecko
+							$parsed[$block][$selector][$property][] = preg_replace(
+								$urlregex,
+								'-moz-linear-gradient('.$matches[1].','.$matches[2].','.$matches[3].')',
+								$parsed[$block][$selector][$property][$i]
+							);
 
-								// Gecko
-								case 'gecko':
-									$parsed[$block][$selector][$property][$i] = preg_replace(
-										$urlregex,
-										'-moz-linear-gradient('.$matches[1].','.$matches[2].','.$matches[3].')',
-										$parsed[$block][$selector][$property][$i]
-									);
-									CSSP::comment($parsed[$block][$selector], $property, 'Modified by background-gradient plugin');
-								break;
+							// Webkit and KHTML
+							if(strtolower($matches[1]) == 'top'){
+								$webkit_gradientdirection = 'left top,left bottom';
+							}
+							else{
+								$webkit_gradientdirection = 'left top,right top';
+							}
+							$parsed[$block][$selector][$property][] = preg_replace(
+								$urlregex,
+								'-webkit-gradient(linear,'.$webkit_gradientdirection.',from('.$matches[2].'),to('.$matches[3].'))',
+								$parsed[$block][$selector][$property][$i]
+							);
+							$parsed[$block][$selector][$property][] = preg_replace(
+								$urlregex,
+								'-khtml-gradient(linear,'.$webkit_gradientdirection.',from('.$matches[2].'),to('.$matches[3].'))',
+								$parsed[$block][$selector][$property][$i]
+							);
 
-								// Webkit
-								case 'webkit':
-									if(strtolower($matches[1]) == 'top'){
-										$webkit_gradientdirection = 'left top,left bottom';
-									}
-									else{
-										$webkit_gradientdirection = 'left top,right top';
-									}
-									$parsed[$block][$selector][$property][$i] = preg_replace(
-										$urlregex,
-										'-webkit-gradient(linear,'.$webkit_gradientdirection.',from('.$matches[2].'),to('.$matches[3].'))',
-										$parsed[$block][$selector][$property][$i]
-									);
-									CSSP::comment($parsed[$block][$selector], $property, 'Modified by background-gradient plugin');
-								break;
+							// Use a SVG background for Opera
+							if($browser->engine == 'opera'){
+								$svg_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/backgroundgradient/svg.php';
+								$svg_params = 'direction='.strtolower($matches[1]);
+								$svg_params .= '&startcolor='.str_replace('#','%23',strtolower($matches[2]));
+								$svg_params .= '&endcolor='.str_replace('#','%23',strtolower($matches[3]));
+								$parsed[$block][$selector][$property][] = preg_replace(
+									$urlregex,
+									'url('.$svg_path.'?'.$svg_params.')',
+									$parsed[$block][$selector][$property][$i]
+								);
+							}
 
-								// Konqueror
-								case 'khtml':
-									if(strtolower($matches[1]) == 'top'){
-										$webkit_gradientdirection = 'left top,left bottom';
-									}
-									else{
-										$webkit_gradientdirection = 'left top,right top';
-									}
-									$parsed[$block][$selector][$property][$i] = preg_replace(
-										$urlregex,
-										'-khtml-gradient(linear,'.$webkit_gradientdirection.',from('.$matches[2].'),to('.$matches[3].'))',
-										$parsed[$block][$selector][$property][$i]
-									);
-									CSSP::comment($parsed[$block][$selector], $property, 'Modified by background-gradient plugin');
-								break;
-
-								// Opera
-								case 'opera':
-									$svg_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/backgroundgradient/svg.php';
-									$svg_params = 'direction='.strtolower($matches[1]);
-									$svg_params .= '&startcolor='.str_replace('#','%23',strtolower($matches[2]));
-									$svg_params .= '&endcolor='.str_replace('#','%23',strtolower($matches[3]));
-									$parsed[$block][$selector][$property][$i] = preg_replace(
-										$urlregex,
-										'url('.$svg_path.'?'.$svg_params.')',
-										$parsed[$block][$selector][$property][$i]
-									);
-									CSSP::comment($parsed[$block][$selector], $property, 'Modified by background-gradient plugin');
-								break;
-
-							} // End switch
+							// Add comment for the background property
+							CSSP::comment($parsed[$block][$selector], $property, 'Modified by background-gradient plugin');
 
 							// Use filter fallbacks in IE
 							if(!in_array('noie', $settings)){
@@ -184,6 +164,8 @@ function backgroundgradient(&$parsed){
 								}
 							}
 						}
+						// Remove the original value
+						unset($parsed[$block][$selector][$property][$i]);
 					}
 				}
 			}
