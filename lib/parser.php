@@ -483,7 +483,7 @@ class Parser2 extends Base{
 			$this->token .= $line{$i};
 		}
 		// Trim whitespace
-		$selector = trim(preg_replace('/[\s]+/', ' ', $this->token));
+		$selector = trim(preg_replace('/\s+/', ' ', $this->token));
 		// Combine selector with the nesting stack
 		$selector = $this->merge_selectors($this->array_get_previous($this->selector_stack, $level), $selector);
 		// Increase font-face index if this is an @font-face element
