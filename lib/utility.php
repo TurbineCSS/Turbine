@@ -29,6 +29,7 @@ public static $hslapattern = '/(hsl(?:a)?)\([\s]*([0-9]+)[\s]*,[\s]*([0-9]+%)[\s
  * @return array
  */
 public static function any2rgba($input){
+	$input = trim($input);
 	if(preg_match(self::$hexpattern, $input, $matches)){
 		return self::hex2rgba($input, $matches);
 	}
@@ -146,6 +147,47 @@ public static function rgba2rgba($input, $matches = array()){
 	$rgba['b'] = (substr($matches[4], -1) == '%') ? round(255 / 100 * $matches[4]) : $matches[4];
 	$rgba['a'] = (isset($matches[5])) ? $matches[5] : 1;
 	return $rgba;
+}
+
+
+/*
+ * rgbasyntax
+ * Convert a RGBA array to css rgb(a) color syntax
+ * @param array $rgba The RGBA array
+ * @param bool $force Force ouptput of the alpha value even if it's 1?
+ * @return string $syntax The rgb(a) value
+ */
+public function rgbasyntax($rgba, $force = false){
+	$syntax = 'rgb';
+	if($rgba['a'] !== 1 || $force){
+		$syntax .= 'a';
+	}
+	else{
+		unset($rgba['a']);
+	}
+	$syntax .= '(';
+	$syntax .= implode(',', $rgba);
+	$syntax .= ')';
+	return $syntax;
+}
+
+
+/*
+ * hexsyntax
+ * Convert a RGBA array to css hex color syntax
+ * @param array $rgba The RGBA array
+ * @param bool $force Force ouptput of the alpha value even if it's 1?
+ * @return string $syntax The hex value
+ */
+public function hexsyntax($rgba, $force = false){
+	$syntax = '#';
+	if($rgba['a'] !== 1 || $force){
+		$syntax .= dechex($rgba['a'] * 255);
+	}
+	$syntax .= dechex($rgba['r']);
+	$syntax .= dechex($rgba['g']);
+	$syntax .= dechex($rgba['b']);
+	return $syntax;
 }
 
 
