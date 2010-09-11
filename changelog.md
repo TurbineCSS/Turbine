@@ -10,6 +10,7 @@ Changelog
   - New: "force-scrollbar" option for reset style plugin (forces a vertical scrollbar)
   - New: Utility class for developers. Contains several methods for color calculations.
   - New: "while_parsing" hook for plugins
+  - New: "Title" property for @turbine to add titles or copyright information and the like to the output
   - Improvement: Minifier plugin optimizes font-weight values and strips whitespace in values
   - Improvement: Apppend the final slash to the base dir if it is missing
   - Improvement: Many new helpful error messages when something goes wrong
