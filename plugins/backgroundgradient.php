@@ -127,6 +127,9 @@ function backgroundgradient(&$parsed){
 								}
 							} // End if(!in_array('noie', $settings))
 
+						// Remove the original value
+						unset($parsed[$block][$selector][$property][$i]);
+
 						}
 						else{
 							// This is fucking ugly, but must be done to keep things sane for css developers. In order to have background
@@ -146,8 +149,6 @@ function backgroundgradient(&$parsed){
 								}
 							}
 						}
-						// Remove the original value
-						unset($parsed[$block][$selector][$property][$i]);
 					}
 				}
 			}
