@@ -76,8 +76,8 @@ function backgroundgradient(&$parsed){
 							if($browser->engine == 'opera'){
 								$svg_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/backgroundgradient/svg.php';
 								$svg_params = 'direction='.strtolower($matches[1]);
-								$svg_params .= '&startcolor='.str_replace('#','%23',strtolower($matches[2]));
-								$svg_params .= '&endcolor='.str_replace('#','%23',strtolower($matches[3]));
+								$svg_params .= '&startcolor='.urlencode($matches[2]);
+								$svg_params .= '&endcolor='.urlencode($matches[3]);
 								$parsed[$block][$selector][$property][] = preg_replace(
 									$gradientregex,
 									'url('.$svg_path.'?'.$svg_params.')',
