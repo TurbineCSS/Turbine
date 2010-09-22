@@ -174,9 +174,39 @@ if($_GET['files']){
 				).'.txt';
 
 
-				// Server-side cache: Check if a cached version of the file already exists
-				if(file_exists($cachedir.'/'.$cachefile) && filemtime($cachedir.'/'.$cachefile) >= filemtime($file)){
-					$incache = true;
+				//Caching mechanism with file locking (don't rebuild cache multiple times)
+				$css_mtime = filemtime($file);
+				$cn=$cachedir.'/'.$cachefile;
+				$attempt=1;
+				while(true)
+				{
+					// Server-side cache: Check if a cached version of the file already exists
+					if(($fc=file_exists($cn)) && filemtime($cn) >= $css_mtime){
+						$incache = true;
+						break;
+					}
+					elseif($cssp->config['debug_level'] == 0) {
+						$cache_lock=fopen($cn, 'a+');
+						if(!$fc)
+						{
+							touch($cn, $css_mtime-1);
+						}
+						if(flock($cache_lock, LOCK_EX | LOCK_NB))
+						{
+							//If we locked the file don't stop on user abort
+							ignore_user_abort(true);
+							break;
+						}
+						else {
+							fclose($cache_lock);
+							sleep(1);
+							//Clearing filemtime cache
+							clearstatcache();
+						}
+					}
+					else {
+						break;
+					}
 				}
 
 
@@ -333,9 +363,11 @@ if($_GET['files']){
 		header('Cache-Control: must-revalidate, pre-check=0, no-store, no-cache, max-age=0, post-check=0');
 	}
 	else{
-		header('Cache-Control: no-cache, must-revalidate');
-		header('Expires: '.gmdate('D, d M Y H:i:s').' GMT');
-		header("Vary: Accept-Encoding"); 
+		if(!$cssp->config['expire_in_future']){
+			header('Cache-Control: no-cache, must-revalidate');
+		}
+		header('Expires: '.gmdate('D, d M Y H:i:s', time()+intval($cssp->config['expire_in_future'])).' GMT');
+		header('Vary: Accept-Encoding'); 
 		header('Content-type: text/css'); 
 		header('ETag: '.$etag);
 	}
