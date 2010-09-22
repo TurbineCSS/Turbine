@@ -25,7 +25,8 @@ $config = array(
 
 	// Minify regular css files (true) oder include them completely unchanged (false)
 	'minify_css' => true,
-	
+
+
 	// Set expire header expire_in_future seconds after the request
 	'expire_in_future' => 0
 
