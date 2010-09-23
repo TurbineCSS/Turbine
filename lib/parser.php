@@ -37,19 +37,25 @@ class Parser2 extends Base{
 	/**
 	 * @var array $tokenized_properties The list properties where multiple values are to be combined on output using a space character
 	 */
-	public $tokenized_properties = array('filter');
+	public $tokenized_properties = array('filter', 'behavior');
 
 
 	/**
 	 * @var array $listed_properties The list properties where multiple values are to be combined on output using a comma
 	 */
-	public $listed_properties = array('plugins', 'behavior', '-ms-filter');
+	public $listed_properties = array('plugins', '-ms-filter');
 
 
 	/**
 	 * @var array $quoted_properties The list properties where the value needs to be quoted as a whole before output
 	 */
 	public $quoted_properties = array('-ms-filter');
+
+
+	/**
+	 * @var array $last_properties The list properties that must be output AFTER all other plugins, in order of output
+	 */
+	public $last_properties = array('filter', '-ms-filter');
 
 
 	/**
@@ -270,6 +276,24 @@ class Parser2 extends Base{
 	}
 
 
+
+	/**
+	 * while_parsing_plugins
+	 * Run the plugins for the while_parsing hook
+	 * @param string $type The type of the line that's being processed
+	 * @param string $line The line that's being processed
+	 * @return void
+	 */
+	private function while_parsing_plugins($type, $line){
+		global $plugin_list;
+		$lineinfo = array(
+			'type' => $type,
+			'line' => $line
+		);
+		$this->apply_plugins('while_parsing', $plugin_list, $lineinfo);
+	}
+
+
 	/**
 	 * set_indention_char
 	 * Sets the indention char
@@ -437,6 +461,7 @@ class Parser2 extends Base{
 		}
 		$media = trim(preg_replace('/[\s]+/', ' ', $this->token));                      // Trim whitespace from token
 		$this->current['me'] = (trim(substr($media, 6)) != 'none') ? $media : 'global'; // Use token as current @media or reset to global
+		$this->while_parsing_plugins($this->current['me'], 'media');                    // Fire the while_parsing plugins
 	}
 
 
@@ -458,7 +483,7 @@ class Parser2 extends Base{
 			$this->token .= $line{$i};
 		}
 		// Trim whitespace
-		$selector = trim(preg_replace('/[\s]+/', ' ', $this->token));
+		$selector = trim(preg_replace('/\s+/', ' ', $this->token));
 		// Combine selector with the nesting stack
 		$selector = $this->merge_selectors($this->array_get_previous($this->selector_stack, $level), $selector);
 		// Increase font-face index if this is an @font-face element
@@ -469,6 +494,7 @@ class Parser2 extends Base{
 		$this->current['se'] = $selector;
 		// Add to the selector stack
 		$this->selector_stack[$level] = $selector;
+		$this->while_parsing_plugins($selector, 'selector'); // Fire the while_parsing plugins
 	}
 
 
@@ -538,7 +564,9 @@ class Parser2 extends Base{
 			}
 			$this->token .= $line{$i};
 		}
-		$this->parsed['global']['@import'][][0] = trim($this->token);
+		$this->token = trim($this->token);
+		$this->parsed['global']['@import'][][0] = $this->token;
+		$this->while_parsing_plugins($this->token, 'import'); // Fire the while_parsing plugins
 	}
 
 
@@ -554,6 +582,7 @@ class Parser2 extends Base{
 		$this->parsed[$this->current['me']][$selector] = array(
 			'_value' => array(trim($line))
 		);
+		$this->while_parsing_plugins(trim($line), 'css'); // Fire the while_parsing plugins
 	}
 
 
@@ -574,6 +603,7 @@ class Parser2 extends Base{
 					$this->current['va'] = trim($this->token);
 					$this->token = '';
 					$this->merge();
+					$this->while_parsing_plugins($this->current['pr'] . ':' . $this->current['va'], 'rule'); // Fire the while_parsing plugins
 				}
 				break;
 			}
@@ -590,6 +620,7 @@ class Parser2 extends Base{
 				$this->state = 'pr';
 				$this->token = '';
 				$this->merge();
+				$this->while_parsing_plugins($this->current['pr'] . ':' . $this->current['va'], 'rule'); // Fire the while_parsing plugins
 			}
 			else{
 				$this->token .= $line{$i};
@@ -849,6 +880,14 @@ class Parser2 extends Base{
 		if($compressed){
 			$s = $t = $n = '';
 		}
+		// Reorder for output
+		foreach($this->last_properties as $property){
+			if(isset($rules[$property])){
+				$content = $rules[$property]; // Make a copy
+				unset($rules[$property]);     // Remove the original
+				$rules[$property] = $content; // Re-insert the property at the end
+			}
+		}
 		// Keep count of the properties
 		$num_properties = $this->count_properties($rules);
 		$count_properties = 0;
@@ -857,19 +896,24 @@ class Parser2 extends Base{
 			// Ignore empty properties (might happen because of errors in plugins) and non-content-properties
 			if(!empty($property) && $property{0} != '_'){
 				$count_properties++;
-				// Implode values
-				$value = $this->get_final_value($values, $property, $compressed);
-				// Output property line
-				$output .= $prefix . $t . $property . ':' . $s . $value;
-				// When compressing, omit the last semicolon
-				if(!$compressed || $num_properties != $count_properties){
-					$output .= ';';
+				// Clean up values
+				$values = $this->get_final_value_array($values, $property, $compressed);
+				// Output property lines
+				$num_values = count($values);
+				$count_values = 0;
+				foreach($values as $value){
+					$count_values++;
+					$output .= $prefix . $t . $property . ':' . $s . $value;
+					// When compressing, omit the last semicolon
+					if(!$compressed || $num_properties != $count_properties || $num_values != $count_values){
+						$output .= ';';
+					}
+					// Add comments
+					if(isset($rules['_comments'][$property]) && !$compressed){
+						$output .= ' /* ' . implode(', ', $rules['_comments'][$property]) . ' */';
+					}
+					$output .= $n;
 				}
-				// Add comments
-				if(isset($rules['_comments'][$property]) && !$compressed){
-					$output .= ' /* ' . implode(', ', $rules['_comments'][$property]) . ' */';
-				}
-				$output .= $n;
 			}
 		}
 		return $output;
@@ -885,12 +929,74 @@ class Parser2 extends Base{
 	 * @return string $final The final value
 	 */
 	public function get_final_value($values, $property = NULL, $compressed = false){
+		// Remove duplicates
+		$values = array_unique($values);
 		// If there's only one value, there's only one thing to return
 		if(count($values) == 1){
 			$final = array_pop($values);
+			// Remove quotes in values on quoted properties (important for -ms-filter property)
+			if(in_array($property, $this->quoted_properties)){
+				$final = str_replace('"', "'", trim($final, '"'));
+			}
 		}
 		// Otherwise find the last and/or most !important value
 		else{
+			// Check if we are dealing with IE-filters
+			if(in_array($property,array('filter','-ms-filter')))
+			{
+				$filters = array();
+				$filters['chroma'] = array();
+				$filters['matrix'] = array();
+				$filters['standard'] = array();
+				$transformfilters = array();
+				$num_values = count($values);
+				reset($values);
+				for($i = 0; $i < $num_values; $i++){
+					if(stristr(current($values),'chroma')){
+						$filters['chroma'][] = current($values);
+					}
+					elseif(stristr(current($values),'matrix')){
+						$filters['matrix'][] = current($values);
+					}
+					else{
+						$filters['standard'][] = current($values);
+					}
+					next($values);
+				}
+				reset($values);
+				$values = array_merge($filters['chroma'],$filters['matrix'],$filters['standard']);
+			}
+			// Check if we are dealing with IE-behaviors
+			if(in_array($property,array('behavior')))
+			{
+				$behavior = array();
+				$behavior['borderradius'] = array();
+				$behavior['transform'] = array();
+				$behavior['standard'] = array();
+				$transformfilters = array();
+				$num_values = count($values);
+				reset($values);
+				echo "/*count: ".count($values)."*/\r\n";
+				for($i = 0; $i < $num_values; $i++){
+					echo "/*".current($values)."*/\r\n";
+					if(stristr(current($values),'borderradius.htc')){
+						echo "/*borderradius!*/\r\n";
+						$behavior['borderradius'][] = current($values);
+					}
+					elseif(stristr(current($values),'transform.htc')){
+						echo "/*transform!*/\r\n";
+						$behavior['transform'][] = current($values);
+					}
+					else{
+						echo "/*standard!*/\r\n";
+						$behavior['standard'][] = current($values);
+					}
+					next($values);
+				}
+				reset($values);
+				$values = array_merge($behavior['borderradius'],$behavior['transform'],$behavior['standard']);
+				echo '/*'.implode(',',$values)."*/\r\n";
+			}
 			// Whitspace characters
 			$s = ' ';
 			// Forget the whitespace if we're compressing
@@ -917,6 +1023,10 @@ class Parser2 extends Base{
 					if($final != ''){
 						$final .= ','.$s;
 					}
+					// Remove quotes in values on quoted properties (important for -ms-filter property)
+					if(in_array($property, $this->quoted_properties)){
+						$values[$i] = str_replace('"',"'",trim($values[$i],'"'));
+					}
 					$final .= $values[$i];
 				}
 				// Normal properties
@@ -930,6 +1040,28 @@ class Parser2 extends Base{
 		// Add quotes to quoted properties
 		if(in_array($property, $this->quoted_properties)){
 			$final = '"' . $final . '"';
+		}
+		$final = trim($final);
+		return $final;
+	}
+
+
+	/**
+	 * get_final_value_array
+	 * Returns a cleaned up version of an array of values
+	 * @param array $values A list of values
+	 * @param string $property The property the values belong to
+	 * @param bool $compressed Compress CSS? (removes whitespace)
+	 * @return array $final The final values
+	 */
+	public function get_final_value_array($values, $property = NULL, $compressed = false){
+		// In the case of listed/tokenized properties, get a single combined final value
+		if(in_array($property, $this->tokenized_properties) || in_array($property, $this->listed_properties)){
+			$final = array($this->get_final_value($values, $property, $compressed));
+		}
+		// Otherwise just clean up the value array and return it
+		else{
+			$final = array_unique($values);
 		}
 		return $final;
 	}
