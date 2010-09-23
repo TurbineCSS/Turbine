@@ -105,15 +105,18 @@ public function register_plugin($hook, $priority, $function){
  * Applies plugins
  * @param string $plugins Plugin hook
  * @param array $list List of Plugins to apply
- * @param mixed &$subject The subject to apply the plugins to
+ * @param mixed &$subject1 The first subject to apply the plugins to
+ * @param mixed &$subject2 The second subject to apply the plugins to, if there is one
  * @return void
  */
-public function apply_plugins($plugins, $list, &$subject){
+public function apply_plugins($plugins, $list, &$subject1, &$subject2 = NULL){
 	asort($this->plugins[$plugins]);
 	$this->plugins[$plugins] = array_reverse($this->plugins[$plugins]);
 	foreach($this->plugins[$plugins] as $plugin => $priority){
 		if(in_array($plugin, $list) && function_exists($plugin)){
-			call_user_func_array($plugin, array(&$subject));
+			call_user_func_array($plugin,
+				($subject2 === NULL) ? array(&$subject1) : array(&$subject1, &$subject2)
+			);
 		}
 	}
 }
