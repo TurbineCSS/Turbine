@@ -173,6 +173,18 @@ public function rgbasyntax($rgba, $force = false){
 
 
 /*
+ * rgbsyntax
+ * Convert a RGBA array to css rgb color syntax, omitting the alpha value
+ * @param array $rgba The RGBA array
+ * @return string $syntax The rgb(a) value
+ */
+public function rgbsyntax($rgba){
+	$rgba['a'] = 1;
+	return self::rgbasyntax($rgba, false);
+}
+
+
+/*
  * hexsyntax
  * Convert a RGBA array to css hex color syntax
  * @param array $rgba The RGBA array
