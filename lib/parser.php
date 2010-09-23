@@ -280,11 +280,11 @@ class Parser2 extends Base{
 	/**
 	 * while_parsing_plugins
 	 * Run the plugins for the while_parsing hook
-	 * @param string $type The type of the line that's being processed
 	 * @param string $line The line that's being processed
+	 * @param string $type The type of the line that's being processed
 	 * @return void
 	 */
-	private function while_parsing_plugins($type, $line){
+	private function while_parsing_plugins($line, $type){
 		global $plugin_list;
 		$lineinfo = array(
 			'type' => $type,
