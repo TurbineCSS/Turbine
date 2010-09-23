@@ -11,6 +11,7 @@ Changelog
   - New: Utility class for developers. Contains several methods for color calculations.
   - New: "while_parsing" hook for plugins
   - New: "Title" property for @turbine to add titles or copyright information and the like to the output
+  - Improvement: Refactored plugins and core functions to rely less on browser sniffing
   - Improvement: Added optional far-future expires header
   - Improvement: Lock cache files while rebuilding
   - Improvement: Minifier plugin optimizes font-weight values and strips whitespace in values
