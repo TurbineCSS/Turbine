@@ -114,9 +114,13 @@ public function apply_plugins($plugins, $list, &$subject1, &$subject2 = NULL){
 	$this->plugins[$plugins] = array_reverse($this->plugins[$plugins]);
 	foreach($this->plugins[$plugins] as $plugin => $priority){
 		if(in_array($plugin, $list) && function_exists($plugin)){
-			call_user_func_array($plugin,
+			// Cancel the current loop when a plugin returns false
+			$plugin_result = call_user_func_array($plugin,
 				($subject2 === NULL) ? array(&$subject1) : array(&$subject1, &$subject2)
 			);
+			if($plugin_result === false){
+				break;
+			}
 		}
 	}
 }

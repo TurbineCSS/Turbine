@@ -31,6 +31,7 @@ function sniffer(&$parsed){
 		// Kill off all other plugins
 		global $plugin_list;
 		$plugin_list = array();
+		return false;
 	}
 	// Loop through the blocks
 	foreach($parsed as $block => $css){
