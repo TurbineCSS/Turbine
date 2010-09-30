@@ -13,6 +13,9 @@
  * Utility
  * Shared functionality for plugins and core
  */
+if(!class_exists('Utility')){
+
+
 class Utility {
 
 
@@ -204,6 +207,9 @@ public function hexsyntax($rgba, $force = false){
 
 
 }
+
+
+} // End if(!class_exists('Utility'))
 
 
 ?>
