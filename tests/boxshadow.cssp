@@ -1,0 +1,24 @@
+@turbine
+	plugins:boxshadow
+
+?test
+	height, width:200px
+	background:#F00
+	margin:2em
+	float:left
+
+#softoffset
+	extends:?test
+	box-shadow:6px 6px 12px #000
+
+#softnooffset
+	extends:?test
+	box-shadow:0 0 12px #000
+
+#hardoffset
+	extends:?test
+	box-shadow:6px 6px 0 #000
+
+#hardnooffset
+	extends:?test
+	box-shadow:0 0 0 #000
