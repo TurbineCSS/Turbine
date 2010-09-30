@@ -2,6 +2,11 @@ Changelog
 =========
 
 
+1.0.11
+------
+  - Fix: Box shadows with zero offset now work in IE
+
+
 1.0.10
 ------
   - Fix: Semicolons were not stripped vom @turbine's plugin rule
