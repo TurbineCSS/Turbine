@@ -11,9 +11,14 @@
 		?>
 	</head>
 	<body>
-		<div id="softoffset">Soft shadow with offset, drop shadow filter in IE</div>
-		<div id="softnooffset">Soft shadow without offset, glow filter in IE</div>
-		<div id="hardoffset">Hard shadow with offset, shadow filter in IE</div>
-		<div id="hardnooffset">Hard shadow without offset, deactivating filters in IE</div>
+		<div class="softoffset1">Soft shadow with offset, drop shadow filter in IE</div>
+		<div class="softnooffset1">Soft shadow without offset, glow filter in IE</div>
+		<div class="hardoffset1">Hard shadow with offset, shadow filter in IE</div>
+		<div class="hardnooffset1">Hard shadow without offset, deactivating filters in IE</div>
+		<br style="clear:both">
+		<div class="rgb">RGB</div>
+		<div class="rgba">RGBA</div>
+		<div class="hsl">HSL</div>
+		<div class="hsla">HSLA</div>
 	</body>
 </html>
