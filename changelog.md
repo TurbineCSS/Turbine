@@ -17,6 +17,7 @@ Changelog
   - Improvement: Minifier plugin optimizes font-weight values and strips whitespace in values
   - Improvement: Apppend the final slash to the base dir if it is missing
   - Improvement: Many new helpful error messages when something goes wrong
+  - Fix: Box shadow filter didn't understand HSL(A) and RGB(A)
 
 
 1.0.11
