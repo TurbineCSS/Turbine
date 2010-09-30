@@ -64,18 +64,19 @@ function boxshadow_filters($values){
 	global $cssp;
 	$value = $cssp->get_final_value($values);
 	$filter_properties = array();
-	// Build the filter value
+	// Build the filter value. Disable filters if box-shadow value is "none"
 	if($value == 'none'){
 		$filters = array(
 			'progid:DXImageTransform.Microsoft.dropshadow(enabled:false)',
 			'progid:DXImageTransform.Microsoft.Shadow(enabled:false)'
 		);
-		// IE8 compliance (note: value inside apostrophes!)
+		// IE8 compliance
 		$filter_properties['-ms-filter'] = $filters;
 		// Legacy IE compliance
 		$filter_properties['filter'] = $filters;
 		$filter_properties['zoom'] = array('1');
 	}
+	// Else build the filters
 	elseif(preg_match('/([-0-9]+)\D+([-0-9]+)\D+([-0-9]+)\D+#([0-9A-F]{3,6})+/i', $value, $matches) == 1){
 		$xoffset = intval($matches[1]);
 		$yoffset = intval($matches[2]);
@@ -84,25 +85,39 @@ function boxshadow_filters($values){
 		if(strlen($color) == 3){
 			$color = substr($color,0,1).substr($color,0,1).substr($color,1,1).substr($color,1,1).substr($color,2,1).substr($color,2,1);
 		}
-		$median_offset = round((abs($xoffset) + abs($yoffset)) / 2);
-		$opacity = (($median_offset - $blur) > 0) ? (($median_offset - $blur) / $median_offset) : 0.05;
-		$color_opacity = strtoupper(str_pad(dechex(round(hexdec(substr($color,0,2)) * $opacity)), 2, '0', STR_PAD_LEFT).str_pad(dechex(round(hexdec(substr($color,2,2)) * $opacity)),2,'0',STR_PAD_LEFT).str_pad(dechex(round(hexdec(substr($color,4,2)) * $opacity)),2,'0',STR_PAD_LEFT));
-		// Calculate direction
-		$direction = rad2deg(atan2($yoffset, $xoffset * -1));
-		// Hard Shadow
-		if($blur == 0){
-			$filter = 'progid:DXImageTransform.Microsoft.dropshadow(OffX='.$xoffset.',OffY='.$yoffset.',Color=\'#'.strtoupper(str_pad(dechex(round($opacity * 255)),2,'0',STR_PAD_LEFT)).$color.'\',Positive=\'true\')';
+		// Use glow filter if the offset is 0
+		if($xoffset == 0 && $yoffset == 0){
+			$filters = array(
+				'progid:DXImageTransform.Microsoft.Glow(color=\''.$color.'\', Strength=\''.$blur.'\')'
+			);
+			// IE8 compliance
+			$filter_properties['-ms-filter'] = $filters;
+			// Legacy IE compliance
+			$filter_properties['filter'] = $filters;
+			$filter_properties['zoom'] = array('1');
 		}
-		// Soft Shadow
+		// Else use either drop shadow or shadow filter, depending on blur
 		else{
-			$strength = ($median_offset + $blur) / 2;
-			$filter = 'progid:DXImageTransform.Microsoft.Shadow(Color=\'#'.$color.'\',Direction='.$direction.',Strength='.$strength.')';
+			$median_offset = round((abs($xoffset) + abs($yoffset)) / 2);
+			$opacity = (($median_offset - $blur) > 0) ? (($median_offset - $blur) / $median_offset) : 0.05;
+			$color_opacity = strtoupper(str_pad(dechex(round(hexdec(substr($color,0,2)) * $opacity)), 2, '0', STR_PAD_LEFT).str_pad(dechex(round(hexdec(substr($color,2,2)) * $opacity)),2,'0',STR_PAD_LEFT).str_pad(dechex(round(hexdec(substr($color,4,2)) * $opacity)),2,'0',STR_PAD_LEFT));
+			// Calculate direction
+			$direction = rad2deg(atan2($yoffset, $xoffset * -1));
+			// Hard Shadow
+			if($blur == 0){
+				$filter = 'progid:DXImageTransform.Microsoft.dropshadow(OffX='.$xoffset.',OffY='.$yoffset.',Color=\'#'.strtoupper(str_pad(dechex(round($opacity * 255)),2,'0',STR_PAD_LEFT)).$color.'\',Positive=\'true\')';
+			}
+			// Soft Shadow
+			else{
+				$strength = ($median_offset + $blur) / 2;
+				$filter = 'progid:DXImageTransform.Microsoft.Shadow(Color=\'#'.$color.'\',Direction='.$direction.',Strength='.$strength.')';
+			}
+			// IE8 compliance (note: value inside apostrophes!)
+			$filter_properties['-ms-filter'] = array('"'.$filter.'"');
+			// Legacy IE compliance
+			$filter_properties['filter'] = array($filter);
+			$filter_properties['zoom'] = array('1');
 		}
-		// IE8 compliance (note: value inside apostrophes!)
-		$filter_properties['-ms-filter'] = array('"'.$filter.'"');
-		// Legacy IE compliance
-		$filter_properties['filter'] = array($filter);
-		$filter_properties['zoom'] = array('1');
 	}
 	return $filter_properties;
 }
