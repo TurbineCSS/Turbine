@@ -384,7 +384,7 @@ class Cssp extends Parser2 {
 				preg_match_all($copying_pattern, $values[$i], $matches);
 				// Exact selector matches
 				if(isset($this->parsed[$block][$matches[1][0]][$matches[2][0]])){
-					str_replace($matches[0][0], $this->get_final_value($this->parsed[$block][$matches[1][0]][$matches[2][0]], $property), $dest[$i]);
+					$dest[$i] = str_replace($matches[0][0], $this->get_final_value($this->parsed[$block][$matches[1][0]][$matches[2][0]], $property), $dest[$i]);
 					$found = true;
 				}
 				// Search for partial selector matches, ie. "#foo" in "#bar, #foo, #blah"
