@@ -121,7 +121,7 @@ if($_GET['files']){
 
 
 	foreach($files as $file){
-		if(file_exists($file)){
+		if($file != '' && file_exists($file)){
 
 			$fileinfo = pathinfo($file);
 
