@@ -5,6 +5,7 @@ Changelog
 1.0.11
 ------
   - Fix: Box shadows with zero offset now work in IE
+  - Fix: Prevent trailing semicolons in file list from throwing errors about missing files
 
 
 1.0.10

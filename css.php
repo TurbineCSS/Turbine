@@ -104,7 +104,7 @@ if($_GET['files']){
 
 
 	foreach($files as $file){
-		if(file_exists($file)){
+		if($file != '' && file_exists($file)){
 
 			// CSSP or CSS?
 			$fileinfo = pathinfo($file);
