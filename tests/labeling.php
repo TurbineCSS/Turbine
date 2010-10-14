@@ -12,16 +12,33 @@
 	</head>
 	<body>
 		<h1>Expected output</h1>
-		<pre>#foo {
-	color: red;
+		<pre>@media print {
+	#pleasedontwork {
+		border: 1px solid blue;
+	}
 }
-#bar { /* Inherited properties from: "#foo" */
-	background: green;
-	color: red;
-}
-#text { /* Inherited properties from: "#foo" */
-	color: red;
-}
-</pre>
+@media screen {
+	#some #deep #nesting #foo {
+		color: red;
+	}
+	#bar { /* Inherited properties from: "#some #deep #nesting #foo" */
+		background: green;
+		color: red;
+	}
+	#baz {
+		font-weight: bold;
+	}
+	#test1 { /* Inherited properties from: "#some #deep #nesting #foo" */
+		color: red;
+	}
+	div#very > div.complicated[asdf=asdf] + #selector {
+		border-radius: 2em;
+	}
+	#test2 { /* Inherited properties from: "#baz", "#some #deep #nesting #foo", "div#very > div.complicated[asdf=asdf] + #selector" */
+		font-weight: bold;
+		color: red;
+		border-radius: 2em;
+	}
+}</pre>
 	</body>
 </html>
