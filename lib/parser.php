@@ -35,27 +35,33 @@ class Parser2 extends Base{
 
 
 	/**
-	 * @var array $tokenized_properties The list properties where multiple values are to be combined on output using a space character
+	 * @var array $tokenized_properties The list of properties where multiple values are to be combined on output using a space character
 	 */
 	public $tokenized_properties = array('filter', 'behavior');
 
 
 	/**
-	 * @var array $listed_properties The list properties where multiple values are to be combined on output using a comma
+	 * @var array $listed_properties The list of properties where multiple values are to be combined on output using a comma
 	 */
 	public $listed_properties = array('plugins', '-ms-filter');
 
 
 	/**
-	 * @var array $quoted_properties The list properties where the value needs to be quoted as a whole before output
+	 * @var array $quoted_properties The list of properties where the value needs to be quoted as a whole before output
 	 */
 	public $quoted_properties = array('-ms-filter');
 
 
 	/**
-	 * @var array $last_properties The list properties that must be output AFTER all other plugins, in order of output
+	 * @var array $last_properties The list of properties that must be output AFTER all other plugins, in order of output
 	 */
 	public $last_properties = array('filter', '-ms-filter');
+
+
+	/**
+	 * @var array $special_properties The list of properties that are invisible and can not be inherited or copied
+	 */
+	public $special_properties = array('label', '_label');
 
 
 	/**
@@ -674,7 +680,12 @@ class Parser2 extends Base{
 		$pr = $this->current['pr'];
 		$va = $this->current['va'];
 		$fi = $this->current['fi'];
+		// Merge only if a property and a value do exist
 		if($pr !== '' && $va !== ''){
+			// Make special properties invisible
+			if(in_array($pr, $this->special_properties)){
+				$pr = '_' . $pr;
+			}
 			// Special destination for @font-face
 			if($se == '@font-face'){
 				$dest =& $this->parsed[$me][$se][$fi][$pr];
@@ -977,8 +988,7 @@ class Parser2 extends Base{
 		// Otherwise find the last and/or most !important value
 		else{
 			// Check if we are dealing with IE-filters
-			if(in_array($property,array('filter','-ms-filter')))
-			{
+			if(in_array($property,array('filter','-ms-filter'))){
 				$filters = array();
 				$filters['chroma'] = array();
 				$filters['matrix'] = array();
@@ -1002,8 +1012,7 @@ class Parser2 extends Base{
 				$values = array_merge($filters['chroma'],$filters['matrix'],$filters['standard']);
 			}
 			// Check if we are dealing with IE-behaviors
-			if(in_array($property,array('behavior')))
-			{
+			if(in_array($property,array('behavior'))){
 				$behavior = array();
 				$behavior['borderradius'] = array();
 				$behavior['transform'] = array();

@@ -462,8 +462,8 @@ class Cssp extends Parser2 {
 		// Create a temporary, cleaned up version of $new
 		$clean = array();
 		foreach($new as $property => $values){
-			// If the property is not excluded...
-			if(!in_array($property, $exclude)){
+			// If the property is not excluded or a special property...
+			if(!in_array($property, $exclude) && !in_array($property, $this->special_properties)){
 				// ... apply the values one by one...
 				if(isset($clean[$property])){
 					if($allow_overwrite){
@@ -499,7 +499,7 @@ class Cssp extends Parser2 {
 
 	/**
 	 * find_ancestor_keys
-	 * Find selectors matching (partially) $selector
+	 * Find selectors matching or partially matching $selector (where $selector can also be a label)
 	 * @param string $selector The selector to search
 	 * @param string $block The block to search in
 	 * @return array $results The matching keys (if any)
@@ -508,7 +508,9 @@ class Cssp extends Parser2 {
 		$results = array();
 		foreach($this->parsed[$block] as $key => $value){
 			$tokens = $this->tokenize($key, ',');
-			if(in_array($selector, $tokens)){
+			if(in_array($selector, $tokens) ||
+				(array_key_exists('_label', $this->parsed[$block][$key]) && $this->get_final_value($this->parsed[$block][$key]['_label'], '_label') == $selector)
+			){
 				$results[] = $key;
 			}
 		}
