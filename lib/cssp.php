@@ -312,8 +312,10 @@ class Cssp extends Parser2 {
 								$this->report_error($selector.' could not find '.$fail.' to inherit properties from.');
 							}
 						}
-						// Add a comment explaining where the inherited properties came from
-						CSSP::comment($this->parsed[$block][$selector], null, 'Inherited properties from: "'.implode('", "', $ancestors_list).'"');
+						else{
+							// Add a comment explaining where the inherited properties came from
+							CSSP::comment($this->parsed[$block][$selector], null, 'Inherited properties from: "'.implode('", "', $ancestors_list).'"');
+						}
 					}
 					// Unset the extends property
 					unset($this->parsed[$block][$selector]['extends']);
