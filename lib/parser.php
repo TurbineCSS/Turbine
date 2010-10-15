@@ -274,6 +274,11 @@ class Parser2 extends Base{
 			$this->debuginfo[] = $debug;
 			unset($debug);
 		}
+		// EOF for while_parsing
+		call_user_func_array(
+			array($this, 'while_parsing_plugins'),
+			array('EOF', 'EOF')
+		);
 		// Dump $this->parsed when configured to do so
 		if($this->debug){
 			print_r($this->parsed);

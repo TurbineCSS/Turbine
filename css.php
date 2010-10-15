@@ -210,6 +210,8 @@ if($_GET['files']){
 				// Server-side cache: Cached version of the file does not yet exist
 				if(!$incache){
 
+					// Init plugin list
+					$plugin_list = array();
 
 					// Load plugins (if not already loaded)
 					if(!$plugins_loaded){
@@ -242,7 +244,6 @@ if($_GET['files']){
 
 
 					// Get plugin list for the before parse hook
-					$plugin_list = array();
 					$found = false;
 					foreach($cssp->code as $line){
 						if(!$found){
@@ -254,7 +255,7 @@ if($_GET['files']){
 							preg_match('~^\s+plugins:(.*?)(?://|$)~', $line, $matches);
 							if(count($matches) == 2){
 								$matches[1] = rtrim($matches[1], ';'); // Strip semicolons
-								$plugin_list = $cssp->tokenize($matches[1], ',');
+								$plugin_list = array_merge($plugin_list, $cssp->tokenize($matches[1], ','));
 								break;
 							}
 						}
