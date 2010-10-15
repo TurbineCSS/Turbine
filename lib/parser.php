@@ -503,7 +503,7 @@ class Parser2 extends Base{
 		// Fire the "while_parsing" plugins
 		call_user_func_array(
 			array($this, 'while_parsing_plugins'),
-			array('selecor', &$this->current['se'])
+			array('selector', &$this->current['se'])
 		);
 	}
 
@@ -891,7 +891,7 @@ class Parser2 extends Base{
 		if($compressed){
 			$selector = implode(',', $this->tokenize($selector, ','));
 		}
-		// Constuct the selecor
+		// Constuct the selector
 		$output .= $prefix . $selector . $s;
 		$output .= '{';
 		// Add comments
