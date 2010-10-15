@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>Box shadow test</title>
+		<title>Labeling test</title>
 		<?php
 			include('../inc/turbine.php');
 			turbine('../css.php', array(
