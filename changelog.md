@@ -2,6 +2,13 @@ Changelog
 =========
 
 
+1.0.11
+------
+  - Fix: Box shadows with zero offset now work in IE
+  - Fix: Prevent trailing semicolons in file list from throwing errors about missing files
+  - Fix: Box sizing should now work in IE 6 and 7
+
+
 1.0.10
 ------
   - Fix: Semicolons were not stripped vom @turbine's plugin rule
