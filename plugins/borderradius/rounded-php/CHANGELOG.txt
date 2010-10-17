@@ -1,0 +1,14 @@
+Version 2.0
+	- Opacity values for all colors (png format)
+	- Faster, more efficient antialias processing
+	- Packed script for quick and easy installation
+
+Version 1.1.1
+	- (Bug Fix) Alpha color blending problem with transparent background colors fixed
+
+
+version 1.1
+	- Full support for transparency using png and gif formats
+	- Toggle transparency for background, border and foreground colors in png format
+	- Select a transparent color for gif format
+	- Toggle antialias on or off

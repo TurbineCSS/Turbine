@@ -1,13 +1,14 @@
 <component lightWeight="true">
 <attach event="onpropertychange" onevent="checkPropertyChange()" />
 <attach event="ondetach" onevent="restore()" />
-<script>
+<attach event="onresize" for="window" onevent="restore();init()" />
+<script type="text/javascript">
 //<![CDATA[
 
-
+var viewportwidth = (typeof window.innerWidth != 'undefined' ? window.innerWidth : element.document.documentElement.clientWidth);
 // Shortcut for the document object
 var doc = element.document;
-
+//doc.body.style.width = viewportwidth;
 
 /*
 * init gets called once at the start and then never again, 
@@ -39,6 +40,7 @@ function restore(){
 * dimensions was changed and if yes recalculates width and height 
 */
 function checkPropertyChange(){
+	// check for IE8+
 	if(typeof(element.style.boxSizing) == "undefined"){
 		var pn = event.propertyName;
 		var undef;
@@ -100,9 +102,7 @@ function checkPropertyChange(){
  */
 function getPixelValue(value){
 	var PIXEL = /^\d+(px)?$/i;
-	if(PIXEL.test(value)){
-		return parseInt(value);
-	}
+	if (PIXEL.test(value)) return parseInt(value);
 	var style = element.style.left;
 	var runtimeStyle = element.runtimeStyle.left;
 	element.runtimeStyle.left = element.currentStyle.left;
@@ -110,6 +110,37 @@ function getPixelValue(value){
 	value = parseInt(element.style.pixelLeft);
 	element.style.left = style;
 	element.runtimeStyle.left = runtimeStyle;
+	
+	return value;
+}
+
+function getPixelWidth(object, value){
+	// For Pixel Values
+	var PIXEL = /^\d+(px)?$/i;
+	if (PIXEL.test(value)) return parseInt(value);
+	
+	// For Percentage Values
+	var PERCENT = /^[\d\.]+%$/i;
+	if (PERCENT.test(value)){
+		try{
+			parentWidth = getPixelWidth(object.parentElement,(object.parentElement.currentStyle.width != "auto" ? object.parentElement.currentStyle.width : "100%"));
+			value = (parseFloat(value) / 100) * parentWidth;
+		}
+		catch(e){
+			value = (parseFloat(value) / 100) * element.document.documentElement.clientWidth;
+		}
+		return parseInt(value);
+	}
+	
+	// For EM Values
+	var style = object.style.left;
+	var runtimeStyle = object.runtimeStyle.left;
+	object.runtimeStyle.left = object.currentStyle.left;
+	object.style.left = value || 0;
+	value = parseInt(object.style.pixelLeft);
+	object.style.left = style;
+	object.runtimeStyle.left = runtimeStyle;
+	
 	return value;
 }
 
@@ -208,13 +239,12 @@ function setContentBoxHeight(n){
  * 
  */
 function updateBorderBoxWidth() {
-	element.runtimeStyle.width = "";
 	if(getDocumentBoxSizing() == getBoxSizing()){
 		return;
 	}
 	var csw = element.currentStyle.width;
 	if(csw != "auto"){
-		csw = getPixelValue(element.currentStyle.width);
+		csw = getPixelWidth(element,csw);
 		if(getBoxSizing() == "border-box"){
 			setBorderBoxWidth(parseInt(csw));
 		}
@@ -223,14 +253,14 @@ function updateBorderBoxWidth() {
 		}
 	}
 }
+
 function updateBorderBoxHeight() {
-	element.runtimeStyle.height = "";
 	if(getDocumentBoxSizing() == getBoxSizing()){
 		return;
 	}
 	var csh = element.currentStyle.height;
 	if(csh != "auto"){
-		csh = getPixelValue(element.currentStyle.height);
+		csh = getPixelValue(csh);
 		if(getBoxSizing() == "border-box"){
 			setBorderBoxHeight(parseInt(csh));
 		}
