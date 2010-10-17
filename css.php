@@ -117,7 +117,7 @@ if($_GET['files']){
 
 
 	foreach($files as $file){
-		if(file_exists($file)){
+		if($file != '' && file_exists($file)){
 
 			// CSSP or CSS?
 			$fileinfo = pathinfo($file);
@@ -222,6 +222,7 @@ if($_GET['files']){
 						else{
 							preg_match('~^\s+plugins:(.*?)(?://|$)~', $line, $matches);
 							if(count($matches) == 2){
+								$matches[1] = rtrim($matches[1], ';'); // Strip semicolons
 								$plugin_list = $cssp->tokenize($matches[1], ',');
 								break;
 							}

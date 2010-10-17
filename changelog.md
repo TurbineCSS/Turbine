@@ -2,6 +2,26 @@ Changelog
 =========
 
 
+1.0.11
+------
+  - Fix: Box shadows with zero offset now work in IE
+  - Fix: Prevent trailing semicolons in file list from throwing errors about missing files
+  - Fix: Box sizing should now work in IE 6 and 7
+
+
+1.0.10
+------
+  - Fix: Semicolons were not stripped vom @turbine's plugin rule
+  - Improvement: Updated browser sniffer
+
+
+1.0.9
+-----
+  - Fix: Box sizing turned out not to work in IE < 8 at all. Fixed.
+  - Improvement: Added reasonable comments to boxsizing.htc
+  - Improvement: Added "Vary: Accept-Encoding" header to css output
+
+
 1.0.8
 -----
   - Fix: Gradients couldn't be disabled in IE
