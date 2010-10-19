@@ -15,6 +15,7 @@
  * Usage: Nobrainer, just switch it on
  * Example: -
  * Status:  Stable
+ * Version: 1.0
  * Version: 1.2
  * 
  * @param mixed &$parsed
@@ -24,9 +25,19 @@ function bugfixes(&$parsed){
 	global $cssp, $browser;
 	$changed = array();
 
+	// IE6: Image margin bottom bug
+	$changed['img']['vertical-align'][] = 'bottom';
 	// IE: remove scrollbars from textareas
 	$changed['textarea']['overflow'][] = 'auto';
 
+	// IE6: Background image flickers on hover
+	$changed['html']['filter'][] = 'expression(document.execCommand("BackgroundImageCache",false,true))';
+
+	// IE6: Fix transparent PNGs, see http://www.twinhelix.com/css/iepngfix/
+	$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/bugfixes/iepngfix.htc';
+	$changed['img']['behavior'][] = 'url("'.$htc_path.'")';
+
+	// IE6 and 7: resample images bicubic instead of using nearest neighbor method
 	if($browser->browser == 'ie' && floatval($browser->browser_version) < 7){
 		// IE6: Image margin bottom bug
 		$changed['img']['vertical-align'][] = 'bottom';
@@ -50,6 +61,8 @@ function bugfixes(&$parsed){
 	$changed['button']['white-space'][] = 'nowrap';
 
 	// IE6 and 7: Missing :hover-property on every tag except a, see http://www.xs4all.nl/~peterned/csshover.html
+	$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/bugfixes/csshover3.htc';
+	$changed['body']['behavior'][] = 'url("'.$htc_path.'")';
 	// IE8: Reenable cleartype where filters are set
 	$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/bugfixes/';
 	$changed['body']['behavior'][] = 'url("'.$htc_path.'csshover3.htc") url("'.$htc_path.'cleartypefix.htc")';
@@ -74,6 +87,7 @@ function bugfixes(&$parsed){
 	// Insert the global bugfixes
 	$cssp->insert($changed, 'global');
 
+	// Apply per-element-bugfixes
 	// Apply per-block-bugfixes
 	foreach($cssp->parsed as $block => $css){
 
@@ -110,6 +124,7 @@ function bugfixes(&$parsed){
 					CSSP::comment($cssp->parsed[$block][$selector], 'position', 'Added by bugfix plugin');
 				}
 			}
+
 		}
 	}
 

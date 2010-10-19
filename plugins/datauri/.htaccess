@@ -7,14 +7,4 @@
 <IfModule mod_expires.c>
 	ExpiresActive On
 	ExpiresDefault "access plus 1 years"
-	<FilesMatch ".*mhtml\.php$">
-		ExpiresActive Off
-	</FilesMatch>
-</IfModule>
-
-# Disable "Mod_headers" for MHTML-file
-<IfModule mod_headers.c>
-	<FilesMatch ".*mhtml\.php$">
-		Header set Cache-Control "no-cache, must-revalidate"
-	</FilesMatch>
 </IfModule>
