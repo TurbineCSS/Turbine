@@ -91,6 +91,7 @@ function datauri(&$parsed){
 		}
 		// Save the mhtml file, if there is one to save
 		if($mode == 'mhtml' && !empty($mhtmlarray)){
+			$mhtmlcontent .= "--_ANY_STRING_WILL_DO_AS_A_SEPARATOR--\r\n";
 			$mhtmlcontent .= "\r\n\r\n";
 			file_put_contents($mhtmlfile, $mhtmlcontent);
 			chmod($mhtmlfile, 0777);
