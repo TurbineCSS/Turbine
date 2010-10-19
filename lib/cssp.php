@@ -288,7 +288,8 @@ class Cssp extends Parser2 {
 										$ancestors_rules,
 										$this->parsed[$block][$ancestor_key],
 										array(),
-										true
+										true,
+										$this->array_get_previous($this->parsed[$block][$selector], 'extends', true)
 									);
 								}
 							}
@@ -302,7 +303,8 @@ class Cssp extends Parser2 {
 							$this->parsed[$block][$selector],
 							$ancestors_rules,
 							array(),
-							false
+							false,
+							$this->array_get_previous($this->parsed[$block][$selector], 'extends', true)
 						);
 						// Report errors for every ancestor that was not found
 						if(!empty($not_found)){
@@ -310,8 +312,10 @@ class Cssp extends Parser2 {
 								$this->report_error($selector.' could not find '.$fail.' to inherit properties from.');
 							}
 						}
-						// Add a comment explaining where the inherited properties came from
-						CSSP::comment($this->parsed[$block][$selector], null, 'Inherited properties from: "'.implode('", "', $ancestors_list).'"');
+						else{
+							// Add a comment explaining where the inherited properties came from
+							CSSP::comment($this->parsed[$block][$selector], null, 'Inherited properties from: "'.implode('", "', $ancestors_list).'"');
+						}
 					}
 					// Unset the extends property
 					unset($this->parsed[$block][$selector]['extends']);
@@ -446,39 +450,56 @@ class Cssp extends Parser2 {
 
 	/***
 	 * merge_rules
-	 * Merges possible conflicting css rules
+	 * Merges sets of possibly conflicting css rules
 	 * @param mixed $old The OLD rules (overridden by the new rules)
 	 * @param mixed $new The NEW rules (override the old rules)
 	 * @param array $exclude A list of properties NOT to merge
 	 * @param array $allow_overwrite Allow new rules to overwrite old ones?
-	 * @return mixed $rule The new, merged rule
+	 * @param string $after The property in the old rules after which the new rules are to be inserted
+	 * @return mixed $rules The new, merged rules
 	 */
-	public function merge_rules($old, $new, $exclude = array(), $allow_overwrite = true){
-		$rule = $old;
+	public function merge_rules($old, $new, $exclude = array(), $allow_overwrite = true, $after = ''){
+		// Create a temporary, cleaned up version of $new
+		$clean = array();
 		foreach($new as $property => $values){
-			// If the property is not excluded...
-			if(!in_array($property, $exclude)){
+			// If the property is not excluded or a special property...
+			if(!in_array($property, $exclude) && !in_array($property, $this->special_properties)){
 				// ... apply the values one by one...
-				if(isset($rule[$property])){
+				if(isset($clean[$property])){
 					if($allow_overwrite){
 						foreach($values as $value){
-							$rule[$property][] = $value;
+							$clean[$property][] = $value;
 						}
 					}
 				}
 				// ... or copy the whole set of values
 				else{
-					$rule[$property] = $values;
+					$clean[$property] = $values;
 				}
 			}
 		}
-		return $rule;
+		// Combine $clean and $old - either do a simple merge or insert $clean after $after in $old
+		if($after && isset($old[$after])){
+			$rules = array();
+			foreach($old as $oldproperty => $oldvalues){
+				$rules[$oldproperty] = $oldvalues;
+				if($oldproperty == $after){
+					foreach($new as $newproperty => $newvalues){
+						$rules[$newproperty] = $newvalues;
+					}
+				}
+			}
+		}
+		else{
+			$rules = array_merge($old, $clean);
+		}
+		return $rules;
 	}
 
 
 	/**
 	 * find_ancestor_keys
-	 * Find selectors matching (partially) $selector
+	 * Find selectors matching or partially matching $selector (where $selector can also be a label)
 	 * @param string $selector The selector to search
 	 * @param string $block The block to search in
 	 * @return array $results The matching keys (if any)
@@ -487,7 +508,9 @@ class Cssp extends Parser2 {
 		$results = array();
 		foreach($this->parsed[$block] as $key => $value){
 			$tokens = $this->tokenize($key, ',');
-			if(in_array($selector, $tokens)){
+			if(in_array($selector, $tokens) ||
+				(array_key_exists('_label', $this->parsed[$block][$key]) && $this->get_final_value($this->parsed[$block][$key]['_label'], '_label') == $selector)
+			){
 				$results[] = $key;
 			}
 		}
@@ -511,7 +534,7 @@ class Cssp extends Parser2 {
 			}
 			// Remove empty elements, templates and alias ruins
 			foreach($this->parsed[$block] as $selector => $styles){
-				if(empty($styles) || $selector{0} == '?' || $selector{0} == '$'){
+				if(empty($styles) || $selector == '' || $selector{0} == '?' || $selector{0} == '$'){
 					unset($this->parsed[$block][$selector]);
 				}
 			}

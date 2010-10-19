@@ -2,6 +2,24 @@ Changelog
 =========
 
 
+1.1.0
+-----
+  - New: Configurable plugins
+  - New: "noie" option for box shadow plugin (no box shadows for ie)
+  - New: "noie" option for background gradient plugin (no gradients for ie)
+  - New: "force-scrollbar" option for reset style plugin (forces a vertical scrollbar)
+  - New: Utility class for developers. Contains several methods for color calculations.
+  - New: "while_parsing" hook for plugins
+  - New: "Title" property for @turbine to add titles or copyright information and the like to the output
+  - Improvement: Refactored plugins and core functions to rely less on browser sniffing
+  - Improvement: Added optional far-future expires header
+  - Improvement: Lock cache files while rebuilding
+  - Improvement: Minifier plugin optimizes font-weight values and strips whitespace in values
+  - Improvement: Apppend the final slash to the base dir if it is missing
+  - Improvement: Many new helpful error messages when something goes wrong
+  - Fix: Box shadow filter didn't understand HSL(A) and RGB(A)
+
+
 1.0.11
 ------
   - Fix: Box shadows with zero offset now work in IE

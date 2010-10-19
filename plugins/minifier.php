@@ -68,12 +68,19 @@ function minifier(&$parsed){
 		'padding', 'padding-top', 'padding-left', 'padding-bottom', 'padding-right',
 		'border', 'border-top', 'border-left', 'border-bottom', 'border-right'
 	);
+	// Optimize font weight
+	$font_weights = array(
+		'normal' => 400,
+		'bold' => 700
+	);
 	foreach($parsed as $block => $css){
 		foreach($parsed[$block] as $selector => $styles){
 			// Ignore @font-face
 			if($selector != '@font-face'){
 				foreach($parsed[$block][$selector] as $property => $values){
 					foreach($parsed[$block][$selector][$property] as $key => $value){
+						// Strip whitespace from values
+						$parsed[$block][$selector][$property][$key] = preg_replace('/\s+/', ' ', $value);
 						// Optimize hex colors
 						if(in_array($property, $color_properties)){
 							if(preg_match($color_shortable_pattern, $value)){
@@ -93,6 +100,14 @@ function minifier(&$parsed){
 						if(in_array($property, $zero_properties)){
 							$parsed[$block][$selector][$property][$key] = preg_replace($zero_pattern, '0', $value);
 							$parsed[$block][$selector][$property][$key] = preg_replace($float_pattern, '\2\3\4', $parsed[$block][$selector][$property][$key]);
+						}
+						// Optimize font weight
+						if($property == 'font-weight'){
+							foreach($font_weights as $weight => $replacement){
+								if($value == $weight){
+									$parsed[$block][$selector][$property][$key] = $replacement;
+								}
+							}
 						}
 						// Shorten long margins and paddings
 						if($property == 'margin' || $property == 'padding'){

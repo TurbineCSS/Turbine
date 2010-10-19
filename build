@@ -12,6 +12,9 @@ echo $SUM > loc.txt
 VERSION="$(cat version.txt)"
 FILENAME="turbine-${VERSION}.tar.gz"
 
+# Create example config
+cp config.php example-config.php
+
 # List of files
 FILES="$(cat files)"
 

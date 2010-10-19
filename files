@@ -1,4 +1,5 @@
 cache/empty
+inc/turbine.php
 lib/browser/browser.php
 lib/browser/readme.md
 lib/browser/test.php
@@ -7,9 +8,10 @@ lib/base.php
 lib/cssp.php
 lib/parser.php
 lib/plugin.php
+lib/utility.php
 plugins
 resources
-config.php
+example-config.php
 css.php
 readme.md
 changelog.md

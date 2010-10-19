@@ -1,0 +1,40 @@
+@turbine
+	plugins:boxshadow
+
+?test
+	height, width:200px
+	background:#F00
+	margin:2em
+	float:left
+
+.softoffset1
+	extends:?test
+	box-shadow:6px 6px 12px #000
+
+.softnooffset1
+	extends:?test
+	box-shadow:0 0 12px #000
+
+.hardoffset1
+	extends:?test
+	box-shadow:6px 6px 0 #000
+
+.hardnooffset1
+	extends:?test
+	box-shadow:0 0 0 #000
+
+.rgb
+	extends:?test
+	box-shadow:8px 8px 8px rgb(0, 255, 255)
+
+.rgba
+	extends:?test
+	box-shadow:8px 8px 8px rgba(0, 255, 255, 0.5)
+
+.hsl
+	extends:?test
+	box-shadow:8px 8px 8px hsl(180, 50%, 50%)
+
+.hsla
+	extends:?test
+	box-shadow:8px 8px 8px hsla(180, 50%, 50%, 0.5)
