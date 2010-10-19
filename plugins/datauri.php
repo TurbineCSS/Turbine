@@ -50,7 +50,7 @@ function datauri(&$parsed){
 									if($file !== NULL){
 										// Use a normal datauri
 										if($mode == 'datauri'){
-											$parsed[$block][$selector][$property][$i] = preg_replace($urlregex, '$1\'data:image/'.$file['imagetype'].';base64,'.$file['imagedata'].'\'$3', $parsed[$block][$selector][$property][$i]);
+											$parsed[$block][$selector][$property][] = preg_replace($urlregex, '$1\'data:image/'.$file['imagetype'].';base64,'.$file['imagedata'].'\'$3', $parsed[$block][$selector][$property][$i]);
 										}
 										// Use a mhtml file
 										elseif($mode == 'mhtml'){
@@ -79,7 +79,7 @@ function datauri(&$parsed){
 												$host = $_SERVER['HTTP_HOST'];
 											}
 											// Set the data URI
-											$parsed[$block][$selector][$property][$i] = preg_replace($urlregex, '$1\'mhtml:'.$protocol.'://'.$host.rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/datauri/mhtml.php?cache='.$mhtmlmd5.'!'.$imagetag.'\'$3', $parsed[$block][$selector][$property][$i]);
+											$parsed[$block][$selector][$property][] = preg_replace($urlregex, '$1\'mhtml:'.$protocol.'://'.$host.rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/datauri/mhtml.php?cache='.$mhtmlmd5.'!'.$imagetag.'\'$3', $parsed[$block][$selector][$property][$i]);
 										}
 									}
 								}

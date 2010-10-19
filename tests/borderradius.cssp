@@ -1,0 +1,23 @@
+@turbine
+	compress:0
+	plugins:css3
+
+html,body
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	background-image: linear-gradient(top,#000,#FFF);
+
+body
+	padding: 100px 0 0 0;
+
+.borderradius
+	width: 400px;
+	height: 100px;
+	ovderflow: visible;
+	border-radius:32px
+	transform: rotate(5deg);
+	background:cyan
+	margin, padding:32px
+	border:8px solid rgb(255,0,0)
+	box-shadow: 2px 2px 4px #CCC;

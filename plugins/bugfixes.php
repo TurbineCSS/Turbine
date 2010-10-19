@@ -71,10 +71,6 @@ function bugfixes(&$parsed){
 	$changed['button::-moz-focus-inner']['padding'][] = '0';
 	$changed['button::-moz-focus-inner']['border'][] = 'none';
 
-<<<<<<< HEAD
-
-=======
->>>>>>> c184dca24da28bcd587226d12298b6687cc9351c
 	// Webkit: better antialiasing, see http://maxvoltar.com/archive/-webkit-font-smoothing
 	$changed['html']['-webkit-font-smoothing'][] = 'antialiased';
 	

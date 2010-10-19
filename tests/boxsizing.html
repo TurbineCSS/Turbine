@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Box Sizing</title>
+	<script type="text/javascript" src="https://getfirebug.com/firebug-lite.js#startOpened"></script>
+	<link rel="stylesheet" href="../css.php?files=tests/boxsizing.cssp">
+</head>
+<body>
+<div>
+	<div id="contentbox">
+		<div class="alpha1">Alpha</div>
+		<div class="beta1">Beta</div>
+	</div>
+	<div id="borderbox">
+		<div class="alpha2">
+			<div class="alpha2" style="background-color: #3333FF;">Alpha</div>
+			<div class="beta2" style="background-color: #FFF3FF;">Beta</div>
+		</div>
+		<div class="beta2">
+			<div class="alpha2" style="background-color: #3333FF;">Alpha</div>
+			<div class="beta2" style="background-color: #FFF3FF;">Beta</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>
+
+
+
