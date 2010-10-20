@@ -79,7 +79,7 @@ function datauri(&$parsed){
 												$host = $_SERVER['HTTP_HOST'];
 											}
 											// Set the data URI
-											$parsed[$block][$selector][$property][] = preg_replace($urlregex, '$1\'mhtml:'.$protocol.'://'.$host.rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/datauri/mhtml.php?cache='.$mhtmlmd5.'!'.$imagetag.'\'$3', $parsed[$block][$selector][$property][$i]);
+											$parsed[$block][$selector]['\9'.$property][] = preg_replace($urlregex, '$1\'mhtml:'.$protocol.'://'.$host.rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/datauri/mhtml.php?cache='.$mhtmlmd5.'!'.$imagetag.'\'$3', $parsed[$block][$selector][$property][$i]);
 										}
 									}
 								}
