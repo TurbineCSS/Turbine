@@ -285,7 +285,6 @@ function init(){
 		var paddingRight = getPixelValue(element.runtimeStyle.paddingRight == "" ? element.currentStyle.paddingRight : element.runtimeStyle.paddingRight);
 		var paddingTop = getPixelValue(element.runtimeStyle.paddingTop == "" ? element.currentStyle.paddingTop : element.runtimeStyle.paddingTop);
 		var paddingBottom = getPixelValue(element.runtimeStyle.paddingBottom == "" ? element.currentStyle.paddingBottom : element.runtimeStyle.paddingBottom);
-		var tag = (display == "inline" ? "span" : "div");
 		
 		// Resolve the path of this .htc-file
 		var bgc = (borderColor.toUpperCase() != 'FF00FF' ? 'FF00FF' : 'FF00FE');
@@ -307,6 +306,8 @@ function init(){
 		// Assign chroma filter. The color is not exactly cyan/#00FFFF as the rounded.php-script returns #04FEFC because of GIF-palette.
 		element.style.filter = 'progid:DXImageTransform.Microsoft.Chroma(color="#04FEFC") ' + element.currentStyle.filter;
 		// Create helper elements
+		var chroma = element.document.createElement('chroma');
+		var tag = "chroma";
 		element.innerHTML = '<' + tag + '><' + tag + '><' + tag + '><' + tag + '><' + tag + '>' + element.innerHTML + '</' + tag + '></' + tag + '></' + tag + '></' + tag + '></' + tag + '>';
 		
 		// Left Top
@@ -392,7 +393,7 @@ function init(){
 		
 		// Dimension fixes
 		childnode = childnode.firstChild;
-		style = '';
+		style = 'display: ' + display + ';';
 		if(width > 0) style += 'width: ' + width + 'px;';
 		else style += 'width: auto;';
 		if(height > 0) style += 'height: ' + height + 'px;';
