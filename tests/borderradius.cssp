@@ -11,13 +11,24 @@ html,body
 body
 	padding: 100px 0 0 0;
 
-.borderradius
+div
 	width: 400px;
 	height: 100px;
-	ovderflow: visible;
-	border-radius:32px
+	overflow: visible;
 	transform: rotate(5deg);
 	background:cyan
 	margin, padding:32px
 	border:8px solid rgb(255,0,0)
 	box-shadow: 2px 2px 4px #CCC;
+
+.borderradius1
+	border-radius:32px
+
+.borderradius2
+	border-top-radius:32px
+
+.borderradius3
+	border-left-radius:32px
+
+.borderradius4
+	border-top-left-radius:32px
