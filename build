@@ -22,4 +22,4 @@ FILES="$(cat files)"
 
 # Pack files
 tar -czf $TARFILENAME $FILES
-zip -q $ZIPFILENAME $FILES
+zip -qr $ZIPFILENAME $FILES
