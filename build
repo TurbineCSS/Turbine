@@ -7,10 +7,12 @@ CONFIG="$(cat config.php | wc -l)"
 CSS="$(cat css.php | wc -l)"
 SUM=`expr $LIB + $PLUGINS + $CONFIG + $CSS`
 echo $SUM > loc.txt
+echo "$SUM lines of code"
 
-# Get Version number, create file name
+# Get version number, create file names
 VERSION="$(cat version.txt)"
-FILENAME="turbine-${VERSION}.tar.gz"
+TARFILENAME="turbine-${VERSION}.tar.gz"
+ZIPFILENAME="turbine-${VERSION}.zip"
 
 # Create example config
 cp config.php example-config.php
@@ -19,4 +21,5 @@ cp config.php example-config.php
 FILES="$(cat files)"
 
 # Pack files
-tar -czf $FILENAME $FILES
+tar -czf $TARFILENAME $FILES
+zip -q $ZIPFILENAME $FILES
