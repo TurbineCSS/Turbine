@@ -3,25 +3,27 @@
 	plugins:css3
 
 html,body
-	height: 100%;
-	margin: 0;
-	padding: 0;
+	height: 100%
+	margin: 0
+	padding: 0
 	background-image: linear-gradient(top,#000,#FFF);
 
 body
-	padding: 100px 0 0 0;
+	padding: 100px 0 0 0
 
-div
-	width: 400px;
-	height: 100px;
-	overflow: visible;
-	transform: rotate(5deg);
+div, input, textarea
+	width: 400px
+	height: 100px
+	overflow: visible
+	font-size:2em
+	transform: rotate(5deg)
 	background:cyan
 	margin, padding:32px
 	border:8px solid rgb(255,0,0)
-	box-shadow: 2px 2px 4px #CCC;
+	box-shadow: 2px 2px 4px #CCC
+	float:left
 
-.borderradius1
+.borderradius1, input, textarea
 	border-radius:32px
 
 .borderradius2
