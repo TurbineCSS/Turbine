@@ -845,9 +845,11 @@ class Parser2 extends Base{
 		}
 		// Build the @font-face rules
 		foreach($fonts as $font => $styles){
-			$output .= '@font-face'.$s.'{'.$n;
-			$output .= $this->glue_properties($styles, '', $compressed);
-			$output .= '}'.$n;
+			if(!empty($styles)){
+				$output .= '@font-face'.$s.'{'.$n;
+				$output .= $this->glue_properties($styles, '', $compressed);
+				$output .= '}'.$n;
+			}
 		}
 		return $output;
 	}
