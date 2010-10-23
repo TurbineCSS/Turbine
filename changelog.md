@@ -11,6 +11,7 @@ Changelog
   - New: Utility class for developers. Contains several methods for color calculations.
   - New: "while_parsing" hook for plugins
   - New: "Title" property for @turbine to add titles or copyright information and the like to the output
+  - Improvement: Updated browser library to detect Firefox 4, Windows Phone 7 and others
   - Improvement: Added fallback when using Data URI plugin
   - Improvement: Refactored many plugins and core functions to rely less on browser sniffing
   - Improvement: Added optional far-future expires header
