@@ -35,6 +35,7 @@ $sniffer_tokill = array();
 $sniffer_current = array(
 	'block' => 'global',
 	'selector' => null,
+	'fi' => -1, // Font face index
 	'content' => array(),
 	'kill' => 0
 );
@@ -49,7 +50,6 @@ $sniffer_current_property = '';
 /**
  * sniffer
  * Main plugin function
- * TODO Take care of @font-face
  * @param string $type Line type
  * @param string $type Line content
  * @return void
@@ -57,16 +57,26 @@ $sniffer_current_property = '';
 function sniffer($type, &$content){
 	global $sniffer_current, $sniffer_current_property, $sniffer_tokill;
 
+	// Load the kill plugin
+	global $plugin_list;
+	array_push($plugin_list, 'sniffer_exec');
+
 	// Selectors @media lines and EOF end the previous kill list collection procedure
 	if($type == 'selector' || $type == '@media' || $type == 'EOF'){
 		// If the kill flag is true, copy the $current data to the kill list
 		if($sniffer_current['kill']){
-			$sniffer_tokill[$sniffer_current['block']][$sniffer_current['selector']] = $sniffer_current['content'];
+			if($sniffer_current['selector'] == '@font-face'){
+				$sniffer_tokill[$sniffer_current['block']][$sniffer_current['selector']][$sniffer_current['fi']] = $sniffer_current['content'];
+			}
+			else{
+				$sniffer_tokill[$sniffer_current['block']][$sniffer_current['selector']] = $sniffer_current['content'];
+			}
 		}
 		// Reset the current list
 		$sniffer_current = array(
 			'block' => $sniffer_current['block'],
 			'selector' => null,
+			'fi' => $sniffer_current['fi'],
 			'content' => array(),
 			'kill' => 0
 		);
@@ -106,10 +116,12 @@ function sniffer($type, &$content){
 		// Switch the selector we are in
 		case 'selector':
 			$sniffer_current['selector'] = $content;
+			if($sniffer_current['selector'] == '@font-face'){
+				$sniffer_current['fi']++;
+			}
 		break;
 
 	} // end switch
-
 }
 
 
@@ -278,11 +290,6 @@ function sniffer_parse_os($rule){
 
 // Register the plugin function
 $cssp->register_plugin('while_parsing', 9999, 'sniffer');
-
-
-// Load the kill plugin
-global $plugin_list;
-array_push($plugin_list, 'sniffer_exec');
 
 
 

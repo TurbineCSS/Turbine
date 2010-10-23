@@ -21,7 +21,6 @@
 /**
  * sniffer2_exec
  * Loops through $sniffer_tokill and eliminates the targets from $parsed
- * TODO Take care of @font-face
  * @param mixed &$parsed
  * @return void
  */
@@ -41,10 +40,16 @@ function sniffer_exec(&$parsed){
 		foreach($sniffer_tokill[$block] as $selector => $rules){
 			// Loop through @font-face
 			if($selector == '@font-face'){
-				// TODO
-				/*foreach($styles as $fontindex => $style){
-					
-				}*/
+				foreach($sniffer_tokill[$block][$selector] as $fontindex => $styles){
+					foreach($sniffer_tokill[$block][$selector][$fontindex] as $property => $values){
+						foreach($values as $value){
+							$search = array_search($value, $parsed[$block][$selector][$fontindex][$property]);
+							if($search !== false){
+								unset($parsed[$block][$selector][$fontindex][$property][$search]);
+							}
+						}
+					}
+				}
 			}
 			// Process the rest
 			else{
@@ -69,7 +74,7 @@ function sniffer_exec(&$parsed){
 
 /**
  * sniffer_exec_cleanup
- * Removes any remaining sniffer properties
+ * Removes any remaining sniffer properties as well as empty properties
  * @param array $parsed The parse tree to clean up
  * @return void
  */
@@ -77,9 +82,20 @@ function sniffer_exec_cleanup(&$parsed){
 	$sniffer_properties = array('browser', 'engine', 'device', 'os');
 	foreach($parsed as $block => $css){
 		foreach($parsed[$block] as $selector => $rules){
-			foreach($parsed[$block][$selector] as $property => $values){
-				if(in_array($property, $sniffer_properties)){
-					unset($parsed[$block][$selector][$property]);
+			if($selector == '@font-face'){
+				foreach($parsed[$block][$selector] as $fontindex => $styles){
+					foreach($parsed[$block][$selector][$fontindex] as $property => $values){
+						if(in_array($property, $sniffer_properties) || empty($parsed[$block][$selector][$fontindex][$property])){
+							unset($parsed[$block][$selector][$fontindex][$property]);
+						}
+					}
+				}
+			}
+			else{
+				foreach($parsed[$block][$selector] as $property => $values){
+					if(in_array($property, $sniffer_properties) || empty($parsed[$block][$selector][$property])){
+						unset($parsed[$block][$selector][$property]);
+					}
 				}
 			}
 		}
