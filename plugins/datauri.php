@@ -24,6 +24,7 @@
  * @return void
  */
 function datauri(&$parsed){
+	global $cssp;
 	// Find out if we have to use mhtml or normal data uris
 	$mode = datauri_get_mode();
 	// Process the array
@@ -45,7 +46,10 @@ function datauri(&$parsed){
 						if(isset($parsed[$block][$selector][$property])){
 							$num_values = count($parsed[$block][$selector][$property]);
 							for($i = 0; $i < $num_values; $i++){
-								if(preg_match($urlregex, $parsed[$block][$selector][$property][$i], $matches) > 0){
+								if(
+									isset($parsed[$block][$selector][$property][$i])
+									&& preg_match($urlregex, $parsed[$block][$selector][$property][$i], $matches) > 0
+								){
 									$file = datauri_get_file($matches[2]);
 									if($file !== NULL){
 										// Use a normal datauri
@@ -81,6 +85,9 @@ function datauri(&$parsed){
 											// Set the data URI
 											$parsed[$block][$selector]['\9'.$property][] = preg_replace($urlregex, '$1\'mhtml:'.$protocol.'://'.$host.rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/datauri/mhtml.php?cache='.$mhtmlmd5.'!'.$imagetag.'\'$3', $parsed[$block][$selector][$property][$i]);
 										}
+									}
+									else{
+										$cssp->report_error('Data URI plugin could not find file '.$matches[2].'.');
 									}
 								}
 							}
