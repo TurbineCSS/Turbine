@@ -3,7 +3,7 @@
 /**
  * This file is part of Turbine
  * http://github.com/SirPepe/Turbine
- * 
+ *
  * Copyright Peter Kröner
  * Licensed under GNU LGPL 3, see license.txt or http://www.gnu.org/licenses/
  */
@@ -535,7 +535,10 @@ class Parser2 extends Base{
 			foreach($parent as $p){
 				$selector = array();
 				foreach($child as $c){
-					$selector[] = $p.' '.$c;
+					if(strpos($c, '&') !== false)
+						$selector[] = str_replace('&', $p, $c);
+					else
+						$selector[] = $p.' '.$c;
 				}
 				$selectors[] = $selector;
 			}
@@ -918,7 +921,7 @@ class Parser2 extends Base{
 	 * glue_properties
 	 * Combine property sets
 	 * @param mixed $rules Property-value-pairs
-	 * @param string $prefix Prefix 
+	 * @param string $prefix Prefix
 	 * @param bool $compressed Compress CSS? (removes whitespace)
 	 * @return string $output Formatted CSS
 	 */
@@ -1245,3 +1248,4 @@ class Parser2 extends Base{
 
 
 ?>
+
