@@ -51,7 +51,7 @@ function load_apply($lines){
 				// Load the file
 				if(file_exists($loadfilepath)){
 					$newlines = file($loadfilepath);
-					$newlines_indention_char = Parser2::get_indention_char($newlines);
+					$newlines_indention_char = $cssp->get_indention_char($newlines);
 					// Fix the indention of the new lines
 					if($cssp->indention_char != $newlines_indention_char){
 						$newlines = load_fix_indention($newlines, $cssp->indention_char, $newlines_indention_char);

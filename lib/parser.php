@@ -3,7 +3,7 @@
 /**
  * This file is part of Turbine
  * http://github.com/SirPepe/Turbine
- * 
+ *
  * Copyright Peter Kröner
  * Licensed under GNU LGPL 3, see license.txt or http://www.gnu.org/licenses/
  */
@@ -94,6 +94,11 @@ class Parser2 extends Base{
 	* @var string $token The current token
 	*/
 	public $token = '';
+
+	/**
+	 * @var string $tabwidth The user defined number or spaces for a tab
+	 */
+	private $tabwidth = 4;
 
 
 	/**
@@ -269,6 +274,7 @@ class Parser2 extends Base{
 				$this->selector_stack = array_slice($this->selector_stack, 0, $nextlevel);
 				$this->current['se'] = end($this->selector_stack);
 			}
+
 			// Debugging stuff
 			$debug['media'] = $this->current['me'];
 			$this->debuginfo[] = $debug;
@@ -321,7 +327,7 @@ class Parser2 extends Base{
 	 * @param array $lines The code in question
 	 * @return string $matches[1] The whitespace char(s) used for indention
 	 */
-	public static function get_indention_char($lines){
+	/*public static function get_indention_char($lines){
 		$linecount = count($lines);
 		for($i = 0; $i < $linecount; $i++){
 			$line = $lines[$i];
@@ -333,6 +339,75 @@ class Parser2 extends Base{
 				}
 			}
 		}
+	}*/
+
+	public function get_indention_char($lines){
+		$linecount = count($this->code);
+		$tab_lines = array();
+		$space_lines = array();
+		$corrupt_lines = array();
+
+		for($i = 0; $i < $linecount; $i++){
+			$line = $this->code[$i];
+			$line_number = $i;
+
+			// If the line is not empty
+			if(strlen(trim($line)) > 0){
+
+				// Search indentations
+				if(preg_match('/^(\s+)[a-z\-]+:.+?/i', $line, $matches)){
+					$indentation = $matches[1];
+
+					// Check for tabs
+					if(strpos($indentation, "\t") !== false){
+						// Check for spaces.
+						if(strpos($indentation, ' ') !== false)
+							$corrupt_lines[$line_number] = $line;
+						else
+							array_push($tab_lines, $line_number);
+						continue;
+					}
+					// Check for spaces
+					else{
+						$length = strlen($indentation);
+						// Valid indentation ?
+						if(($length % $this->tabwidth) == 0){
+
+							array_push($space_lines, $line_number);
+						} else {
+							$corrupt_lines[$line_number] = $line;
+						}
+					}
+				}
+			}
+		}
+		// Fix lines. Replace tabs by spaces
+		if(count($space_lines) > count($tab_lines)){
+			$final_indentation = str_repeat(' ', $this->tabwidth);
+			foreach($tab_lines AS $line_number){
+				$this->code[$line_number] = str_replace("\t", $final_indentation, $this->code[$line_number]);
+			}
+
+		}
+		// Fix lines. Replace spaces by tabs
+		else{
+			$final_indentation = "\t";
+			foreach($space_lines AS $line_number){
+				$this->code[$line_number] = str_replace(str_repeat(' ', $this->tabwidth), $final_indentation, $this->code[$line_number]);
+			}
+		}
+
+		// Report corrupt lines
+		// TODO: Add cssp file name
+		if(count($corrupt_lines) > 0 && $this->config['debug_level'] > 0){
+			$fixed_line = '';
+			foreach(array_keys($corrupt_lines) AS $line_number){
+				$fixed_line .= $line_number + 1; // add 1, because arrays start at 0
+				$this->report_error('Corrupt indentation in line ' . $fixed_line . ': ' . trim($corrupt_lines[$line_number]));
+			}
+		}
+
+		return $final_indentation;
 	}
 
 
@@ -344,6 +419,7 @@ class Parser2 extends Base{
 	protected function preprocess(){
 		$this->preprocess_clean();
 		$this->preprocess_concatenate_selectors();
+		$this->parse_tabwidth();
 	}
 
 
@@ -355,7 +431,7 @@ class Parser2 extends Base{
 	private function preprocess_clean(){
 		$processed = array();   // The remaining, cleaned up lines
 		$comment_state = false; // The block comment state
-		$previous_line = '';    // The line before the line being processed
+		$previous_line = '';	// The line before the line being processed
 		$loc = count($this->code);
 		for($i = 0; $i < $loc; $i++){
 			// Handle block comment lines
@@ -365,9 +441,9 @@ class Parser2 extends Base{
 			// Handle normal lines
 			elseif(!$comment_state){
 				// Ignore lines containing nothing but a comment
-				if(!preg_match('~^[\s]*//.*?$~', $this->code[$i])){
+				if(!preg_match('/^[\s]*\/\/.*?$/', $this->code[$i])){
 					// Lines containing non-whitespace
-					if(preg_match('[\S]', $this->code[$i])){
+					if(preg_match('/[\S]/', $this->code[$i])){
 						$processed[] = $this->code[$i];
 						$previous_line = $this->code[$i];
 					}
@@ -404,6 +480,19 @@ class Parser2 extends Base{
 			$processed[] = $line;
 		}
 		$this->code = $processed;
+	}
+
+
+	/**
+	 * parse_tabwidth
+	 * Looks for user defined tab with
+	 * @return void
+	 */
+
+	protected function parse_tabwidth(){
+		if(preg_match('/\s+tabwidth:\s+(\d){1,2}/i', implode($this->code), $match)){
+			$this->tabwidth = $match[1];
+		}
 	}
 
 
@@ -461,12 +550,12 @@ class Parser2 extends Base{
 		$len = strlen($line);
 		for($i = 0; $i < $len; $i++ ){
 			$this->switch_string_state($line{$i});
-			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){     // Break on comment
+			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){  // Break on comment
 				break;
 			}
 			$this->token .= $line{$i};
 		}
-		$media = trim(preg_replace('/[\s]+/', ' ', $this->token));                      // Trim whitespace from token
+		$media = trim(preg_replace('/[\s]+/', ' ', $this->token));					// Trim whitespace from token
 		$this->current['me'] = (trim(substr($media, 6)) != 'none') ? $media : 'global'; // Use token as current @media or reset to global
 		// Fire the "while_parsing" plugins
 		call_user_func_array(
@@ -597,7 +686,7 @@ class Parser2 extends Base{
 	 */
 	protected function parse_css_line($line){
 		$line = trim($line);
-		$line = substr($line, 4);                   // Strip "@css"
+		$line = substr($line, 4);				  // Strip "@css"
 		$selector = '@css-'.$this->current['ci']++; // Build the selector using the @css-Index
 		$line = trim($line);
 		// Fire the while_parsing plugins
@@ -610,7 +699,6 @@ class Parser2 extends Base{
 			'_value' => array($line)
 		);
 	}
-
 
 	/**
 	 * parse_property_line
@@ -918,7 +1006,7 @@ class Parser2 extends Base{
 	 * glue_properties
 	 * Combine property sets
 	 * @param mixed $rules Property-value-pairs
-	 * @param string $prefix Prefix 
+	 * @param string $prefix Prefix
 	 * @param bool $compressed Compress CSS? (removes whitespace)
 	 * @return string $output Formatted CSS
 	 */
@@ -936,7 +1024,7 @@ class Parser2 extends Base{
 		foreach($this->last_properties as $property){
 			if(isset($rules[$property])){
 				$content = $rules[$property]; // Make a copy
-				unset($rules[$property]);     // Remove the original
+				unset($rules[$property]);	// Remove the original
 				$rules[$property] = $content; // Re-insert the property at the end
 			}
 		}
@@ -1237,7 +1325,7 @@ class Parser2 extends Base{
 			'ci' => 0
 		);
 		$this->options = array(
-			'indention_char' => "	"
+			'indention_char' => "   "
 		);
 	}
 
