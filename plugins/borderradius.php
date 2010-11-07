@@ -108,7 +108,7 @@ function borderradius_glue_rules($parts, $value){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_glue', 0, 'borderradius');
+$cssp->register_plugin('borderradius', 'borderradius', 'before_glue', 0);
 
 
 ?>

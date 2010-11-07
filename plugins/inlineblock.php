@@ -46,7 +46,7 @@ function inlineblock(&$parsed){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_glue', 0, 'inlineblock');
+$cssp->register_plugin('inlineblock', 'inlineblock', 'before_glue', 0);
 
 
 ?>

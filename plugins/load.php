@@ -118,7 +118,7 @@ function load_fix_filepath($lines, $basedir){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_parse', 1000, 'load');
+$cssp->register_plugin('load', 'load', 'before_parse', 1000);
 
 
 ?>

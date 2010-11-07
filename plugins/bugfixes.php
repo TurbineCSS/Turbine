@@ -134,7 +134,7 @@ function bugfixes(&$parsed){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_compile', 0, 'bugfixes');
+$cssp->register_plugin('bugfixes', 'bugfixes', 'before_compile', 0);
 
 
 ?>

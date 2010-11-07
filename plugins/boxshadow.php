@@ -120,7 +120,7 @@ function boxshadow_filters($values){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_glue', 0, 'boxshadow');
+$cssp->register_plugin('boxshadow', 'boxshadow', 'before_glue', 0);
 
 
 ?>

@@ -211,7 +211,7 @@ function backgroundgradient(&$parsed){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_glue', 0, 'backgroundgradient');
+$cssp->register_plugin('backgroundgradient', 'backgroundgradient', 'before_glue', 0);
 
 
 ?>

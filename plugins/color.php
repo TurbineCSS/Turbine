@@ -89,7 +89,7 @@ function color_get_filter($color, $property){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_compile', -100, 'color');
+$cssp->register_plugin('color', 'color', 'before_compile', -100);
 
 
 ?>

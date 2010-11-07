@@ -88,39 +88,66 @@ public function __construct(){
 
 
 /**
- * Plugin register function
- * @param string $hook The plugin hook
- * @param int $priority The execution priority. Higher number = earlier execution
- * @param $function The plugin's mail function
+ * Plugin register function.
+ * The plugin's name
+ * @param $function The plugin's main function OR an array containing arrays with several functions, hooks and priorities
+ * @param string $hook [optional] The plugin hook. Can be omitted if $function is an array
+ * @param int $priority The execution priority. Higher number = earlier execution. Can be omitted if $function is an array
  * @return void
  */
-public function register_plugin($hook, $priority, $function){
-	if(isset($this->plugins[$hook])){
-		$this->plugins[$hook][$function] = $priority;
+public function register_plugin($plugin, $function, $hook = null, $priority = 0){
+	if(is_array($function)){
+		foreach($function as $func){
+			$this->register_plugin($plugin, $func[0], $func[1], $func[2]);
+		}
+	}
+	else{
+		if(isset($this->plugins[$hook])){
+			$this->plugins[$hook][$function] = array('plugin' => $plugin, 'prioritiy' => $priority);
+		}
 	}
 }
 
 
 /**
+ * Sort the registered plugins
+ * @return void
+ */
+public function sort_plugins(){
+	foreach($this->plugins as $hook => $plugins){
+		uasort($this->plugins[$hook], array($this, 'sort_plugins_callback'));
+	}
+}
+
+
+/**
+ * Callback for plugin sorting
+ * @param array $a
+ * @param array $b
+ * @return int
+ */
+private function sort_plugins_callback($a, $b){
+	if($a['prioritiy'] == $b['prioritiy']){
+		return 0;
+	}
+	return ($a['prioritiy'] > $b['prioritiy']) ? -1 : 1;
+}
+
+
+/**
  * Applies plugins
- * @param string $plugins Plugin hook
- * @param array $list List of Plugins to apply
+ * @param string $hook Plugin hook
+ * @param array $list The list of stylesheet-defined plugins to apply
  * @param mixed &$subject1 The first subject to apply the plugins to
  * @param mixed &$subject2 The second subject to apply the plugins to, if there is one
  * @return void
  */
-public function apply_plugins($plugins, $list, &$subject1, &$subject2 = NULL){
-	asort($this->plugins[$plugins]);
-	$this->plugins[$plugins] = array_reverse($this->plugins[$plugins]);
-	foreach($this->plugins[$plugins] as $plugin => $priority){
-		if(in_array($plugin, $list) && function_exists($plugin)){
-			// Cancel the current loop when a plugin returns false
-			$plugin_result = call_user_func_array($plugin,
+public function apply_plugins($hook, $list, &$subject1, &$subject2 = NULL){
+	foreach($this->plugins[$hook] as $function => $properties){
+		if(function_exists($function) && in_array($properties['plugin'], $list)){
+			call_user_func_array($function,
 				($subject2 === NULL) ? array(&$subject1) : array(&$subject1, &$subject2)
 			);
-			if($plugin_result === false){
-				break;
-			}
 		}
 	}
 }

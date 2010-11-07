@@ -194,7 +194,7 @@ function datauri_get_mhtmlhash(){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_glue', 0, 'datauri');
+$cssp->register_plugin('datauri', 'datauri', 'before_glue', 0);
 
 
 ?>

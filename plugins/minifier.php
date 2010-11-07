@@ -139,7 +139,7 @@ function minifier(&$parsed){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_glue', 0, 'minifier');
+$cssp->register_plugin('minifier', 'minifier', 'before_glue', -100);
 
 
 ?>

@@ -269,7 +269,7 @@ function transform(&$parsed){
 /**
  * Register the plugin, MUST BE THE LAST ONE!
  */
-$cssp->register_plugin('before_glue', -999999, 'transform');
+$cssp->register_plugin('transform', 'transform', 'before_glue', -999999);
 
 
 ?>

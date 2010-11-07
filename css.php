@@ -227,6 +227,7 @@ if($_GET['files']){
 						}
 						$plugins_loaded = true;
 					}
+					$cssp->sort_plugins();
 
 
 					// Load the file into cssp

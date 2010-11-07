@@ -51,7 +51,7 @@ function quotes(&$parsed){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_compile', 0, 'quotes');
+$cssp->register_plugin('quotes', 'quotes', 'before_compile', 0);
 
 
 ?>

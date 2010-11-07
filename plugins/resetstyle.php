@@ -53,7 +53,7 @@ function resetstyle(&$output){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_output', 0, 'resetstyle');
+$cssp->register_plugin('resetstyle', 'resetstyle', 'before_output', 0);
 
 
 ?>
