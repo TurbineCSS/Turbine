@@ -86,9 +86,6 @@ function datauri(&$parsed){
 											$parsed[$block][$selector]['\9'.$property][] = preg_replace($urlregex, '$1\'mhtml:'.$protocol.'://'.$host.rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/datauri/mhtml.php?cache='.$mhtmlmd5.'!'.$imagetag.'\'$3', $parsed[$block][$selector][$property][$i]);
 										}
 									}
-									else{
-										$cssp->report_error('Data URI plugin could not find file '.$matches[2].'.');
-									}
 								}
 							}
 						}
@@ -145,6 +142,7 @@ function datauri_get_mode(){
  * @return array $file
  */
 function datauri_get_file($filename){
+	global $cssp;
 	$file = NULL;
 	$basedirectories = array(
 		'',
@@ -156,14 +154,19 @@ function datauri_get_file($filename){
 	);
 	foreach($basedirectories as $basedirectory){
 		$imagefile = ($basedirectory) ? $basedirectory.'/'.$filename : $filename;
-		if(file_exists($imagefile) && filesize($imagefile) <= 24000){
-			$pathinfo = pathinfo($imagefile);
-			$file = array(
-				'pathinfo' => $pathinfo,
-				'imagetype' => strtolower($pathinfo['extension']),
-				'imagedata' => base64_encode(file_get_contents($imagefile)),
-			);
-			break;
+		if(file_exists($imagefile)){
+			if(filesize($imagefile) <= 24000){
+				$pathinfo = pathinfo($imagefile);
+				$file = array(
+					'pathinfo' => $pathinfo,
+					'imagetype' => strtolower($pathinfo['extension']),
+					'imagedata' => base64_encode(file_get_contents($imagefile)),
+				);
+				break;
+			}
+		}
+		else{
+			$cssp->report_error('Data URI plugin could not find file '.$imagefile.'.');
 		}
 	}
 	return $file;
