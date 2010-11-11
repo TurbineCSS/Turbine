@@ -37,8 +37,6 @@
                         }
                         $extended_selector = preg_replace('@(, )$@', '', $extended_selector);
                         $new_selector = str_replace($matches[0][0],  $extended_selector, $new_selector);
-
-                        echo "Replace---->".$matches[0][0]."\n With---->".$extended_selector."\n Result---->".$new_selector."\n\n\n\n\n\n\n\n\n\n\n\n\n";
                         $extended_selector = '';
                     // Looking for auto generated selector i.e. "div.foo(1-3)"
                     } elseif (preg_match_all('@(.*?)\((\d{1,})-(\d{1,})\)@',$token,$matches)) {
