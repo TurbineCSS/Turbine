@@ -44,7 +44,7 @@ function boxsizing(&$parsed){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_glue', 0, 'boxsizing');
+$cssp->register_plugin('boxsizing', 'boxsizing', 'before_glue', 0);
 
 
 ?>

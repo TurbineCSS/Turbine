@@ -32,7 +32,7 @@ function html5(&$output){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_output', 0, 'html5');
+$cssp->register_plugin('html5', 'html5', 'before_output', 0);
 
 
 ?>

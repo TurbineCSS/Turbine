@@ -13,6 +13,9 @@
  * Utility
  * Shared functionality for plugins and core
  */
+if(!class_exists('Utility')){
+
+
 class Utility {
 
 
@@ -173,25 +176,48 @@ public function rgbasyntax($rgba, $force = false){
 
 
 /*
+ * rgbsyntax
+ * Convert a RGBA array to css rgb color syntax, omitting the alpha value
+ * @param array $rgba The RGBA array
+ * @return string $syntax The rgb(a) value
+ */
+public function rgbsyntax($rgba){
+	$rgba['a'] = 1;
+	return self::rgbasyntax($rgba, false);
+}
+
+
+/*
  * hexsyntax
  * Convert a RGBA array to css hex color syntax
  * @param array $rgba The RGBA array
- * @param bool $force Force ouptput of the alpha value even if it's 1?
+ * @param bool $force [optional] Force ouptput of the alpha value even if it's 1?
+ * @param bool $minify [optional] Output three-letter-colors if possible?
  * @return string $syntax The hex value
  */
-public function hexsyntax($rgba, $force = false){
-	$syntax = '#';
+public function hexsyntax($rgba, $force = false, $minify = false){
+	$hex = array();
 	if($rgba['a'] !== 1 || $force){
-		$syntax .= dechex($rgba['a'] * 255);
+		$hex[] = dechex($rgba['a'] * 255);
 	}
-	$syntax .= dechex($rgba['r']);
-	$syntax .= dechex($rgba['g']);
-	$syntax .= dechex($rgba['b']);
+	$hex[] = dechex($rgba['r']);
+	$hex[] = dechex($rgba['g']);
+	$hex[] = dechex($rgba['b']);
+	$syntax = '#';
+	foreach($hex as $val){
+		$syntax .= $val;
+		if(($rgba['a'] !== 1 || $force || !$minify) && strlen($val) == 1){
+			$syntax .= $val;
+		}
+	}
 	return $syntax;
 }
 
 
 }
+
+
+} // End if(!class_exists('Utility'))
 
 
 ?>

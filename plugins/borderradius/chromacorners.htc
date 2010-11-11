@@ -1,0 +1,415 @@
+<component>
+<attach event="onpropertychange" onevent="checkPropertyChange()" />
+<attach event="ondetach" onevent="restore()" />
+<attach event="onresize" for="window" onevent="resize()" />
+<script type="text/javascript">
+//<![CDATA[
+
+/* 
+ * Copyright (C) 2010 Christian "Schepp" Schaefer
+ * http://twitter.com/derSchepp
+ * Licensed under GNU LGPL 3, see license.txt or http://www.gnu.org/licenses/
+ */
+
+/* 
+ * Helper function, taken from Dean Edward's IE7 framework
+ * http://code.google.com/p/ie7-js/
+ * MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+function getPixelValue(value){
+	var PIXEL = /^\d+(px)?$/i;
+	if(PIXEL.test(value)){
+		return parseInt(value);
+	}
+	var style = element.style.left;
+	var runtimeStyle = element.runtimeStyle.left;
+	element.runtimeStyle.left = element.currentStyle.left;
+	element.style.left = value || 0;
+	value = parseInt(element.style.pixelLeft);
+	element.style.left = style;
+	element.runtimeStyle.left = runtimeStyle;
+	return value;
+}
+
+function getPixelWidth(object, value){
+	// For Pixel Values
+	var PIXEL = /^\d+(px)?$/i;
+	if (PIXEL.test(value)) return parseInt(value);
+	
+	// For Percentage Values
+	var PERCENT = /^[\d\.]+%$/i;
+	if (PERCENT.test(value)){
+		try{
+			parentWidth = getPixelWidth(object.parentElement,(object.parentElement.currentStyle.width != "auto" ? object.parentElement.currentStyle.width : "100%"));
+			value = (parseFloat(value) / 100) * parentWidth;
+		}
+		catch(e){
+			value = (parseFloat(value) / 100) * element.document.documentElement.clientWidth;
+		}
+		return parseInt(value);
+	}
+	
+	// For EM Values
+	var style = object.style.left;
+	var runtimeStyle = object.runtimeStyle.left;
+	object.runtimeStyle.left = object.currentStyle.left;
+	object.style.left = value || 0;
+	value = parseInt(object.style.pixelLeft);
+	object.style.left = style;
+	object.runtimeStyle.left = runtimeStyle;
+	
+	return value;
+}
+
+function getHexValue(value){
+	switch(value.toLowerCase())
+	{
+		case 'black':
+		return '#000000';
+		case 'white':
+		return '#ffffff';
+		case 'red':
+		return '#ff0000';
+		case 'blue':
+		return '#0000ff';
+		case 'green':
+		return '#008000';
+		case 'yellow':
+		return '#ffff00';
+		case 'orange':
+		return '#ffa500';
+		case 'violet':
+		return '#ee82ee';
+		case 'purple':
+		return '#800080';
+		case 'pink':
+		return '#ffc0cb';
+		case 'silver':
+		return '#c0c0c0';
+		case 'gold':
+		return '#ffd700';
+		case 'gray':
+		return '#808080';
+		case 'aqua':
+		return '#00ffff';
+		case 'skyblue':
+		return '#87ceeb';
+		case 'lightblue':
+		return '#add8e6';
+		case 'fuchsia':
+		return '#ff00ff';
+		case 'khaki':
+		return '#f0e68c';
+	
+		default:
+		
+		if(value.search(/^#[0-9A-F]{3,6}$/i) != -1) return value;
+		else if(value.search(/^rgba*\(\d{1,3},\d{1,3},\d{1,3}/i) != -1) 
+		{
+			var results = value.match(/\d{1,3}/ig);
+			if(results && results.length == 3) 
+			{
+				var fullhexvalue = '#';
+				var hexvalue;
+				for(i=0;i<results.length;i++) 
+				{
+					hexvalue = parseInt(results[i]).toString(16);
+					if(hexvalue.length == 1) hexvalue = '0' + hexvalue;
+					fullhexvalue += hexvalue;
+				}
+				return fullhexvalue;
+			}
+			else return '';
+		}
+		break;
+	}
+}
+
+/*
+* restore gets called when the behavior is being detached (see event binding at the top),
+* resets everything like it was before applying the behavior
+*/
+function restore(){
+	element.runtimeStyle.position = "";
+	element.runtimeStyle.width = "";
+	element.runtimeStyle.height = "";
+	element.runtimeStyle.padding = "";
+	element.runtimeStyle.filter = "";
+	try {
+		element.innerHTML = element.firstChild.firstChild.firstChild.firstChild.firstChild.innerHTML;
+	} catch(e) {}
+}
+
+/*
+* restore gets called when the behavior is being detached (see event binding at the top),
+* resets everything like it was before applying the behavior
+*/
+function resize(){
+	if(element.getAttribute('data-chromacorners-resize-inprogress') == '0'){
+		element.setAttribute('data-chromacorners-resize-inprogress','1');
+		restore();
+		init();
+	}
+}
+
+/*
+* checkPropertyChange gets called as soon as an element property changes 
+* (see event binding at the top), it then checks if any property influencing its 
+* dimensions was changed and if yes recalculates width and height 
+*/
+function checkPropertyChange(){
+	var pn = event.propertyName;
+	switch (pn){
+		case "style.width":
+		case "style.height":
+		case "style.borderLeftWidth":
+		case "style.borderLeftStyle":
+		case "style.borderRightWidth":
+		case "style.borderRightStyle":
+		case "style.borderTopWidth":
+		case "style.borderTopStyle":
+		case "style.borderBottomWidth":
+		case "style.borderBottomStyle":
+		case "style.paddingLeft":
+		case "style.paddingRight":
+		case "style.paddingTop":
+		case "style.paddingBottom":
+		case "style.filter":
+		case "className":
+		init();
+		break;
+	}
+}
+
+/*
+* init gets called once at the start and then never again, 
+* triggers box-sizing calculations and updates width and height
+*/
+function init(){
+	// Check for element type
+	switch(element.nodeName.toLowerCase())
+	{
+		// Blacklist elements
+		case 'input':
+		case 'textarea':
+		case 'select':
+		case 'option':
+		case 'iframe':
+		case 'object':
+		case 'embed':
+		break;
+		
+		default:
+		// Check for IE6/7
+		if(typeof element.style.boxSizing == "undefined") var IE67 = true;
+		else var IE67 = false;
+		
+		// Fetch the border-radius
+		var borderradius = (typeof element.runtimeStyle['border-radius'] == "undefined" || element.runtimeStyle['border-radius'] == "undefined" || element.runtimeStyle['border-radius'] == "" ? element.currentStyle['border-radius'] : element.runtimeStyle['border-radius']);
+		if(typeof borderradius != "undefined")
+		{
+			var borderradius_array = borderradius.split(" ");
+			switch(borderradius_array.length)
+			{
+				default:
+				case 1:
+				var borderradiusLefttop = borderradiusRighttop = borderradiusRightbottom = borderradiusLeftbottom = getPixelValue(borderradius_array[0]);
+				break;
+		
+				case 2:
+				var borderradiusLefttop = borderradiusRightbottom = getPixelValue(borderradius_array[0]);
+				var borderradiusRighttop = borderradiusLeftbottom = getPixelValue(borderradius_array[1]);
+				break;
+		
+				case 4:
+				var borderradiusLefttop = getPixelValue(borderradius_array[0]);
+				var borderradiusRighttop = getPixelValue(borderradius_array[1]);
+				var borderradiusRightbottom = getPixelValue(borderradius_array[2]);
+				var borderradiusLeftbottom = getPixelValue(borderradius_array[3]);
+				break;
+			}
+		}
+		else
+		{
+			var borderradiusLefttop = getPixelValue(typeof element.runtimeStyle['border-top-left-radius'] == "undefined" || element.runtimeStyle['border-top-left-radius'] == "" ? element.currentStyle['border-top-left-radius'] : element.runtimeStyle['border-top-left-radius']);
+			var borderradiusRighttop = getPixelValue(typeof element.runtimeStyle['border-top-right-radius'] == "undefined" || element.runtimeStyle['border-top-right-radius'] == "" ? element.currentStyle['border-top-right-radius'] : element.runtimeStyle['border-top-right-radius']);
+			var borderradiusRightbottom = getPixelValue(typeof element.runtimeStyle['border-bottom-right-radius'] == "undefined" || element.runtimeStyle['border-bottom-right-radius'] == "" ? element.currentStyle['border-bottom-right-radius'] : element.runtimeStyle['border-bottom-right-radius']);
+			var borderradiusLeftbottom = getPixelValue(typeof element.runtimeStyle['border-bottom-left-radius'] == "undefined" || element.runtimeStyle['border-bottom-left-radius'] == "" ? element.currentStyle['border-bottom-left-radius'] : element.runtimeStyle['border-bottom-left-radius']);
+		}
+		
+		// Fetch the border width
+		var borderWidth = (typeof element.runtimeStyle['borderWidth'] == "undefined" || element.runtimeStyle['borderWidth'] == "undefined" || element.runtimeStyle['borderWidth'] == "" ? element.currentStyle['borderWidth'] : element.runtimeStyle['borderWidth']);
+		if(typeof borderWidth != "undefined" && borderWidth != "medium")
+		{
+			var borderWidth = getPixelValue(borderWidth);
+		}
+		else
+		{
+			var borderWidth = (typeof element.runtimeStyle['borderTopWidth'] == "undefined" || element.runtimeStyle['borderTopWidth'] == "" ? element.currentStyle['borderTopWidth'] : element.runtimeStyle['borderTopWidth']);
+			if(typeof borderWidth != "undefined" && borderWidth != "medium")
+			{
+				var borderWidth = getPixelValue(borderWidth);
+			}
+			else
+			{
+				var borderWidth = 0;
+			}
+		}
+		
+		// Fetch the border color
+		var borderColor = (typeof element.runtimeStyle['borderColor'] == "undefined" || element.runtimeStyle['borderColor'] == "" ? element.currentStyle['borderColor'] : element.runtimeStyle['borderColor']);
+		if(typeof borderColor != "undefined")
+		{
+			borderColor = getHexValue(borderColor);
+			borderColor = borderColor.replace(/#/ig,'');
+		}
+		else
+		{
+			borderColor = (typeof element.runtimeStyle['borderTopColor'] == "undefined" || element.runtimeStyle['borderTopColor'] == "" ? element.currentStyle['borderTopColor'] : element.runtimeStyle['borderTopColor']);
+			if(typeof borderColor != "undefined")
+			{
+				borderColor = getHexValue(borderColor);
+				borderColor = borderColor.replace(/#/ig,'');
+			}
+			else
+			{
+				borderColor = '';
+			}
+		}
+		
+		var position = (element.runtimeStyle.position == "" ? element.currentStyle.position : element.runtimeStyle.position);
+		var display = (element.runtimeStyle.display == "" ? element.currentStyle.display : element.runtimeStyle.display);
+		var width = getPixelWidth(element,(element.runtimeStyle.width == "" ? element.currentStyle.width : element.runtimeStyle.width));
+		var height = getPixelValue(element.runtimeStyle.height == "" ? element.currentStyle.height : element.runtimeStyle.height);
+		var paddingLeft = getPixelValue(element.runtimeStyle.paddingLeft == "" ? element.currentStyle.paddingLeft : element.runtimeStyle.paddingLeft);
+		var paddingRight = getPixelValue(element.runtimeStyle.paddingRight == "" ? element.currentStyle.paddingRight : element.runtimeStyle.paddingRight);
+		var paddingTop = getPixelValue(element.runtimeStyle.paddingTop == "" ? element.currentStyle.paddingTop : element.runtimeStyle.paddingTop);
+		var paddingBottom = getPixelValue(element.runtimeStyle.paddingBottom == "" ? element.currentStyle.paddingBottom : element.runtimeStyle.paddingBottom);
+		
+		// Resolve the path of this .htc-file
+		var bgc = (borderColor.toUpperCase() != 'FF00FF' ? 'FF00FF' : 'FF00FE');
+		var path = document.URL.replace(/(\\|\/)[^\\\/]*$/, '/');
+		var file = path + 'rounded-php/rounded.php?shape=corner&bgc=00FFFF&fgc=' + bgc + '&tc=' + bgc + '&fgo=0&f=gif&aa=0';
+		if(borderWidth != 0 && borderColor != "") file += '&bw=' + borderWidth + '&bc=' + borderColor.toUpperCase();
+		else file += '&bw=0&bc=F00';
+		
+		// Set width
+		if(width == 0) width = element.offsetWidth - paddingLeft - paddingRight - borderWidth - borderWidth;
+		element.runtimeStyle.width = (width > 0 ? width + paddingLeft + paddingRight + 'px' : '100%');
+		// Set height
+		if(height > 0) element.runtimeStyle.height = height + paddingTop + paddingBottom + 'px';
+		// Move padding down to child element
+		element.runtimeStyle.padding = '0';
+		// Needed for IE 6 and 7
+		if(IE67 && position == "static") element.runtimeStyle.position = 'relative';
+		element.runtimeStyle.zoom = '1';
+		// Assign chroma filter. The color is not exactly cyan/#00FFFF as the rounded.php-script returns #04FEFC because of GIF-palette.
+		element.style.filter = 'progid:DXImageTransform.Microsoft.Chroma(color="#04FEFC") ' + element.currentStyle.filter;
+		// Create helper elements
+		var chroma = element.document.createElement('chroma');
+		var tag = "chroma";
+		element.innerHTML = '<' + tag + '><' + tag + '><' + tag + '><' + tag + '><' + tag + '>' + element.innerHTML + '</' + tag + '></' + tag + '></' + tag + '></' + tag + '></' + tag + '>';
+		
+		// Left Top
+		var childnode = element.firstChild;
+		var style = 'display: ' + display + '; width: auto; margin: 0; padding: 0;';
+		if(typeof borderradiusLefttop != "undefined" && borderradiusLefttop > 0)
+		{
+			style += 'background-color: transparent;';
+			style += 'background-image: url("' + file + '&r=' + borderradiusLefttop + '&o=tl");';
+			style += 'background-repeat: no-repeat;';
+			style += 'background-position: left top;';
+			if(borderWidth != 0 && borderColor != "")
+			{
+				if(height > 0) style += 'height: ' + (height + paddingTop + paddingBottom + (2 * borderWidth)) + 'px;';
+				style += 'margin: ' + (-1 * borderWidth) + 'px;';
+				if(IE67) style += 'position: relative; zoom: 1; width: ' + (width + paddingLeft + paddingRight + (2 * borderWidth)) + 'px;';
+			}
+			else
+			{
+				style += 'height: 100%;';
+			}
+		}
+		else
+		{
+			style += 'background-color: transparent;';
+			style += 'background-image: none;';
+		}
+		childnode.style.cssText = style;
+		
+		// Right Top
+		childnode = childnode.firstChild;
+		style = 'display: ' + display + '; width: auto; height: 100%; margin: 0; padding: 0;';
+		if(typeof borderradiusRighttop != "undefined" && borderradiusRighttop > 0)
+		{
+			style += 'background-color: transparent;';
+			style += 'background-image: url("' + file + '&r=' + borderradiusRighttop + '&o=tr");';
+			style += 'background-repeat: no-repeat;';
+			style += 'background-position: right top;';
+			if(IE67 && borderWidth != 0 && borderColor != "") style += 'position: relative; width: ' + (width + paddingLeft + paddingRight + (2 * borderWidth)) + 'px;';
+		}
+		else
+		{
+			style += 'background-color: transparent;';
+			style += 'background-image: none;';
+		}
+		childnode.style.cssText = style;
+		
+		// Right Bottom 
+		childnode = childnode.firstChild;
+		style = 'display: ' + display + '; width: auto; height: 100%; margin: 0; padding: 0;';
+		if(typeof borderradiusRightbottom != "undefined" && borderradiusRightbottom > 0)
+		{
+			style += 'background-color: transparent;';
+			style += 'background-image: url("' + file + '&r=' + borderradiusRightbottom + '&o=br");';
+			style += 'background-repeat: no-repeat;';
+			style += 'background-position: right bottom;';
+			if(IE67 && borderWidth != 0 && borderColor != "") style += 'position: relative; width: ' + (width + paddingLeft + paddingRight + (2 * borderWidth)) + 'px;';
+		}
+		else
+		{
+			style += 'background-color: transparent;';
+			style += 'background-image: none;';
+		}
+		childnode.style.cssText = style;
+		
+		// Left Bottom
+		childnode = childnode.firstChild;
+		style = 'display: ' + display + '; width: auto; height: 100%; margin: 0; padding: 0;';
+		if(typeof borderradiusLeftbottom != "undefined" && borderradiusLeftbottom > 0)
+		{
+			style += 'background-color: transparent;';
+			style += 'background-image: url("' + file + '&r=' + borderradiusLeftbottom + '&o=bl");';
+			style += 'background-repeat: no-repeat;';
+			style += 'background-position: left bottom;';
+			if(IE67 && borderWidth != 0 && borderColor != "") style += 'position: relative; width: ' + (width + paddingLeft + paddingRight + (2 * borderWidth)) + 'px;';
+		}
+		else
+		{
+			style += 'background-color: transparent;';
+			style += 'background-image: none;';
+		}
+		childnode.style.cssText = style;
+		
+		// Dimension fixes
+		childnode = childnode.firstChild;
+		style = 'display: ' + display + ';';
+		if(width > 0) style += 'width: ' + width + 'px;';
+		else style += 'width: auto;';
+		if(height > 0) style += 'height: ' + height + 'px;';
+		else style += 'height: auto;';
+		style += 'margin: 0;';
+		style += 'padding: ' + paddingTop + 'px ' + paddingRight + 'px ' + paddingBottom + 'px ' + paddingLeft + 'px;';
+		style += 'background-color: transparent;';
+		style += 'background-image: none;';
+		childnode.style.cssText = style;
+	
+		break;
+	}
+	element.setAttribute('data-chromacorners-resize-inprogress','0');
+}
+
+init();
+//]]>
+</script>
+</component>

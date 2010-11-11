@@ -58,7 +58,7 @@ function opacity(&$parsed){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_glue', 0, 'opacity');
+$cssp->register_plugin('opacity', 'opacity', 'before_glue', 0);
 
 
 ?>

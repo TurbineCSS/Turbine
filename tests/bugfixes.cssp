@@ -1,10 +1,9 @@
 @turbine
-    compress:0
-    plugins:bugfixes
+	plugins:bugfixes
 
 body
-    background:#CCCCFF
+	background:#CCCCFF
 
 h1:hover
-    color:red
+	color:red
 

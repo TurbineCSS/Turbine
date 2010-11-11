@@ -121,9 +121,8 @@ if($_GET['files']){
 
 
 	foreach($files as $file){
-		if(file_exists($file)){
+		if($file != '' && file_exists($file)){
 
-			// CSSP or CSS?
 			$fileinfo = pathinfo($file);
 
 			// For security reasons do not allow processing of files from above the base dir
@@ -132,6 +131,7 @@ if($_GET['files']){
 				continue;
 			}
 
+			// CSSP or CSS?
 			if($fileinfo['extension'] == 'css'){
 				// Simply include normal css files in the output. Minify if not debugging and configured to minify
 				if($cssp->config['debug_level'] == 0 && $cssp->config['minify_css'] == true){
@@ -210,6 +210,8 @@ if($_GET['files']){
 				// Server-side cache: Cached version of the file does not yet exist
 				if(!$incache){
 
+					// Init plugin list
+					$plugin_list = array();
 
 					// Load plugins (if not already loaded)
 					if(!$plugins_loaded){
@@ -225,6 +227,7 @@ if($_GET['files']){
 						}
 						$plugins_loaded = true;
 					}
+					$cssp->sort_plugins();
 
 
 					// Load the file into cssp
@@ -242,7 +245,6 @@ if($_GET['files']){
 
 
 					// Get plugin list for the before parse hook
-					$plugin_list = array();
 					$found = false;
 					foreach($cssp->code as $line){
 						if(!$found){
@@ -254,7 +256,7 @@ if($_GET['files']){
 							preg_match('~^\s+plugins:(.*?)(?://|$)~', $line, $matches);
 							if(count($matches) == 2){
 								$matches[1] = rtrim($matches[1], ';'); // Strip semicolons
-								$plugin_list = $cssp->tokenize($matches[1], ',');
+								$plugin_list = array_merge($plugin_list, $cssp->tokenize($matches[1], ','));
 								break;
 							}
 						}
@@ -332,10 +334,11 @@ if($_GET['files']){
 					$output = file_get_contents($cachedir.'/'.$cachefile);
 				}
 
+				// Add to final css
+				$css .= $output;
+
 			}
 
-			// Add to final css
-			$css .= $output;
 		}
 
 

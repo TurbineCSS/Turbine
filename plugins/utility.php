@@ -34,7 +34,7 @@ function utility(&$css){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_parse', 1000, 'utility');
+$cssp->register_plugin('utility', 'utility', 'before_parse', 1000);
 
 
 ?>

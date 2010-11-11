@@ -35,7 +35,7 @@ function performance(&$css){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_parse', 1000, 'performance');
+$cssp->register_plugin('performance', 'performance', 'before_parse', 1000);
 
 
 ?>

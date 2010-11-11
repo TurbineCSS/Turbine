@@ -24,6 +24,7 @@
  * @return void
  */
 function datauri(&$parsed){
+	global $cssp;
 	// Find out if we have to use mhtml or normal data uris
 	$mode = datauri_get_mode();
 	// Process the array
@@ -45,12 +46,15 @@ function datauri(&$parsed){
 						if(isset($parsed[$block][$selector][$property])){
 							$num_values = count($parsed[$block][$selector][$property]);
 							for($i = 0; $i < $num_values; $i++){
-								if(preg_match($urlregex, $parsed[$block][$selector][$property][$i], $matches) > 0){
+								if(
+									isset($parsed[$block][$selector][$property][$i])
+									&& preg_match($urlregex, $parsed[$block][$selector][$property][$i], $matches) > 0
+								){
 									$file = datauri_get_file($matches[2]);
 									if($file !== NULL){
 										// Use a normal datauri
 										if($mode == 'datauri'){
-											$parsed[$block][$selector][$property][$i] = preg_replace($urlregex, '$1\'data:image/'.$file['imagetype'].';base64,'.$file['imagedata'].'\'$3', $parsed[$block][$selector][$property][$i]);
+											$parsed[$block][$selector][$property][] = preg_replace($urlregex, '$1\'data:image/'.$file['imagetype'].';base64,'.$file['imagedata'].'\'$3', $parsed[$block][$selector][$property][$i]);
 										}
 										// Use a mhtml file
 										elseif($mode == 'mhtml'){
@@ -79,7 +83,7 @@ function datauri(&$parsed){
 												$host = $_SERVER['HTTP_HOST'];
 											}
 											// Set the data URI
-											$parsed[$block][$selector][$property][$i] = preg_replace($urlregex, '$1\'mhtml:'.$protocol.'://'.$host.rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/datauri/mhtml.php?cache='.$mhtmlmd5.'!'.$imagetag.'\'$3', $parsed[$block][$selector][$property][$i]);
+											$parsed[$block][$selector]['\9'.$property][] = preg_replace($urlregex, '$1\'mhtml:'.$protocol.'://'.$host.rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/datauri/mhtml.php?cache='.$mhtmlmd5.'!'.$imagetag.'\'$3', $parsed[$block][$selector][$property][$i]);
 										}
 									}
 								}
@@ -91,6 +95,7 @@ function datauri(&$parsed){
 		}
 		// Save the mhtml file, if there is one to save
 		if($mode == 'mhtml' && !empty($mhtmlarray)){
+			$mhtmlcontent .= "--_ANY_STRING_WILL_DO_AS_A_SEPARATOR--\r\n";
 			$mhtmlcontent .= "\r\n\r\n";
 			file_put_contents($mhtmlfile, $mhtmlcontent);
 			chmod($mhtmlfile, 0777);
@@ -137,6 +142,7 @@ function datauri_get_mode(){
  * @return array $file
  */
 function datauri_get_file($filename){
+	global $cssp;
 	$file = NULL;
 	$basedirectories = array(
 		'',
@@ -148,14 +154,19 @@ function datauri_get_file($filename){
 	);
 	foreach($basedirectories as $basedirectory){
 		$imagefile = ($basedirectory) ? $basedirectory.'/'.$filename : $filename;
-		if(file_exists($imagefile) && filesize($imagefile) <= 24000){
-			$pathinfo = pathinfo($imagefile);
-			$file = array(
-				'pathinfo' => $pathinfo,
-				'imagetype' => strtolower($pathinfo['extension']),
-				'imagedata' => base64_encode(file_get_contents($imagefile)),
-			);
-			break;
+		if(file_exists($imagefile)){
+			if(filesize($imagefile) <= 24000){
+				$pathinfo = pathinfo($imagefile);
+				$file = array(
+					'pathinfo' => $pathinfo,
+					'imagetype' => strtolower($pathinfo['extension']),
+					'imagedata' => base64_encode(file_get_contents($imagefile)),
+				);
+				break;
+			}
+		}
+		else{
+			$cssp->report_error('Data URI plugin could not find file '.$imagefile.'.');
 		}
 	}
 	return $file;
@@ -186,7 +197,7 @@ function datauri_get_mhtmlhash(){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_glue', 0, 'datauri');
+$cssp->register_plugin('datauri', 'datauri', 'before_glue', 0);
 
 
 ?>

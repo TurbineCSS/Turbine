@@ -11,11 +11,25 @@ Changelog
   - New: Utility class for developers. Contains several methods for color calculations.
   - New: "while_parsing" hook for plugins
   - New: "Title" property for @turbine to add titles or copyright information and the like to the output
+  - Improvement: Much more sophisticated browser sniffer plugin
+  - Improvement: Updated browser library to detect Firefox 4, Windows Phone 7 and other recent browsers
+  - Improvement: Added fallback when using Data URI plugin
+  - Improvement: Refactored many plugins and core functions to rely less on browser sniffing
   - Improvement: Added optional far-future expires header
   - Improvement: Lock cache files while rebuilding
   - Improvement: Minifier plugin optimizes font-weight values and strips whitespace in values
   - Improvement: Apppend the final slash to the base dir if it is missing
   - Improvement: Many new helpful error messages when something goes wrong
+  - Improvement: Expanded documentation about almost everything
+  - Fix: Box shadow filter didn't understand HSL(A) and RGB(A)
+  - Fix: Background gradient filter didn't understand HSL(A) and RGB(A)
+
+
+1.0.11
+------
+  - Fix: Box shadows with zero offset now work in IE
+  - Fix: Prevent trailing semicolons in file list from throwing errors about missing files
+  - Fix: Box sizing should now work in IE 6 and 7
 
 
 1.0.10

@@ -39,7 +39,7 @@ function css3(&$css){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_parse', 1000, 'css3');
+$cssp->register_plugin('css3', 'css3', 'before_parse', 1000);
 
 
 ?>

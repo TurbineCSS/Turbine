@@ -37,7 +37,7 @@ function resetstyle(&$output){
 		// Compress the styles
 		$reset_stylesheet = cssmin::minify($reset_stylesheet);
 		// Force a scrollbar?
-		if(in_array('force-scrollbar', $settings)){
+		if(is_array($settings) && in_array('force-scrollbar', $settings)){
 			$reset_stylesheet .= 'html{overflow-y:scroll}';
 		}
 		// Add the reset stylesheet to the output. Done!
@@ -53,7 +53,7 @@ function resetstyle(&$output){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_output', 0, 'resetstyle');
+$cssp->register_plugin('resetstyle', 'resetstyle', 'before_output', 0);
 
 
 ?>

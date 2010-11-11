@@ -1,0 +1,43 @@
+@turbine
+	plugins:boxsizing, resetstyle
+@constants
+	//outer:400px
+	//inner:200px
+	outer:100%
+	inner:50%
+	hoehe:5%;
+
+html,body
+	width:$outer
+
+?test
+	box-sizing:border-box
+	width:$inner
+	height:$hoehe;
+	float:left
+
+#contentbox
+	width:$outer
+	background:yellow
+	.alpha1, .beta1, .alpha2, .beta2
+		extends:?test
+	.alpha1, .alpha2
+		background:cyan
+	.beta1, .beta2
+		background:pink
+		float:right
+
+#borderbox
+	width:$outer
+	padding-left:10px
+	padding-right:10px
+	box-sizing:border-box
+	background:yellow
+	.alpha1, .beta1, .alpha2, .beta2
+		extends:?test
+		padding:10px
+	.alpha1, .alpha2
+		background:cyan
+	.beta1, .beta2
+		background:pink
+		float:right

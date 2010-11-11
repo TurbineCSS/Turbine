@@ -1,0 +1,32 @@
+@media print
+
+#pleasedontwork
+	border:1px solid blue
+	label:Simsalabim
+
+@media screen
+
+#some
+	#deep
+		#nesting
+			#foo
+				color:red
+				label:Simsalabim
+
+#bar
+	background:green
+	extends:#some #deep #nesting #foo
+
+#baz
+	font-weight:bold
+
+#test1
+	extends:Simsalabim
+
+div#very > div.complicated[asdf=asdf] + #selector
+	border-radius:2em
+	label:complicated
+
+
+#test2
+	extends:"#baz", "Simsalabim", "complicated"

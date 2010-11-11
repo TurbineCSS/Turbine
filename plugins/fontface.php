@@ -134,7 +134,7 @@ function fontface(&$parsed){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_glue', 0, 'fontface');
+$cssp->register_plugin('fontface', 'fontface', 'before_glue', 0);
 
 
 ?>

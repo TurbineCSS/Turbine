@@ -16,8 +16,9 @@ if(isset($_GET['cache'])){
 		header('HTTP/1.1 304 Not Modified');
 		exit();
 	}
-	header("Cache-Control: no-cache, must-revalidate");
-	header("Expires: ".gmdate('D, d M Y H:i:s')." GMT");
+	header("Cache-Control: max-age=2592000, public");
+	header("Expires: ".gmdate('D, d M Y H:i:s', mktime(date('h') + (24 * 35)))." GMT");
+	header("Vary: Accept-Encoding"); 
 	header("Content-type: text/plain"); 
 	header("ETag: ".$etag);
 	echo file_get_contents($mhtmlfile);

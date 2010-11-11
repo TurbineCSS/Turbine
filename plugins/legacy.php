@@ -34,7 +34,7 @@ function legacy(&$css){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('before_parse', 1000, 'legacy');
+$cssp->register_plugin('legacy', 'legacy', 'before_parse', 1000);
 
 
 ?>
