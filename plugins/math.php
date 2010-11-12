@@ -95,6 +95,7 @@ function math(&$parsed){
 								}
 								else if ($unitcheck[$key]==1) {
 									$occurence = preg_replace($unitspattern,'',$occurence);
+									$occurence = preg_replace('/[$a-zA-Z_]/','',$occurence);
 									$output[$key] = @eval("return (" . $occurence . ");").$unit[$key];
 								}
 								else {
