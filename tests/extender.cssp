@@ -1,0 +1,29 @@
+@turbine
+	compress:0
+
+#foo
+	&.bar
+		color:red
+
+#bar
+	&.foo, &.asdf
+		color:green
+
+#bar, #baz
+	&.foo, &.asdf
+		&:whatever
+			color:green
+
+a(:hover, :active, #foo, .whatever)
+	color:blue
+
+div.post-(1-10)
+	color:yellow
+
+#bar
+	&.post-(1-10)
+		color:pink
+
+div.post-(1-10)-
+	&bar
+		color:magenta
