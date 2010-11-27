@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<settings>
-  <template>template.scss</template>
-  <recognition>
-    <extension>cssp</extension>
-    <extension casesensitive="no">cssp</extension>
-  </recognition>
-</settings>
