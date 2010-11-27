@@ -52,7 +52,7 @@ class Cssp extends Parser2 {
 	 * @return void
 	 */
 	public function apply_extenders(){
-		$extenders = array('and', 'generated', 'numbered');
+		$extenders = array('and', 'numbered', 'generated');
 		foreach($extenders as $extender){
 			foreach($this->parsed as $block => $css){
 				foreach($this->parsed[$block] as $selector => $styles){
@@ -85,18 +85,6 @@ class Cssp extends Parser2 {
 						$extended_selector = true;
 					}
 				break;
-				// The #foo(bar, baz) extender
-				case 'generated':
-					if(preg_match_all('@(.*?)\((\:.*?)\)($| .*?$)@', $token, $matches)){
-						$exploded_selectors = explode(',', $matches[2][0]);
-						foreach($exploded_selectors as $key => $value){
-							$extended_selector .= preg_replace('@\((\:.*?)\)@', trim($value), $token) . ", ";
-						}
-						$extended_selector = preg_replace('@(, )$@', '', $extended_selector);
-						$new_selector = str_replace($matches[0][0], $extended_selector, $new_selector);
-						$extended_selector = true;
-					}
-				break;
 				// The #foo-(1-10) extender
 				case 'numbered':
 					if(preg_match_all('@(.*?)\((\d{1,})-(\d{1,})\)@', $token, $matches)){
@@ -113,6 +101,18 @@ class Cssp extends Parser2 {
 						}
 						$extended_selector = preg_replace('@(, )$@', '', $extended_selector);
 						$new_selector = str_replace($token, $extended_selector, $new_selector);
+						$extended_selector = true;
+					}
+				break;
+				// The #foo(bar, baz) extender
+				case 'generated':
+					if(preg_match_all('@(.*?)\((.*?)\)($| .*?$)@', $token, $matches)){
+						$exploded_selectors = explode(',', $matches[2][0]);
+						foreach($exploded_selectors as $key => $value){
+							$extended_selector .= preg_replace('@\((.*?)\)@', trim($value), $token) . ", ";
+						}
+						$extended_selector = preg_replace('@(, )$@', '', $extended_selector);
+						$new_selector = str_replace($matches[0][0], $extended_selector, $new_selector);
 						$extended_selector = true;
 					}
 				break;
