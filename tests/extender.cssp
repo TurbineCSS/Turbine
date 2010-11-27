@@ -18,8 +18,7 @@ a(:hover, :active, #foo, .whatever, ddress)
 	color:blue
 
 a(:link, :visited)
-	&::before
-		font-weight:bold
+	text-decoration:underline
 
 div.post-(0-10)
 	color:yellow
@@ -34,3 +33,7 @@ div.post-(5-2)
 div.post-(1-10)-
 	&bar
 		color:magenta
+
+div.post-(1-10)-(even, odd)
+	&::before
+		font-size:2em

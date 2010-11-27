@@ -77,6 +77,7 @@ class Cssp extends Parser2 {
 		$extended_selector = false;
 		$new_selector = $selector;
 		foreach($tokenized as $key => $token){
+			$temp_selector = '';
 			switch($extender){
 				// The &-extender: &.class, &#id or &:selector - ignore "&" if it is the first character in the selector
 				case 'and':
@@ -91,16 +92,16 @@ class Cssp extends Parser2 {
 						// Check if starting value is smaller than ending value - "div.foo(3-1)" i.e. will be ignored
 						if($matches[2][0] <= $matches[3][0]){
 							for($i=$matches[2][0]; $i <= $matches[3][0]; $i++){
-								$extended_selector .= preg_replace('@\((\d{1,})-(\d{1,})\)@', $i, $token) . ", ";
+								$temp_selector .= preg_replace('@\((\d{1,})-(\d{1,})\)@', $i, $token) . ", ";
 							}
 						}
 						else{
 							for($i=$matches[2][0]; $i >= $matches[3][0]; $i--){
-								$extended_selector .= preg_replace('@\((\d{1,})-(\d{1,})\)@', $i, $token) . ", ";
+								$temp_selector .= preg_replace('@\((\d{1,})-(\d{1,})\)@', $i, $token) . ", ";
 							}
 						}
-						$extended_selector = preg_replace('@(, )$@', '', $extended_selector);
-						$new_selector = str_replace($token, $extended_selector, $new_selector);
+						$temp_selector = preg_replace('@(, )$@', '', $temp_selector);
+						$new_selector = str_replace($token, $temp_selector, $new_selector);
 						$extended_selector = true;
 					}
 				break;
@@ -109,10 +110,10 @@ class Cssp extends Parser2 {
 					if(preg_match_all('@(.*?)\((.*?)\)($|.*?$)@', $token, $matches)){
 						$exploded_selectors = explode(',', $matches[2][0]);
 						foreach($exploded_selectors as $key => $value){
-							$extended_selector .= preg_replace('@\((.*?)\)@', trim($value), $token) . ", ";
+							$temp_selector .= preg_replace('@\((.*?)\)@', trim($value), $token) . ", ";
 						}
-						$extended_selector = preg_replace('@(, )$@', '', $extended_selector);
-						$new_selector = str_replace($matches[0][0], $extended_selector, $new_selector);
+						$temp_selector = preg_replace('@(, )$@', '', $temp_selector);
+						$new_selector = str_replace($matches[0][0], $temp_selector, $new_selector);
 						$extended_selector = true;
 					}
 				break;
