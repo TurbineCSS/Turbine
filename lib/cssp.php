@@ -101,14 +101,19 @@ class Cssp extends Parser2 {
 				case 'numbered':
 					if(preg_match_all('@(.*?)\((\d{1,})-(\d{1,})\)@', $token, $matches)){
 						// Check if starting value is smaller than ending value - "div.foo(3-1)" i.e. will be ignored
-						if($matches[2][0] < $matches[3][0]){
+						if($matches[2][0] <= $matches[3][0]){
 							for($i=$matches[2][0]; $i <= $matches[3][0]; $i++){
 								$extended_selector .= preg_replace('@\((\d{1,})-(\d{1,})\)@', $i, $token) . ", ";
 							}
-							$extended_selector = preg_replace('@(, )$@', '', $extended_selector);
-							$new_selector = str_replace($token, $extended_selector, $new_selector);
-							$extended_selector = true;
 						}
+						else{
+							for($i=$matches[2][0]; $i >= $matches[3][0]; $i--){
+								$extended_selector .= preg_replace('@\((\d{1,})-(\d{1,})\)@', $i, $token) . ", ";
+							}
+						}
+						$extended_selector = preg_replace('@(, )$@', '', $extended_selector);
+						$new_selector = str_replace($token, $extended_selector, $new_selector);
+						$extended_selector = true;
 					}
 				break;
 			}
