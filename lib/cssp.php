@@ -36,8 +36,8 @@ class Cssp extends Parser2 {
 	 * @return void
 	 */
 	public function compile(){
-		$this->apply_extender();
 		$this->apply_aliases();
+		$this->apply_extenders();
 		$this->apply_property_expansion();
 		$this->apply_inheritance();
 		$this->apply_copying();
@@ -47,36 +47,58 @@ class Cssp extends Parser2 {
 
 
 	/**
-	 * apply_extender
+	 * apply_extenders
 	 * Applies selector extender logic
 	 * @return void
 	 */
-	public function apply_extender(){
-		foreach($this->parsed as $block => $css) {
+	public function apply_extenders(){
+		foreach($this->parsed as $block => $css){
 			foreach($this->parsed[$block] as $selector => $styles){
-				$tokenized = $this->tokenize($selector, array('"' ,"'", ','));
-				// Define new and extended selector
-				$extended_selector = null;
-				$new_selector = $selector;
-				foreach($tokenized as $key => $token){
-					// Looking for &.class, &#id or &:selector
-					if(preg_match_all('@(\&.|&#|&\:)@', $token, $matches)){
-						// Remove the &
-						$new_selector = preg_replace('@( \&)@', '', $selector);
-						$extended_selector = '';
+				$this->apply_extender('and', $block, $selector, $styles);
+				$this->apply_extender('generated', $block, $selector, $styles);
+				$this->apply_extender('numbered', $block, $selector, $styles);
+			}
+		}
+	}
+
+
+	/**
+	 * apply_extender
+	 * Applies the extenders to selectors
+	 * @param string $extender The extender to apply
+	 * @param string $block The current block
+	 * @param string $selector The selector to process
+	 * @param array $styles The selector's styles
+	 * @return void
+	 */
+	public function apply_extender($extender, $block, $selector, $styles){
+		$tokenized = $this->tokenize($selector, array('"' ,"'", ','));
+		$extended_selector = false;
+		$new_selector = $selector;
+		foreach($tokenized as $key => $token){
+			switch($extender){
+				// The &-extender: &.class, &#id or &:selector - ignore "&" if it is the first character in the selector
+				case 'and':
+					if(preg_match_all('@(\s+)(\&.|&#|&\:)@', $token, $matches)){
+						$new_selector = preg_replace('@( \&)@', '', $selector); // Remove the &
+						$extended_selector = true;
 					}
-					// Looking for auto generated selector i.e. "a(:link, :visited)"
-					elseif(preg_match_all('@(.*?)\((\:.*?)\)($| .*?$)@', $token, $matches)){
-						$exploded_selectors = explode(',',$matches[2][0]);
+				break;
+				// The #foo(bar, baz) extender
+				case 'generated':
+					if(preg_match_all('@(.*?)\((\:.*?)\)($| .*?$)@', $token, $matches)){
+						$exploded_selectors = explode(',', $matches[2][0]);
 						foreach($exploded_selectors as $key => $value){
 							$extended_selector .= preg_replace('@\((\:.*?)\)@', trim($value), $token) . ", ";
 						}
 						$extended_selector = preg_replace('@(, )$@', '', $extended_selector);
 						$new_selector = str_replace($matches[0][0], $extended_selector, $new_selector);
-						$extended_selector = '';
+						$extended_selector = true;
 					}
-					// Looking for auto generated selector i.e. "div.foo(1-3)"
-					elseif (preg_match_all('@(.*?)\((\d{1,})-(\d{1,})\)@', $token, $matches)){
+				break;
+				// The #foo-(1-10) extender
+				case 'numbered':
+					if(preg_match_all('@(.*?)\((\d{1,})-(\d{1,})\)@', $token, $matches)){
 						// Check if starting value is smaller than ending value - "div.foo(3-1)" i.e. will be ignored
 						if($matches[2][0] < $matches[3][0]){
 							for($i=$matches[2][0]; $i <= $matches[3][0]; $i++){
@@ -84,20 +106,20 @@ class Cssp extends Parser2 {
 							}
 							$extended_selector = preg_replace('@(, )$@', '', $extended_selector);
 							$new_selector = str_replace($matches[0][0], $extended_selector, $new_selector);
-							$extended_selector = '';
+							$extended_selector = true;
 						}
 					}
-				}
-				// Insert the new selector if present
-				if(isset($extended_selector)){
-					// Remove ', ' at the end of the new selector if present
-					$changed = array();
-					$changed[$new_selector] = $styles;
-					$this->insert($changed, $block, $selector);
-					// Remove old selector
-					unset($this->parsed[$block][$selector]);
-				}
+				break;
 			}
+		}
+		// Insert the result
+		if($extended_selector){
+			// Remove ', ' at the end of the new selector if present
+			$changed = array();
+			$changed[$new_selector] = $styles;
+			$this->insert($changed, $block, $selector);
+			// Remove old selector
+			unset($this->parsed[$block][$selector]);
 		}
 	}
 

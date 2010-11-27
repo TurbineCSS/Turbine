@@ -6,7 +6,7 @@
 		color:red
 
 #bar
-	&.foo, &.asdf
+	&.foo, &camp, &:baz
 		color:green
 
 #bar, #baz
@@ -14,7 +14,7 @@
 		&:whatever
 			color:green
 
-a(:hover, :active, #foo, .whatever)
+a(:hover, :active, #foo, .whatever -spam)
 	color:blue
 
 div.post-(1-10)
