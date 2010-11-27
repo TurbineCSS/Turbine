@@ -106,7 +106,7 @@ class Cssp extends Parser2 {
 				break;
 				// The #foo(bar, baz) extender
 				case 'generated':
-					if(preg_match_all('@(.*?)\((.*?)\)($| .*?$)@', $token, $matches)){
+					if(preg_match_all('@(.*?)\((.*?)\)($|.*?$)@', $token, $matches)){
 						$exploded_selectors = explode(',', $matches[2][0]);
 						foreach($exploded_selectors as $key => $value){
 							$extended_selector .= preg_replace('@\((.*?)\)@', trim($value), $token) . ", ";

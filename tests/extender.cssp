@@ -17,6 +17,10 @@
 a(:hover, :active, #foo, .whatever, ddress)
 	color:blue
 
+a(:link, :visited)
+	&::before
+		font-weight:bold
+
 div.post-(0-10)
 	color:yellow
 
