@@ -34,6 +34,8 @@ div.post-(1-10)-
 	&bar
 		color:magenta
 
-div.post-(1-10)-(even, odd)
-	&::before
-		font-size:2em
+div.(post, article)-(1-5)
+	&-even
+		color:red
+	&-odd
+		color:blue
