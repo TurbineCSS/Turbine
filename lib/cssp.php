@@ -52,11 +52,12 @@ class Cssp extends Parser2 {
 	 * @return void
 	 */
 	public function apply_extenders(){
-		foreach($this->parsed as $block => $css){
-			foreach($this->parsed[$block] as $selector => $styles){
-				$this->apply_extender('and', $block, $selector, $styles);
-				$this->apply_extender('generated', $block, $selector, $styles);
-				$this->apply_extender('numbered', $block, $selector, $styles);
+		$extenders = array('and', 'generated', 'numbered');
+		foreach($extenders as $extender){
+			foreach($this->parsed as $block => $css){
+				foreach($this->parsed[$block] as $selector => $styles){
+					$this->apply_extender($extender, $block, $selector, $styles);
+				}
 			}
 		}
 	}

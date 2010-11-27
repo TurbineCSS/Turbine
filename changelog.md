@@ -5,6 +5,7 @@ Changelog
 1.1.0
 -----
   - New: Configurable plugins
+  - New: Extended generated selectors
   - New: "noie" option for box shadow plugin (no box shadows for ie)
   - New: "noie" option for background gradient plugin (no gradients for ie)
   - New: "force-scrollbar" option for reset style plugin (forces a vertical scrollbar)
