@@ -1,0 +1,24 @@
+Turbine Bundle for MacroMates TextMate (http://macromates.com)
+By Alexander Rösel - http://www.justfrontend.com
+
+Commands:
+  ^H for keyword documentation
+
+Tab Triggers:
+  @font
+  @load
+  rgb
+  rgba
+  hsla
+  box-shadow
+  box-sizing
+  gradient
+  device
+  os
+  browser
+  engine
+  rotate
+  scale, scalex, scaley
+  translate, translatex, translatey
+  skew, skewx, skewy
+  matrix

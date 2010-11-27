@@ -62,7 +62,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>@(turbine|constants|aliases)</string>
+			<string>@(turbine|constants|aliases|load)</string>
 			<key>end</key>
 			<string>\*/|^\s*$</string>
 			<key>name</key>

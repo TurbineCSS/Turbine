@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>content</key>
+	<string>device:${1:desktop/mobile}$0</string>
+	<key>name</key>
+	<string>device-sniffer</string>
+	<key>scope</key>
+	<string>source.cssp</string>
+	<key>tabTrigger</key>
+	<string>device</string>
+	<key>uuid</key>
+	<string>9B1E90FD-5BBE-4663-AFD6-35547BA5BB71</string>
+</dict>
+</plist>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>content</key>
+	<string>linear-gradient(${1:top/left},${2:startcolor},${3:endcolor})$0</string>
+	<key>name</key>
+	<string>linear-gradient</string>
+	<key>scope</key>
+	<string>source.cssp</string>
+	<key>tabTrigger</key>
+	<string>gradient</string>
+	<key>uuid</key>
+	<string>FE50D4A6-3DB3-476B-AE67-69455705E3A2</string>
+</dict>
+</plist>

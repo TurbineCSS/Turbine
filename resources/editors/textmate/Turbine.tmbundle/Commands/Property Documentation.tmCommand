@@ -17,9 +17,14 @@ $props = {
   "constants" =&gt; "#usage-constantsaliases",
   "font-face" =&gt; "#plugins-fontface",
   "borderradius" =&gt; "#plugins-borderradius",
+  "border-radius"  =&gt; "#plugins-borderradius",
   "boxshadow" =&gt; "#plugins-boxshadow",
+  "box-shadow" =&gt; "#plugins-boxshadow",
   "boxsizing" =&gt; "#plugins-boxsizing",
+  "box-sizing" =&gt; "#plugins-boxsizing",
   "sniffer" =&gt; "#plugins-sniffer",
+  "device" =&gt; "#plugins-sniffer",
+  "os" =&gt; "#plugins-sniffer",
   "bugfixes" =&gt; "#plugins-bugfix",
   "colormodels" =&gt; "#plugins-colormodels",
   "plugins" =&gt; "#plugins",
@@ -35,7 +40,8 @@ $props = {
   "css3" =&gt; "#plugins-meta",
   "performance" =&gt; "#plugins-meta",
   "legacy" =&gt; "#plugins-meta",
-  "utility" =&gt; "#plugins-meta"
+  "utility" =&gt; "#plugins-meta",
+  "linear-gradient" =&gt; "#plugins-backgroundgradient"
 }
 
 cur_line = ENV['TM_CURRENT_LINE']
