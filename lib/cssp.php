@@ -106,7 +106,7 @@ class Cssp extends Parser2 {
 								$extended_selector .= preg_replace('@\((\d{1,})-(\d{1,})\)@', $i, $token) . ", ";
 							}
 							$extended_selector = preg_replace('@(, )$@', '', $extended_selector);
-							$new_selector = str_replace($matches[0][0], $extended_selector, $new_selector);
+							$new_selector = str_replace($token, $extended_selector, $new_selector);
 							$extended_selector = true;
 						}
 					}
@@ -115,7 +115,6 @@ class Cssp extends Parser2 {
 		}
 		// Insert the result
 		if($extended_selector){
-			// Remove ', ' at the end of the new selector if present
 			$changed = array();
 			$changed[$new_selector] = $styles;
 			$this->insert($changed, $block, $selector);
