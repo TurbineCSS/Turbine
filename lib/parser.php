@@ -3,7 +3,7 @@
 /**
  * This file is part of Turbine
  * http://github.com/SirPepe/Turbine
- *
+ * 
  * Copyright Peter Kröner
  * Licensed under GNU LGPL 3, see license.txt or http://www.gnu.org/licenses/
  */
@@ -98,7 +98,7 @@ class Parser2 extends Base{
 	/**
 	 * @var string $tabwidth The user defined number or spaces for a tab
 	 */
-	private $tabwidth = 4;
+	public $tabwidth = 4;
 
 
 	/**
@@ -327,20 +327,6 @@ class Parser2 extends Base{
 	 * @param array $lines The code in question
 	 * @return string $matches[1] The whitespace char(s) used for indention
 	 */
-	/*public static function get_indention_char($lines){
-		$linecount = count($lines);
-		for($i = 0; $i < $linecount; $i++){
-			$line = $lines[$i];
-			$nextline = (isset($lines[$i + 1])) ? $lines[$i + 1] : '';
-			// If the line and the following line are not empty and not @rules, find the whitespace used for indention
-			if($line != '' && trim($nextline) != '' && preg_match('/^([\s]+)(.*?)$/', $nextline, $matches)){
-				if(count($matches) == 3 && strlen($matches[1]) > 0 && $matches[2]{0} != '@'){
-					return $matches[1];
-				}
-			}
-		}
-	}*/
-
 	public function get_indention_char($lines){
 		$linecount = count($this->code);
 		$tab_lines = array();
@@ -384,7 +370,7 @@ class Parser2 extends Base{
 		// Fix lines. Replace tabs by spaces
 		if(count($space_lines) > count($tab_lines)){
 			$final_indentation = str_repeat(' ', $this->tabwidth);
-			foreach($tab_lines AS $line_number){
+			foreach($tab_lines as $line_number){
 				$this->code[$line_number] = str_replace("\t", $final_indentation, $this->code[$line_number]);
 			}
 

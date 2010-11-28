@@ -15,8 +15,7 @@
  * @var string $_GET['files'] A list of css files, separated by ;
  */
 
-error_reporting(E_ALL);
-	ini_set('display_errors', 'On');
+
 // Benchmark start time
 $start = microtime(true);
 
@@ -295,14 +294,13 @@ if($_GET['files']){
 						$cssp->report_error('The following plugins are not present in your Turbine installation: '.ucfirst(implode(', ', $plugin_diff)));
 					}
 
-
 					$cssp->set_indention_char();                                         // Set the character(s) used for code indention
 					$cssp->apply_plugins('before_parse', $plugin_list, $cssp->code);     // Apply plugins for before parse
 					$cssp->parse();                                                      // Parse the code
 					$cssp->apply_plugins('before_compile', $plugin_list, $cssp->parsed); // Apply plugins for before compile
 					$cssp->compile();                                                    // Do the Turbine magic
 					$cssp->apply_plugins('before_glue', $plugin_list, $cssp->parsed);    // Apply plugins for before glue
-                    
+
 					// Set compression mode
 					if(isset($cssp->parsed['global']['@turbine']['compress'][0])){
 						$compress = (bool) $cssp->parsed['global']['@turbine']['compress'][0];
