@@ -20,11 +20,11 @@ $config = array(
 
 
 	// Base path to cssp and css files relative to css.php
-	'css_base_dir' => '',
+	'css_base_dir' => '../',
 
 
 	// Minify regular css files (true) oder include them completely unchanged (false)
-	'minify_css' => true,
+	'minify_css' => false,
 
 
 	// Set expire header expire_in_future seconds after the request

@@ -15,7 +15,8 @@
  * @var string $_GET['files'] A list of css files, separated by ;
  */
 
-
+error_reporting(E_ALL);
+	ini_set('display_errors', 'On');
 // Benchmark start time
 $start = microtime(true);
 
@@ -288,7 +289,6 @@ if($_GET['files']){
 						}
 					}
 
-
 					// Check if there is any plugin in the list that doesn't actually exist
 					$plugin_diff = array_diff($plugin_list, $plugins_available);
 					if(!empty($plugin_diff)){
@@ -302,7 +302,7 @@ if($_GET['files']){
 					$cssp->apply_plugins('before_compile', $plugin_list, $cssp->parsed); // Apply plugins for before compile
 					$cssp->compile();                                                    // Do the Turbine magic
 					$cssp->apply_plugins('before_glue', $plugin_list, $cssp->parsed);    // Apply plugins for before glue
-
+                    
 					// Set compression mode
 					if(isset($cssp->parsed['global']['@turbine']['compress'][0])){
 						$compress = (bool) $cssp->parsed['global']['@turbine']['compress'][0];
@@ -326,7 +326,6 @@ if($_GET['files']){
 					if($cssp->config['debug_level'] == 0){
 						file_put_contents($cachedir.'/'.$cachefile, $output);
 					}
-
 
 				}
 				else{
