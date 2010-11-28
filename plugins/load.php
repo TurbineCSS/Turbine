@@ -66,7 +66,7 @@ function load_apply($lines){
 					}
 				}
 				else{
-					$cssp->report_error('Loader plugin could not find file '.$loadfilepath.'.');
+					$cssp->report_error('Loader plugin could not find file '.$loadfilepath.' in '.getcwd().'/'.dirname($loadfilepath).'.');
 				}
 			}
 		}
