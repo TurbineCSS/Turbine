@@ -2,7 +2,7 @@
 	plugins:load
 
 #foo
-    font-style:none
-	foo:bar
+	font-style:none
+  foo:bar
 
 @load url(tests/indentation2.cssp)

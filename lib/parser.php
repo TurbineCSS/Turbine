@@ -100,10 +100,11 @@ class Parser2 extends Base{
 	*/
 	public $token = '';
 
+
 	/**
-	 * @var string $tabwidth The user defined number or spaces for a tab
+	 * @var int $tabwidth The default number or spaces for a tab
 	 */
-	public $tabwidth = 4;
+	public $tabwidth = null;
 
 
 	/**
@@ -361,6 +362,10 @@ class Parser2 extends Base{
 					// Check for spaces
 					else{
 						$length = strlen($indentation);
+						// Set the tab width if it is still unknown
+						if($this->tabwidth === null){
+							$this->tabwidth = $length;
+						}
 						// Valid indentation ?
 						if(($length % $this->tabwidth) == 0){
 							array_push($space_lines, $line_number);
@@ -378,7 +383,6 @@ class Parser2 extends Base{
 			foreach($tab_lines as $line_number){
 				$this->code[$line_number] = str_replace("\t", $final_indentation, $this->code[$line_number]);
 			}
-
 		}
 		// Fix lines. Replace spaces by tabs
 		else{
@@ -387,7 +391,6 @@ class Parser2 extends Base{
 				$this->code[$line_number] = str_replace(str_repeat(' ', $this->tabwidth), $final_indentation, $this->code[$line_number]);
 			}
 		}
-
 		// Report corrupt lines
 		if(count($corrupt_lines) > 0 && $this->config['debug_level'] > 0){
 			$fixed_line = '';
@@ -397,7 +400,6 @@ class Parser2 extends Base{
 				$this->report_error('Possible broken indentation detected ' . $file . ' line ' . $fixed_line . ': ' . trim($corrupt_lines[$line_number]));
 			}
 		}
-
 		return $final_indentation;
 	}
 
