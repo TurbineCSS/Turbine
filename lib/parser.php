@@ -23,6 +23,11 @@ class Parser2 extends Base{
 
 
 	/**
+	 * @var string $file The current file
+	 */
+	public $file = null;
+
+	/**
 	 * @var array $debuginfo Collects parser debugging information
 	 */
 	public $debuginfo = array();
@@ -170,6 +175,7 @@ class Parser2 extends Base{
 		else{
 			$this->code = array_merge($this->code, $lines);
 		}
+		$this->file = null;
 		return $this;
 	}
 
@@ -183,6 +189,7 @@ class Parser2 extends Base{
 	 */
 	public function load_file($file, $overwrite = false){
 		$this->load_string(file_get_contents($file), $overwrite);
+		$this->file = $file;
 		return $this;
 	}
 
@@ -376,18 +383,18 @@ class Parser2 extends Base{
 		// Fix lines. Replace spaces by tabs
 		else{
 			$final_indentation = "\t";
-			foreach($space_lines AS $line_number){
+			foreach($space_lines as $line_number){
 				$this->code[$line_number] = str_replace(str_repeat(' ', $this->tabwidth), $final_indentation, $this->code[$line_number]);
 			}
 		}
 
 		// Report corrupt lines
-		// TODO: Add cssp file name
 		if(count($corrupt_lines) > 0 && $this->config['debug_level'] > 0){
 			$fixed_line = '';
-			foreach(array_keys($corrupt_lines) AS $line_number){
+			foreach(array_keys($corrupt_lines) as $line_number){
 				$fixed_line .= $line_number + 1; // add 1, because arrays start at 0
-				$this->report_error('Possible broken indentation detected in line ' . $fixed_line . ': ' . trim($corrupt_lines[$line_number]));
+				$file = ($this->file) ? 'in file ' . $this->file . ',' : 'in';
+				$this->report_error('Possible broken indentation detected ' . $file . ' line ' . $fixed_line . ': ' . trim($corrupt_lines[$line_number]));
 			}
 		}
 
