@@ -332,25 +332,23 @@ class Parser2 extends Base{
 		$tab_lines = array();
 		$space_lines = array();
 		$corrupt_lines = array();
-
 		for($i = 0; $i < $linecount; $i++){
 			$line = $this->code[$i];
 			$line_number = $i;
-
 			// If the line is not empty
 			if(strlen(trim($line)) > 0){
-
 				// Search indentations
 				if(preg_match('/^(\s+)[a-z\-]+:.+?/i', $line, $matches)){
 					$indentation = $matches[1];
-
 					// Check for tabs
 					if(strpos($indentation, "\t") !== false){
 						// Check for spaces.
-						if(strpos($indentation, ' ') !== false)
+						if(strpos($indentation, ' ') !== false){
 							$corrupt_lines[$line_number] = $line;
-						else
+						}
+						else{
 							array_push($tab_lines, $line_number);
+						}
 						continue;
 					}
 					// Check for spaces
@@ -358,9 +356,9 @@ class Parser2 extends Base{
 						$length = strlen($indentation);
 						// Valid indentation ?
 						if(($length % $this->tabwidth) == 0){
-
 							array_push($space_lines, $line_number);
-						} else {
+						}
+						else{
 							$corrupt_lines[$line_number] = $line;
 						}
 					}
@@ -389,7 +387,7 @@ class Parser2 extends Base{
 			$fixed_line = '';
 			foreach(array_keys($corrupt_lines) AS $line_number){
 				$fixed_line .= $line_number + 1; // add 1, because arrays start at 0
-				$this->report_error('Corrupt indentation in line ' . $fixed_line . ': ' . trim($corrupt_lines[$line_number]));
+				$this->report_error('Possible broken indentation detected in line ' . $fixed_line . ': ' . trim($corrupt_lines[$line_number]));
 			}
 		}
 
