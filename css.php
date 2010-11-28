@@ -288,13 +288,11 @@ if($_GET['files']){
 						}
 					}
 
-
 					// Check if there is any plugin in the list that doesn't actually exist
 					$plugin_diff = array_diff($plugin_list, $plugins_available);
 					if(!empty($plugin_diff)){
 						$cssp->report_error('The following plugins are not present in your Turbine installation: '.ucfirst(implode(', ', $plugin_diff)));
 					}
-
 
 					$cssp->set_indention_char();                                         // Set the character(s) used for code indention
 					$cssp->apply_plugins('before_parse', $plugin_list, $cssp->code);     // Apply plugins for before parse
@@ -326,7 +324,6 @@ if($_GET['files']){
 					if($cssp->config['debug_level'] == 0){
 						file_put_contents($cachedir.'/'.$cachefile, $output);
 					}
-
 
 				}
 				else{
