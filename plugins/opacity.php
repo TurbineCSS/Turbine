@@ -32,16 +32,16 @@ function opacity(&$parsed){
 						// Build prefixed properties
 						$prefixes = array('-moz-', '-webkit-', '-khtml-');
 						foreach($prefixes as $prefix){
-							$opacity_properties[$prefix.'opacity'] = $parsed[$block][$selector]['opacity'];
+							$opacity_properties[$prefix.'opacity'][] = $parsed[$block][$selector]['opacity'];
 						}
 						// Create IE filters and insert everything
 						$filter = 'progid:DXImageTransform.Microsoft.Alpha(opacity='.round(floatval($parsed[$block][$selector]['opacity'][0]) * 100).')';
 						// Legacy IE compliance
-						$opacity_properties['filter'] = $filter;
+						$opacity_properties['filter'][] = $filter;
 						// IE8 compliance
-						$opacity_properties['-ms-filter'] = $filter;
+						$opacity_properties['-ms-filter'][] = $filter;
 						// Legacy IE compliance
-						$opacity_properties['zoom'] = 1;
+						$opacity_properties['zoom'][] = 1;
 						$cssp->insert_properties($opacity_properties, $block, $selector, $property, NULL);
 						// Comment the newly inserted properties
 						foreach($opacity_properties as $opacity_property => $opacity_value){
