@@ -144,6 +144,7 @@ function datauri_get_mode(){
 function datauri_get_file($filename){
 	global $cssp;
 	$file = NULL;
+	$file_found = false;
 	$basedirectories = array(
 		'',
 		dirname($file),
@@ -155,6 +156,7 @@ function datauri_get_file($filename){
 	foreach($basedirectories as $basedirectory){
 		$imagefile = ($basedirectory) ? $basedirectory.'/'.$filename : $filename;
 		if(file_exists($imagefile)){
+			$file_found = true;
 			if(filesize($imagefile) <= 24000){
 				$pathinfo = pathinfo($imagefile);
 				$file = array(
@@ -165,9 +167,10 @@ function datauri_get_file($filename){
 				break;
 			}
 		}
-		else{
-			$cssp->report_error('Data URI plugin could not find file '.$imagefile.'.');
-		}
+	}
+	// Report an error if no file found
+	if(!$file_found){
+		$cssp->report_error('Data URI plugin could not find file '.$imagefile.'.');
 	}
 	return $file;
 }
