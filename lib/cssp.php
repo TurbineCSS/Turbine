@@ -698,26 +698,8 @@ class Cssp extends Parser2 {
 	 * @return void
 	 */
 	public function insert_properties($rules, $block, $element, $before = NULL, $after = NULL){
-		// If $before and $after are NULL, insert the new rules at the top
-		if($before == NULL && $after == NULL){
-			foreach($rules as $newproperty => $newvalues){
-				$this->parsed[$block][$element] = $this->insert_property($this->parsed[$block][$element], $newproperty, $newvalues);
-			}
-		}
-		// Else walk through the whole element
-		foreach($this->parsed[$block][$element] as $property => $values){
-			// Handle $after
-			if($after != NULL && $property == $after){
-				foreach($rules as $newproperty => $newvalues){
-					$this->parsed[$block][$element] = $this->insert_property($this->parsed[$block][$element], $newproperty, $newvalues);
-				}
-			}
-			// Handle $before
-			elseif($before != NULL && $property == $before){
-				foreach($rules as $newproperty => $newvalues){
-					$this->parsed[$block][$element] = $this->insert_property($this->parsed[$block][$element], $newproperty, $newvalues);
-				}
-			}
+		foreach($rules as $newproperty => $newvalues){
+			$this->parsed[$block][$element] = $this->insert_property($this->parsed[$block][$element], $newproperty, $newvalues, $before, $after);
 		}
 	}
 
@@ -728,10 +710,31 @@ class Cssp extends Parser2 {
 	 * @param array $set The array to insert into
 	 * @param string $property The property name
 	 * @param array $values The properties' values
+	 * @return array The set with the new property inserted
+	 */
+	private function insert_property($set, $property, $values, $before = NULL, $after = NULL){
+		if($before === NULL && $after === NULL){
+			return $this->append_property($set, $property, $values);
+		}
+		elseif($before != NULL){
+			return $this->insert_property_before($set, $property, $values, $before);
+		}
+		else{
+			return $this->insert_property_after($set, $property, $values, $after);
+		}
+	}
+
+
+	/**
+	 * append_property
+	 * Appends a new property to an array without overwriting any other properties
+	 * @param array $set The array to insert into
+	 * @param string $property The property name
+	 * @param array $values The properties' values
 	 * @return array $set The set with the new property inserted
 	 */
-	private function insert_property($set, $property, $values){
-		// take care of legacy plugins that might pass a single value as a string
+	private function append_property($set, $property, $values){
+		// Take care of legacy plugins that might pass a single value as a string
 		if(!is_array($values)){
 			$values = array($values);
 		}
@@ -743,6 +746,60 @@ class Cssp extends Parser2 {
 			$set[$property] = $values;
 		}
 		return $set;
+	}
+
+
+	/**
+	 * insert_property_before
+	 * Inserts a new property into an array at a specified position without overwriting any other properties
+	 * @param array $set The array to insert into
+	 * @param string $property The property name
+	 * @param array $values The properties' values
+	 * @param string $where The key before which the new property will be inserted
+	 * @return array $set The set with the new property inserted
+	 */
+	private function insert_property_before($set, $property, $values, $where){
+		$new = array();
+		foreach($set as $key => $vals){
+			if($key == $where){
+				// Preserve old values
+				if(isset($set[$property])){
+					$values = array_merge($set[$property], $values);
+					unset($set[$property]); // Remove the old property to prevent duplicats
+					unset($new[$property]); // Remove the old property to prevent duplicats
+				}
+				$new[$property] = $values;
+			}
+			$new[$key] = $vals;
+		}
+		return $new;
+	}
+
+
+	/**
+	 * insert_property_after
+	 * Inserts a new property into an array at a specified position without overwriting any other properties
+	 * @param array $set The array to insert into
+	 * @param string $property The property name
+	 * @param array $values The properties' values
+	 * @param string $where The key after which the new property will be inserted
+	 * @return array $set The set with the new property inserted
+	 */
+	private function insert_property_after($set, $property, $values, $where){
+		$new = array();
+		foreach($set as $key => $vals){
+			$new[$key] = $vals;
+			if($key == $where){
+				// Preserve old values
+				if(isset($set[$property])){
+					$values = array_merge($set[$property], $values);
+					unset($set[$property]); // Remove the old property to prevent duplicats
+					unset($new[$property]); // Remove the old property to prevent duplicats
+				}
+				$new[$property] = $values;
+			}
+		}
+		return $new;
 	}
 
 
