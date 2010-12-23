@@ -7,7 +7,7 @@ Authors ordered by first contribution
   - [Frank Bültge][3]
   - [Alexander Rösel][9]
   - [Karsten Bellwied][11]
-
+  - [Alexander Kuhrt][12]
 
 
 Turbine uses parts of the following projects:
@@ -31,3 +31,4 @@ Turbine uses parts of the following projects:
   [9]: http://twitter.com/traxmaxx
   [10]: http://hayungs.de/
   [11]: http://zierfischkaefig.de/
+  [12]: http://www.kuhrtbendler.de/
