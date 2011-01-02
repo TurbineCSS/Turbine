@@ -16,11 +16,11 @@ div, input, textarea
 	height: 100px
 	overflow: visible
 	font-size:2em
-	transform: rotate(5deg)
 	background:cyan
+	// transform: rotate(5deg) // Prevents rounded corners from working in IE
 	margin, padding:32px
 	border:8px solid rgb(255,0,0)
-	box-shadow: 2px 2px 4px #CCC
+	// box-shadow: 2px 2px 4px #CCC // Prevents rounded corners from working in IE
 	float:left
 
 .borderradius1, input, textarea
