@@ -24,6 +24,7 @@ Changelog
   - Improvement: Expanded documentation about almost everything
   - Fix: Box shadow filter didn't understand HSL(A) and RGB(A)
   - Fix: Background gradient filter didn't understand HSL(A) and RGB(A)
+  - Fixed a lot of smaller bugs
 
 
 1.0.11
