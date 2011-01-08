@@ -20,6 +20,7 @@ class Base {
  * @var array $config The (default) configuration
  */
 public $config = array(
+	'turbine_dir' => '',
 	'debug_level' => 0,
 	'css_base_dir' => '',
 	'minify_css' => true
@@ -61,9 +62,16 @@ public $global_constants = array(
  * Constructor
  * @return void
  */
-public function __construct(){
-	// Try to load config
-	@include('config.php');
+public function __construct(){}
+
+
+/**
+ * load_config
+ * Loads the configuration array into class variables
+ * @return void
+ */
+public function load_config(){
+	global $config;
 	if(isset($config)){
 		foreach($config as $key => $setting){
 			$this->config[$key] = $setting;

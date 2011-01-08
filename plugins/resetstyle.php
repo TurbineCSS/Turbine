@@ -25,13 +25,14 @@
  * @return void
  */
 function resetstyle(&$output){
+	global $cssp;
 	$settings = Plugin::get_settings('resetstyle');
 	// Get the reset stylesheet. Use the custom file if it exists
-	if(file_exists('plugins/resetstyle/custom.css')){
-		$reset_stylesheet = file_get_contents('plugins/resetstyle/custom.css');
+	if(file_exists($cssp->config['turbine_dir'].'plugins/resetstyle/custom.css')){
+		$reset_stylesheet = file_get_contents($cssp->config['turbine_dir'].'plugins/resetstyle/custom.css');
 	}
-	elseif(file_exists('plugins/resetstyle/default.css')){
-		$reset_stylesheet = file_get_contents('plugins/resetstyle/default.css');
+	elseif(file_exists($cssp->config['turbine_dir'].'plugins/resetstyle/default.css')){
+		$reset_stylesheet = file_get_contents($cssp->config['turbine_dir'].'plugins/resetstyle/default.css');
 	}
 	if(!empty($reset_stylesheet)){
 		// Compress the styles
@@ -45,7 +46,7 @@ function resetstyle(&$output){
 	}
 	else{
 		global $cssp;
-		$cssp->report_error('Resetstyle plugin couldn\'t find a stylesheet to include');
+		$cssp->report_error('Resetstyle plugin couldn\'t find a stylesheet to include in '.realpath($cssp->config['turbine_dir'].'plugins/resetstyle'));
 	}
 }
 

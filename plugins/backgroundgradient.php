@@ -29,7 +29,7 @@
  */
 function backgroundgradient(&$parsed){
 	global $cssp, $browser;
-	include('lib/utility.php');
+	include($cssp->config['turbine_dir'].'lib/utility.php');
 	$settings = Plugin::get_settings('backgroundgradient');
 	// Searches for W3C-style two-stepped linear gradient
 	$gradientregex = '/linear-gradient\s*?\(\s*?(top|left)\s*?,\s*(\#[0-9A-F]+|(?:rgb|hsl)(?:a)*\s*\(.+\)),\s*(.*)\s*\)/i';

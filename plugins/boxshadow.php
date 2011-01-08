@@ -61,7 +61,7 @@ function boxshadow(&$parsed){
  */
 function boxshadow_filters($values){
 	global $cssp;
-	include('lib/utility.php');
+	include($cssp->config['turbine_dir'].'lib/utility.php');
 	// Get the relevant box shadow value
 	$value = $cssp->get_final_value($values);
 	$filter_properties = array();

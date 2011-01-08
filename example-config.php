@@ -12,6 +12,10 @@
 $config = array(
 
 
+	// Path to the turbine installation relative to this file
+	'turbine_dir' => '',
+
+
 	// Sets debugging off (0), on (1), or in developer mode (2)
 	// Mode 0 hides all error messages
 	// Mode 1 displays error messages related to the style sheets (like elements trying to inherit properties that don't exist)

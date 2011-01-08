@@ -49,21 +49,33 @@ function turbine_css_error_message($error_message){
 }
 
 
-// Load libraries. Special treatment for the browser class because it tends to be forgotten when cloning git repositories
-if(!@include('lib/browser/browser.php')){
-	echo turbine_css_error_message('Browser library not found! Please download the public version of Turbine or, if you
-		are using git, clone the browser sub project from http://github.com/SirPepe/Turbine-Browser into lib/browser.');
+// Load config
+if(!@include('config.php')){
+	echo turbine_css_error_message('Configuration file config.php not found!');
 	exit();
 }
-include('lib/cssmin/cssmin.php');
-include('lib/base.php');
-include('lib/parser.php');
-include('lib/cssp.php');
-include('lib/plugin.php');
+
+
+// Load libraries. Special treatment for the browser class because it tends to be forgotten when cloning git repositories
+if(!@include($config['turbine_dir'].'lib/browser/browser.php')){
+	echo turbine_css_error_message('Browser library not found in '.$config['turbine_dir'].'lib/browser/browser.php! Please download the public version of Turbine or,
+		if you are using git, clone the browser sub project from http://github.com/SirPepe/Turbine-Browser into lib/browser.');
+	exit();
+}
+include($config['turbine_dir'].'lib/cssmin/cssmin.php');
+include($config['turbine_dir'].'lib/base.php');
+include($config['turbine_dir'].'lib/parser.php');
+include($config['turbine_dir'].'lib/cssp.php');
+include($config['turbine_dir'].'lib/plugin.php');
 
 
 // Create the Turbine instance
 $cssp = new CSSP();
+
+
+// Loads the configuration array into class variables
+$cssp->load_config();
+unset($config);
 
 
 // Get and store browser properties
@@ -145,13 +157,14 @@ if($_GET['files']){
 
 
 				$incache = false;    // Server-side cache: Has file already been parsed?
-				$cachedir = 'cache'; // Cache directory
+				$cachedir = $cssp->config['turbine_dir'].'cache'; // Cache directory
 
 
 				// Server-side cache: Check if cache-directory has been created
 				if(!is_dir($cachedir)){
 					if(!@mkdir($cachedir, 0777)){
-						$cssp->report_error('The cache directory doesn\'t exist! Please create a directory \"cache\" in '.dirname(realpath(__FILE__)).' and make it writeable.');
+						$cssp->report_error('The cache directory doesn\'t exist! Please create a directory \"cache\" in '.realpath($cssp->config['turbine_dir']).' and
+							make it writeable.');
 					}
 				}
 				elseif(!is_writable($cachedir)){
@@ -215,7 +228,7 @@ if($_GET['files']){
 
 					// Load plugins (if not already loaded)
 					if(!$plugins_loaded){
-						$plugindir = 'plugins';
+						$plugindir = $cssp->config['turbine_dir'].'plugins';
 						if($handle = opendir($plugindir)){
 							while(false !== ($pluginfile = readdir($handle))){
 								if($pluginfile != '.' && $pluginfile != '..' && is_file($plugindir.'/'.$pluginfile) && pathinfo($plugindir.'/'.$pluginfile,PATHINFO_EXTENSION) == 'php' && !function_exists(substr($pluginfile, 0, -4))){

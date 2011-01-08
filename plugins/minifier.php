@@ -77,7 +77,7 @@ function minifier(&$parsed){
 		foreach($parsed[$block] as $selector => $styles){
 			// Ignore @font-face
 			if($selector != '@font-face'){
-				foreach($parsed[$block][$selector] as $property => $values){
+				/*foreach($parsed[$block][$selector] as $property => $values){
 					foreach($parsed[$block][$selector][$property] as $key => $value){
 						// Strip whitespace from values
 						$parsed[$block][$selector][$property][$key] = preg_replace('/\s+/', ' ', $value);
@@ -129,7 +129,7 @@ function minifier(&$parsed){
 							}
 						}
 					}
-				}
+				}*/
 			}
 		}
 	}
