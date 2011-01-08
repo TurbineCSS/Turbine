@@ -27,9 +27,9 @@ function boxsizing(&$parsed){
 			if(isset($styles['box-sizing'])){
 				// Create the vendor-specific rules and insert them
 				$boxsizing_rules = array(
-					'-moz-box-sizing' => $styles['box-sizing'],
-					'-webkit-box-sizing' => $styles['box-sizing'],
-					'behavior' => 'url('.$htc_path.')'
+					'-moz-box-sizing' => array($styles['box-sizing']),
+					'-webkit-box-sizing' => array($styles['box-sizing']),
+					'behavior' => array('url('.$htc_path.')')
 				);
 				$cssp->insert_properties($boxsizing_rules, $block, $selector, null, 'box-sizing');
 				// Comment the newly inserted properties
