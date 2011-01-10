@@ -1108,26 +1108,20 @@ class Parser2 extends Base{
 				$transformfilters = array();
 				$num_values = count($values);
 				reset($values);
-				echo "/*count: ".count($values)."*/\r\n";
 				for($i = 0; $i < $num_values; $i++){
-					echo "/*".current($values)."*/\r\n";
 					if(stristr(current($values),'borderradius.htc')){
-						echo "/*borderradius!*/\r\n";
 						$behavior['borderradius'][] = current($values);
 					}
 					elseif(stristr(current($values),'transform.htc')){
-						echo "/*transform!*/\r\n";
 						$behavior['transform'][] = current($values);
 					}
 					else{
-						echo "/*standard!*/\r\n";
 						$behavior['standard'][] = current($values);
 					}
 					next($values);
 				}
 				reset($values);
 				$values = array_merge($behavior['borderradius'],$behavior['transform'],$behavior['standard']);
-				echo '/*'.implode(',',$values)."*/\r\n";
 			}
 			// Whitspace characters
 			$s = ' ';
