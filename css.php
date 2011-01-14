@@ -145,7 +145,7 @@ if($_GET['files']){
 
 
 				$incache = false;    // Server-side cache: Has file already been parsed?
-				$cachedir = 'cache'; // Cache directory
+				$cachedir = (isset($cssp->config['cache_dir'])) ? $cssp->config['cache_dir'] : 'cache'; // Cache directory
 
 
 				// Server-side cache: Check if cache-directory has been created
