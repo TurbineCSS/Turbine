@@ -246,9 +246,10 @@ class Cssp extends Parser2 {
 						foreach($styles as $property => $values){
 							// Ignore non-css properties
 							if($property{0} != '_'){
-								$num_values = count($values);
-								for($i = 0; $i < $num_values; $i++){
-									$this->parsed[$block][$selector][$property][$i] = preg_replace('/(\$_'.$g_constant.')\b/', $g_value, $this->parsed[$block][$selector][$property][$i]);
+								$i = 0;
+								foreach($values as $key => $v) {
+									$this->parsed[$block][$selector][$property][$i] = preg_replace('/(\$_'.$g_constant.')\b/', $g_value, $this->parsed[$block][$selector][$property][$key]);
+									$i++;
 								}
 							}
 						}
@@ -465,8 +466,9 @@ class Cssp extends Parser2 {
 		$copying_pattern = '/copy\((.*)[\s]+(.*)\)/';
 		// Loop through the values
 		$values_num = count($values);
-		for($i = 0; $i < $values_num; $i++){
-			if(preg_match($copying_pattern, $values[$i])){
+		$i = 0;
+		foreach($values as $key => $v) {
+			if(preg_match($copying_pattern, $values[$key])){
 				$found = false;
 				preg_match_all($copying_pattern, $values[$i], $matches);
 				// Exact selector matches
@@ -491,6 +493,7 @@ class Cssp extends Parser2 {
 					$this->report_error($selector.' could not find '.$matches[1][0].' to copy '.$matches[2][0].' from.');
 				}
 			}
+			$i++;
 		}
 	}
 
