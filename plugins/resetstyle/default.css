@@ -50,7 +50,23 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
-	
+
+/* HTML5 Elements */
+command, datalist, source {
+	display:none;
+}
+article, aside, figure, figcaption, footer, header, hgroup, menu, nav, section, summary {
+	display:block;
+}
+figure, menu {
+	margin-top:1em;
+	margin-bottom:1em;
+}
+dir menu, dl menu, menu dir, menu dl, menu menu, menu ol, menu ul {
+	margin-top:0;
+	margin-bottom:0;
+}
+
 /* Input align, see http://tjkdesign.com/ez-css/css/base.css */
 input[type="radio"] { vertical-align: text-bottom; }
 input[type="checkbox"] { vertical-align: bottom; *vertical-align: baseline; }
