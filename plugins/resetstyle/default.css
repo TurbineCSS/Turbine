@@ -40,36 +40,37 @@ q:before, q:after {
 :focus {
 	outline: 0;
 }
-ins {
-	text-decoration: none;
-}
-del {
-	text-decoration: line-through;
-}
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
 
 /* HTML5 Elements */
-command, datalist, source {
-	display:none;
+command, datalist, source, track {
+	display: none;
 }
 article, aside, figure, figcaption, footer, header, hgroup, menu, nav, section, summary {
-	display:block;
+	display: block;
 }
 figure, menu {
-	margin-top:1em;
-	margin-bottom:1em;
+	margin-top: 1em;
+	margin-bottom: 1em;
 }
 dir menu, dl menu, menu dir, menu dl, menu menu, menu ol, menu ul {
-	margin-top:0;
-	margin-bottom:0;
+	margin-top: 0;
+	margin-bottom: 0;
 }
 
 /* Input align, see http://tjkdesign.com/ez-css/css/base.css */
-input[type="radio"] { vertical-align: text-bottom; }
-input[type="checkbox"] { vertical-align: bottom; *vertical-align: baseline; }
+input[type="radio"] {
+	vertical-align: text-bottom;
+}
+input[type="checkbox"] {
+	vertical-align: bottom;
+	*vertical-align: baseline;
+}
 
 /* Button cursor, see http://html5boilerplate.com/ */
-label, input[type=button], input[type=submit], button { cursor: pointer; }
+label, input[type=button], input[type=submit], button {
+	cursor: pointer;
+}
