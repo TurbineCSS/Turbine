@@ -3,7 +3,7 @@
 /**
  * This file is part of Turbine
  * http://github.com/SirPepe/Turbine
- * 
+ *
  * Copyright Peter Kröner
  * Licensed under GNU LGPL 3, see license.txt or http://www.gnu.org/licenses/
  */
@@ -13,16 +13,16 @@
  * background gradient
  * creates a cross-browser linear vertical or horizontal background gradient (other angles or radial gradient not supported)
  * Adds vendor-specific code for gradients
- * 
- * Usage:     Use simplest possible notation as planned by W3C: http://dev.w3.org/csswg/css3-images/#linear-gradients  
+ *
+ * Usage:     Use simplest possible notation as planned by W3C: http://dev.w3.org/csswg/css3-images/#linear-gradients
  *            background: linear-gradient([direction:<top|left>],[startcolor<hex|rgb|rgba>],[endcolor<hex|rgb|rgba>])
- *            
+ *
  * Example 1: background: linear-gradient(top,#FFF,#000) // vertical gradient, from top to bottom, from white to black
  * Example 2: background-image: linear-gradient(left,rgb(255,255,255),rgb(0,0,0)) // horizontal gradient, from left to right, from white to black
  * Status:    Stable
  * Version:   2.0
- * 
- * 
+ *
+ *
  * backgroundgradient
  * @param mixed &$parsed
  * @return void
@@ -74,13 +74,30 @@ function backgroundgradient(&$parsed){
 
 							// Use a SVG background for Opera
 							if($browser->engine == 'opera'){
-								$svg_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/backgroundgradient/svg.php';
-								$svg_params = 'direction='.strtolower($matches[1]);
-								$svg_params .= '&startcolor='.urlencode($matches[2]);
-								$svg_params .= '&endcolor='.urlencode($matches[3]);
+								if('top' == strtolower($matches[1])){
+									$svg_direction = 'x1="0%" y1="0%" x2="0%" y2="100%"';
+								}
+								else{
+									$svg_direction = 'x1="0%" y1="0%" x2="100%" y2="0%"';
+								}
+								$svg_startcolor = $matches[2];
+								$svg_endcolor   = $matches[3];
+
+								$svg_url = 'data:image/svg+xml;base64,' . base64_encode('<?xml version="1.0" standalone="no"?>
+								<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+								<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg">
+									<defs>
+										<linearGradient id="gradient" '.$svg_direction.'>
+											<stop offset="0%" style="stop-color:'.$svg_startcolor.';" />
+											<stop offset="100%" style="stop-color:'.$svg_endcolor.';" />
+										</linearGradient>
+									</defs>
+									<rect width="100%" height="100%" style="fill:url(#gradient)"/>
+								</svg>');
+
 								$parsed[$block][$selector][$property][] = preg_replace(
 									$gradientregex,
-									'url('.$svg_path.'?'.$svg_params.')',
+									'url('.$svg_url.')',
 									$parsed[$block][$selector][$property][$i]
 								);
 							}
@@ -134,39 +151,39 @@ function backgroundgradient(&$parsed){
 						else{
 							/*.............................=MMMMMMMMMMMMMMMM,...............................
 							............................ MMMMMMMMMMMMMMMMMMMMMM.............................
-							...........................MMMMMMMMMMMMMMMMMMMMMMMMMM...   . . .... .. .. .. .. 
-							................. ... ...IMMMMMMMMMMMMMMMMMMMMMMMMMMMM     . . ....  . ..  .  . 
-							............  ....   ...8MMMMMMMMMMMMMMMMMMMMMMMMMMMMMM.  . .          . . .    
-							............   ...  ...NMMMM.MMMMMMMMMMMMMMMMMMMMMMMMMMM       .. .    ..  .    
-							............ ..........MMMM.IMMMMMMMMMMMMMMMMMMMMMMMMMMM ........ . .  ..... .. 
-							............    .     =MMM..MMMMMMMMMMMMMMMMMMMMMMMMMMMMM      .. .  . ..  .  . 
+							...........................MMMMMMMMMMMMMMMMMMMMMMMMMM...   . . .... .. .. .. ..
+							................. ... ...IMMMMMMMMMMMMMMMMMMMMMMMMMMMM     . . ....  . ..  .  .
+							............  ....   ...8MMMMMMMMMMMMMMMMMMMMMMMMMMMMMM.  . .          . . .
+							............   ...  ...NMMMM.MMMMMMMMMMMMMMMMMMMMMMMMMMM       .. .    ..  .
+							............ ..........MMMM.IMMMMMMMMMMMMMMMMMMMMMMMMMMM ........ . .  ..... ..
+							............    .     =MMM..MMMMMMMMMMMMMMMMMMMMMMMMMMMMM      .. .  . ..  .  .
 							............ . ..     ZMM:.MMMMMMMMMMMMMMMMMMMMMMMMMMMMMM. . ...... .. ..... ...
-							............    .     ZMM.=MMMMMMMMMMMMMMMMMMMMMMMMMMMMMM         .    ..  .    
-							...........  . ..     ZMM.MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM       ...    ... .    
+							............    .     ZMM.=MMMMMMMMMMMMMMMMMMMMMMMMMMMMMM         .    ..  .
+							...........  . ..     ZMM.MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM       ...    ... .
 							............ .  ..   .ZMM MMMM .....MMMMMMM .....MMMMMMMM ...  .... .  ... . . .
-							............   ..     ~MM.MMM........MMMMM .. .  .MMM MM8    . .. .  . ..  .    
-							............    .      MM.MM8........MMMMM .....  MMM MM. . .  .. .    ... . .. 
-							 . ... .   .............M.MM+    .  ZMMMMMM  . .  7MM M=  . .  .....     . . .. 
-							...         .. .........  MMN    ..8MMM MMMM ...  MMM..   . . ... .      .   .. 
+							............   ..     ~MM.MMM........MMMMM .. .  .MMM MM8    . .. .  . ..  .
+							............    .      MM.MM8........MMMMM .....  MMM MM. . .  .. .    ... . ..
+							 . ... .   .............M.MM+    .  ZMMMMMM  . .  7MM M=  . .  .....     . . ..
+							...         .. .........  MMN    ..8MMM MMMM ...  MMM..   . . ... .      .   ..
 							.... .    ............. MMMMMD  .MMMMM..MMMMMO  ?MMMMM$ ........................
-							........  .............MMMMMMMMMMMMMMM. .MMMMMMMMMMMMMMM..................... . 
+							........  .............MMMMMMMMMMMMMMM. .MMMMMMMMMMMMMMM..................... .
 							...  . .. ..............MMMMMMMMMMMMM....MMMMMMMMMMMMMM,........................
-							..........................MMMMMMMMMMM.NM.MMMMMMMMMMMM.... . .  ..... ..  .. ... 
+							..........................MMMMMMMMMMM.NM.MMMMMMMMMMMM.... . .  ..... ..  .. ...
 							.... . ..  ................ .MMMMMMMMMMMMMMMMMMMMM. ............................
 							.... ................... ... . :MMMMMMMMMMMMMMMM .......... ........ ..... .....
-							.... . .  ................  MZ  ,MMMMMMMMMMMMM8. $M............. ..... ..... .. 
+							.... . .  ................  MZ  ,MMMMMMMMMMMMM8. $M............. ..... ..... ..
 							...... . +M=................MMM .. . .   .    ..MMM ............................
 							.... . MMMMMM............ . MMM$ .M=DM=M.M M.. MMMM ....  ... ......MM~. ... ...
-							 . . 7MMMMMMMM$......... .. MMMM .. :,.  ,.. ..MMMM ..    . .  . .MMMMMMM. . .. 
+							 . . 7MMMMMMMM$......... .. MMMM .. :,.  ,.. ..MMMM ..    . .  . .MMMMMMM. . ..
 							...MMMMMMMMMMMMD........... MMMM . ... . ..  .ZMMM~...... . .  . MMMMMMMMM . ...
 							.MMMMMMMMMMMMMMMM...........:MMMN.M OO$M..M.. MMMM............. MMMMMMMMMMM.....
 							MMMMMMMMMMMMMMMMMMN..... ..  NMMMM  ...M. ? +MMMM+ ...........NMMMMMMMMMMMMMM7..
-							MMMMMMMM.MMMMMMMMMMM+.........NMMMMMMMMMMMMMMMMM............:MMMMMMMMMMMMMMMMMD 
-							MMMMMMMM .~MMMMMMMMMMMM ... ....MMMMMMMMMMMMMMM ........ .MMMMMMMMMMMMMMMMMMMMM 
+							MMMMMMMM.MMMMMMMMMMM+.........NMMMMMMMMMMMMMMMMM............:MMMMMMMMMMMMMMMMMD
+							MMMMMMMM .~MMMMMMMMMMMM ... ....MMMMMMMMMMMMMMM ........ .MMMMMMMMMMMMMMMMMMMMM
 							 MMMMMMMMMMMI =MMMMMMMMMMM...... NMMMMMMMMMMMO...  ..  ZMMMMMMMMMMMMMM,MMMMMMMM=
-							   ..8MMMMMMMMMMMMMMMMMMMMMMM. ...................  MMMMMMMMMMMMM. ,MMMMMMMMMMM 
+							   ..8MMMMMMMMMMMMMMMMMMMMMMM. ...................  MMMMMMMMMMMMM. ,MMMMMMMMMMM
 							 . .........$MMMMMMMMMMMMMMMMMM8  ............. ~MMMMMMMMMMMMMMMMMMMMMMMMMMM8...
-							 . ...........   MMMMMMMMMMMMMMMMM?..........ZMMMMMMMMMMMMMMMMMMMMMI. ......... 
+							 . ...........   MMMMMMMMMMMMMMMMM?..........ZMMMMMMMMMMMMMMMMMMMMMI. .........
 							   . ......... ......MMMMMMMMMMMMMMMM. . .MMMMMMMMMMMMMMMMMMM~........ .........
 							....  .....     ... ... =MMMMMMMMMMMMMMM. MMMMMMMMMMMMMMZ  .....................
 							 . ........................ NMMMMMMMMMMMMMM.+MMMMMMM+. .........................
