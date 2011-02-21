@@ -3,7 +3,7 @@
 /**
  * This file is part of Turbine
  * http://github.com/SirPepe/Turbine
- * 
+ *
  * Copyright Peter Kröner
  * Licensed under GNU LGPL 3, see license.txt or http://www.gnu.org/licenses/
  */
@@ -265,6 +265,7 @@ if($_GET['files']){
 
 					// Get plugin options
 					$plugin_settings = array();
+					$found = false;
 					foreach($cssp->code as $line){
 						if(!$found){
 							if(preg_match('/^[\s\t]*@turbine/i', $line) == 1){
@@ -280,9 +281,8 @@ if($_GET['files']){
 								if(count($matches) == 3){
 									$plugin_settings_key = trim($matches[1]);
 									$plugin_settings_val = trim(rtrim($matches[2], ';')); // Dont forget to strip semicolons
-									if(in_array($plugin_settings_key, $plugin_list)){
-										$plugin_settings[$plugin_settings_key] = $plugin_settings_val;
-									}
+
+									$plugin_settings[$plugin_settings_key] = $plugin_settings_val;
 								}
 							}
 						}
@@ -364,8 +364,8 @@ if($_GET['files']){
 			header('Cache-Control: no-cache, must-revalidate');
 		}
 		header('Expires: '.gmdate('D, d M Y H:i:s', time() + intval($cssp->config['expire_in_future'])).' GMT');
-		header('Vary: Accept-Encoding'); 
-		header('Content-type: text/css'); 
+		header('Vary: Accept-Encoding');
+		header('Content-type: text/css');
 		header('ETag: '.$etag);
 	}
 
