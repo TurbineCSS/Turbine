@@ -122,17 +122,19 @@ function sniffer($type, &$content){
 
 
 /**
- * sniffer2_exec
+ * sniffer_exec
  * Loops through $sniffer_tokill and eliminates the targets from $parsed
  * @param mixed &$parsed
  * @return void
  */
 function sniffer_exec(&$parsed){
-	global $sniffer_tokill;
+	global $cssp, $sniffer_tokill;
 	// Look for a kill rule in @turbine
 	if(isset($sniffer_tokill['global']['@turbine'])){
 		// Empty $parsed
 		$parsed = array('global' => array());
+		// Exterminate any output that remains from plugins
+		$cssp->register_plugin('sniffer', 'sniffer_exterminate', 'before_output', -9999);
 		return;
 	}
 	// Loop through the kill list
@@ -169,7 +171,16 @@ function sniffer_exec(&$parsed){
 }
 
 
-
+/**
+ * sniffer_exterminate
+ * Exterminate any output that remains from plugins
+ * @param mixed &$output
+ * @return void
+ */
+function sniffer_exterminate(&$output){
+	$output = '/* Output deleted by sniffer */';
+	return;
+}
 
 
 /**
@@ -363,6 +374,8 @@ function sniffer_parse_os($rule){
 	}
 	return $match;
 }
+
+
 
 
 
