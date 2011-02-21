@@ -78,10 +78,10 @@ function color_get_filter($color, $property){
 	$properties = array();
 	$color = Utility::hexsyntax($color, true);
 	$filter = 'progid:DXImageTransform.Microsoft.gradient(startColorstr='.$color.',endColorstr='.$color.')';
-	$properties[$property] = 'none';
-	$properties['filter'] = $filter;
-	$properties['-ms-filter'] = $filter;
-	$properties['zoom'] = '1';
+	$properties[$property] = array('none');
+	$properties['filter'][] = $filter;
+	$properties['-ms-filter'][] = $filter;
+	$properties['zoom'][] = '1';
 	return $properties;
 }
 
@@ -89,7 +89,7 @@ function color_get_filter($color, $property){
 /**
  * Register the plugin
  */
-$cssp->register_plugin('color', 'color', 'before_compile', -100);
+$cssp->register_plugin('color', 'color', 'before_glue', -100);
 
 
 ?>
