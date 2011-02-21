@@ -28,7 +28,7 @@ function css3(&$css){
 		'borderradius',
 		'boxshadow',
 		'boxsizing',
-		'colormodels',
+		'color',
 		'opacity',
 		'transform'
 	);
