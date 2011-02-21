@@ -27,14 +27,16 @@
  */
 function borderradius(&$parsed){
 	global $cssp,$browser;
-	$htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/borderradius/chromacorners.htc';
+	// Disabled for the moment
+	// $htc_path = rtrim(dirname($_SERVER['SCRIPT_NAME']),'/').'/plugins/borderradius/chromacorners.htc';
 	foreach($parsed as $block => $css){
 		foreach($parsed[$block] as $selector => $styles){
 			foreach($styles as $property => $values){
 				if(preg_match('/border(?:-(top|right|bottom|left)(?:-(right|left))*)*-radius/', $property, $matches)){
 					// Create the new rules and insert them
 					$borderradius_rules = borderradius_glue_rules($matches, $values);
-					$borderradius_rules['behavior'][] = 'url('.$htc_path.')';
+					// Disabled for the moment
+					// $borderradius_rules['behavior'][] = 'url('.$htc_path.')';
 					$cssp->insert_properties($borderradius_rules, $block, $selector, $property, null);
 					// Comment the newly inserted properties
 					foreach($borderradius_rules as $border_property => $border_value){
