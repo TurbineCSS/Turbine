@@ -83,6 +83,10 @@ $plugins_loaded = false;
 $plugins_available = array();
 
 
+// List of used plugins
+$plugins_used = array();
+
+
 // CSSP file title(s)
 $css_title = array();
 
@@ -143,69 +147,69 @@ if($_GET['files']){
 			}
 			else{
 
-
 				$incache = false;    // Server-side cache: Has file already been parsed?
 				$cachedir = 'cache'; // Cache directory
 
+				// Only deal with the cache when not in debug mode
+				if($cssp->config['debug_level'] == 0){
 
-				// Server-side cache: Check if cache-directory has been created
-				if(!is_dir($cachedir)){
-					if(!@mkdir($cachedir, 0777)){
-						$cssp->report_error('The cache directory doesn\'t exist! Please create a directory \"cache\" in '.dirname(realpath(__FILE__)).' and make it writeable.');
-					}
-				}
-				elseif(!is_writable($cachedir)){
-					if(!@chmod($cachedir, 0777)){
-						$cssp->report_error('The cache directory '.realpath($cachedir).' is not writeable!');
-					}
-				}
-
-
-				// Server-side cache: Create a name for the new cache file
-				$cachefile = md5(
-					$browser->platform.
-					$browser->platform_version.
-					$browser->platform_type.
-					$browser->engine.
-					$browser->engine_version.
-					$browser->browser.
-					$browser->browser_version.
-					realpath($file)
-				).'.txt';
-
-
-				//Caching mechanism with file locking (don't rebuild cache multiple times)
-				$css_mtime = filemtime($file);
-				$cn = $cachedir.'/'.$cachefile;
-				$attempt = 1;
-				while(true){
-					// Server-side cache: Check if a cached version of the file already exists
-					if(($fc=file_exists($cn)) && filemtime($cn) >= $css_mtime){
-						$incache = true;
-						break;
-					}
-					elseif($cssp->config['debug_level'] == 0){
-						$cache_lock = fopen($cn, 'a+');
-						if(!$fc){
-							touch($cn, $css_mtime-1);
+					// Server-side cache: Check if cache-directory has been created
+					if(!is_dir($cachedir)){
+						if(!@mkdir($cachedir, 0777)){
+							$cssp->report_error('The cache directory doesn\'t exist! Please create a directory \"cache\" in '.dirname(realpath(__FILE__)).' and make it writeable.');
 						}
-						if(flock($cache_lock, LOCK_EX | LOCK_NB)){
-							//If we locked the file don't stop on user abort
-							ignore_user_abort(true);
+					}
+					elseif(!is_writable($cachedir)){
+						if(!@chmod($cachedir, 0777)){
+							$cssp->report_error('The cache directory '.realpath($cachedir).' is not writeable!');
+						}
+					}
+
+					// Server-side cache: Create a name for the new cache file
+					$cachefile = md5(
+						$browser->platform.
+						$browser->platform_version.
+						$browser->platform_type.
+						$browser->engine.
+						$browser->engine_version.
+						$browser->browser.
+						$browser->browser_version.
+						realpath($file)
+					).'.txt';
+
+					//Caching mechanism with file locking (don't rebuild cache multiple times)
+					$css_mtime = filemtime($file);
+					$cn = $cachedir.'/'.$cachefile;
+					$attempt = 1;
+					while(true){
+						// Server-side cache: Check if a cached version of the file already exists
+						if(($fc=file_exists($cn)) && filemtime($cn) >= $css_mtime){
+							$incache = true;
 							break;
 						}
+						elseif($cssp->config['debug_level'] == 0){
+							$cache_lock = fopen($cn, 'a+');
+							if(!$fc){
+								touch($cn, $css_mtime-1);
+							}
+							if(flock($cache_lock, LOCK_EX | LOCK_NB)){
+								//If we locked the file don't stop on user abort
+								ignore_user_abort(true);
+								break;
+							}
+							else{
+								fclose($cache_lock);
+								sleep(1);
+								//Clearing filemtime cache
+								clearstatcache();
+							}
+						}
 						else{
-							fclose($cache_lock);
-							sleep(1);
-							//Clearing filemtime cache
-							clearstatcache();
+							break;
 						}
 					}
-					else{
-						break;
-					}
-				}
 
+				} // End if($cssp->config['debug_level'] == 0)
 
 				// Server-side cache: Cached version of the file does not yet exist
 				if(!$incache){
@@ -261,6 +265,7 @@ if($_GET['files']){
 							}
 						}
 					}
+					$plugins_used = array_merge($plugins_used, $plugin_list);
 
 
 					// Get plugin options
@@ -392,7 +397,7 @@ if($_GET['files']){
 			'Version' => TURBINEVERSION,
 			'Path' => TURBINEPATH,
 			'Benchmark' => $end - $start,
-			'Plugins' => implode(', ', $plugin_list),
+			'Plugins used' => implode(', ', $plugins_used),
 			'Browser' => $browser->browser,
 			'Browser version' => $browser->browser_version,
 			'Browser engine' => $browser->engine,
