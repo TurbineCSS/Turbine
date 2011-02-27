@@ -481,7 +481,6 @@ class Parser2 extends Base{
 	 * Looks for user defined tab with
 	 * @return void
 	 */
-
 	protected function parse_tabwidth(){
 		if(preg_match('/\s+tabwidth:\s+(\d){1,2}/i', implode($this->code), $match)){
 			$this->tabwidth = $match[1];
@@ -679,7 +678,7 @@ class Parser2 extends Base{
 	 */
 	protected function parse_css_line($line){
 		$line = trim($line);
-		$line = substr($line, 4);				  // Strip "@css"
+		$line = substr($line, 4);                   // Strip "@css"
 		$selector = '@css-'.$this->current['ci']++; // Build the selector using the @css-Index
 		$line = trim($line);
 		// Fire the while_parsing plugins
@@ -777,6 +776,12 @@ class Parser2 extends Base{
 				$dest =& $this->parsed[$me][$se][$fi][$pr];
 			}
 			else{
+				// Merge plugin list for for @turbine
+				if($se == '@turbine' && $pr == 'plugins' && isset($this->parsed[$me][$se][$pr])){
+					$new_plugin_list = $this->tokenize(str_replace(';', '', $va), ',');
+					$va = array_merge($new_plugin_list, $this->parsed[$me][$se][$pr]);
+					$va = implode(',', $va);
+				}
 				$dest =& $this->parsed[$me][$se][$pr];
 			}
 			// Set the value array if not aleady present
@@ -1140,7 +1145,7 @@ class Parser2 extends Base{
 					}
 					// Remove quotes in values on quoted properties (important for -ms-filter property)
 					if(in_array($property, $this->quoted_properties)){
-						$values[$i] = str_replace('"',"'",trim($values[$i],'"'));
+						$values[$i] = str_replace('"', "'", trim($values[$i],'"'));
 					}
 					$final .= $values[$i];
 				}
@@ -1151,7 +1156,7 @@ class Parser2 extends Base{
 					}
 					// Remove quotes in values on quoted properties (important for -ms-filter property)
 					if(in_array($property, $this->quoted_properties)){
-						$values[$i] = str_replace('"',"'",trim($values[$i],'"'));
+						$values[$i] = str_replace('"', "'", trim($values[$i],'"'));
 					}
 					$final .= $values[$i];
 				}
