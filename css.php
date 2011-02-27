@@ -392,6 +392,7 @@ if($_GET['files']){
 			'Version' => TURBINEVERSION,
 			'Path' => TURBINEPATH,
 			'Benchmark' => $end - $start,
+			'Plugins' => implode(', ', $plugin_list),
 			'Browser' => $browser->browser,
 			'Browser version' => $browser->browser_version,
 			'Browser engine' => $browser->engine,
