@@ -1,5 +1,6 @@
 @turbine
 	plugins:load
+	bar:baz
 
 @load url($_FILEPATH/load1.cssp)
 @load url($_FILEPATH/load2.cssp)

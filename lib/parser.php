@@ -759,6 +759,7 @@ class Parser2 extends Base{
 	 * @return void
 	 */
 	protected function merge(){
+		global $plugin_list;
 		// The current values
 		$me = $this->current['me'];
 		$se = $this->current['se'];
@@ -780,6 +781,11 @@ class Parser2 extends Base{
 				if($se == '@turbine' && $pr == 'plugins' && isset($this->parsed[$me][$se][$pr])){
 					$new_plugin_list = $this->tokenize(str_replace(';', '', $va), ',');
 					$va = array_merge($new_plugin_list, $this->parsed[$me][$se][$pr]);
+					// Update the plugin list
+					if($va != $plugin_list){
+						$plugin_list = $va;
+					}
+					$plugin_list = $va;
 					$va = implode(',', $va);
 				}
 				$dest =& $this->parsed[$me][$se][$pr];

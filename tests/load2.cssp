@@ -1,5 +1,6 @@
 @turbine
 	plugins:resetstyle, css3
+	foo:bar
 
 #bar
 	color:green
