@@ -1,0 +1,6 @@
+@turbine
+	plugins:load
+
+@load url($_FILEPATH/load1.cssp)
+@load url($_FILEPATH/load2.cssp)
+@load url($_FILEPATH/load3.cssp)
