@@ -265,7 +265,7 @@ if($_GET['files']){
 							}
 						}
 					}
-					$plugins_used = array_merge($plugins_used, $plugin_list);
+					$plugins_used = array_unique(array_merge($plugins_used, $plugin_list));
 
 
 					// Get plugin options

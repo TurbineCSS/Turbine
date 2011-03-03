@@ -779,14 +779,10 @@ class Parser2 extends Base{
 			else{
 				// Merge plugin list for for @turbine
 				if($se == '@turbine' && $pr == 'plugins' && isset($this->parsed[$me][$se][$pr])){
-					$new_plugin_list = $this->tokenize(str_replace(';', '', $va), ',');
-					$va = array_merge($new_plugin_list, $this->parsed[$me][$se][$pr]);
-					// Update the plugin list
-					if($va != $plugin_list){
-						$plugin_list = $va;
-					}
-					$plugin_list = $va;
-					$va = implode(',', $va);
+					$new_plugins = $this->tokenize(str_replace(';', '', $va), ',');
+					$old_plugins = $this->tokenize(str_replace(';', '', $this->get_final_value($this->parsed[$me][$se][$pr])), ',');
+					$merged_plugins = array_unique(array_merge($new_plugins, $old_plugins));
+					$va = implode(', ', $merged_plugins);
 				}
 				$dest =& $this->parsed[$me][$se][$pr];
 			}
