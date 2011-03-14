@@ -73,7 +73,7 @@ function backgroundgradient(&$parsed){
 							);
 
 							// Use a SVG background for Opera
-							if($browser->engine == 'opera'){
+							if($browser->engine == 'opera' OR ($browser->engine == 'ie' AND $browser->engine_version >= 9.0)){
 								if('top' == strtolower($matches[1])){
 									$svg_direction = 'x1="0%" y1="0%" x2="0%" y2="100%"';
 								}
@@ -83,7 +83,7 @@ function backgroundgradient(&$parsed){
 								$svg_startcolor = $matches[2];
 								$svg_endcolor   = $matches[3];
 
-								$svg_url = 'data:image/svg+xml;base64,' . base64_encode('<?xml version="1.0" standalone="no"?>
+								$svg_url = 'data:image/svg+xml;base64,' . preg_replace('/\s+/', ' ', base64_encode('<?xml version="1.0" standalone="no"?>
 								<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 								<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg">
 									<defs>
@@ -93,7 +93,7 @@ function backgroundgradient(&$parsed){
 										</linearGradient>
 									</defs>
 									<rect width="100%" height="100%" style="fill:url(#gradient)"/>
-								</svg>');
+								</svg>'));
 
 								$parsed[$block][$selector][$property][] = preg_replace(
 									$gradientregex,
@@ -106,7 +106,7 @@ function backgroundgradient(&$parsed){
 							CSSP::comment($parsed[$block][$selector], $property, 'Modified by background-gradient plugin');
 
 							// Use filter fallbacks in IE
-							if(!in_array('noie', $settings)){
+							if(!in_array('noie', $settings) AND ($browser->engine == 'ie' AND $browser->engine_version < 9)){
 								$filter_properties = array();
 								if(strtolower($matches[1]) == 'top'){
 									$ie_gradienttype = '0';
