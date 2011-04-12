@@ -53,6 +53,12 @@ function backgroundgradient(&$parsed){
 								'-moz-linear-gradient('.$matches[1].','.$matches[2].','.$matches[3].')',
 								$parsed[$block][$selector][$property][$i]
 							);
+							// Opera >= 11.10
+							$parsed[$block][$selector][$property][] = preg_replace(
+								$gradientregex,
+								'-o-linear-gradient('.$matches[1].','.$matches[2].','.$matches[3].')',
+								$parsed[$block][$selector][$property][$i]
+							);
 
 							// Webkit and KHTML
 							if(strtolower($matches[1]) == 'top'){
@@ -72,8 +78,8 @@ function backgroundgradient(&$parsed){
 								$parsed[$block][$selector][$property][$i]
 							);
 
-							// Use a SVG background for Opera
-							if($browser->engine == 'opera' OR ($browser->engine == 'ie' AND $browser->engine_version >= 9.0)){
+							// Use a SVG background for Opera AND IE9
+							if(($browser->engine == 'opera' AND $browser->engine_version < 11.10) OR ($browser->engine == 'ie' AND $browser->engine_version >= 9.0)){
 								if('top' == strtolower($matches[1])){
 									$svg_direction = 'x1="0%" y1="0%" x2="0%" y2="100%"';
 								}
@@ -105,7 +111,7 @@ function backgroundgradient(&$parsed){
 							// Add comment for the background property
 							CSSP::comment($parsed[$block][$selector], $property, 'Modified by background-gradient plugin');
 
-							// Use filter fallbacks in IE
+							// Use filter fallbacks in IE<9
 							if(!in_array('noie', $settings) AND ($browser->engine == 'ie' AND $browser->engine_version < 9)){
 								$filter_properties = array();
 								if(strtolower($matches[1]) == 'top'){
