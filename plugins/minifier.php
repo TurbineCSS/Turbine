@@ -125,7 +125,9 @@ function minifier(&$parsed){
 								}
 								elseif($matches[0][0] == $matches[0][2] && $matches[0][1] == $matches[0][3]){
 									$parsed[$block][$selector][$property][$key] = $matches[0][0].' '.$matches[0][1];
-								}
+								}elseif($matches[0][1] == $matches[0][3]){
+                                    $parsed[$block][$selector][$property][$key] = $matches[0][0].' '.$matches[0][1].' '.$matches[0][2];
+                                }
 							}
 						}
 					}
