@@ -569,7 +569,7 @@ class Parser2 extends Base{
 		$len = strlen($line);
 		for($i = 0; $i < $len; $i++ ){
 			$this->switch_string_state($line{$i});
-			if($this->state != 'st' && $line{$i} == '/' && $line{$i+1} == '/'){ // Break on comment
+			if($this->state != 'st' && (isset($line{$i}) && $line{$i} == '/') && (isset($line{$i+1}) && $line{$i+1} == '/') ){ // Break on comment
 				break;
 			}
 			$this->token .= $line{$i};
