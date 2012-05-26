@@ -120,7 +120,7 @@ if($_GET['files']){
 	}
 
 
-	// Else parse the files and add the rusulting CSS code to $css
+	// Else parse the files and add the resulting CSS code to $css
 	$css = '';
 
 
