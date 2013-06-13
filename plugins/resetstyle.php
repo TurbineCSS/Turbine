@@ -33,9 +33,14 @@ function resetstyle(&$output){
 	elseif(file_exists('plugins/resetstyle/default.css')){
 		$reset_stylesheet = file_get_contents('plugins/resetstyle/default.css');
 	}
+	
+	global $cssp;
 	if(!empty($reset_stylesheet)){
-		// Compress the styles
-		$reset_stylesheet = cssmin::minify($reset_stylesheet);
+		if($cssp->config['minify_css'] == true){
+			// Compress the styles
+			$reset_stylesheet = cssmin::minify($reset_stylesheet);
+		}
+		
 		// Force a scrollbar?
 		if(is_array($settings) && in_array('force-scrollbar', $settings)){
 			$reset_stylesheet .= 'html{overflow-y:scroll}';
@@ -44,7 +49,6 @@ function resetstyle(&$output){
 		$output = $reset_stylesheet.$output;
 	}
 	else{
-		global $cssp;
 		$cssp->report_error('Resetstyle plugin couldn\'t find a stylesheet to include');
 	}
 }
