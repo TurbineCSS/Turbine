@@ -327,7 +327,12 @@ if($_GET['files']){
 
 					// Add output to cache
 					if($cssp->config['debug_level'] == 0){
-						file_put_contents($cachedir.'/'.$cachefile, $output);
+						if ($cache_lock) {
+							fwrite($cache_lock,$output);
+							fclose($cache_lock);
+			    			} else {
+							file_put_contents($cachedir.'/'.$cachefile, $output);
+						}
 					}
 
 				}

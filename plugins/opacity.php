@@ -32,7 +32,7 @@ function opacity(&$parsed){
 						// Build prefixed properties
 						$prefixes = array('-moz-', '-webkit-', '-khtml-');
 						foreach($prefixes as $prefix){
-							$opacity_properties[$prefix.'opacity'][] = $parsed[$block][$selector]['opacity'];
+							$opacity_properties[$prefix.'opacity'] = $parsed[$block][$selector]['opacity'];
 						}
 						// Create IE filters and insert everything
 						$filter = 'progid:DXImageTransform.Microsoft.Alpha(opacity='.round(floatval($parsed[$block][$selector]['opacity'][0]) * 100).')';
