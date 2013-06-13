@@ -54,6 +54,18 @@ function backgroundgradient(&$parsed){
 								$parsed[$block][$selector][$property][$i]
 							);
 
+							// IE10 compliance
+							$parsed[$block][$selector][$property][] = preg_replace(
+								$gradientregex,
+								'-ms-linear-gradient('.$matches[1].','.$matches[2].','.$matches[3].')',
+								$parsed[$block][$selector][$property][$i]
+							);
+							$parsed[$block][$selector][$property][] = preg_replace(
+								$gradientregex,
+								'linear-gradient('.$matches[1].','.$matches[2].','.$matches[3].')',
+								$parsed[$block][$selector][$property][$i]
+							);
+
 							// Webkit and KHTML
 							if(strtolower($matches[1]) == 'top'){
 								$webkit_gradientdirection = 'left top,left bottom';
